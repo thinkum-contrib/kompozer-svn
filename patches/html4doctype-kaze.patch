@@ -1,0 +1,25 @@
+--- mozilla/netwerk/protocol/about/src/nsAboutBlank.cpp.orig	2006-10-26 16:48:16.000000000 +0200
++++ mozilla/netwerk/protocol/about/src/nsAboutBlank.cpp	2006-10-26 16:50:01.000000000 +0200
+@@ -43,7 +43,8 @@
+ 
+ NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
+ 
+-static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
++static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" "
++"\"http://www.w3.org/TR/html4/loose.dtd\">"
+ "<html><head><title></title></head><body></body></html>";
+ 
+ NS_IMETHODIMP
+
+--- mozilla/netwerk/protocol/about/src/nsAboutStrictBlank.cpp.orig	2006-10-26 16:48:16.000000000 +0200
++++ mozilla/netwerk/protocol/about/src/nsAboutStrictBlank.cpp	2006-10-26 16:49:48.000000000 +0200
+@@ -43,7 +43,8 @@
+ 
+ NS_IMPL_ISUPPORTS1(nsAboutStrictBlank, nsIAboutModule)
+ 
+-static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Strict//EN\">"
++static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" "
++"\"http://www.w3.org/TR/html4/strict.dtd\">"
+ "<html><head><title></title></head><body></body></html>";
+ 
+ NS_IMETHODIMP

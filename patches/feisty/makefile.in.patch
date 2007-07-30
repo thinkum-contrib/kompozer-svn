@@ -1,0 +1,18 @@
+--- gfx/src/gtk/Makefile.in	2006-01-30 21:06:27.000000000 +0100
++++ gfx/src/gtk/Makefile.in.new	2006-01-30 21:02:29.000000000 +0100
+@@ -151,6 +151,7 @@
+ 		$(MOZ_COMPONENT_LIBS) \
+ 		$(MOZ_JS_LIBS) \
+ 		$(MOZ_UNICHARUTIL_LIBS) \
++		-lfreetype2 \
+ 		$(NULL)
+ endif
+ 
+@@ -211,6 +212,7 @@
+ 		-I$(srcdir)/../freetype \
+ 		-I$(srcdir)/../x11shared \
+ 		$(MOZ_XFT_CFLAGS) \
++		-I/usr/include/freetype2 \
+ 		$(NULL)
+ 
+ ifdef MOZ_ENABLE_FREETYPE2

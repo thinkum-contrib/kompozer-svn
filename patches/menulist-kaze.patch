@@ -1,0 +1,23 @@
+--- mozilla/toolkit/content/widgets/menulist.xml.orig	2006-10-26 16:12:59.000000000 +0200
++++ mozilla/toolkit/content/widgets/menulist.xml	2006-10-26 16:43:37.000000000 +0200
+@@ -35,12 +35,16 @@
+         
+       <handler event="popupshowing">
+         <![CDATA[
++          // Kaze: this NEVER works, it ALWAYS raises an exception
++          // so let's put that in a try-catch
+           // XXX see bug #196755
+           // originalTarget is workaround for arrowscrollbox retargeting bug
+-          if (event.originalTarget.parentNode == this && this.selectedItem)
+-            // Not ready for auto-setting the active child in hierarchies yet.
+-            // For now, only do this when the outermost menupopup opens.
+-            this.menuBoxObject.activeChild = this.selectedInternal;
++          try {
++            if (event.originalTarget.parentNode == this && this.selectedItem)
++              // Not ready for auto-setting the active child in hierarchies yet.
++              // For now, only do this when the outermost menupopup opens.
++              this.menuBoxObject.activeChild = this.selectedInternal;
++          } catch(e) {}    
+         ]]>
+       </handler>
+     </handlers>

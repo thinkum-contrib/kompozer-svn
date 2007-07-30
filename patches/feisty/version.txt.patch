@@ -1,0 +1,7 @@
+--- composer/config/version.txt	2006-01-30 21:27:03.000000000 +0100
++++ composer/config/version.txt.new	2006-01-30 21:27:46.000000000 +0100
+@@ -1 +1 @@
+-1.0
+\ No newline at end of file
++
+

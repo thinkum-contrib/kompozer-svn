@@ -1,0 +1,43 @@
+-- configure.in.old	2004-09-09 04:17:48.000000000 +0200
++++ configure.in	2004-09-10 11:51:35.000000000 +0200
+@@ -1107,8 +1107,7 @@ case "$target" in
+         MOZ_ENABLE_OLD_ABI_COMPAT_WRAPPERS=1
+     ;;
+     mips*)
+-        CFLAGS="$CFLAGS -Wa,-xgot"
+-        CXXFLAGS="$CXXFLAGS -Wa,-xgot"
++        MOZ_DEBUG_FLAGS="-g"   # We want inlining
+     ;;
+     esac
+     ;;
+--- configure.old	2004-09-16 22:04:43.000000000 +0200
++++ configure	2004-09-11 11:13:01.000000000 +0200
+@@ -5337,8 +5337,7 @@ EOF
+         MOZ_ENABLE_OLD_ABI_COMPAT_WRAPPERS=1
+     ;;
+     mips*)
+-        CFLAGS="$CFLAGS -Wa,-xgot"
+-        CXXFLAGS="$CXXFLAGS -Wa,-xgot"
++        MOZ_DEBUG_FLAGS="-g"   # We want inlining
+     ;;
+     esac
+     ;;
+--- config/rules.mk.old	2006-06-20 11:06:33.000000000 +0100
++++ config/rules.mk	2006-06-20 11:06:54.000000000 +0100
+@@ -452,15 +452,6 @@ endif
+ endif
+ endif
+ 
+-ifeq ($(OS_ARCH),Linux)
+-ifneq (,$(filter mips mipsel,$(OS_TEST)))
+-ifeq ($(MODULE),layout)
+-OS_CFLAGS += -Wa,-xgot
+-OS_CXXFLAGS += -Wa,-xgot
+-endif
+-endif
+-endif
+-
+ #
+ # HP-UXBeOS specific section: for COMPONENTS only, add -Bsymbolic flag
+ # which uses internal symbols first
+

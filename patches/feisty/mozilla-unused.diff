@@ -1,0 +1,38 @@
+diff -ur mozilla.orig/xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_alpha.cpp mozilla/xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_alpha.cpp
+--- xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_alpha.cpp	2005-08-28 20:01:29.000000000 -0700
++++ xpcom/reflect/xptcall/src/md/unix/xptcinvoke_linux_alpha.cpp	2005-08-28 02:36:43.000000000 -0700
+@@ -43,7 +43,8 @@
+ /* Prototype specifies unmangled function name and disables unused warning */
+ static void
+ invoke_copy_to_stack(PRUint64* d, PRUint32 paramCount, nsXPTCVariant* s)
+-__asm__("invoke_copy_to_stack") __attribute__((unused));
++__asm__("invoke_copy_to_stack") __attribute__((used));
++
+ 
+ static void
+ invoke_copy_to_stack(PRUint64* d, PRUint32 paramCount, nsXPTCVariant* s)
+diff -ur mozilla.orig/xpcom/reflect/xptcall/src/md/unix/xptcstubs_arm.cpp mozilla/xpcom/reflect/xptcall/src/md/unix/xptcstubs_arm.cpp
+--- xpcom/reflect/xptcall/src/md/unix/xptcstubs_arm.cpp	2002-03-04 22:35:50.000000000 -0800
++++ xpcom/reflect/xptcall/src/md/unix/xptcstubs_arm.cpp	2005-08-28 02:46:41.000000000 -0700
+@@ -45,7 +45,8 @@
+ #endif
+ 
+ /* Specify explicitly a symbol for this function, don't try to guess the c++ mangled symbol.  */
+-static nsresult PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args) asm("_PrepareAndDispatch");
++static nsresult PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args) asm("_PrepareAndDispatch")
++__attribute__((used));
+ 
+ static nsresult
+ PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args)
+diff -ur mozilla.orig/xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_alpha.cpp mozilla/xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_alpha.cpp
+--- xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_alpha.cpp	2005-08-28 20:01:29.000000000 -0700
++++ xpcom/reflect/xptcall/src/md/unix/xptcstubs_linux_alpha.cpp	2005-08-28 02:37:54.000000000 -0700
+@@ -43,7 +43,7 @@
+ /* Prototype specifies unmangled function name and disables unused warning */
+ static nsresult
+ PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint64* args)
+-__asm__("PrepareAndDispatch") __attribute__((unused));
++__asm__("PrepareAndDispatch") __attribute__((used));
+ 
+ static nsresult
+ PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint64* args)

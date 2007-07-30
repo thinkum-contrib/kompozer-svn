@@ -1,0 +1,179 @@
+--- nsExtensionManager.js.in.bak	2004-10-11 23:19:00.000000000 +0900
++++ nsExtensionManager.js.in	2006-08-15 17:39:36.000000000 +0900
+@@ -80,6 +80,8 @@ const FILE_INSTALLED_EXTENSIONS_PROCESSE
+ 
+ const KEY_PROFILEDIR                  = "ProfD";
+ const KEY_APPDIR                      = "XCurProcD";
++const KEY_APPCHROMEDIR                = "AChrom";
++const KEY_PROFILECHROMEDIR            = "UChrm";
+ const KEY_DEFAULTS                    = "ProfDefNoLoc";
+ const KEY_DEFAULT_THEME               = "classic/1.0";
+ 
+@@ -1101,7 +1103,7 @@ nsExtensionInstaller.prototype = {
+   {
+     if (aBaseURL.charAt(aBaseURL.length-1) != "/")
+       aBaseURL += "/";
+-    var manifestURL = aBaseURL + "contents.rdf";
++    var manifestURL = aBaseURL + FILE_CHROME_MANIFEST;
+     
+     var providerNames = [];
+ 
+@@ -1120,29 +1122,65 @@ nsExtensionInstaller.prototype = {
+       // We need to explicitly walk this list here, we don't need to do so
+       // for nsIXULChromeRegistry's |installPackage| method since that does
+       // this same thing itself.
++      //
++      //XXXmotohiko:
++      // Locale packs don't have contents.rdf on the root. They always registered
++      // by directories.
++      //   <RDF:Seq about="urn:mozilla:locale:root">
++      //     <RDF:li resource="urn:mozilla:locale:<langcode>"/>
++      //   </RDF:Seq>
++      //   <RDF:Seq about="urn:mozilla:locale:<langcode>:packages">
++      //     <RDF:li resource="urn:mozilla:locale:<langcode>:itemName1"/>
++      //     <RDF:li resource="urn:mozilla:locale:<langcode>:itemName2"/>
++      //     ..
++      //   </RDF:Seq>
++      //
++      // So we check child nodes first
+       
+       var ds = gRDF.GetDataSourceBlocking(manifestURL);
+-      
+       var ctr = Components.classes["@mozilla.org/rdf/container;1"]
+                           .createInstance(Components.interfaces.nsIRDFContainer);
+       ctr.Init(ds, gRDF.GetResource("urn:mozilla:" + aType + ":root"));
++      if (!ctr) return providerNames;
++      
++      var nameArc = gRDF.GetResource(CHROME_NS("name"));
++      var pkgArc = gRDF.GetResource(CHROME_NS("packages"));
+       
+       var items = ctr.GetElements();
+       while (items.hasMoreElements()) {
+         var item = items.getNext().QueryInterface(Components.interfaces.nsIRDFResource);
+-        
+-        var nameArc = gRDF.GetResource(CHROME_NS("name"));
+-        var name;
+-        if (ds.hasArcOut(item, nameArc))
+-          name = stringData(ds.GetTarget(item, nameArc, true));
+-        else {
+-          var parts = item.Value.split(":");
+-          name = parts[parts.length-1];
++        // Check sub nodes when this is a locale
++        if (aType == this._writer.CHROME_TYPE_LOCALE) {
++          try {
++            var pkgNode = ds.GetTarget(item, pkgArc, true);
++            var pkgList = pkgNode.QueryInterface(Components.interfaces.nsIRDFResource);
++            var pkgCtr = Components.classes["@mozilla.org/rdf/container;1"]
++                                   .createInstance(Components.interfaces.nsIRDFContainer);
++            pkgCtr.Init(ds, gRDF.GetResource(pkgList.Value));
++            if (!pkgCtr) continue;
++            
++            var pkgItems = pkgCtr.GetElements();
++            while (pkgItems.hasMoreElements()) {
++              var pkgItem = pkgItems.getNext().QueryInterface(Components.interfaces.nsIRDFResource);
++              var name;
++              if (ds.hasArcOut(pkgItem, nameArc))
++                name = stringData(ds.GetTarget(pkgItem, nameArc, true));
++              else
++                name = pkgItem.Value.match(/^([^\:]*\:){3}(.*$)/)[2];
++              providerNames.push(name);
++            }
++          } catch(e) {}
++        } else {
++          var name;
++          if (ds.hasArcOut(item, nameArc))
++            name = stringData(ds.GetTarget(item, nameArc, true));
++          else
++            name = item.Value.match(/^([^\:]*\:){3}(.*$)/)[2];
++          providerNames.push(name);
+         }
+-        providerNames.push(name);
+       }
+-    }
+-    catch (e) { }
++//    }
++//    catch (e) { }
+     
+     return providerNames;
+   }
+@@ -1217,6 +1255,52 @@ nsExtensionUninstaller.prototype = {
+     }
+   },
+   
++  _deselectLocaleForPackage: function nsExtensionUninstaller_deselectLocaleForPackage (aProviderName, aIsProfile)
++  {
++    // aProviderName is somthing like 'ja-JP:global'.
++    //   <RDF:Seq RDF:about="urn:mozilla:locale:ja-JP:packages">
++    //     <RDF:li RDF:resource="urn:mozilla:locale:ja-JP:global"/>
++    //     <RDF:li RDF:resource="urn:mozilla:locale:ja-JP:mozapps"/>
++    //         :
++    //   </RDF:Seq>
++    //         :
++    //   <RDF:Description RDF:about="urn:mozilla:locale:ja-JP:global">
++    //         :
++    //   </RDF:Description>
++    var lang = aProviderName.match(/^([^:]*):(.+)?$/)[1];
++    if (!lang) return;
++    
++    var dir = Components.classes['@mozilla.org/file/directory_service;1']
++                        .getService(Components.interfaces.nsIProperties)
++                        .get(aIsProfile ? KEY_PROFILECHROMEDIR : KEY_APPCHROMEDIR,
++                             Components.interfaces.nsIFile);
++    var path = Components.classes["@mozilla.org/network/io-service;1"]
++                         .getService(Components.interfaces.nsIIOService)
++                         .newFileURI(dir).spec;
++    var ds = gRDF.GetDataSourceBlocking(path + FILE_CR_CHROMEDS)
++                 .QueryInterface(Components.interfaces.nsIRDFDataSource);
++    var ctr = Components.classes["@mozilla.org/rdf/container;1"]
++                        .createInstance(Components.interfaces.nsIRDFContainer);
++    // XXX CHROME_NS("packages")
++    ctr.Init(ds, gRDF.GetResource("urn:mozilla:locale:" + lang + ":packages"));
++    
++    var providerArc = gRDF.GetResource("urn:mozilla:locale:" + aProviderName);
++    if (ctr && ctr.IndexOf(providerArc) != -1) {
++      // Remove outward arcs
++      var arcs = ds.ArcLabelsOut(providerArc);
++      while (arcs.hasMoreElements()) {
++        var arc = arcs.getNext().QueryInterface(Components.interfaces.nsIRDFResource);
++        var value = ds.GetTarget(providerArc, arc, true);
++        if (value)
++          ds.Unassert(providerArc, arc, value);
++      }
++      // Remove from packages node
++      ctr.RemoveElement(providerArc, true);
++      // Flush datasource
++      ds.QueryInterface(Components.interfaces.nsIRDFRemoteDataSource).Flush();
++    }
++  },
++  
+   // XXXben - maybe we should find a way to 
+   _packagesForExtension: [],
+   
+@@ -1236,11 +1320,9 @@ nsExtensionUninstaller.prototype = {
+       // this._cr.uninstallSkin(aProviderName, aIsProfile)
+       break;
+     case this._reader.CHROME_TYPE_LOCALE:
+-      for (var i = 0; i < this._packagesForExtension.length; ++i) {
+-        this._cr.deselectLocaleForPackage(aProviderName, 
+-                                          this._packagesForExtension[i], 
+-                                          aIsProfile);
+-      }
++      this._deselectLocaleForPackage(aProviderName, 
++                                     // aProviderName contains package name
++                                     aIsProfile);
+       // this._cr.uninstallLocale(aProviderName, aIsProfile)
+       break;
+     }
+@@ -1936,7 +2018,11 @@ nsExtensionManager.prototype = {
+       items = this._ds.getItemsWithFlagSet("toBeUninstalled");
+       for (var i = 0; i < items.length; ++i)
+         this._finalizeUninstall(items[i]);
+-        
++      
++      // If there were any install operations, we need to restart (again!) after 
++      // the component files have been properly uninstalled are unregistered...
++      needsRestart = needsRestart | (items.length > 0);
++      
+       // Clean up any helper objects
+       delete this._extInstaller;
+       delete this._extUninstaller;

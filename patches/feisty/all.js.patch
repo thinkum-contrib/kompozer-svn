@@ -1,0 +1,17 @@
+--- composer/app/profile/all.js	2005-05-13 17:35:27.000000000 +0200
++++ mozilla/composer/app/profile/all.js	2005-03-30 10:40:41.000000000 +0200
+@@ -943,10 +943,10 @@
+ pref("tipoftheday.openAtStartup",                 true);
+ pref("pinger.pinged",                             " ");
+ 
+-pref("network.protocol-handler.app.http", "/usr/lib/mozilla/mozilla-ext");
+-pref("network.protocol-handler.app.https", "/usr/lib/mozilla/mozilla-ext");
+-pref("network.protocol-handler.app.ftp", "/usr/lib/mozilla/mozilla-ext");
+-pref("network.protocol-handler.app.file", "/usr/lib/mozilla/mozilla-ext");
++pref("network.protocol-handler.app.http", "/usr/bin/x-www-browser");
++pref("network.protocol-handler.app.https", "/usr/bin/x-www-browser");
++pref("network.protocol-handler.app.ftp", "/usr/bin/x-www-browser");
++pref("network.protocol-handler.app.file", "/usr/bin/x-www-browser");
+ 
+ pref("spellchecker.enablerealtimespell", true);
+ pref("spellchecker.realtimespell.warning_color", "orange");

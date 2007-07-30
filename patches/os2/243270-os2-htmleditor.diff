@@ -1,0 +1,17 @@
+Index: editor/libeditor/html/nsHTMLEditorMouseListener.cpp
+===================================================================
+RCS file: /cvsroot/mozilla/editor/libeditor/html/nsHTMLEditorMouseListener.cpp,v
+retrieving revision 1.16
+diff -p -u -r1.16 nsHTMLEditorMouseListener.cpp
+--- editor/libeditor/html/nsHTMLEditorMouseListener.cpp	18 Apr 2004 14:19:36 -0000	1.16
++++ editor/libeditor/html/nsHTMLEditorMouseListener.cpp	17 Sep 2005 03:32:44 -0000
+@@ -262,7 +262,9 @@ nsHTMLEditorMouseListener::MouseDown(nsI
+       //   for all context clicks
+       if (element || isContextClick)
+       {
++      #ifndef XP_OS2
+         mouseEvent->PreventDefault();
++      #endif
+         return NS_OK;
+       }
+     }
