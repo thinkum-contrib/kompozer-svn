@@ -1,0 +1,321 @@
+<?xml version="1.0"?> 
+
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+#
+# The contents of this file are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+# The Original Code is KompoZer.
+#
+# The Initial Developer of the Original Code is
+#   Fabien Cazenave <kaze@kompozer.net>
+# Portions created by the Initial Developer are Copyright (C) 2004
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#   Fabien Cazenave <kaze@kompozer.net>
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the LGPL or the GPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+
+<!DOCTYPE page [
+<!ENTITY % helpersDTD SYSTEM "chrome://editor/locale/pref-helpers.dtd">
+%helpersDTD;
+<!ENTITY % siteManagerDTD SYSTEM "chrome://editor/locale/sitemanager.dtd">
+%siteManagerDTD;
+]>
+
+<page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      onload="parent.initPanel('chrome://editor/content/pref-helpers.xul');"
+      headertitle="&helpers.label;">
+
+  <stringbundle id="bundle_prefutilities" src="chrome://communicator/locale/pref/prefutilities.properties"/>
+
+  <script type="application/x-javascript">
+  <![CDATA[
+    var _elementIDs = [
+      "helperUseSystem-browser", "helperPath-browser", "helperArgs-browser",
+      "helperUseSystem-text",    "helperPath-text",    "helperArgs-text",
+      "helperUseSystem-image",   "helperPath-image",   "helperArgs-image",
+      "helperUseSystem-media",   "helperPath-media",   "helperArgs-media",
+      "helperUseSystem-file",    "helperPath-file",    "helperArgs-file",
+      "helperUseSystem-ftp",     "helperPath-ftp",     "helperArgs-ftp",
+      "helperFilter-html", "helperFilter-css", "helperFilter-images", "helperFilter-media", "helperFilter-text"
+    ];
+  ]]>
+  </script>        
+
+  <script type="application/x-javascript" src="chrome://communicator/content/pref/pref-helpers.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/pref-helpers.js"/>
+
+  <!-- *** EXTERNAL APPLICATIONS *** -->
+  <groupbox>
+    <caption>
+      <hbox align="center">
+        <label value="&application.label;"/>
+      </hbox>
+      <menulist>
+        <menupopup id="helperDeckSelector">
+          <menuitem oncommand="ChooseDeck(this)" value="browser" label="&webBrowser.label;" />
+          <menuitem oncommand="ChooseDeck(this)" value="text"    label="&textEditor.label;" />
+          <menuitem oncommand="ChooseDeck(this)" value="image"   label="&imageEditor.label;"/>
+          <menuitem oncommand="ChooseDeck(this)" value="media"   label="&mediaPlayer.label;"/>
+          <menuitem oncommand="ChooseDeck(this)" value="file"    label="&fileManager.label;"/>
+          <menuitem oncommand="ChooseDeck(this)" value="ftp"     label="&ftpClient.label;"  />
+        </menupopup>
+      </menulist>
+    </caption>
+
+    <deck id="helperAppsDeck">
+
+      <vbox> <!-- Web browser -->
+        <radiogroup preftype      = "bool"
+                    prefstring    = "editor.helpers.browser.useSystem"
+                    id            = "helperUseSystem-browser">
+          <radio value="true"  label="&useSystemHelper.label;" oncommand="onUseSystemHelper()"/>
+          <radio value="false" label="&useCustomHelper.label;" oncommand="onUseCustomHelper()"/>
+        </radiogroup>
+        <vbox style="padding-left: 3em; margin-top: 0.5em;">
+          <label value="&path.label;"/>
+          <hbox align="center">
+            <textbox flex       = "1"
+                     preftype   = "char"
+                     prefstring = "editor.helpers.browser.path"
+                     id         = "helperPath-browser"/>
+            <toolbarbutton tooltiptext="&filePicker.tooltip;" oncommand="onFilePicker();" id="filePicker-browser"
+              style="list-style-image: url(chrome://editor/skin/icons/filePicker.gif);"/>
+          </hbox>
+          <label value="&arguments.label;"/>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "editor.helpers.browser.args"
+                   id         = "helperArgs-browser"/>
+        </vbox>
+      </vbox>
+
+      <vbox> <!-- Text editor -->
+        <radiogroup preftype      = "bool"
+                    prefstring    = "editor.helpers.text.useSystem"
+                    id            = "helperUseSystem-text">
+          <radio value="true"  label="&useSystemHelper.label;" oncommand="onUseSystemHelper()"/>
+          <radio value="false" label="&useCustomHelper.label;" oncommand="onUseCustomHelper()"/>
+        </radiogroup>
+        <vbox style="padding-left: 3em; margin-top: 0.5em;">
+          <label value="&path.label;"/>
+          <hbox align="center">
+            <textbox flex       = "1"
+                     preftype   = "char"
+                     prefstring = "editor.helpers.text.path"
+                     id         = "helperPath-text"/>
+            <toolbarbutton tooltiptext="&filePicker.tooltip;" oncommand="onFilePicker();" id="filePicker-text"
+              style="list-style-image: url(chrome://editor/skin/icons/filePicker.gif);"/>
+          </hbox>
+          <label value="&arguments.label;"/>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "editor.helpers.text.args"
+                   id         = "helperArgs-text"/>
+        </vbox>
+      </vbox>
+
+      <vbox> <!-- Image editor -->
+        <radiogroup preftype      = "bool"
+                    prefstring    = "editor.helpers.image.useSystem"
+                    id            = "helperUseSystem-image">
+          <radio value="true"  label="&useSystemHelper.label;" oncommand="onUseSystemHelper()"/>
+          <radio value="false" label="&useCustomHelper.label;" oncommand="onUseCustomHelper()"/>
+        </radiogroup>
+        <vbox style="padding-left: 3em; margin-top: 0.5em;">
+          <label value="&path.label;"/>
+          <hbox align="center">
+            <textbox flex       = "1"
+                     preftype   = "char"
+                     prefstring = "editor.helpers.image.path"
+                     id         = "helperPath-image"/>
+            <toolbarbutton tooltiptext="&filePicker.tooltip;" oncommand="onFilePicker();" id="filePicker-image"
+              style="list-style-image: url(chrome://editor/skin/icons/filePicker.gif);"/>
+          </hbox>
+          <label value="&arguments.label;"/>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "editor.helpers.image.args"
+                   id         = "helperArgs-image"/>
+        </vbox>
+      </vbox>
+
+      <vbox> <!-- Media player -->
+        <radiogroup preftype      = "bool"
+                    prefstring    = "editor.helpers.media.useSystem"
+                    id            = "helperUseSystem-media">
+          <radio value="true"  label="&useSystemHelper.label;" oncommand="onUseSystemHelper()"/>
+          <radio value="false" label="&useCustomHelper.label;" oncommand="onUseCustomHelper()"/>
+        </radiogroup>
+        <vbox style="padding-left: 3em; margin-top: 0.5em;">
+          <label value="&path.label;"/>
+          <hbox align="center">
+            <textbox flex       = "1"
+                     preftype   = "char"
+                     prefstring = "editor.helpers.media.path"
+                     id         = "helperPath-media"/>
+            <toolbarbutton tooltiptext="&filePicker.tooltip;" oncommand="onFilePicker();" id="filePicker-media"
+              style="list-style-image: url(chrome://editor/skin/icons/filePicker.gif);"/>
+          </hbox>
+          <label value="&arguments.label;"/>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "editor.helpers.media.args"
+                   id         = "helperArgs-media"/>
+        </vbox>
+      </vbox>
+
+      <vbox> <!-- File manager -->
+        <radiogroup preftype      = "bool"
+                    prefstring    = "editor.helpers.file.useSystem"
+                    id            = "helperUseSystem-file">
+          <radio value="true"  label="&useSystemHelper.label;" oncommand="onUseSystemHelper()"/>
+          <radio value="false" label="&useCustomHelper.label;" oncommand="onUseCustomHelper()"/>
+        </radiogroup>
+        <vbox style="padding-left: 3em; margin-top: 0.5em;">
+          <label value="&path.label;"/>
+          <hbox align="center">
+            <textbox flex       = "1"
+                     preftype   = "char"
+                     prefstring = "editor.helpers.file.path"
+                     id         = "helperPath-file"/>
+            <toolbarbutton tooltiptext="&filePicker.tooltip;" oncommand="onFilePicker();" id="filePicker-file"
+              style="list-style-image: url(chrome://editor/skin/icons/filePicker.gif);"/>
+          </hbox>
+          <label value="&arguments.label;"/>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "editor.helpers.file.args"
+                   id         = "helperArgs-file"/>
+        </vbox>
+      </vbox>
+
+      <vbox> <!-- FTP client -->
+        <radiogroup preftype      = "bool"
+                    prefstring    = "editor.helpers.ftp.useSystem"
+                    id            = "helperUseSystem-ftp">
+          <radio value="true"  label="&useSystemHelper.label;" oncommand="onUseSystemHelper()"/>
+          <radio value="false" label="&useCustomHelper.label;" oncommand="onUseCustomHelper()"/>
+        </radiogroup>
+        <vbox style="padding-left: 3em; margin-top: 0.5em;">
+          <label value="&path.label;"/>
+          <hbox align="center">
+            <textbox flex       = "1"
+                     preftype   = "char"
+                     prefstring = "editor.helpers.ftp.path"
+                     id         = "helperPath-ftp"/>
+            <toolbarbutton tooltiptext="&filePicker.tooltip;" oncommand="onFilePicker();" id="filePicker-ftp"
+              style="list-style-image: url(chrome://editor/skin/icons/filePicker.gif);"/>
+          </hbox>
+          <label value="&arguments.label;"/>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "editor.helpers.ftp.args"
+                   id         = "helperArgs-ftp"/>
+        </vbox>
+      </vbox>
+
+    </deck>
+  </groupbox>
+
+  <!-- *** FILE FILTERS *** -->
+  <groupbox>
+    <caption label="&fileFilter.label;"/>
+    <grid>
+      <columns><column/><column flex="1"/><column/></columns>
+      <rows>
+
+        <row> <!-- HTML Documents -->
+          <hbox align="center">
+            <label flex="1" style="text-align: right;" value="&filterHTML.label;"/>
+            <image src="chrome://editor/skin/icons/document-html.png"/>
+          </hbox>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "extensions.sitemanager.filter.html"
+                   id         = "helperFilter-html"/>
+          <button label="&default.label;" oncommand="resetFileFilter(this);"/>
+        </row>
+
+        <row> <!-- CSS Stylesheets -->
+          <hbox align="center">
+            <label flex="1" style="text-align: right;" value="&filterCSS.label;"/>
+            <image src="chrome://editor/skin/icons/document-style.png"/>
+          </hbox>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "extensions.sitemanager.filter.css"
+                   id         = "helperFilter-css"/>
+          <button label="&default.label;" oncommand="resetFileFilter(this);"/>
+        </row>
+
+        <row> <!-- Images -->
+          <hbox align="center">
+            <label flex="1" style="text-align: right;" value="&filterImages.label;"/>
+            <image src="chrome://editor/skin/icons/document-image.png"/>
+          </hbox>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "extensions.sitemanager.filter.images"
+                   id         = "helperFilter-images"/>
+          <button label="&default.label;" oncommand="resetFileFilter(this);"/>
+        </row>
+
+        <row> <!-- Media -->
+          <hbox align="center">
+            <label flex="1" style="text-align: right;" value="&filterMedia.label;"/>
+            <image src="chrome://editor/skin/icons/document-media.png"/>
+          </hbox>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "extensions.sitemanager.filter.media"
+                   id         = "helperFilter-media"/>
+          <button label="&default.label;" oncommand="resetFileFilter(this);"/>
+        </row>
+
+        <row> <!-- Text -->
+          <hbox align="center">
+            <label flex="1" style="text-align: right;" value="&filterScripts.label;"/>
+            <image src="chrome://editor/skin/icons/document-text.png"/>
+          </hbox>
+          <textbox flex       = "1"
+                   preftype   = "char"
+                   prefstring = "extensions.sitemanager.filter.text"
+                   id         = "helperFilter-text"/>
+          <button label="&default.label;" oncommand="resetFileFilter(this);"/>
+        </row>
+
+      </rows>
+    </grid>
+
+    <label style="margin-top: 1em;">&needToRestart.label;</label>
+  </groupbox>
+
+</page>

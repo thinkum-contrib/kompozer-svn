@@ -1,0 +1,142 @@
+<?xml version="1.0"?> 
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla.org
+   -
+   - The Initial Developer of the Original Code is
+   - Netscape Communications Corporation
+   - Portions created by the Initial Developer are Copyright (C) 1998-2003
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Daniel Glazman (glazman@disruptive-innovations.com), on behalf of Linspire Inc.
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?> 
+<?xml-stylesheet href="chrome://mozapps/skin/pref/pref.css"?>
+<?xml-stylesheet href="chrome://communicator/skin/pref/pref.css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/editorPrefsOverlay.dtd" >
+
+<!-- This dialog has a fixed size and is not resizable. 
+     You MAY NOT increase the size of this dialog. 
+     Questions, Comments -> ben@netscape.com -->
+
+<dialog id="prefDialog" 
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        title="&prefWindow.title;" 
+        style="width: 52.3em; height: 47em;"
+        onload="Startup();"
+        ondialogaccept="return hPrefWindow.onOK(event);"
+        ondialogcancel="return hPrefWindow.onCancel(event);"
+        persist="screenX screenY"> 
+
+  <script>
+  <![CDATA[
+
+  var hPrefWindow = null;
+
+  /** General startup routine for preferences dialog. 
+   *  Place all necessary modifications to pref tree here. 
+   **/
+  function Startup()
+  {
+    hPrefWindow = new nsPrefWindow('panelFrame');  
+  
+    if( !hPrefWindow )
+      throw "failed to create prefwindow";
+
+    hPrefWindow.init();
+
+    var url = "chrome://editor/content/pref-composer.xul";
+    if(window.arguments && window.arguments[0])
+      url = window.arguments[0];
+
+    // now make sure the right button is higlighted
+    // loop through each child of prefCategories and look for a url match
+    var index = 0; 
+    var prefsCategories = document.getElementById("prefsCategories");
+    for (var i = 0; i < prefsCategories.childNodes.length; i++)
+      if (url == prefsCategories.childNodes[i].getAttribute("url"))
+      {
+        index = i;
+        break;
+      }
+
+    var button = prefsCategories.childNodes[index];
+    button.click();
+    button.focus();
+  }
+  
+  function switchPage(aEvent)
+  {
+    var newURL = aEvent.target.getAttribute("url");
+    var newTag = aEvent.target.getAttribute("tag");
+    if (hPrefWindow)
+      hPrefWindow.switchPage(newURL, newTag);
+  }  
+
+  ]]>
+  </script>        
+        
+  <stringbundle id="bundle_prefutilities"
+               src="chrome://communicator/locale/pref/prefutilities.properties"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsWidgetStateManager.js"/>
+  <script type="application/x-javascript" src="chrome://communicator/content/pref/nsPrefWindow.js"/>
+
+  <hbox flex="1">
+
+    <vbox id="prefsCategories" class="listBox buttonBox" oncommand="switchPage(event);" orient="vertical" lastpanel="0">
+
+      <button id="general"
+              orient="vertical" class="buttonBoxButton" type="radio" group="categories"
+              url="chrome://editor/content/pref-composer.xul"
+              label="&general.label;"/>
+      <button id="fonts"
+              orient="vertical" class="buttonBoxButton" type="radio" group="categories"
+              url="chrome://communicator/content/pref/pref-fonts.xul"
+              label="&fonts.label;"/>
+      <button id="newpagesettings"
+              orient="vertical" class="buttonBoxButton" type="radio" group="categories"
+              url="chrome://editor/content/pref-editing.xul"
+              label="&newpagesettings.label;"/>
+      <button id="helpers"
+              orient="vertical" class="buttonBoxButton" type="radio" group="categories"
+              url="chrome://communicator/content/pref/pref-helpers.xul"
+              label="&advanced.label;"/>
+    </vbox>
+
+    <vbox flex="1">
+      <dialogheader id="header"/>
+      <iframe id="panelFrame" name="panelFrame" flex="1"/>
+   </vbox>
+  </hbox>
+
+  <separator/>
+     
+</dialog>

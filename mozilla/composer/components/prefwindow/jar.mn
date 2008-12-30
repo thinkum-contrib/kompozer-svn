@@ -1,0 +1,27 @@
+#
+
+comm.jar:
++   content/communicator/pref/pref.xul                                 (content/pref.xul)
+*+  content/communicator/pref/nsPrefWindow.js                          (content/nsPrefWindow.js)
+*   content/communicator/pref/pref-advanced.xul                        (content/pref-advanced.xul)
+*   content/communicator/pref/pref-advanced.js                         (content/pref-advanced.js)
++   content/communicator/pref/pref-languages-add.xul                   (content/pref-languages-add.xul)
++   content/communicator/pref/pref-charset-add.xul                     (content/pref-charset-add.xul)
++   content/communicator/pref/pref-languages.js                        (content/pref-languages.js)
++   content/communicator/pref/pref-charset.js                          (content/pref-charset.js)
++   content/communicator/pref/pref-fonts.js                            (content/pref-fonts.js)
++   content/communicator/pref/pref-fonts.xul                           (content/pref-fonts.xul)
+#   content/communicator/pref/pref-fonts.js                            (/xpfe/components/prefwindow/resources/content/pref-fonts.js)
+#   content/communicator/pref/pref-fonts.xul                           (/xpfe/components/prefwindow/resources/content/pref-fonts.xul)
++   content/editor/pref-editing.xul                                    (content/pref-editing.xul)
++   content/editor/pref-composer.js                                    (content/pref-composer.js)
++   content/editor/pref-composer.xul                                   (content/pref-composer.xul)
+*+  content/editor/pref-connection.xul                                 (content/pref-connection.xul)
+*+  content/editor/pref-connection.js                                  (content/pref-connection.js)
+*+  content/editor/pref-helpers.xul                                    (content/pref-helpers.xul)
+*   content/editor/pref-helpers.js                                     (content/pref-helpers.js)
+
+classic.jar:
++   skin/classic/communicator/pref/pref.css                            (skin/pref.css)
+    skin/classic/editor/icons/mail-options.png                         (skin/mail-options.png)
+

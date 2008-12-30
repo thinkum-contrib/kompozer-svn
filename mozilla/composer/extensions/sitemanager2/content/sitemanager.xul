@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<?xml-stylesheet type="text/css" href="chrome://editor/skin/sitemanager.css"?>
+
+<!DOCTYPE page SYSTEM "chrome://editor/locale/sitemanager.dtd">
+
+<page orient="vertical"
+      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      onload="Startup()">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/url-loader.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/ftpDirParser.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/localDirParser.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/sitemanager.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/sitemanagerUtils.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/publishprefs.js"/>
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/XPCNativeWrapper.js"/>
+
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
+
+  <stringbundle id="siteManagerBundle" src="chrome://editor/locale/sitemanager.properties"/>
+
+  <broadcaster id="args" value=""/>
+
+  <vbox flex="1" id="mainBox">
+    <menulist id="SiteDropDown" hidden="true">
+      <menupopup id="SiteList" onpopupshowing="CheckIfSiteListUpdated()"/>
+    </menulist>
+    <hbox align="center">
+      <label value="&filterControl.label;"/>
+      <menulist id="FilterDropDown" oncommand="SelectsFilter(this)">
+        <menupopup id="sitemanagerFilter">
+          <menuitem value="all"     label="&filterAll.label;"/>
+          <menuitem value="html"    label="&filterHTML.label;"/>
+          <menuitem value="css"     label="&filterCSS.label;"/>
+          <menuitem value="images"  label="&filterImages.label;"/>
+          <menuitem value="media"   label="&filterMedia.label;"/>
+          <menuitem value="text"    label="&filterScripts.label;"/>
+        </menupopup>
+      </menulist>
+    </hbox>
+    <hbox align="center">
+      <toolbarbutton id="siteManagerButton"     tooltiptext="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
+      <toolbarseparator flex="1"/>
+      <toolbarbutton id="reloadButton"          tooltiptext="&reloadButton.tooltip;"    oncommand="RefreshDirView()" />
+      <toolbarbutton id="createDirButton"       tooltiptext="&createDirButton.tooltip;" oncommand="NewSubDir()"       disabled="true"/>
+      <toolbarbutton id="renameButton"          tooltiptext="&renameButton.tooltip;"    oncommand="Rename()"          disabled="true"/>
+      <toolbarbutton id="removeFileOrDirButton" tooltiptext="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()" disabled="true"/>
+      <toolbarbutton id="stopButton"            tooltiptext="&stopButton.tooltip;"      oncommand="stopCallback()"    disabled="true"/>
+      <toolbarseparator/>
+    </hbox>
+
+    <tree flex="1" seltype="single" ondblclick="openFile(event);" onselect="SelectItem(event);"
+          id="SiteTree" enableColumnDrag="true">
+      <popupset>
+        <popup id="siteManagerContext" onpopupshowing="initSiteManagerContextMenu(this)">
+          <menuitem id="createDirItem"   label="&createDirButton.tooltip;" oncommand="NewSubDir()"       disabled="true"/>
+          <menuseparator />
+          <menuitem id="renameItem"      label="&renameMenu.label;"        oncommand="Rename()"          disabled="true"/>
+          <menuitem id="removeItem"      label="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()" disabled="true"/>
+          <menuseparator />
+          <menuitem id="reloadItem"      label="&reloadButton.tooltip;"    oncommand="RefreshDirView()"/>
+          <menuseparator />
+          <menuitem id="siteManagerItem" label="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
+        </popup>
+      </popupset>
+      <treecols>
+        <treecol id="dirCol"          persist="width ordinal hidden" label="&filenameColumn.label;" primary="true" flex="1"/>
+        <splitter class="tree-splitter"/>
+        <treecol id="sizeCol"         persist="width ordinal hidden" label="&sizeColumn.label;"/>
+        <splitter class="tree-splitter"/>
+        <treecol id="lastModifiedCol" persist="width ordinal hidden" label="&lastModifiedColumn.label;"/>
+      </treecols>
+      <treechildren id="DirectoryList" flex="1" context="siteManagerContext"
+          ondraggesture="nsDragAndDrop.startDrag(event, siteManagerDndObserver)"/>
+    </tree>
+    <label id="progressmeter" value=" "/>
+  </vbox>
+</page>

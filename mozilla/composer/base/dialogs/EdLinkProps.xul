@@ -1,0 +1,225 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla Communicator client code, released
+   - March 31, 1998.
+   -
+   - The Initial Developer of the Original Code is
+   - Netscape Communications Corporation.
+   - Portions created by the Initial Developer are Copyright (C) 1998-2003
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Daniel Glazman (glazman@disruptive-innovations.com), on behalf of Linspire Inc.
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://editor/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorLinkProperties.dtd">
+
+<dialog id="linkDlg" title="&windowTitle.label;"
+   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   buttons="accept,cancel,help"
+   onload = "Startup()"
+   ondialogaccept="return onAccept();"
+   ondialogcancel="return onCancel();"
+   ondialoghelp="return doHelpButton();">
+
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdLinkProps.js"/>
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
+
+  <broadcaster id="args" value=""/>
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+
+  <vbox style="min-width: 35em">
+    <groupbox><caption id="linkTextCaption"/>
+      <vbox>
+        <label id="linkTextMessage" control="linkTextInput"/>
+        <textbox id="linkTextInput"/>
+      </vbox>
+    </groupbox>
+
+    <groupbox><caption label="&LinkURLBox.label;"/>
+      <vbox id="LinkLocationBox"/>
+    </groupbox>
+
+    <groupbox><caption label="&targetBox.label;"/>
+      <checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" oncommand="TargetToggled();"/>
+      <hbox align="center">
+        <menulist id="targetRadiogroup" class="indent">
+          <menupopup>
+            <menuitem id="topRadio"
+                   label="&topRadio.label;"
+                   value="_top"
+                   oncommand="ToggleTargetValue('_top')"/>
+            <menuitem id="blankRadio"
+                   label="&blankRadio.label;"
+                   value="_blank"
+                   oncommand="ToggleTargetValue('_blank')"
+                   selected="true"/>
+            <menuitem id="parentRadio"
+                   label="&parentRadio.label;"
+                   value="_parent"
+                   oncommand="ToggleTargetValue('_parent')"/>
+            <menuitem id="selfRadio"
+                   label="&selfRadio.label;"
+                   value="_self"
+                   oncommand="ToggleTargetValue('_self')"/>
+            <menuitem id="userdefRadio"
+                   label="&userDefinedRadio.label;"
+                   value="user-defined"
+                   oncommand="ToggleTargetValue('user-defined')"/>
+          </menupopup>
+        </menulist>
+        <textbox id="userDefinedTarget" class="indent" disabled="true" flex="1"/>
+      </hbox>
+    </groupbox>
+
+  </vbox>
+
+  <hbox>
+    <button id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/>
+  </hbox>
+
+  <vbox id="MoreSection">
+    <groupbox><caption label="&technoratiTag.label;"/>
+      <checkbox label="&technoratiTagCheckbox.label;" id="technoratiTag"
+                oncommand="ToggleRelValue('tag')"/>
+    </groupbox>
+
+    <groupbox><caption label="&XFNbox.label;"/>
+      <checkbox id="meCheckbox"
+                oncommand="ToggleRelValue('me'); MeToggled();"
+                label="&me.label;"/>
+      <grid>
+        <columns><column/><column flex="1"/></columns>
+        <rows>
+          <row align="center">
+            <label value="&friendship.label;" />
+            <radiogroup orient="horizontal" id="friendshipRadiogroup">
+              <radio id="friendRadio"
+                     oncommand="ToggleRelValue('friend')"
+                     label="&friend.label;" />
+              <radio id="acquaintanceRadio"
+                     oncommand="ToggleRelValue('acquaintance')"
+                     label="&acquaintance.label;" />
+              <radio id="contactRadio"
+                     oncommand="ToggleRelValue('contact')"
+                     label="&contact.label;" />
+              <radio id="noFriendShipRadio"
+                     oncommand="RemoveRelValues('friendship')"
+                     label="&none.label;"
+                     selected="true"/>
+            </radiogroup>
+          </row>
+          <row align="center">
+            <label id="metLabel"
+                   value="&physical.label;" />
+            <checkbox id="metCheckbox"
+                      oncommand="ToggleRelValue('met')"
+                      label="&met.label;" />
+          </row>
+          <row align="center">
+            <label id="professionalLabel"
+                   value="&professional.label;" />
+            <hbox>
+              <checkbox id="co-workerCheckbox"
+                        oncommand="ToggleRelValue('co-worker')"
+                        label="&coWorker.label;" />
+              <checkbox id="colleagueCheckbox"
+                        oncommand="ToggleRelValue('colleague')"
+                        label="&colleague.label;" />
+            </hbox>
+          </row>
+          <row align="center">
+            <label value="&geographical.label;" />
+            <radiogroup orient="horizontal" id="geographicalRadiogroup">
+              <radio id="co-residentRadio"
+                     oncommand="ToggleRelValue('co-resident')"
+                     label="&coResident.label;" />
+              <radio id="neighborRadio"
+                     oncommand="ToggleRelValue('neighbor')"
+                     label="&neighbor.label;" />
+              <radio label="&none.label;" id="noGeographicalRadio"
+                     oncommand="RemoveRelValues('geographical')"
+                     selected="true"/>
+            </radiogroup>
+          </row>
+          <row align="center">
+            <label value="&family.label;" />
+            <radiogroup orient="horizontal" id="familyRadiogroup">
+              <radio id="childRadio"
+                     oncommand="ToggleRelValue('child')"
+                     label="&child.label;" />
+              <radio id="parentRadio"
+                     oncommand="ToggleRelValue('parent')"
+                     label="&parent.label;" />
+              <radio id="siblingRadio"
+                     oncommand="ToggleRelValue('sibling')"
+                     label="&sibling.label;" />
+              <radio id="spouseRadio"
+                     oncommand="ToggleRelValue('spouse')"
+                     label="&spouse.label;" />
+              <radio id="kinRadio"
+                     oncommand="ToggleRelValue('kin')"
+                     label="&kin.label;" />
+              <radio label="&none.label;" id="noFamilyRadio"
+                     oncommand="RemoveRelValues('family')"
+                     selected="true"/>
+            </radiogroup>
+          </row>
+          <row align="center">
+            <label value="&romantic.label;" />
+            <hbox>
+              <checkbox id="museCheckbox"
+                        oncommand="ToggleRelValue('muse')"
+                        label="&muse.label;" />
+              <checkbox id="crushCheckbox"
+                        oncommand="ToggleRelValue('crush')"
+                        label="&crush.label;" />
+              <checkbox id="dateCheckbox"
+                        oncommand="ToggleRelValue('date')"
+                        label="&date.label;" />
+              <checkbox id="sweetheartCheckbox"
+                        oncommand="ToggleRelValue('sweetheart')"
+                        label="&sweetheart.label;" />
+            </hbox>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
+  </vbox>
+  <!-- from EdDialogOverlay -->
+  <vbox id="AdvancedEdit"/>
+</dialog>

@@ -1,0 +1,39 @@
+#build in a separate directory (optional)
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
+
+mk_add_options MOZ_CO_PROJECT=composer
+ac_add_options --enable-application=composer
+
+# change these two line to build in debug mode
+ac_add_options --enable-optimize 
+ac_add_options --disable-debug
+
+# don't change anything below this line
+# unless you know exactly what you're doing
+
+ac_add_options --enable-xpfe-components
+ac_add_options --disable-tests
+ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
+
+ac_add_options --enable-default-toolkit=gtk2
+ac_add_options --enable-xft
+ac_add_options --enable-pango
+ac_add_options --enable-postscript
+ac_add_options --disable-xprint
+
+ac_add_options --enable-mathml
+ac_add_options --enable-svg
+ac_add_options --enable-svg-renderer=cairo
+ac_add_options --enable-system-cairo
+ac_add_options --disable-canvas
+
+ac_add_options --with-system-png=/usr
+ac_add_options --with-system-jpeg=/usr
+ac_add_options --with-system-zlib=/usr
+
+ac_add_options --enable-gnomevfs
+ac_add_options --enable-xinerama
+ac_add_options --enable-single-profile
+ac_add_options --disable-profilesharing
+ac_add_options --enable-system-myspell
+

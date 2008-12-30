@@ -1,0 +1,3 @@
+Adding client.mk options from /home/kaze/.mozconfig:
+    MOZ_OBJDIR=$(TOPSRCDIR)/../obj-$(CONFIG_GUESS)
+    MOZ_CO_PROJECT=composer

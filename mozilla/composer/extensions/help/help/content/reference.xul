@@ -1,0 +1,231 @@
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+#
+# The contents of this file are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+#
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+#
+# The Original Code is Nvu Help Viewer API.
+#
+# The Initial Developer of the Original Code is
+# R.J. Keller.
+# Portions created by the Initial Developer are Copyright (C) 2004
+# the Initial Developer. All Rights Reserved.
+#
+# Contributor(s):
+#
+# Alternatively, the contents of this file may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of this file only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of this file under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the GPL or the LGPL. If you do not delete
+# the provisions above, a recipient may use your version of this file under
+# the terms of any one of the MPL, the GPL or the LGPL.
+#
+# ***** END LICENSE BLOCK ***** */
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<window orient="vertical" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" xmlns:html="http://www.w3.org/1999/xhtml">
+
+<tabbox>
+  <tabs>
+    <tab label="HTML"/>
+    <tab label="CSS"/>
+    <tab label="DOM"/>
+  </tabs>
+  <tabpanels>
+    <tabpanel id="htmlTab" orient="vertical">
+      <hbox><label value="A" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="ABBR" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="ACRONYM" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="ADDRESS" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="APPLET" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="AREA" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="B" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BASE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BASEFONT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BDO" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BIG" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BLOCKQUOTE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BODY" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BR" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="BUTTON" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="CAPTION" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="CENTER" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="CITE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="CODE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="COL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="COLGROUP" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DD" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DEL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DFN" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DIR" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DIV" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="DT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="EM" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="FIELDSET" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="FONT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="FORM" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="FRAME" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="FRAMESET" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="H1" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="H2" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="H3" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="H4" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="H5" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="H6" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="HEAD" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="HR" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="HTML" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="I" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="IFRAME" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="IMG" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="INPUT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="INS" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="KBD" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="LABEL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="LEGEND" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="LI" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="LINK" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="MAP" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="META" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="NOFRAMES" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="NOSCRIPT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="OBJECT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="OL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="OPTGROUP" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="OPTION" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="P" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="PARAM" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="PRE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="Q" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SAMP" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SCRIPT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SEELCT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SMALL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SPAN" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="STRONG" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="STYLE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SUB" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="SUP" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TABLE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TBODY" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TD" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TEXTAREA" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TFOOT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TH" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="THEAD" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TITLE" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TR" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="TT" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="UL" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="VAR" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+    </tabpanel>
+    <tabpanel id="cssTab" orient="vertical">
+      <hbox><label value="background" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="background-attachment" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="background-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="background-image" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="background-position" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="background-repeat" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-collapse" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-spacing" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-top" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-right" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-bottom" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-left" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-top-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-right-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-bottom-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-left-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-top-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-right-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-bottom-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-left-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-top-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-right-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-bottom-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-left-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="border-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="bottom" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="caption-side" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="clear" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="clip" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="content" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="cursor" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="direction" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="empty-cells" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="float" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="font" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="font-family" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="font-size" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="font-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="font-variant" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="font-weight" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="height" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="left" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="letter-spacing" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="line-height" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="list-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="list-style-image" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="list-style-position" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="list-style-type" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="margin" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="margin-right" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="margin-left" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="margin-top" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="margin-bottom" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="max-height" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="max-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="min-height" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="min-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="outline" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="outline-color" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="outline-style" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="outline-width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="overflow" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="padding" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="padding-top" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="padding-right" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="padding-bottom" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="padding-left" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="position" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="property-name" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="quotes" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="right" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="table-layout" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="text-align" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="text-decoration" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="text-indent" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="text-transform" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="top" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="unicode-bidi" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="vertical-align" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="visibility" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="white-space" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="width" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="word-spacing" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+      <hbox><label value="z-index" class="hyperlink" onclick="goToLink('http://mozilla.org');"/></hbox>
+    </tabpanel>
+    <tabpanel id="domTab">
+    </tabpanel>
+  </tabpanels>
+</tabbox>
+ ...
+</window>

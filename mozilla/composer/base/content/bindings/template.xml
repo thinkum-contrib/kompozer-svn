@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Nvu.
+   -
+   - The Initial Developer of the Original Code is
+   - Linspire Inc..
+   - Portions created by the Initial Developer are Copyright (C) 2003
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Daniel Glazman <glazman@disruptive-innovations.com>, on behalf of Linspire Inc.
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<bindings id="editableBlockBindings"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          xmlns:xbl="http://www.mozilla.org/xbl">
+
+  <binding id="inTemplate">
+    <resources>
+      <stylesheet src="chrome://editor/skin/template.css"/>
+    </resources>
+
+    <implementation>
+      <constructor>
+        <![CDATA[
+            var elt = document.getAnonymousElementByAttribute(this, "_moz_anonid", "templateheader");
+            if (!elt)
+              elt = document.getAnonymousElementByAttribute(this, "_moz_anonid", "inlinetemplateheader");
+            var idStr = this.getAttribute("id");
+            elt.firstChild.data = idStr;
+
+            var dupButton = document.getAnonymousElementByAttribute(this, "_moz_anonid", "dupButton");
+            var delButton = document.getAnonymousElementByAttribute(this, "_moz_anonid", "delButton");
+            if (!this.getAttribute("optional"))
+            {
+              delButton.setAttribute("hidden", "true");
+              delButton.removeAttribute("style");
+            }
+            if (!this.getAttribute("repeatable"))
+            {
+              dupButton.setAttribute("hidden", "true");
+              dupButton.removeAttribute("style");
+            }
+        ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+    <binding id="fromTemplate">
+    <resources>
+      <stylesheet src="chrome://editor/skin/template.css"/>
+    </resources>
+
+    <implementation>
+      <constructor>
+        <![CDATA[
+            var elt = document.getAnonymousElementByAttribute(this, "_moz_anonid", "templateheader");
+            if (!elt)
+              elt = document.getAnonymousElementByAttribute(this, "_moz_anonid", "inlinetemplateheader");
+            var contents = document.getAnonymousElementByAttribute(this, "class", "editablecontents");
+            var idStr    = this.getAttribute("id");
+            var idrefStr = this.getAttribute("idref");
+            if (!idStr)
+            {
+              idStr = idrefStr + " (copy)";
+            }
+            var optionalStr   = this.getAttribute("optional");
+            var repeatableStr = this.getAttribute("repeatable");
+
+            if (repeatableStr)
+              contents.setAttribute("repeatable", repeatableStr);
+
+            if (!repeatableStr || idrefStr)
+            {
+              var duplicateButton = document.getAnonymousElementByAttribute(this, "class", "duplicateButton");
+              duplicateButton.setAttribute("hidden", "true");
+            }
+            if (!optionalStr && !idrefStr)
+            {
+              var removeButton = document.getAnonymousElementByAttribute(this, "class", "removeButton");
+              removeButton.setAttribute("hidden", "true");
+            }
+
+            elt.firstChild.data = idStr;
+        ]]>
+      </constructor>
+    </implementation>
+  </binding>
+
+
+  <binding id="blockInTemplate" extends="chrome://editor/content/bindings/template.xml#inTemplate">
+    <content>
+      <xul:hbox _moz_anonid="templateheader" align="center">dummy
+        <xul:image src="chrome://editor/content/images/duplicate.png" _moz_anonid="dupButton"/>
+        <xul:image src="resource:/res/table-remove-column.gif"        _moz_anonid="delButton" />
+      </xul:hbox>
+      <html:div class="editablecontents">
+        <children/>
+      </html:div>
+    </content>
+  </binding>
+
+  <binding id="inlineInTemplate" extends="chrome://editor/content/bindings/template.xml#inTemplate">
+    <content>
+      <html:span _moz_anonid="inlinetemplateheader">dummy
+        <xul:image style="display: inline"
+                   src="chrome://editor/content/images/duplicate.png"
+                   _moz_anonid="dupButton"/>
+        <xul:image style="display: inline"
+                   src="resource:/res/table-remove-column.gif"
+                   _moz_anonid="delButton" />
+      </html:span>
+      <html:span class="editablecontents">
+        <children/>
+      </html:span>
+    </content>
+  </binding>
+
+
+
+
+  <binding id="blockFromTemplate" extends="chrome://editor/content/bindings/template.xml#fromTemplate">
+    <content>
+      <xul:hbox _moz_anonid="templateheader" align="center">dummy
+        <xul:image class="duplicateButton" />
+        <xul:image class="removeButton"    />
+      </xul:hbox>
+      <html:div class="editablecontents">
+        <children/>
+      </html:div>
+    </content>
+  </binding>
+
+  <binding id="inlineFromTemplate" extends="chrome://editor/content/bindings/template.xml#fromTemplate">
+    <content>
+      <html:span _moz_anonid="inlinetemplateheader">dummy
+        <xul:image style="display: inline" class="duplicateButton" />
+        <xul:image style="display: inline" class="removeButton"    />
+      </html:span>
+      <html:span class="editablecontents">
+        <children/>
+      </html:span>
+    </content>
+  </binding>
+
+  <binding id="duplicateButton">
+    <handlers>
+      <handler event="click" button="0">
+        <![CDATA[
+          var boundElt = event.target.parentNode.parentNode;
+          document.body._editor.duplicateEditableArea(boundElt);
+        ]]>
+      </handler>
+    </handlers>
+  </binding>
+
+  <binding id="removeButton">
+    <handlers>
+      <handler event="click" button="0">
+        <![CDATA[
+          var elt = event.target.parentNode.parentNode;
+          document.body._editor.removeEditableArea(elt);
+        ]]>
+      </handler>
+    </handlers>
+  </binding>
+
+  <binding id="none">
+    <content>
+      <children/>
+    </content>
+  </binding>
+
+  <binding id="templateBody">
+    <implementation>
+      <field name="_editor">null</field>
+      <field name="_templateParams">null</field>
+    </implementation>
+  </binding>
+
+</bindings>

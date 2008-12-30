@@ -1,0 +1,59 @@
+#!/bin/sh -e
+## 50_mozilla-firebird-mips-xptcstubs-gcc3.dpatch by Alexander Sack <asac@jwsdot.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch}"
+
+case "$1" in
+       -patch) patch $patch_opts -p1 < $0;;
+       -unpatch) patch $patch_opts -p1 -R < $0;;
+        *)
+                echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+                exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+--- mozilla/toolkit/mozapps/extensions/src/nsExtensionManager.js.in.orig	2005-03-30 22:09:50.205408701 +0000
++++ mozilla/toolkit/mozapps/extensions/src/nsExtensionManager.js.in	2005-03-30 22:13:05.414956939 +0000
+@@ -72,6 +72,8 @@
+ const FILE_UNINSTALL_LOG              = "Uninstall";
+ const FILE_DEFAULTS                   = "defaults.ini";
+ const FILE_COMPONENT_MANIFEST         = "components.ini";
++const FILE_COMPONENT_REGISTRY         = "compreg.dat";
++const FILE_XUL_MFASL         	      = "XUL.mfasl";
+ const FILE_COMPAT_MANIFEST            = "compatibility.ini";
+ const FILE_INSTALL_MANIFEST           = "install.rdf";
+ const FILE_CHROME_MANIFEST            = "contents.rdf";
+@@ -1620,6 +1622,22 @@
+     if (!componentList.exists())
+       needsRestart = true;
+     
++    else {
++      var compatManifest = getFile(KEY_PROFILEDIR,[FILE_COMPAT_MANIFEST]);
++      var compreg = getFile(KEY_PROFILEDIR,[FILE_COMPONENT_REGISTRY]);
++      var xmfasl = getFile(KEY_PROFILEDIR,[FILE_XUL_MFASL]);
++      var extensionsFile = getFile(KEY_APPDIR,[DIR_DEFAULTS_EXTENSIONS,FILE_EXTENSIONS]);
++
++      if (compatManifest.exists() && compatManifest.lastModifiedTime < extensionsFile.lastModifiedTime) {
++        dump("New Global extensions installed .... ");
++        if(compatManifest.exists()) compatManifest.remove(false); 
++        if(compreg.exists()) compreg.remove(false); 
++        if(xmfasl.exists()) xmfasl.remove(false);   
++        dump("done ... scheduling restart.\n");
++        needsRestart=true;
++      }
++    }
++
+     // XXXben - a bit of a hack - clean up any empty dirs that may not have been
+     //          properly removed by [un]install... I should really investigate those
+     //          cases to see what is stopping these dirs from being removed, but no

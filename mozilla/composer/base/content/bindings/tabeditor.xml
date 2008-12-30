@@ -1,0 +1,762 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Nvu.
+   -
+   - The Initial Developer of the Original Code is
+   - Linspire Inc..
+   - Portions created by the Initial Developer are Copyright (C) 2003
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Daniel Glazman <glazman@disruptive-innovations.com>, on behalf of Linspire Inc.
+   -   Fabien Cazenave <kaze@kompozer.net>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<!DOCTYPE bindings [
+  <!ENTITY % tabEditorDTD SYSTEM "chrome://editor/locale/tabeditor.dtd" >
+  %tabEditorDTD;
+]>
+
+<bindings id="tabEditorBindings"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:html="http://www.w3.org/1999/xhtml"
+          xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          xmlns:xbl="http://www.mozilla.org/xbl">
+
+  <binding id="tabeditor">
+    <resources>
+      <stylesheet src="chrome://editor/skin/editor.css"/>
+    </resources>
+
+    <content>
+      <xul:stringbundle src="chrome://editor/locale/tabeditor.properties"/>
+      <xul:tabbox anonid="EditorTabbox" flex="1" onselect="this.parentNode.setFocus();">
+        <xul:hbox class="tabbrowser-strip chromeclass-toolbar" context="_child">
+
+          <xul:menupopup>
+            <xul:menuitem label="&newTab.label;" accesskey="&newTab.accesskey;" command="cmd_newEditorTab"/>
+            <xul:menuseparator/>
+            <!-- Kaze: these two items refer to the active tab, not to the pointed tab. Danger!
+            <xul:menuitem label="&revert.label;" accesskey="&revert.accesskey;" command="cmd_revert"/>
+            <xul:menuitem label="&refreshImages.label;" acceskey="&refreshImages.accesskey;" command="cmd_refreshImages"/> 
+            -->
+            <xul:menuitem label="&revert.label;" accesskey="&revert.accesskey;" 
+                          oncommand="var tabeditor = this.parentNode.parentNode.parentNode.parentNode;
+                                     RevertTab(tabeditor.mContextTab);"/>
+            <xul:menuitem label="&refreshImages.label;" acceskey="&refreshImages.accesskey;"
+                          oncommand="var tabeditor = this.parentNode.parentNode.parentNode.parentNode;
+                                     RefreshTab(tabeditor.mContextTab);"/>
+            <xul:menuseparator/>
+            <xul:menuitem label="&closeTab.label;" accesskey="&closeTab.accesskey;"
+                          oncommand="var tabeditor = this.parentNode.parentNode.parentNode.parentNode;
+                                     CloseTab(tabeditor.mContextTab); SelectTabEditor();"/><!-- Kaze: added 'SelectTabEditor' -->
+            <xul:menuseparator/>
+            <xul:menuitem label="&closeOtherTabs.label;" accesskey="&closeOtherTabs.accesskey;"
+                          oncommand="var tabeditor = this.parentNode.parentNode.parentNode.parentNode;
+                                     RemoveAllTabsBut(tabeditor.mContextTab);"/>
+          </xul:menupopup>
+
+          <xul:tabs flex="1" class="tabbrowser-tabs" anonid="EditorTabs" closebutton="true"
+                    setfocus="false"
+                    onclick="this.parentNode.parentNode.parentNode.onTabClick(event)"
+                    onclosetab="CloseCurrentTab(true); SelectTabEditor()"
+                    onmousedown="this.parentNode.parentNode.parentNode.updateContextTab(event);"
+                    oncommand="SelectTabEditor()">
+            <xul:tab label="&untitledDocument.label;" 
+                     maxwidth="200" width="0" minwidth="30" flex="100"
+                     crop="end"/>
+          </xul:tabs>
+        </xul:hbox>
+        <xul:grid flex="1">
+          <xul:columns><xul:column anonid="vRulerColumn"/><xul:column flex="1"/></xul:columns>
+          <xul:rows>
+            <xul:row anonid="hRulerRow" style="border-top: outset 1px;">
+              <xul:spacer/>
+              <xul:stack id="hRuler" style="min-height: 22px; overflow: hidden"
+                        onmousedown="window.InitiateMoveObjectInRuler(event)"/>
+            </xul:row>
+            <xul:row flex="1">
+              <xul:stack id="vRuler" onmousedown="window.InitiateMoveObjectInRuler(event)"
+                        style="border-right: outset 1px; width: auto; min-width: 1em; overflow: hidden"/>
+              <xul:tabpanels anonid="EditorTabpanels" selectedIndex="0">
+                <xul:editor editortype="html" type="content-primary" id="content-frame"
+                            context="editorContentContext"
+                            flex="1" tooltip="aHTMLTooltip"/>
+              </xul:tabpanels>
+            </xul:row>
+          </xul:rows>
+        </xul:grid>
+      </xul:tabbox>
+    </content>
+
+    <implementation>
+      <constructor>
+        <![CDATA[
+          ShowRulers(!(this.getAttribute("collapserulers") == "true"));
+          document.addEventListener("keypress", this._keyEventHandler, false);
+        ]]>
+      </constructor>
+
+      <destructor>
+        <![CDATA[
+          const editors = this.mTabPanels.childNodes;
+          for (var i = 0; i < editors.length; i++)
+          {
+            editors[i].removeEventListener("DOMTitleChanged", this.changeTabTitle, false);
+          }
+          document.removeEventListener("keypress", this._keyEventHandler, false);
+        ]]>
+      </destructor>
+
+      <field name="endNavigationCallback">null</field>
+      <field name="mCurrentLoadedTab">null</field>
+      <field name="mContextTab">null</field>
+
+      <field name="_keyEventHandler" readonly="true">
+      <![CDATA[({
+        tabeditor: this,
+        handleEvent: function handleEvent(aEvent) {
+          if (!aEvent.isTrusted) {
+            // Don't let untrusted events mess with tabs.
+            return;
+          }
+
+          if (aEvent.ctrlKey && aEvent.keyCode == KeyEvent.DOM_VK_F4)
+          {
+            CloseCurrentTab(true);
+            SelectTabEditor();
+          }
+        }
+      })]]>
+      </field>
+
+      <property name="mTabbox">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "EditorTabbox");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mTabs">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "EditorTabs");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mTabpanels">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "EditorTabpanels");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mHRulerRow">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "hRulerRow");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mVRulerColumn">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "vRulerColumn");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="selectedPanel">
+        <getter>
+        <![CDATA[
+          return this.mTabbox.selectedPanel;
+        ]]>
+        </getter>
+        <setter>
+        <![CDATA[
+          this.mTabbox.selectedPanel = val;
+        ]]>
+        </setter>
+      </property>
+
+      <property name="selectedTab">
+        <getter>
+        <![CDATA[
+          return this.mTabbox.selectedTab;
+        ]]>
+        </getter>
+        <setter>
+        <![CDATA[
+          this.mTabbox.selectedTab = val;
+        ]]>
+        </setter>
+      </property>
+
+      <property name="selectedIndex">
+        <getter>
+        <![CDATA[
+          return this.mTabbox.selectedIndex;
+        ]]>
+        </getter>
+        <setter>
+        <![CDATA[
+          this.mTabbox.selectedIndex = val;
+        ]]>
+        </setter>
+      </property>
+
+      <method name="onTabClick">
+        <parameter name="event"/>
+        <body>
+          <![CDATA[
+            if (event.button != 1 || event.target.localName != 'tab')
+              return;
+
+            CloseTab(event.target);
+            this.SelectTabEditor(); // Kaze
+            event.stopPropagation();
+          ]]>
+        </body>
+      </method>
+
+      <method name="setFocus">
+        <body>
+          <![CDATA[
+            try
+            {
+              this.selectedPanel.contentWindow.focus();
+            }
+            catch (e) {}
+          ]]>
+        </body>
+      </method>
+
+      <method name="updateContextTab">
+        <parameter name="aEvent"/>
+        <body>
+          <![CDATA[
+            if (aEvent.originalTarget.localName == "tab")
+              this.mContextTab = aEvent.originalTarget;
+            else
+              this.mContextTab = this.selectedTab; // Kaze
+              //~ this.mContextTab = document.popupNode;
+          ]]>
+        </body>
+      </method>
+
+      <method name="ShowRulers">
+        <parameter name="show" />
+        <body>
+        <![CDATA[
+          if (show)
+          {
+            this.mHRulerRow.setAttribute("collapsed", false);
+            this.mVRulerColumn.setAttribute("collapsed", false);
+          }
+          else
+          {
+            this.mHRulerRow.setAttribute("collapsed", true);
+            this.mVRulerColumn.setAttribute("collapsed", true);
+          }
+        ]]>
+        </body>
+      </method>
+
+      <method name="showCurrentTabAsModified">
+        <parameter name="val" />
+        <body>
+        <![CDATA[
+          if (val)
+            this.selectedTab.setAttribute("modified", "true");
+          else
+            this.selectedTab.removeAttribute("modified");
+        ]]>
+        </body>
+      </method>
+
+      <method name="_prepareForNewEditor">
+        <body>
+        <![CDATA[
+          var selectedEditor = this.selectedPanel;
+          selectedEditor.removeAttribute("id");
+        ]]>
+        </body>
+      </method>
+
+      <method name="SelectTabEditor">
+        <body>
+        <![CDATA[
+          //~ GetCurrentEditingSession().setEditorOnControllers(window.content, GetCurrentEditor());
+          // <Kaze> this line above creates a bug when the last tab is closed
+          try {
+            GetCurrentEditingSession().setEditorOnControllers(window.content, GetCurrentEditor());
+          } catch(e) {}
+          // </Kaze>
+          var current = this.selectedPanel;
+          this.setContentFrameId(current);
+
+          window.UpdateWindowTitle();
+
+          window.updateCommands("save");
+          window.updateCommands("undo");
+          window.updateCommands("select");
+          window.updateCommands("style");
+          window.goUpdateCommand("cmd_dtdStrictness");
+          window.goUpdateCommand("cmd_dtdStrictness2");
+
+          if (current.hasAttribute("displaymode"))
+            window.SetEditMode(current.getAttribute("displaymode"));
+          else
+            window.SetEditMode(0);
+          if (current.getAttribute("blockoutlines"))
+            window.document.getElementById("blockOutlines").setAttribute("checked", true);
+          else
+            window.document.getElementById("blockOutlines").removeAttribute("checked");
+        ]]>
+        </body>
+      </method>
+
+      <method name="_newEditor">
+        <body>
+        <![CDATA[
+          var newe = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "editor");
+          newe.setAttribute("type",    "content-primary");
+          newe.setAttribute("id",      "content-frame");
+          newe.setAttribute("flex",    "1");
+          newe.setAttribute("tooltip", "aHTMLTooltip");
+          newe.setAttribute("context", "editorContentContext");
+
+          return newe;
+        ]]>
+        </body>
+      </method>
+
+      <method name="_stopThrobber">
+        <parameter name="aTab" />
+        <body>
+        <![CDATA[
+          aTab.removeAttribute("busy");
+        ]]>
+        </body>
+      </method>
+
+      <method name="setContentFrameId">
+        <parameter name="editorElement" />
+        <body>
+        <![CDATA[
+          var elt = this.mTabpanels.firstChild;
+          while (elt)
+          {
+            if (elt != editorElement)
+            {
+              elt.removeAttribute("id");
+              elt.blur();
+            }
+            elt = elt.nextSibling;
+          }
+          editorElement.setAttribute("id", "content-frame");
+        ]]>
+        </body>
+      </method>
+
+      <method name="stopWebNavigation">
+        <parameter name="notifyOnly" />
+        <body>
+        <![CDATA[
+          if(!notifyOnly)
+            GetCurrentEditorElement().webNavigation.stop(
+                Components.interfaces.nsIWebNavigation.STOP_ALL);
+
+          if (this.endNavigationCallback)
+          {
+            this.endNavigationCallback();
+            if (this.mCurrentLoadedTab)
+            {
+              this._stopThrobber(this.mCurrentLoadedTab);
+              this.mCurrentLoadedTab = null;
+            }
+            this.endNavigationCallback = null;
+          }
+        ]]>
+        </body>
+      </method>
+
+      <method name="_editURL">
+        <parameter name="editorElement" />
+        <parameter name="url" />
+        <parameter name="newEditor" />
+        <parameter name="tabIndex" />
+        <parameter name="template" />
+        <parameter name="fromTemplate" />
+        <body>
+        <![CDATA[
+          function nsLDBBrowserContentListener(boundElt, aStopCallback, aTab, aIsTemplate, aIsFromTemplate)
+          {
+            this.init(boundElt, aStopCallback, aTab, aIsTemplate, aIsFromTemplate);
+          }
+
+          nsLDBBrowserContentListener.prototype = {
+
+            init : function(aBoundElt, aStopCallback, aTab, aIsTemplate, aIsFromTemplate)
+              {
+                this.mBoundElt       = aBoundElt;
+                this.mStopCallback   = aStopCallback;
+                this.mTab            = aTab;
+                this.mIsTemplate     = aIsTemplate;
+                this.mIsFromTemplate = aIsFromTemplate;
+              },
+
+            QueryInterface : function(aIID)
+              {
+                if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+                    aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+                    aIID.equals(Components.interfaces.nsISupports))
+                  return this;
+                throw Components.results.NS_NOINTERFACE;
+              },
+
+            // nsIWebProgressListener implementation
+            onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
+              {
+                if (aStateFlags == 0xc0010 && !aStatus)
+                {
+                  this.mStopCallback(this.mTab);
+                  if (this.mBoundElt)
+                    this.mBoundElt.stopWebNavigation(true);
+
+                  var e = GetCurrentEditor();
+                  var d = e.document.documentElement;
+                  if (d)
+                  {
+                    var b = e.document.getElementsByTagName("body").item(0);
+                    b._editor = GetCurrentEditorElement();
+                  }
+
+                  // Are we trying to import a template from DW ?
+                  var URL = null;
+                  try {
+                    var URL = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURL);
+                    URL.spec = url;
+                  } catch (e) {
+                  }
+
+                  // is the new document a template ?
+                  if (template)
+                  {
+                    if (d) {
+                      d.setAttribute("template", "true");
+                    }
+                  }
+                  else if (fromTemplate)
+                  {
+                    e instanceof Components.interfaces.nsIHTMLTemplateEditor;
+                    e.isDocumentBasedOnTemplate = true;
+                    if (d) {
+                      d.removeAttribute("template");
+                      d.setAttribute("templateref", url);
+
+                      SetDocumentURI(GetIOService().newURI("about:blank", e.documentCharacterSet, null));
+                      UpdateWindowTitle();
+                      e.resetModificationCount();
+                    }
+                  }
+                  else
+                    WarnIfDocumentIsTemplate();
+                }
+              },
+
+            onProgressChange : function(aWebProgress, aRequest,
+                                        aCurSelfProgress, aMaxSelfProgress,
+                                        aCurTotalProgress, aMaxTotalProgress)
+              {
+              },
+
+            onLocationChange : function(aWebProgress, aRequest, aLocation)
+              {
+              },
+
+            onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
+              {
+              },
+
+            onSecurityChange : function(aWebProgress, aRequest, aState)
+              {
+              },
+
+              mStopCallback   : null,
+              mTab            : null,
+              mBoundElt       : null,
+              mIsTemplate     : false,
+              mIsFromTemplate : false
+          };
+
+          // first, add the editor to the panels' list
+          var tabAlreadyDisplayed = true;
+
+          //this.setContentFrameId(editorElement);
+
+          if (newEditor)
+          {
+            this.mTabpanels.appendChild(editorElement);
+
+            // then create a new tab
+            var newTab = this.mTabs.appendItem("(" + window.GetString("untitled") + ")", url);
+            newTab.setAttribute("busy",     "true");
+            newTab.setAttribute("maxwidth", "200");
+            newTab.setAttribute("width",    "0");
+            newTab.setAttribute("minwidth", "30");
+            newTab.setAttribute("flex",     "100");
+            newTab.setAttribute("crop",     "end");
+
+            // select that new tab
+            this.selectedTab = newTab;
+
+            // and finish the whole thing making the editor editable
+            editorElement.makeEditable("html", true);
+            window.document.getElementById("blockOutlines").removeAttribute("checked");
+          }
+          else
+          {
+            if (this.selectedIndex != tabIndex)
+            {
+              this.selectedIndex = tabIndex;
+              tabAlreadyDisplayed = false;
+            }
+            newTab = this.selectedTab;
+            newTab.setAttribute("busy",     "true");
+          }
+
+          editorElement.addEventListener("DOMTitleChanged", this.changeTabTitle, false);
+
+          var docShell = editorElement.boxObject.QueryInterface(Components.interfaces.nsIEditorBoxObject).docShell;
+          var progress = docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebProgress);
+          gProgressListener = new nsLDBBrowserContentListener(this, this._stopThrobber, newTab, template, fromTemplate);
+          this.mCurrentLoadedTab = newTab;
+
+          progress.addProgressListener(gProgressListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+          if (newEditor)
+          {
+            EditorSharedStartup();
+            SetupComposerWindowCommands();
+          }
+          // making the editor load the document now
+          window.EditorLoadUrl(url);
+          // window.focus();
+          window.SetSaveAndPublishUI(url);
+          if (!tabAlreadyDisplayed)
+            SelectTabEditor();
+        ]]>
+        </body>
+      </method>
+
+      <method name="changeTabTitle">
+        <parameter name="evt" />
+        <body>
+        <![CDATA[
+          var e     = evt.currentTarget;
+          var title = evt.target.title;
+
+          if (!e.getEditor(e.contentWindow) && !title)
+            return;
+
+          var tabbox = this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+          var editors = this.parentNode.childNodes;
+          var i, l = editors.length;
+          for (i=0; i<l; i++)
+          {
+            if (editors.item(i) == e)
+            {
+              var tab = tabbox.mTabs.childNodes.item(i);
+              tab.label = title;
+              return;
+            }
+          }          
+        ]]>
+        </body>
+      </method>
+      
+
+      <method name="_checkIfUrlIsAlreadyEdited">
+        <parameter name="url" />
+        <body>
+        <![CDATA[
+          // always accept a new blank document
+          if (IsUrlAboutBlank(url))
+            return null;
+
+          // TBD : check all editor windows
+          var editors = this.mTabpanels.childNodes;
+          var i, l = editors.length;
+          for (i=0; i< l; i++)
+          {
+            var e = editors[i];
+            var elt = e.getEditor(e.contentWindow);
+            if (elt && elt.document.URL == url)
+              return e;
+          }
+          return null;
+        ]]>
+        </body>
+      </method>
+
+      <!-- Kaze: I've changed this method and made it public, to call it from editPage() -->
+      <method name="checkIfUrlIsAlreadyEdited">
+        <parameter name="url" />
+        <body>
+        <![CDATA[
+          // always accept a new blank document
+          if (IsUrlAboutBlank(url))
+            return null;
+
+          // TBD : check all editor windows
+          var editors = this.mTabpanels.childNodes;
+          var i, l = editors.length;
+          for (i=0; i<l; i++)
+          {
+            var e = editors[i];
+            var elt = e.getEditor(e.contentWindow);
+            //~ if (elt && elt.document.URL == url) { // Kaze: bugfix
+            if (elt && unescape(elt.document.URL) == unescape(url)) {
+              this.selectedIndex = i;   // Kaze: bugfix
+              this.stopWebNavigation(); // Kaze: bugfix
+              window.UpdateWindowTitle();
+              return e;
+            }
+          }
+          return null;
+        ]]>
+        </body>
+      </method>
+
+      <method name="editURL">
+        <parameter name="url" />
+        <parameter name="newTab" />
+        <parameter name="template" />
+        <parameter name="fromTemplate" />
+        <body>
+        <![CDATA[
+          //~ var edited = this._checkIfUrlIsAlreadyEdited(url);
+          var edited = this.checkIfUrlIsAlreadyEdited(url);
+          SetEditMode(kDisplayModeNormal); // Kaze: bugfix
+          if (!edited)
+          {
+            if (!newTab)
+            {
+              // let's see if we can reuse an empty tab
+              var reusableEditor = null;
+              var reusableEditorIndex = -1;
+              var editors = this.mTabpanels.childNodes;
+              var i, l = editors.length;
+              for (i=0; i< l; i++)
+              {
+                var e = editors[i];
+                var elt = e.getEditor(e.contentWindow);
+                if (elt && elt.documentIsEmpty && !elt.documentModified && !window.IsHTMLSourceChanged())
+                {
+                  reusableEditor      = e;
+                  reusableEditorIndex = i;
+                  break;
+                }
+              }
+            }
+            if (newTab || !reusableEditor)
+            {
+              this._prepareForNewEditor();
+              var newEditor = this._newEditor();
+              this._editURL(newEditor, url, true, 0, template, fromTemplate);
+              window.content.focus();
+              return newEditor;
+            }
+            this._editURL(reusableEditor, url, false, reusableEditorIndex, template, fromTemplate);
+            window.content.focus();
+            return reusableEditor;
+          }
+          
+          // give focus to that editor
+          this.selectedPanel = edited;
+          return edited;
+        ]]>
+        </body>
+      </method>
+      <method name="newBlankTab">
+        <parameter name="type" />
+        <parameter name="strictness" />
+        <body>
+          <![CDATA[
+            if (type == "xhtml")
+              return this.editURL(strictness ? "about:xstrictblank" : "about:xblank",
+                                  true, false, false);
+
+            return this.editURL(strictness ? "about:strictblank" : "about:blank",
+                                true, false, false);
+          ]]>
+        </body>
+      </method>
+      <method name="newTemplateTab">
+        <body>
+          <![CDATA[
+            return this.editURL("about:blank", true, true, false);
+          ]]>
+        </body>
+      </method>
+      <method name="getCurrentEditorElement">
+        <body>
+          <![CDATA[
+            return this.selectedPanel;
+          ]]>
+        </body>
+      </method>
+
+    </implementation>
+      
+    <handlers>
+      <handler event="DOMAttrModified" phase="target">
+        <![CDATA[
+        var attrName = event.attrName.toLowerCase();
+        var oldValue = event.prevValue.toLowerCase();
+        var newValue = event.newValue.toLowerCase();
+
+        // only if a new value is specified
+        if (oldValue != newValue && newValue) {
+          if (attrName == "collapserulers") {
+            ShowRulers(!(newValue == "true"));
+          }
+        }
+        ]]>
+      </handler>
+
+    </handlers>
+
+  </binding>
+  
+</bindings>

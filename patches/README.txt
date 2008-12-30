@@ -55,6 +55,7 @@ KompoZer - developer notes
 +===============================+
 
   # 1540469-motohiko.patch (Motohiko)
+  > mozilla/toolkit/mozapps/extensions/src/nsExtensionManager.js.in
   enable the extension manager to uninstall language packs
   make the extension manager really multilingual - BIG THANKS FOR THAT ONE!
 
@@ -143,13 +144,13 @@ Locales
 
 _________________________________
 
-Version 0.8.x
+Version 0.7.10
 
   Application
   * fixed: the extension manager is now able to use the extensions proper locales (BIG thanks to Motohiko!)
-  * TODO : in the locales, all branding has been moved to a single file
+  * fixed: in the locales, all branding has been moved to a single file
   * fixed: the same source code now builds on Linux (gcc4.1), MacOSX (gcc3.5), Win32 (vs7.0) and OS/2 (?).
-  * TODO : (win**) cannot launch KompoZer and Nvu simultaneously + various similary bugs
+  * fixed: (win**) cannot launch KompoZer and Nvu simultaneously + various similary bugs
   * fixed: (win9x) KompoZer now has its own icon in the taskbar (Motohiko again)
   * fixed: the icon has been changed (thanks Alain & Aubin!)... /Besser so?/ ;-)
 
@@ -161,36 +162,40 @@ Version 0.8.x
   * fixed: hiding the rulers improves speed and reliability
   * fixed: bug in the vertical ruler that causes Nvu/KompoZer to be stuck in 'source' mode
   * TODO : design 'properties' boxes for <object>, <script> and <div>
-  * TODO : bug fixing in the Markup Cleaner (cf. Charles Cooke + empty id/class attributes)
+  * fixed: the markup cleaner doesn't remove empty blocks if they have an ID attribute
+  * TODO : some bug fixing in the Markup Cleaner (cf. Charles Cooke)
   * TODO : remember choices in the Markup Cleaner
-  * TODO : opening two tabs and right-click > refresh on the first one crashes Kz 0.7x (this was a regression :-/)
+  * TODO : opening two tabs and right-click > refresh on the first one crashes Kz 0.7x (this is a regression :-/)
   * TODO : the tabeditor does not remember the 'block outlines' pref
   * TODO : no more freeze after joining cells in a table (http://forum.nvudev.org/viewtopic.php?p=15271#15271)
   * TODO : no more freeze when getting back from source mode (http://forum.nvudev.org/viewtopic.php?t=4440)
-  * TODO : no more freeze when dragging a layer above over the toolbar (http://forum.nvudev.org/viewtopic.php?p=15278#15278)
+  * TODO : no more freeze when dragging a layer over the toolbar (http://forum.nvudev.org/viewtopic.php?p=15278#15278)
   * TODO : better <iframe> support
-  * TODO : new 'made with KompoZer' icon hosted on SourceForge.net
-  * TODO : reorganize toolbars (one 'format' toolbar + one 'inline styles' toolbar)
+  * fixed: new 'made with KompoZer' icon hosted on SourceForge.net
+  * fixed: the toolbars can be customized without having to relaunch KompoZer
+  * added: reorganize toolbars (one 'format' toolbar + one 'inline styles' toolbar)
+  * added: the main toolbar now has Undo/Redo buttons
 
   CSS Editor
   * added: 'Edit selector' dialog in the CSS editor
   * fixed: a few bugs in the 'background' tab (opacity, background-position)
-  * fixed: small UI bug in the 'border' tab
-  * added: spin buttons in the 'box' tab
-  * modified: no more 'expert' mode in the CSS editor
+  * fixed: some UI bugs in the 'border' tab + 'thin/medium/thick' values in the 'width' dropdown lists
+  * added: spin buttons in the 'box' tab + 'auto' value in the 'margin' dropdown lists
+  * modified: the CSS editor is now always in 'expert' mode
+  * modified: the 'new style rule' dialog has been redesigned for less confusion
   * modified: -100px on the CSS editor window width :-)
   * modified: single window for all inline styles
   * TODO : classes and inline styles should be applied to the first container (http://www.nvu-composer.de/forum/viewtopic.php?p=7675#7675)
   * added: in the status bar, tags are written in italic if they have inline styles
 
   Site Manager
-  ? fixed: (Linux) when no browser is available by default, ask user to choose one
-  ? added: external application support
-  ? added: dual local/remote view (eases publishing with external apps)
-  ? added: option to init the filepicker on the current document's directory instead of the last open directory
+  * TODO : (Linux) when no browser is available by default, ask user to choose one
+  * TODO : external application support
+  * TODO : dual local/remote view (eases publishing with external apps)
+  * TODO : option to init the filepicker on the current document's directory instead of the last open directory
   * TODO : more file types (html, css, text, images, media) with user-defined file extensions
-  ? fixed: file types are now consistent in all filepickers
+  * TODO : file types are now consistent in all filepickers
   * TODO : shows the last open file on startup
-  * NOTA : this site manager is already part of Mozilla Composer 2
+  * NOTE : this site manager will be part of Mozilla Composer 2
 
 

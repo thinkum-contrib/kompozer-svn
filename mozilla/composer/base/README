@@ -1,0 +1,91 @@
+
+Chrome issues:
+ * the extensions (help.jar, cascades.jar, tipoftheday.jar) have no manifest
+     but these manifests are required - the app-chrome.manifest doesn't do the job
+ * missing content declaration for communicator / global
+ * in 'comm.manifest', the two overlays are rotten (see patch for mozilla/editor/ui/jar/mn)
+     but the required ones are missing (use %overlay in mozilla/composer/base/jar.mn ?)
+ * extensions / themes / js console appear twice (but don't work...)
+ * in the prefs dialog, the 'fonts' tab doesn't work
+ * some files are missing in the JARS
+ * 'help' resources are splitted in three JARs (remove help.jar?):
+    * en-US.jar
+    * help.jar
+    * toolkit.jar
+ * some locales aren't recognized (missing or misplaced?)
+    * EdInsertChars.xul     EditorInsertChars.dtd
+    * EdInsertSource.xul    EditorInsertSource.dtd
+    * EditorPublish.xul
+ * File/quit and View/zoom are missing
+
+
+################################################################################
+# auto-generated manifests
+#==============================================================================#
+
+# app-chrome.manifest
+overlay chrome://editor/content/editor.xul chrome://cascades/content/cascadesOverlay.xul
+content cascades                         jar:cascades.jar!/content/cascades/
+locale  cascades                 en-US   jar:en-US.jar!/locale/cascades/
+content tipoftheday                      jar:tipoftheday.jar!/content/tipoftheday/
+locale  tipoftheday              en-US   jar:en-US.jar!/locale/en-US/tipoftheday/
+overlay chrome://editor/content/editor.xul chrome://help/content/helpMenuOverlay.xul
+content help                             jar:help.jar!/content/help/
+skin    help               classic/1.0   jar:help.jar!/skin/help/
+locale  help                     en-US   jar:help.jar!/locale/en-US/help/
+locale  communicator             en-US   jar:en-US.jar!/locale/en-US/communicator/
+locale  communicator-platform    en-US   jar:en-US.jar!/locale/en-US/communicator-platform/
+locale  editor                   en-US   jar:en-US.jar!/locale/en-US/editor/
+locale  editor-region            en-US   jar:en-US.jar!/locale/en-US/editor-region/
+locale  global                   en-US   jar:en-US.jar!/locale/en-US/global/
+locale  global-platform          en-US   jar:en-US.jar!/locale/en-US/global-platform/
+locale  navigator-platform       en-US   jar:en-US.jar!/locale/en-US/navigator-platform/
+locale  pinger                   en-US   jar:en-US.jar!/locale/en-US/pinger/
+
+# classic.manifest
+skin communicator  classic/1.0   jar:classic.jar!/skin/classic/communicator/
+skin editor        classic/1.0   jar:classic.jar!/skin/classic/editor/
+skin global        classic/1.0   jar:classic.jar!/skin/classic/global/
+skin help          classic/1.0   jar:classic.jar!/skin/classic/help/
+skin mozapps       classic/1.0   jar:classic.jar!/skin/classic/mozapps/
+
+# comm.manifest
+content xbl-marquee   jar:comm.jar!/content/xbl-marquee/   xpcnativewrappers=yes
+content cookie        jar:comm.jar!/content/cookie/        xpcnativewrappers=yes
+content editor        jar:comm.jar!/content/editor/        xpcnativewrappers=yes
+overlay chrome://communicator/content/tasksOverlay.xul   chrome://editor/content/editorTasksOverlay.xul
+overlay chrome://messenger/content/mailWindowOverlay.xul chrome://editor/content/editorMailOverlay.xul
+
+# en-US.manifest
+locale autoconfig      en-US    jar:en-US.jar!/locale/en-US/autoconfig/
+locale cookie          en-US    jar:en-US.jar!/locale/en-US/cookie/
+locale editor          en-US    jar:en-US.jar!/locale/en-US/editor/
+locale global          en-US    jar:en-US.jar!/locale/en-US/global/
+locale global-platform en-US    jar:en-US.jar!/locale/en-US/global-platform/
+locale global-region   en-US    jar:en-US.jar!/locale/en-US/global-region/
+locale help            en-US    jar:en-US.jar!/locale/en-US/help/
+locale mozapps         en-US    jar:en-US.jar!/locale/en-US/mozapps/
+locale necko           en-US    jar:en-US.jar!/locale/en-US/necko/
+locale passwordmgr     en-US    jar:en-US.jar!/locale/en-US/passwordmgr/
+locale pipnss          en-US    jar:en-US.jar!/locale/en-US/pipnss/
+locale pippki          en-US    jar:en-US.jar!/locale/en-US/pippki/
+
+# pippki.manifest
+content pippki jar:pippki.jar!/content/pippki/ xpcnativewrappers=yes
+
+# toolkit.manifest
+content global           jar:toolkit.jar!/content/global/                     xpcnativewrappers=yes
+content global-region    jar:toolkit.jar!/content/global-region/              xpcnativewrappers=yes
+content global-platform  jar:toolkit.jar!/content/global-platform/ platform   xpcnativewrappers=yes
+content help             jar:toolkit.jar!/content/help/                       xpcnativewrappers=yes
+content mozapps          jar:toolkit.jar!/content/mozapps/                    xpcnativewrappers=yes
+content passwordmgr      jar:toolkit.jar!/content/passwordmgr/                xpcnativewrappers=yes
+
+
+
+################################################################################
+# manually generated manifests
+#==============================================================================#
+
+comm.jar:
+

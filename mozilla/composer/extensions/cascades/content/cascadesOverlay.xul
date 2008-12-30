@@ -1,0 +1,227 @@
+<?xml version="1.0"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is CaScadeS, a stylesheet editor for Composer.
+   -
+   - The Initial Developer of the Original Code is
+   - Daniel Glazman.
+   - Portions created by the Initial Developer are Copyright (C) 2002
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Original author: Daniel Glazman (daniel@glazman.org)
+   -   Fabien Cazenave (kaze@kompozer.net)
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<!--<!DOCTYPE window SYSTEM "chrome://cascades/locale/cascadesOverlay.dtd">-->
+<!DOCTYPE window [
+<!ENTITY % cascadesDTD SYSTEM "chrome://cascades/locale/cascadesOverlay.dtd">
+%cascadesDTD;
+<!ENTITY % viewSourceDTD SYSTEM "chrome://cascades/locale/viewSource.dtd" >
+%viewSourceDTD;
+<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
+%editorOverlayDTD;
+<!ENTITY % sourceDTD SYSTEM "chrome://global/locale/viewSource.dtd" >
+%sourceDTD;
+<!ENTITY % findBarDTD SYSTEM "chrome://global/locale/findbar.dtd" >
+%findBarDTD;
+]>
+
+<overlay id="cascadesToolbar" 
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         orient="vertical">
+
+  <script type="application/x-javascript" src="chrome://cascades/content/cascadesOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://cascades/content/EdCssUtils.js"/>
+
+  <!-- Kaze: view source -->
+  <script type="application/x-javascript" src="chrome://global/content/viewPartialSource.js"/>
+  <script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>
+
+  <!-- Tools menu item + keyboard shortcut -->
+  <menupopup id="taskPopup">
+    <menuitem label="&cascadesMenuItem.label;" key="stylekb"
+              accesskey="&cascadesMenuItem.accesskey;"
+              observes="cmd_cssEditor"
+              insertafter="menu_validate"/>
+  </menupopup>
+  <keyset id="editorKeys">
+    <key id="stylekb" keycode="&cascadesMenuItem.keybinding;" observes="cmd_cssEditor"/>
+  </keyset>
+
+  <!-- Toolbar button -->
+  <toolbarpalette id="NvuToolbarPalette">
+    <toolbarbutton id="cssButton"
+      class="toolbarbutton-1" 
+      label="CSS"
+      observes="cmd_cssEditor"
+      tooltiptext="&cascadesMenuItem.label;">
+    </toolbarbutton>
+  </toolbarpalette>
+
+  <!-- Main window context menu
+  <popup id="editorContentContext">
+    <menuitem insertafter="styles-separator"
+              label="&inlineStyles.label;"
+              accesskey="&inlinestyles.accesskey;"
+              oncommand="openCSSPropsDialog(this);"/>
+  </popup> -->
+
+  <!-- Structure Toolbar context menu -->
+  <popup id="structToolbarContext">
+    <menu id="idSelectMenu" insertbefore="advancedPropsTag"
+          label="&idSelectMenu.label;" oncommand="onIDSelectChange()">
+      <menupopup id="idSelectMenuPopup" onpopupshowing="InitIDSelectMenu(this)"/>
+    </menu>
+    <menu id="classSelectMenu" insertbefore="advancedPropsTag"
+          label="&classSelectMenu.label;" oncommand="onClassSelectChange()">
+      <menupopup id="classSelectMenuPopup" onpopupshowing="InitClassSelectMenu(this)"/>
+    </menu>
+    <menu id="changeInlineStylesContextMenu" insertbefore="advancedPropsTag" hidden="true"
+          label="&inlineStyles.label;" accesskey="&inlinestyles.accesskey;">
+      <menupopup onpopupshowing="EnableExtractInlineStyles()">
+        <menuitem id="textProps"        label="&textProperties.label;"
+                                        accesskey="&textproperties.accesskey;"
+                                        oncommand="openCSSPropsDialog(this, 'text');" />
+        <menuitem id="borderProps"      label="&borderProperties.label;"
+                                        accesskey="&borderproperties.accesskey;"
+                                        oncommand="openCSSPropsDialog(this, 'border');" />
+        <menuitem id="backgroundProps"  label="&backgroundProperties.label;"
+                                        accesskey="&backgroundproperties.accesskey;"
+                                        oncommand="openCSSPropsDialog(this, 'background');" />
+        <menuitem id="boxProps"         label="&boxProperties.label;"
+                                        accesskey="&boxproperties.accesskey;"
+                                        oncommand="openCSSPropsDialog(this, 'box');" />
+        <menuitem id="auralProps"       label="&auralProperties.label;"
+                                        accesskey="&auralproperties.accesskey;"
+                                        oncommand="openCSSPropsDialog(this, 'aural');" />
+        <menuseparator/>
+        <menuitem id="makeCSSRule"      label="&makeCSSRule.label;"
+                                        accesskey="&makecssrule.accesskey;"
+                                        oncommand="ExtractInlineStyles()"/>
+      </menupopup>
+    </menu>
+    <menuseparator insertbefore="advancedPropsTag"/>
+    <menuitem id="changeInlineStyles2" insertbefore="advancedPropsTag"
+              label="&inlineStyles.label;" accesskey="&inlinestyles.accesskey;" oncommand="openCSSPropsDialog(this);" />
+  </popup>
+
+  <!-- HTML source browser/editor -->
+  <vbox id="appcontent">
+
+    <!-- commands and keys -->
+    <command id="cmd_highlightSyntax"  oncommand="highlightSyntax();"/>
+    <command id="cmd_wrapLongLines"    oncommand="wrapLongLines()"/>
+    <command id="cmd_textZoomReduce"   oncommand="ZoomManager.prototype.getInstance().reduce();"/>
+    <command id="cmd_textZoomEnlarge"  oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
+    <command id="cmd_textZoomReset"    oncommand="ZoomManager.prototype.getInstance().reset();"/>
+    <command id="cmd_editNodeToggle"   oncommand="editNodeToggle();"/>
+    <command id="cmd_editNodeCancel"   oncommand="editNodeCancel();"/>
+    <command id="cmd_editCurrentNode"  oncommand="selectNeighborElement(NODE_SELF);"/> 
+    <command id="cmd_editParentNode"   oncommand="selectNeighborElement(NODE_PARENT);"/>
+    <command id="cmd_editPrevSibling"  oncommand="selectNeighborElement(NODE_PREVSIBLING);"/>
+    <command id="cmd_editNextSibling"  oncommand="selectNeighborElement(NODE_NEXTSIBLING);"/>
+    <command id="cmd_editFirstChild"   oncommand="selectNeighborElement(NODE_FIRSTCHILD);"/>
+    <keyset id="viewSourceKeys">
+      <key id="key_textZoomEnlarge"  key="&textEnlarge.commandkey;"  command="cmd_textZoomEnlarge" modifiers="accel"/>
+      <key id="key_textZoomEnlarge2" key="&textEnlarge.commandkey2;" command="cmd_textZoomEnlarge" modifiers="accel"/>
+      <key id="key_textZoomReduce"   key="&textReduce.commandkey;"   command="cmd_textZoomReduce"  modifiers="accel"/>
+      <key id="key_textZoomReset"    key="&textReset.commandkey;"    command="cmd_textZoomReset"   modifiers="accel"/>
+      <key id="key_editNodeToggle"   keycode="VK_RETURN"             command="cmd_editNodeToggle"  modifiers="alt"/>
+      <key id="key_editNodeCancel"   keycode="VK_ESCAPE"             command="cmd_editNodeCancel"/>
+      <key id="key_editCurrentNode"  keycode="VK_BACK"               command="cmd_editCurrentNode" modifiers="alt"/>
+      <key id="key_editParentNode"   keycode="VK_LEFT"               command="cmd_editParentNode"  modifiers="alt"/>
+      <key id="key_editPrevSibling"  keycode="VK_UP"                 command="cmd_editPrevSibling" modifiers="alt"/>
+      <key id="key_editNextSibling"  keycode="VK_DOWN"               command="cmd_editNextSibling" modifiers="alt"/>
+      <key id="key_editFirstChild"   keycode="VK_RIGHT"              command="cmd_editFirstChild"  modifiers="alt"/>
+    </keyset>
+
+    <!-- context menu -->
+    <popup id="viewSourceContextMenu" onpopupshowing="onViewSourceContextMenu();">
+      <menuitem id="vMenu_copy"      label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
+      <menuseparator/>
+      <menuitem id="vMenu_selectAll" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+      <menuitem id="vMenu_findAgain"    label="find" hidden="true"/>
+      <menuseparator/>
+      <menu id="viewTextZoomMenu" label="&menu_textSize.label;" accesskey="&menu_textSize.accesskey;">
+        <menupopup>                    
+          <menuitem id="vMenu_textEnlarge" command="cmd_textZoomEnlarge" 
+                    label="&menu_textEnlarge.label;" accesskey="&menu_textEnlarge.accesskey;"
+                    key="key_textZoomEnlarge"/>
+          <menuitem id="vMenu_textReduce" command="cmd_textZoomReduce" 
+                    label="&menu_textReduce.label;" accesskey="&menu_textReduce.accesskey;"
+                    key="key_textZoomReduce"/>
+          <menuseparator/>
+          <menuitem id="vMenu_textReset" command="cmd_textZoomReset"
+                    label="&menu_textReset.label;" accesskey="&menu_textReset.accesskey;"
+                    key="key_textZoomReset"/>
+        </menupopup>
+      </menu>
+      <menuitem id="vMenu_wrapLongLines"   type="checkbox" command="cmd_wrapLongLines"   checked="false"
+                label="&menu_wrapLongLines.title;" accesskey="&menu_wrapLongLines.accesskey;"/>
+      <menuitem id="vMenu_highlightSyntax" type="checkbox" command="cmd_highlightSyntax" hidden="true"
+                label="&menu_highlightSyntax.label;" accesskey="&menu_highlightSyntax.accesskey;"/>
+      <menuseparator/>
+      <menuitem id="vMenu_editNode"     label="&editNode.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editHead"     label="&editHead.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editBody"     label="&editBody.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+    </popup>
+    <popup id="editSourceContextMenu">
+      <!--
+         -<menuitem label="&undoCmd.label;"      accesskey="&undo.accesskey;"      command="cmd_undo"/>
+         -<menuitem label="&redoCmd.label;"      accesskey="&redo.accesskey;"      command="cmd_redo"/>
+         -<menuseparator/>
+         -->
+      <menuitem label="&cutCmd.label;"       accesskey="&cut.accesskey;"       command="cmd_cut"/>
+      <menuitem label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
+      <menuitem label="&pasteCmd.label;"     accesskey="&paste.accesskey;"     command="cmd_paste"/>
+      <menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
+      <menuseparator/>
+      <menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+      <menuseparator/>
+      <menuitem label="&confirmNode.label;" command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem label="&cancelNode.label;"  command="cmd_editNodeCancel" key="key_editNodeCancel"/>
+    </popup>
+
+    <!-- HTML source browser/editor -->
+    <deck id="kpzDeck" insertafter="EditModeToolbar" selectedIndex="0" style="min-height: 5em;">
+      <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
+               context="viewSourceContextMenu"/>
+      <textbox id="kpzInput"   flex="1" multiline="true" type="text" value=""
+               context="editSourceContextMenu"/>
+    </deck>
+    <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="false"
+              insertafter="EditModeToolbar"
+              resizebefore="farthest"
+              collapse="after">
+      <grippy />
+    </splitter>
+  </vbox>
+
+</overlay>

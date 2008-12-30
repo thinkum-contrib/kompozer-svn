@@ -1,0 +1,92 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+ndir=$(CURDIR)/debian/install
+
+build: build-stamp  
+
+build-stamp:  
+	dh_testdir
+	# Add here commands to compile the package.
+	cp debian/mozconfig.debian mozilla/.mozconfig
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	cd mozilla && $(MAKE) -f client.mk build_all
+	touch build-stamp
+
+clean: 
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp configure-stamp
+	#if [ -d mozilla ]; then rm -rf mozilla; fi
+	rm -rf $(ndir)
+	rm -f mozilla/config.status
+	rm -f mozilla/config.log
+	rm -f mozilla/nsprpub/config.status
+	rm -f mozilla/nsprpub/config.log
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	# Add here commands to install the package into debian/kompozer.
+	#if [ ! -d debian/tmp ]; then mkdir -p $(ndir); cd mozilla && $(MAKE) install DESTDIR=$(ndir); fi
+	mkdir -p $(ndir)
+	cd mozilla && $(MAKE) install DESTDIR=$(ndir)
+	# Remove all empty directories.
+	perl -MFile::Find -e"finddepth(sub{rmdir},'$(ndir)')"
+	# Remove internal myspell directory and myspell dicts.
+	# dh_install symlinks it to /usr/share/myspell where all myspell-* dicts place their stuff
+	rm -rf $(ndir)/usr/lib/kompozer/components/myspell
+	# Remove exec bit from .js files to prevent lintian warnings.
+	chmod -x $(ndir)/usr/lib/kompozer/components/*.js
+	# Copy and symlink files to debian/kompozer.
+	dh_installdirs
+	dh_install
+	dh_link
+	
+binary-indep: build install
+	dh_testdir -i
+	dh_testroot -i
+	dh_installchangelogs -i 
+	dh_installdocs -i
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_shlibdeps -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir -a
+	dh_testroot -a
+	dh_installchangelogs -a
+	dh_installdocs -a
+	dh_installexamples -a
+	dh_installman -a
+	dh_link -a
+	dh_strip -a
+	dh_compress -a
+	dh_fixperms -a
+	dh_installdeb -a
+	dh_shlibdeps -a
+	dh_gencontrol -a
+	dh_md5sums -a
+	dh_builddeb -a
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

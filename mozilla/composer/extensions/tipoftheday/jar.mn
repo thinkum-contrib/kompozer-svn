@@ -1,0 +1,9 @@
+tipoftheday.jar:
+%   content tipoftheday                      jar:tipoftheday.jar!/content/tipoftheday/
+%   locale  tipoftheday              en-US   jar:en-US.jar!/locale/en-US/tipoftheday/
+    content/tipoftheday/tipoftheday.css                      (content/tipoftheday.css)
+    content/tipoftheday/tipoftheday.xml                      (content/tipoftheday.xml)
+    content/tipoftheday/tipoftheday.xul                      (content/tipoftheday.xul)
+    content/tipoftheday/tipoftheday.js                       (content/tipoftheday.js)
+    content/tipoftheday/totd.png                             (content/totd.png)
+    content/tipoftheday/contents.rdf                         (content/contents.rdf)

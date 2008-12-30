@@ -1,0 +1,86 @@
+<?xml version="1.0"?> 
+<?xml-stylesheet href="chrome://communicator/skin/tasksOverlay.css" type="text/css"?> 
+
+<!DOCTYPE overlay [
+<!ENTITY % tasksDTD SYSTEM "chrome://communicator/locale/tasksOverlay.dtd" >
+%tasksDTD;
+]>
+
+<overlay id="tasksOverlay"
+      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript" src="chrome://communicator/content/tasksOverlay.js"/>
+
+  <keyset id="tasksKeys">
+    <key id="key_navigator"    key="&navigatorCmd.commandkey;"   command="Tasks:Navigator" modifiers="accel"/>
+    <key id="key_javascriptConsole" key="J" modifiers="accel,shift" command="Tools:Console"/> <!-- Kaze -->
+  </keyset>
+  <keyset id="mainKeyset">
+  </keyset>
+
+  <commandset id="tasksCommands">
+    <command id="Tasks:Navigator"  oncommand="toNavigator();"/>
+    <!-- deprecated on Gecko 1.8.1
+       -<command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
+       -<command id="Tools:Themes"     oncommand="OpenExtensions('themes');"/>
+       -->
+    <command id="Tools:Addons"     oncommand="OpenExtensions();"/>
+    <command id="Tools:Console"    oncommand="toJavaScriptConsole();"/>
+  </commandset>
+
+  <!-- Tasks Menu -->
+  <menu id="tasksMenu" label="&tasksMenu.label;" accesskey="&tasksMenu.accesskey;">
+    <menupopup id="taskPopup">
+      <menuitem label="&addons.label;"
+                command="Tools:Addons"
+                insertbefore="sep_addon_menu"/>
+                <!--insertbefore="menu_preferences"/>-->
+      <menuseparator
+                insertbefore="sep_addon_menu"/>
+                <!--insertbefore="menu_preferences"/>-->
+      <menuitem id="javascriptConsole"
+                label="&javaScriptConsoleCmd.label;" 
+                accesskey="&javaScriptConsoleCmd.accesskey;" 
+                key="key_javascriptConsole"
+                command="Tools:Console"
+                insertbefore="sep_addon_list"/>
+                <!--insertbefore="menu_preferences"/>-->
+      <!-- Kaze: disabled
+                oncommand="toJavaScriptConsole();"
+      <menu label="&webDevelopment.label;" accesskey="&webDevelopment.accesskey;"
+                insertbefore="menu_preferences">
+        <menupopup id="toolsPopup" onpopupshowing="javaItemEnabling();">
+          <menuitem label="&javaScriptConsoleCmd.label;" accesskey="&javaScriptConsoleCmd.accesskey;" oncommand="toJavaScriptConsole();"/>
+          <menuitem id="java" label="&javaConsoleCmd.label;" accesskey="&javaConsoleCmd.accesskey;" oncommand="toJavaConsole()"/>
+        </menupopup>
+      </menu>
+      -->
+      <menuseparator id="sep_preferences" insertbefore="menu_preferences"/>
+      <!--menuitem id="cmd_switchprofile" label="&switchProfileCmd.label;" accesskey="&switchProfileCmd.accesskey;" oncommand="toProfileManager();"/-->
+    </menupopup>
+  </menu>
+
+  <menu id="windowMenu" label="&windowMenu.label;" accesskey="&windowMenu.accesskey;"
+        datasources="rdf:window-mediator" ref="NC:WindowMediatorRoot"
+        onpopupshowing="checkFocusedWindow();">
+    <template>
+      <rule>
+        <menupopup>
+          <menuitem uri="rdf:*" label="rdf:http://home.netscape.com/NC-rdf#KeyIndex rdf:http://home.netscape.com/NC-rdf#Name" type="radio"
+                    name="windowList" oncommand="ShowWindowFromResource(event.target)" accesskey="rdf:http://home.netscape.com/NC-rdf#KeyIndex"/>
+        </menupopup>
+      </rule>
+    </template>
+    <menupopup id="windowPopup">
+      <menuitem label="&navigatorCmd.label;" accesskey="&navigatorCmd.accesskey;" key="key_navigator"
+                command="Tasks:Navigator" id="tasksMenuNavigator" class="menuitem-iconic icon-navigator16"/>
+      <!-- Overlays get stuffed in here. -->
+      <menuseparator id="sep-window-list"/>
+    </menupopup>
+  </menu>
+
+  <statusbarpanel id="component-bar" persist="collapsed">
+    <toolbarbutton class="taskbutton" id="mini-nav" oncommand="toNavigator();" 
+                   tooltiptext="&taskNavigator.tooltip;"/>
+  </statusbarpanel> 
+</overlay>

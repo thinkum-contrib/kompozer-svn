@@ -1,0 +1,5 @@
+<!ENTITY charsetCustomize.title "Select a character set">
+<!ENTITY charsetCustomize.description "Select the charset you would like to use.">
+<!ENTITY charsets.label "Character sets:">
+<!ENTITY otherCharset.label "Other:">
+<!ENTITY otherCharset.accesskey "o">

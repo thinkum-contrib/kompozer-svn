@@ -1,0 +1,37 @@
+
+These files have been modified between Gecko 1.7 and 1.8.1, grab them from Mozilla CVS:
+
+  communicator/contentAreaCommands.dtd
+  communicator/pref/pref-fonts.dtd
+  communicator/taskOverlay.dtd
+
+  communicator-platform/mac/platformCommunicatorOverlay.dtd
+  communicator-platform/unix/platformCommunicatorOverlay.dtd
+  communicator-platform/win/platformCommunicatorOverlay.dtd
+
+  editor/EditorPublish.dtd
+  editor/EditorInsertSource.dtd
+
+  global/console.dtd
+  global/customizeCharset.dtd
+  global/findbar.dtd
+  global/findbar.properties
+  global/global.dtd
+  global/printPageSetup.dtd
+  global/tabbrowser.dtd
+  global/textcontext.dtd
+  global/tree.dtd
+  global/viewSource.dtd
+  global/xpinstall/xpinstall.properties
+
+  mozapps/extensions/about.dtd
+  mozapps/extensions/extensions.dtd
+  mozapps/extensions/extensions.properties
+
+
+These files have been modified for KompoZer 0.8, check for new strings manually:
+
+  editor/editorPrefsOverlay.dtd
+  editor/pref-helpers.dtd
+  editor/sitemanager.dtd
+

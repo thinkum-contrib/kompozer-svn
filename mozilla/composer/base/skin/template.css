@@ -1,0 +1,110 @@
+@namespace html url("http://www.w3.org/1999/xhtml");
+@namespace xul  url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+.duplicateButton
+{
+  list-style-image: url("chrome://editor/content/images/duplicate.png");
+}
+
+.duplicateButton, [_moz_anonid="dupButton"]
+{
+  margin-left: 4px;
+}
+
+.removeButton, [_moz_anonid="delButton"]
+{
+  margin-left: 2px;
+}
+
+.duplicateButton:hover
+{
+  list-style-image: url("chrome://editor/content/images/duplicate-hover.png");
+}
+
+.duplicateButton:hover:active
+{
+  list-style-image: url("chrome://editor/content/images/duplicate-active.png");
+}
+
+.removeButton
+{
+  list-style-image: url("resource:/res/table-remove-column.gif");
+}
+
+.removeButton:hover
+{
+  list-style-image: url("resource:/res/table-remove-column-hover.gif");
+}
+
+.removeButton:hover:active
+{
+  list-style-image: url("resource:/res/table-remove-column-active.gif");
+}
+
+.removeButton[hidden],
+.duplicateButton[hidden]
+{
+  display: none ! important
+}
+
+/* --------------------------------------------------------------------- */
+
+*[\_moz_anonid="templateheader"]
+{
+  margin: 0px ! important;
+}
+
+xul|*[\_moz_anonid="templateheader"]
+{
+  display: -moz-box ! important;
+  padding: 2px 1em 1px;
+  font-family: sans-serif;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  font-size: 8pt;
+  background-color: rgb(102, 204, 204);
+  -moz-border-radius-topright: 11px;
+  -moz-border-radius-topleft: 11px;
+  margin: 0px ! important;
+  margin-top: 2px ! important;
+  -moz-user-select: none ! important;
+  cursor: default ! important;
+}
+
+[\_moz_anonid="inlinetemplateheader"]
+{
+  display: inline;
+  padding: 2px 1em 1px;
+  font-family: sans-serif;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  font-size: 8pt;
+  background-color: rgb(102, 204, 204);
+  -moz-border-radius-topleft: 11px;
+  -moz-border-radius-bottomleft: 11px;
+  margin: 0px ! important;
+  margin-left: 2px ! important;
+  -moz-user-select: none ! important;
+  cursor: default ! important;
+}
+
+*|*.editablecontents
+{
+  border: rgb(102, 204, 204) thin dotted;
+  margin-top: 0px ! important;
+}
+
+*|*.editablecontents:not([repeatable="true"])
+{
+  -moz-user-select: -moz-force-text ! important;
+}
+
+.duplicateButton
+{
+  -moz-binding: url("chrome://editor/content/bindings/template.xml#duplicateButton");
+}
+
+.removeButton
+{
+  -moz-binding: url("chrome://editor/content/bindings/template.xml#removeButton");
+}

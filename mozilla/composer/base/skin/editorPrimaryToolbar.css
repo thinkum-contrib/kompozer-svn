@@ -1,0 +1,309 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is Mozilla.org
+ *
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 1998
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *   Joe Hewitt <hewitt@netscape.com>
+ *   Daniel Glazman (glazman@disruptive-innovations.com), on behalf of Linspire Inc.
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+
+/* ::::: primary toolbar masthead ::::: */
+
+#EditToolbar > .toolbar-holder > .toolbar-primary-icon {
+  background-image: url("chrome://editor/skin/icons/mast-editor.gif");
+  width: 57px;
+}
+.toolbarbutton-menubutton-dropmarker {
+  max-width: 15px ! important;
+}
+
+.toolbar-primary-icon {
+  width: 57px;
+}
+
+/* ::::: primary toolbar buttons ::::: */
+
+.toolbarbutton-1 {
+  -moz-box-orient: vertical;
+}
+
+.toolbarbutton-1[type="menu"] > .toolbarbutton-menu-dropmarker {
+  display: none;
+}
+
+toolbar[mode="icons"] .toolbarbutton-text {
+  display: none;
+}
+
+toolbar[mode="text"] .toolbarbutton-menubutton-dropmarker,
+toolbar[mode="text"] .toolbarbutton-icon {
+  display: none;
+}
+
+toolbar[mode="text"] .toolbarbutton-text {
+  padding: 0 !important;
+  margin: 3px 5px !important;
+}
+
+toolbar[mode="icons"][iconsize="small"] .toolbarbutton-icon {
+  max-width: 24px;
+  margin: 0 ! important;
+}
+
+toolbar[iconsize="small"] .toolbarbutton-text {
+  font-size: x-small;
+  padding: 0 !important;
+  margin: 0 ! important;
+}
+
+
+toolbar[mode="icons"] toolbarbutton {
+  padding: 0 !important;
+  margin: 0 ! important;
+}
+/* ::::: primary toolbar buttons ::::: */
+
+.toolbarseparator-primary {
+  width: 9px !important;
+}
+
+#EditToolbar toolbarbutton {
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+#EditToolbar toolbarbutton:hover {
+  -moz-image-region: rect(32px 32px 64px 0);
+}
+#EditToolbar toolbarbutton:hover:active {
+  -moz-image-region: rect(32px 32px 64px 0);
+}
+#EditToolbar toolbarbutton[disabled="true"] {
+  -moz-image-region: rect(64px 32px 96px 0);
+}
+
+#newButton {
+  list-style-image: url("chrome://editor/skin/icons/new.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#openButton {
+  list-style-image: url("chrome://editor/skin/icons/open.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#saveButton {
+  list-style-image: url("chrome://editor/skin/icons/save.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#publishButton {
+  list-style-image: url("chrome://editor/skin/icons/publish.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#previewButton {
+  list-style-image: url("chrome://editor/skin/icons/preview.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#copyButton {
+  list-style-image: url("chrome://editor/skin/icons/copy.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#cutButton {
+  list-style-image: url("chrome://editor/skin/icons/cut.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#findButton {
+  list-style-image: url("chrome://editor/skin/icons/find.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#pasteButton {
+  list-style-image: url("chrome://editor/skin/icons/paste.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#printButton {
+  list-style-image: url("chrome://editor/skin/icons/print.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#linkButton {
+  list-style-image: url("chrome://editor/skin/icons/link.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#imageButton {
+  list-style-image: url("chrome://editor/skin/icons/image.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#namedAnchorButton {
+  list-style-image: url("chrome://editor/skin/icons/anchor.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#hlineButton {
+  list-style-image: url("chrome://editor/skin/icons/hline.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#tableButton {
+  list-style-image: url("chrome://editor/skin/icons/table.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#spellingButton {
+  list-style-image: url("chrome://editor/skin/icons/spell.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#formButton {
+  list-style-image: url("chrome://editor/skin/icons/form.png");
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#cssButton { /* Kaze */
+  list-style-image: url(chrome://editor/skin/icons/css.png);
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#undoButton { /* Ragnaar */
+  list-style-image: url(chrome://editor/skin/icons/edit-undo.png);
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+#redoButton { /* Ragnaar */
+  list-style-image: url(chrome://editor/skin/icons/edit-redo.png);
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
+/* SMALL ICONS */
+
+#EditToolbar[iconsize="small"] toolbarbutton {
+  -moz-image-region: rect(0px 24px 24px 0);
+}
+#EditToolbar[iconsize="small"] toolbarbutton:hover {
+  -moz-image-region: rect(24px 24px 48px 0);
+}
+#EditToolbar[iconsize="small"] toolbarbutton:hover:active {
+  -moz-image-region: rect(24px 24px 48px 0);
+}
+#EditToolbar[iconsize="small"] toolbarbutton[disabled="true"] {
+  -moz-image-region: rect(48px 24px 72px 0);
+}
+
+
+toolbar[iconsize="small"] #newButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/new.png");
+}
+
+
+toolbar[iconsize="small"] #openButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/open.png");
+}
+
+toolbar[iconsize="small"] #saveButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/save.png");
+}
+
+toolbar[iconsize="small"] #publishButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/publish.png");
+}
+
+toolbar[iconsize="small"] #previewButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/preview.png");
+}
+
+toolbar[iconsize="small"] #copyButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/copy.png");
+}
+
+toolbar[iconsize="small"] #cutButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/cut.png");
+}
+
+toolbar[iconsize="small"] #findButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/find.png");
+}
+
+toolbar[iconsize="small"] #pasteButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/paste.png");
+}
+
+toolbar[iconsize="small"] #printButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/print.png");
+}
+
+toolbar[iconsize="small"] #linkButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/link.png");
+}
+
+toolbar[iconsize="small"] #imageButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/image.png");
+}
+
+toolbar[iconsize="small"] #namedAnchorButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/anchor.png");
+}
+
+toolbar[iconsize="small"] #hlineButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/hline.png");
+}
+
+toolbar[iconsize="small"] #tableButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/table.png");
+}
+
+toolbar[iconsize="small"] #spellingButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/spell.png");
+}
+
+toolbar[iconsize="small"] #formButton {
+  list-style-image: url("chrome://editor/skin/icons/smallicons/form.png");
+}
+
+toolbar[iconsize="small"] #cssButton { /* Kaze */
+	list-style-image: url(chrome://editor/skin/icons/smallicons/css.png);
+}
+
+toolbar[iconsize="small"] #undoButton { /* Ragnaar */
+	list-style-image: url(chrome://editor/skin/icons/smallicons/edit-undo.png);
+}
+
+toolbar[iconsize="small"] #redoButton { /* Ragnaar */
+	list-style-image: url(chrome://editor/skin/icons/smallicons/edit-redo.png);
+}

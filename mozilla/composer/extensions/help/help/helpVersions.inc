@@ -1,0 +1,2 @@
+#define __HELP_LOCALE_VERSION__ 1.2
+#define __HELP_SKIN_VERSION__ 1.5

@@ -1,0 +1,41 @@
+<!ENTITY lHeader                     "New Page Settings">
+<!ENTITY rHeader                     "Defaults for new pages">
+
+<!ENTITY authorName.label            "Author:">
+<!ENTITY authorName.accesskey        "u">
+<!ENTITY pageColorHeader             "Default Page Appearance">
+
+<!ENTITY defaultColorsRadio.label    "Reader's default colors (Don't set colors in page)">
+<!ENTITY defaultColors.accesskey     "d">
+<!ENTITY customColorsRadio.label     "Use custom colors:">
+<!ENTITY customColors.accesskey      "c">
+
+<!ENTITY normalText.label            "Normal text">
+<!ENTITY normalText.accesskey        "N">
+<!ENTITY linkText.label              "Link text">
+<!ENTITY linkText.accesskey          "L">
+<!ENTITY activeLinkText.label        "Active link text">
+<!ENTITY activeLinkText.accesskey    "A">
+<!ENTITY visitedLinkText.label       "Visited link text">
+<!ENTITY visitedLinkText.accesskey   "V">
+<!ENTITY background.label            "Background:">
+<!ENTITY background.accesskey        "B">
+<!ENTITY colon.character             ":">
+
+<!ENTITY backgroundImage.label       "Background image:">
+<!ENTITY backgroundImage.accesskey   "m">
+<!ENTITY chooseFile.label            "Choose File…">
+<!ENTITY chooseFile.accesskey        "o">
+
+<!ENTITY i18nHeader                  "Internationalization">
+
+<!ENTITY writingDirection.label      "Writing direction:">
+<!ENTITY defaultDirectionRadio.label "No direction specified">
+<!ENTITY ltrDirectionRadio.label     "Left to right">
+<!ENTITY rtlDirectionRadio.label     "Right to left">
+
+<!ENTITY language.label              "Language:">
+<!ENTITY languageChoiceButton.label  "Choose a language">
+
+<!ENTITY defaultCharset.label        "Character set:">
+<!ENTITY chooseCharsetButton.label   "Choose a charset">

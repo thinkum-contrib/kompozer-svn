@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
+<?xml-stylesheet type="text/css" href="chrome://editor/skin/sitemanager.css"?>
+<?xml-stylesheet type="text/css" href="chrome://editor/skin/EdCssProps.css"?>
+<?xml-stylesheet type="text/css" href="chrome://editor/skin/domExplorer.css"?>
+
+<!DOCTYPE page [
+<!ENTITY % domExplorerDTD   SYSTEM "chrome://cascades/locale/domExplorer.dtd">
+  %domExplorerDTD;
+<!ENTITY % cascadesDTD      SYSTEM "chrome://cascades/locale/EdCssProps.dtd">
+  %cascadesDTD;
+<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd">
+  %editorOverlayDTD;
+]>
+
+<page orient="vertical"
+      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      onload="domStartup()">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+
+  <script type="application/x-javascript" src="chrome://global/content/XPCNativeWrapper.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
+
+  <script type="application/x-javascript" src="chrome://editor/content/processors.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/sitemanagerUtils.js"/>
+  <script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>
+  <script type="application/x-javascript" src="chrome://cascades/content/domExplorer.js"/>
+
+  <script type="application/x-javascript" src="chrome://cascades/content/EdCssProps.js" />
+  <script type="application/x-javascript" src="chrome://cascades/content/EdCssProps-utils.js" />
+  <script type="application/x-javascript" src="chrome://global/content/dialogOverlay.js" />
+  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />
+
+  <broadcaster id="args" value=""/>
+
+  <vbox flex="1" id="domBox">
+    <label id="domLabel" value=" "/>
+
+    <!-- key navigation in the DOM tree -->
+    <command id="cmd_viewParentNode"   oncommand="window.top.selectNeighborElement(NODE_PARENT);"/>
+    <command id="cmd_viewPrevSibling"  oncommand="window.top.selectNeighborElement(NODE_PREVSIBLING);"/>
+    <command id="cmd_viewNextSibling"  oncommand="window.top.selectNeighborElement(NODE_NEXTSIBLING);"/>
+    <command id="cmd_viewFirstChild"   oncommand="window.top.selectNeighborElement(NODE_FIRSTCHILD);"/>
+    <keyset id="domNavKeys">
+      <key id="key_editParentNode"     keycode="VK_LEFT"     command="cmd_viewParentNode"  />
+      <key id="key_editPrevSibling"    keycode="VK_UP"       command="cmd_viewPrevSibling" />
+      <key id="key_editNextSibling"    keycode="VK_DOWN"     command="cmd_viewNextSibling" />
+      <key id="key_editFirstChild"     keycode="VK_RIGHT"    command="cmd_viewFirstChild"  />
+    </keyset>
+
+    <!-- Toolbar -->
+    <hbox id="domToolbar">
+      <toolbarbutton id="refreshButton" tooltiptext="&refreshButton.label;" oncommand="Refresh();"/>
+      <spacer flex="1"/>
+      <toolbarbutton id="renameButton"  tooltiptext="&renameButton.label;"  oncommand="ChangeSelector();"/>
+      <toolbarbutton id="removeButton"  tooltiptext="&removeButton.label;"  oncommand="RemoveObject();"  disabled="true"/>
+      <toolbarseparator flex="1"/>
+      <toolbarbutton id="upButton"      tooltiptext="&upButton.label;"      oncommand="MoveObjectUp()"   disabled="true" class="up"/>
+      <toolbarbutton id="downButton"    tooltiptext="&downButton.label;"    oncommand="MoveObjectDown()" disabled="true" class="down"/>
+    </hbox>
+
+    <!-- Tree selection -->
+    <tabbox id="domTabbox" oncommand="onSelectDomTree(this);">
+      <tabs>
+        <tab id="htmlTab"  label="HTML"    selected="true"/>
+        <tab id="cssTab"   label="CSS"/>
+        <tab id="splitTab" label="HTML+CSS"/>
+      </tabs>
+    </tabbox>
+
+    <!-- Trees: using a vbox/deck to avoid loosing space because of the tabpanels' border -->
+    <!--<deck id="domTreeDeck" selectedindex="0" flex="1">-->
+    <vbox id="domTreeDeck" flex="1" class="html">
+
+      <!-- HTML elements -->
+      <tree id="htmlTree" flex="1" seltype="single"
+            onclick="onSelectHtmlItem(event);"
+            ondblclick="onOpenHtmlItem(event);"
+            onmousemove="onMouseOverHtmlItem(event);"
+            onmouseout="onMouseOutHtmlItem(event);"
+            hidecolumnpicker="true"
+            disableKeyNavigation="true"
+            enableColumnDrag="true">
+        <treecols>
+          <treecol id="elementCol" persist="width ordinal hidden" label="Elements" primary="true" flex="1"/>
+        </treecols>
+        <treechildren id="elementList" flex="1"/>
+      </tree>
+
+      <!-- splitter -->
+      <splitter id="domTreeSplitter"/>
+
+      <!-- CSS style rules -->
+      <tree id="cssTree" flex="1" seltype="single"
+            hidecolumnpicker="true"
+            disableKeyNavigation="true"
+            enableColumnDrag="false">
+        <treecols>
+          <treecol id="styleCol" persist="width ordinal hidden" label="Style Rules" primary="true" flex="1"/>
+        </treecols>
+        <treechildren id="styleList" flex="1"/>
+      </tree>
+      <!--
+         -<tree id="sheetsTree" flex="1"
+         -      seltype="single"
+         -      onclick="onSelectCssItem(event);"
+         -      onmousemove="onMouseOverCssItem(event);"
+         -      onmouseout="onMouseOutCssItem(event);"
+         -      hidecolumnpicker="true"
+         -      disableKeyNavigation="true"
+         -      enableColumnDrag="true">
+         -  <treecols>
+         -    <treecol id="styleCol" persist="width ordinal hidden" label="Style Rules" primary="true" flex="1"/>
+         -  </treecols>
+         -  <treechildren flex="1" id="stylesheetsTree"/>
+         -</tree>
+         -->
+    </vbox>
+    <!--</deck>-->
+
+    <splitter id="domPanel-splitter"/>
+    <textbox id="domPanel-text" readonly="true" multiline="true"/>
+
+  </vbox>
+
+    <!-- panel
+    <panel id="domPanel">
+      <textbox id="domPanel-text" multiline="true" style="height: 5em;"/>
+    </panel> -->
+
+</page>
+
