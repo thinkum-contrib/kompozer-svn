@@ -1,5 +1,5 @@
 # sh
-# Build configuration script for LINUX
+# Build configuration script for FEDORA 3
 #
 # See http://www.mozilla.org/build/unix.html for build instructions.
 #
@@ -16,35 +16,14 @@ mk_add_options MOZ_STANDALONE_COMPOSER=1
 #export CC="gcc-3.0"
 #export CXX="g++-3.0"
 
-# Uncomment the 3 following lines on Debian (this includes
-# Linspire)
-export OS_LIBS="-lc -lpthread"
-export CFLAGS="-DDEBIAN"
-export CXXFLAGS="-DDEBIAN"
+# build in a separate directory (optional)
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
 
-# Uncomment the two following lines on Linspire
-#export LINSPIRE=1
-#mk_add_options LINSPIRE=1
-
-# Uncomment the two following lines if you want the Site Manager
-# to use KDE mimetypes icons. Warning, experimental feature...
-# You may have to edit the following files
-#   mozilla/composer/app/Makefile.in
-#   mozilla/editor/libeditor/html/Makefile.in
-#   mozilla/composer/src/*
-#export SITE_MANAGER_KDE_ICON_STYLE=1
-#mk_add_options SITE_MANAGER_KDE_ICON_STYLE=1
-
-# Uncomment and edit this line if you want to build
-# outside of the source tree
-#mk_add_options MOZ_OBJDIR=/home/glazman/bin/opt/0.80
-
-# Comment out the following lines for a debug build
+# Comment out the following lines for an optimized build
 ac_add_options --enable-optimize
 ac_add_options --disable-debug
 
-# You may need to uncomment and edit that line. On Linspire,
-# just uncomment it
+# You may need to uncomment and edit that line
 #ac_add_options --with-default-mozilla-five-home=/usr/lib/mozilla
 
 # You probably have nothing to change below that line
@@ -73,8 +52,8 @@ ac_add_options  --with-system-zlib
 ac_add_options  --enable-toolkit=gtk2
 ac_add_options  --enable-default-toolkit=gtk2
 ac_add_options  --enable-xft
+# added for fedora3, not sure it's really required
 ac_add_options  --disable-freetype2
 
 # Note: Only include icon for mac, windows and os2
 ac_add_options --enable-image-decoders=default,-xbm
-

@@ -1,6 +1,16 @@
-#build in a separate directory (optional)
+# .mozconfig file for Ubuntu 
+# successfully tested on Dapper Drake (6.06.2) and Hardy Heron (8.04.1)
+#
+# main dependancies:
+#   libgtk2.0-dev     : installs atk, cairo, pango if needed
+#   libgnomevfs2-dev  : installs avahi, bonobo, idl, gconf, orbit if needed
+#   autoconf2.13      : other versions will *not* work
+#
+
+# build in a separate directory (optional)
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
 
+# build the standalone composer, obviously
 mk_add_options MOZ_CO_PROJECT=composer
 ac_add_options --enable-application=composer
 
@@ -8,8 +18,7 @@ ac_add_options --enable-application=composer
 ac_add_options --enable-optimize 
 ac_add_options --disable-debug
 
-# don't change anything below this line
-# unless you know exactly what you're doing
+# adapt the following lines according to your distribution
 
 ac_add_options --enable-xpfe-components
 ac_add_options --disable-tests
