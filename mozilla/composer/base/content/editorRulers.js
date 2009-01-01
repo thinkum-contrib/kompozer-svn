@@ -333,6 +333,7 @@ function FillHorizontalRuler(ruler, elt)
       var right = cell.realXPosition - 2;
     } else {
       right = cell.offsetLeft;
+      //right = elt.offsetLeft - GetBodyElement().parentNode.scrollLeft; // Kaze, not working as expected
     }
 
     while (cell)
@@ -342,14 +343,13 @@ function FillHorizontalRuler(ruler, elt)
       var tagName = cell.nodeName.toLowerCase();
       if (tagName == "td" || tagName == "th")
       {
-        // gecko 1.7
-        //var x     = cell.realXPosition;
-        //var w     = cell.realWidth;
-        // gecko 1.8
-        var x     = cell.offsetLeft;
-        var w     = cell.clientWidth;
         if (USE_CORE_PATCH) {
+          var x = cell.realXPosition;
+          var w = cell.realWidth;
         } else {
+          x = cell.offsetLeft;
+          //x = cell.offsetLeft - GetBodyElement().parentNode.scrollLeft; // Kaze, not working as expected
+          w = cell.clientWidth;
         }
 
         var newSeparator = document.createElementNS(XUL_NS, "hbox");
