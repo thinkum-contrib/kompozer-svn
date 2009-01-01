@@ -333,7 +333,6 @@ function FillHorizontalRuler(ruler, elt)
       var right = cell.realXPosition - 2;
     } else {
       right = cell.offsetLeft;
-      //right = elt.offsetLeft - GetBodyElement().parentNode.scrollLeft; // Kaze, not working as expected
     }
 
     while (cell)
@@ -348,7 +347,6 @@ function FillHorizontalRuler(ruler, elt)
           var w = cell.realWidth;
         } else {
           x = cell.offsetLeft;
-          //x = cell.offsetLeft - GetBodyElement().parentNode.scrollLeft; // Kaze, not working as expected
           w = cell.clientWidth;
         }
 
@@ -414,7 +412,8 @@ function FillHorizontalRuler(ruler, elt)
         x = tbody.realXPosition;
         w = tbody.realWidth;
       } else {
-        x = tbody.offsetLeft;
+        //x = tbody.offsetLeft;
+        x = tbody.offsetLeft - GetBodyElement().parentNode.scrollLeft; // Kaze
         w = tbody.clientWidth;
       }
     }
@@ -424,7 +423,8 @@ function FillHorizontalRuler(ruler, elt)
         x = elt.realXPosition;
         w = elt.realWidth;
       } else {
-        x = elt.offsetLeft;
+        //x = elt.offsetLeft;
+        x = elt.offsetLeft - GetBodyElement().parentNode.scrollLeft; // Kaze
         w = elt.clientWidth;
       }
     }
