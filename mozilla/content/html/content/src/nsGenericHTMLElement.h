@@ -155,6 +155,18 @@ public:
   nsresult GetClientHeight(PRInt32* aClientHeight);
   nsresult GetClientWidth(PRInt32* aClientWidth);
   nsresult ScrollIntoView(PRBool aTop);
+
+#ifdef MOZ_STANDALONE_COMPOSER
+  // required for KompoZer's rulers
+  nsresult GetRealXPosition(PRInt32* aXPosition);
+  nsresult GetRealYPosition(PRInt32* aYPosition);
+  nsresult GetRealWidth(PRInt32* aWidth);
+  nsresult GetRealHeight(PRInt32* aHeight);
+  nsresult GetElementPosition(PRInt32 & aX, PRInt32 & aY, PRInt32 & aW, PRInt32 & aH);
+  //nsPoint  GetClientOrigin(nsIPresContext* aPresContext, nsIFrame* aFrame);
+  //nsresult AdjustRectForMargins(nsIFrame* aFrame, nsRect& aRect);
+#endif
+
   // Declare Focus(), Blur(), GetTabIndex(), SetTabIndex(), GetSpellcheck() and
   // SetSpellcheck() such that classes that inherit interfaces with those 
   // methods properly override them

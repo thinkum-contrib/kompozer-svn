@@ -4318,3 +4318,205 @@ nsGenericHTMLElement::SyncEditorsOnSubtree(nsIContent* content)
     }
   }
 }
+
+#ifdef MOZ_STANDALONE_COMPOSER
+// required for KompoZer's rulers
+// see also mozilla/dom/public/idl/html/nsIDOMNSHTMLElement.idl
+
+nsresult
+nsGenericHTMLElement::GetRealXPosition(PRInt32* aXPosition)
+{
+  PRInt32 y, w, h;
+  GetElementPosition(*aXPosition, y, w, h);
+  return NS_OK;
+}
+
+nsresult
+nsGenericHTMLElement::GetRealYPosition(PRInt32* aYPosition)
+{
+  PRInt32 x, w, h;
+  GetElementPosition(x, *aYPosition, w, h);
+  return NS_OK;
+}
+
+nsresult
+nsGenericHTMLElement::GetRealWidth(PRInt32* aWidth)
+{
+  PRInt32 x, y, h;
+  GetElementPosition(x, y, *aWidth, h);
+  return NS_OK;
+}
+
+nsresult
+nsGenericHTMLElement::GetRealHeight(PRInt32* aHeight)
+{
+  PRInt32 x, y, w;
+  GetElementPosition(x, y, w, *aHeight);
+  return NS_OK;
+}
+
+nsresult
+nsGenericHTMLElement::GetElementPosition(PRInt32 & aX, PRInt32 & aY,
+                                         PRInt32 & aW, PRInt32 & aH)
+{
+  nsCOMPtr<nsIDOMElement> elt = do_QueryInterface(this);
+
+  // Get current document
+  nsIDocument *mDocument = GetCurrentDoc();
+  if (!mDocument) {
+    return NS_ERROR_FAILURE;
+  }
+
+  // Get Presentation shell 0
+  nsIPresShell *presShell = mDocument->GetShellAt(0);
+  if (!presShell) {
+    return NS_ERROR_FAILURE;
+  }
+
+  // Get the Presentation Context from the Shell
+  //nsCOMPtr<nsIPresContext> presContext;
+  //presShell->GetPresContext(getter_AddRefs(presContext));
+  // <nsIPresContext> is deprecated on Gecko 1.8.1
+  nsPresContext *presContext = GetPresContext();
+  //nsCOMPtr<nsPresContext> presContext = GetPresContext();
+  if (!presContext) {
+    return NS_ERROR_FAILURE;
+  }
+
+  // Flush all pending notifications so that our frames are uptodate
+  //mDocument->FlushPendingNotifications(); // gecko 1.7
+  mDocument->FlushPendingNotifications(Flush_Frames); // gecko 1.8.1
+
+  float t2p;
+  t2p = presContext->TwipsToPixels();
+
+  nsCOMPtr<nsIRenderingContext> rcontext;
+
+  nsCOMPtr<nsIContent> content = do_QueryInterface(this);
+
+  // tables are handled specifically
+  nsAutoString tagName;
+  GetTagName(tagName);
+  if (tagName.Equals(NS_LITERAL_STRING("table"), nsCaseInsensitiveStringComparator())) {
+    PRInt32 kids = GetChildCount(), index;
+    nsCOMPtr<nsIDOMElement> elt;
+    for (index = 0; index < kids; index++) {
+      nsIContent *kid = GetChildAt(index);
+      elt = do_QueryInterface(kid);
+      if (elt) {
+        elt->GetNodeName(tagName);
+        if (tagName.Equals(NS_LITERAL_STRING("tbody"), nsCaseInsensitiveStringComparator()))
+          break;
+        else
+          elt = nsnull;
+      }
+    }
+    if (!elt)
+      content = do_QueryInterface(elt);
+  }
+
+  nsIFrame* frame = nsnull;
+  presShell->GetPrimaryFrameFor(content, &frame);
+  if (!frame) {
+    aX = -1;
+    aY = -1;
+    aW = -1;
+    aH = -1;
+    return NS_OK;
+  }
+
+  if (!rcontext) {
+    presShell->CreateRenderingContext(frame, getter_AddRefs(rcontext));
+  }
+  // get view bounds in case this frame is being scrolled
+  nsRect rect = frame->GetRect();
+
+  //nsPoint origin = GetClientOrigin(presContext, frame);
+  // <Kaze> compute client origin here because:
+  //   * the nsIPresContext argument is deprecated, see bug #276015
+  //   * it avoids an <nsIFrame> dependency in the header file
+  //   * it's not called anywhere else
+  nsPoint origin(0, 0);
+  nsIView* view;
+  frame->GetOffsetFromView(origin, &view);
+  nsIView* rootView = nsnull;
+  if (view) {
+    nsIViewManager* viewManager = view->GetViewManager();
+    NS_ASSERTION(viewManager, "View must have a viewmanager");
+    viewManager->GetRootView(rootView);
+  }
+  while (view) {
+    origin += view->GetPosition();
+    if (view == rootView) {
+      break;
+    }
+    view = view->GetParent();
+  } // </Kaze>
+
+  rect.MoveTo(origin);
+
+  aX = NSTwipsToIntPixels(rect.x, t2p);
+  aY = NSTwipsToIntPixels(rect.y, t2p);
+  aW = NSTwipsToIntPixels(rect.width, t2p);
+  aH = NSTwipsToIntPixels(rect.height, t2p);
+
+  return NS_OK;
+}
+
+// now included in GetElementPosition()
+/*
+ *nsPoint
+ *nsGenericHTMLElement::GetClientOrigin(nsIPresContext* aPresContext, nsIFrame* aFrame)
+ *{
+ *  nsPoint result(0,0);
+ *  nsIView* view;
+ *  aFrame->GetOffsetFromView(aPresContext, result, &view);
+ *  nsIView* rootView = nsnull;
+ *  if (view) {
+ *    nsIViewManager* viewManager = view->GetViewManager();
+ *    NS_ASSERTION(viewManager, "View must have a viewmanager");
+ *    viewManager->GetRootView(rootView);
+ *  }
+ *  while (view) {
+ *    result += view->GetPosition();
+ *    if (view == rootView) {
+ *      break;
+ *    }
+ *    view = view->GetParent();
+ *  }
+ *  return result;
+ *}
+ */
+
+// unused, disabled
+/*
+ *nsresult
+ *nsGenericHTMLElement::AdjustRectForMargins(nsIFrame* aFrame, nsRect& aRect)
+ *{
+ *    const nsStyleMargin* margins = aFrame->GetStyleMargin();
+ *
+ *    // adjust coordinates for margins
+ *    nsStyleCoord coord;
+ *    if (margins->mMargin.GetTopUnit() == eStyleUnit_Coord) {
+ *        margins->mMargin.GetTop(coord);
+ *        aRect.y -= coord.GetCoordValue();
+ *        aRect.height += coord.GetCoordValue();
+ *    }
+ *    if (margins->mMargin.GetLeftUnit() == eStyleUnit_Coord) {
+ *        margins->mMargin.GetLeft(coord);
+ *        aRect.x -= coord.GetCoordValue();
+ *        aRect.width += coord.GetCoordValue();
+ *    }
+ *    if (margins->mMargin.GetRightUnit() == eStyleUnit_Coord) {
+ *        margins->mMargin.GetRight(coord);
+ *        aRect.width += coord.GetCoordValue();
+ *    }
+ *    if (margins->mMargin.GetBottomUnit() == eStyleUnit_Coord) {
+ *        margins->mMargin.GetBottom(coord);
+ *        aRect.height += coord.GetCoordValue();
+ *    }
+ *
+ *    return NS_OK;
+ *}
+ */
+#endif

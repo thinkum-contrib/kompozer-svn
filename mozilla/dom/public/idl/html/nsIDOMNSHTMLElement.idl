@@ -64,6 +64,15 @@ interface nsIDOMNSHTMLElement : nsISupports
   // |top| is optional in JS, scriptability of this method is done in
   // nsHTMLElementSH
   void scrollIntoView(in boolean top);
+
+#ifdef MOZ_STANDALONE_COMPOSER
+  // required for KompoZer's rulers
+  readonly attribute long             realXPosition;
+  readonly attribute long             realYPosition;
+  readonly attribute long             realWidth;
+  readonly attribute long             realHeight;
+#endif
+
 };
 
 [scriptable, uuid(91fdb05e-f1af-4857-a604-45448bc02471)]
