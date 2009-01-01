@@ -38,24 +38,26 @@
 
 const HTML_NS = "http://www.w3.org/1999/xhtml";
 
-// <Kaze>  this ruler management relies on 4 specific properties:
+// <Kaze>  The ruler management relies on 4 specific properties:
 //   * realXPosition
 //   * realYPosition
 //   * realWidth
 //   * realHeight
 //
-// these properties are implemented with a patch on the Gecko core, see:
+// These properties are implemented with a patch on the Gecko core, see:
 //   * mozilla/dom/public/idl/html/nsIDOMNSHTMLElement.idl
 //   * mozilla/content/html/content/src/nsGenericHTMLElement.h
 //   * mozilla/content/html/content/src/nsGenericHTMLElement.cpp
 //
-// this patch used to work properly on Gecko 1.7 but crashes Gecko 1.8.1
-// and it should be possible to implement these properties with pure JavaScript
+// This patch used to work properly on Gecko 1.7;
+// it has caused some crashes Gecko 1.8.1, though it seems to work well now.
+//
+// However, it should be possible to implement these properties with pure JavaScript
 // so let's use this USE_CORE_PATCH constant to test both behaviors.
 
-const USE_CORE_PATCH = false;
+const USE_CORE_PATCH = true;
 
-// turn this constant to "true" if you want to crash KompoZer ;-)
+// TODO: replace this constant by a preprocessor definition to spare a few cycles.
 // </Kaze>
 
 var gRulerRow = null;
