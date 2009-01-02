@@ -38,6 +38,7 @@
 var gDialog;
 var gLastSelectedElement;
 var gLastSelectedStyle;
+var gLastHoveredIndex;
 var gLastHoveredCell;
 
 // Event listeners
@@ -58,6 +59,7 @@ function domStartup() {
   gLastSelectedElement = null;
   gLastSelectedStyle   = null;
   gLastHoveredCell     = null;
+  gLastHoveredIndex    = -1;
 
   // HTML tree
   var element = window.top.gLastFocusNode;
@@ -288,6 +290,11 @@ function onMouseOverHtmlItem(e) {
   gDialog.htmlTree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
   var index = row.value;
 
+  // store this index to try to spare a few cycles...
+  if (index == gLastHoveredIndex)
+    return;
+  gLastHoveredIndex = index;
+
   // apply 'hover' property on the hovered treecell
   if (gLastHoveredCell)
     gLastHoveredCell.removeAttribute("properties");
@@ -313,6 +320,7 @@ function onMouseOutHtmlItem() {
 
 function onOpenHtmlItem(e) {
   var selectedElement = GetSelectedElement();
+  window.top.doAdvancedProperties(selectedElement);
 }
 
 function GetSelectedElement() {

@@ -212,9 +212,12 @@
     <!-- HTML source browser/editor -->
     <deck id="kpzDeck" insertafter="EditModeToolbar" selectedIndex="0" style="min-height: 5em;">
       <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
+               ondblclick="editNodeToggle();"
                context="viewSourceContextMenu"/>
-      <textbox id="kpzInput"   flex="1" multiline="true" type="text" value=""
-               context="editSourceContextMenu"/>
+      <!--
+         -<textbox id="kpzInput"   flex="1" multiline="true" type="text" value=""
+         -         context="editSourceContextMenu"/>
+         -->
     </deck>
     <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="false"
               insertafter="EditModeToolbar"

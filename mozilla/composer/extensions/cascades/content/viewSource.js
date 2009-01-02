@@ -39,6 +39,9 @@
 // reference to the currently viewed/edited node
 var gViewedElement = null;
 var gEditedElement = null;
+var gSourceEditor  = null;
+//var gSourceBrowser = null;
+//var gSourceDeck    = null;
     
 /*****************************************************************************\
  *                                                                           *
@@ -589,62 +592,104 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
 
 function editNodeToggle() {
   var deck = document.getElementById("kpzDeck");
+
   if (gViewedElement.tagName.toLowerCase() == "html")
     gViewedElement = gViewedElement.firstChild;
-  var isHead = (gViewedElement.tagName.toLowerCase() == "head");
-  //var sel = deck.selectedIndex;
-  //if (sel > 0) { // from editor to viewer
+  //var isHead = (gViewedElement.tagName.toLowerCase() == "head");
+
+  // Note: gSourceEditor is built dynamically
+  // because I haven't found any other way to clear its undo history.
 
   if (gEditedElement) { // from editor to viewer
-    if (isHead)
-      editHeadFinish();
-    else
-      editNodeFinish();
+    gSourceEditor.removeAttribute("onblur");
+    // flush changes
+    editNodeFlush();
     deck.selectedIndex = 0;
-  } else {              // from viewer to editor
-    if (isHead)
-      editHeadStart();
-    else
-      editNodeStart();
+    // destroy the textbox
+    deck.removeChild(gSourceEditor);
+    gSourceEditor = null;  // XXX does this free the memory as it should?
+    GetCurrentEditor().selection.collapseToStart();
+  }
+  else {                // from viewer to editor
+    // create a textbox
+    gSourceEditor = document.createElementNS(XUL_NS, "textbox");
+    gSourceEditor.setAttribute("flex", "1");
+    gSourceEditor.setAttribute("type", "text");
+    gSourceEditor.setAttribute("multiline", "true");
+    deck.appendChild(gSourceEditor);
+    // start editing
+    editNodeStart();
     deck.selectedIndex = 1;
+    // auto-confirm changes when the user clicks outside the source editor
+    gSourceEditor.setAttribute("onblur", "editNodeToggle();");
   }
 }
 
 function editNodeStart() {
-  var input = document.getElementById("kpzInput");
+  var editor = GetCurrentEditor();
+  if (!editor) return;
 
-  // hide NVU_NS nodes
-  MakePhpAndCommentsInvisible(gViewedElement.ownerDocument, gViewedElement);
-
-  var selection;
-  SelectFocusNodeAncestor(gViewedElement);
-
-  try {
-    selection = GetCurrentEditor().outputToString("text/html", 35); // OutputWrap+OutputFormatted+OutputSelectionOnly
-  } catch (e) {}
-  if (selection)
-    selection = (selection.replace(/<body[^>]*>/,"")).replace(/<\/body>/,"");
-  if (selection)
-    input.value = selection;
+  if (gViewedElement.tagName.toLowerCase() == "head") {
+    // <head> element
+    gSourceEditor.value = gViewedElement.innerHTML;
+    //editor.selection.collapseToStart();
+  }
+  else {
+    // hide NVU_NS nodes
+    MakePhpAndCommentsInvisible(gViewedElement.ownerDocument, gViewedElement);
+    // selected the element and get its HTML code
+    var selection;
+    SelectFocusNodeAncestor(gViewedElement);
+    try {
+      selection = editor.outputToString("text/html", 35); // OutputWrap+OutputFormatted+OutputSelectionOnly
+    } catch (e) {}
+    if (selection)
+      selection = (selection.replace(/<body[^>]*>/,"")).replace(/<\/body>/,"");
+    if (selection)
+      gSourceEditor.value = selection;
+  }
 
   // Set initial focus
-  input.focus();
-  input.setSelectionRange(0,0);
+  gSourceEditor.focus();
+  gSourceEditor.setSelectionRange(0,0);
   gEditedElement = gViewedElement;
 }
 
-function editNodeFinish() {
-  var input = document.getElementById("kpzInput");
-  var html = input.value.replace(/\s*$/, '');
-  if (html) try {
-    SelectFocusNodeAncestor(gEditedElement);
-    GetCurrentEditor().insertHTML(html);
-  } catch (e) {}
+function editNodeFlush() {
+  var editor = GetCurrentEditor();
+  if (!editor || !gEditedElement) return;
 
-  // show NVU_NS nodes
-  if (!gEditedElement)
-    alert("no gEditedElement");
-  MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
+  var html = gSourceEditor.value.replace(/\s*$/, '');
+  if (html) try {
+    if (gViewedElement.tagName.toLowerCase() == "head") {
+      // <head> element
+      editor.beginTransaction();
+      editor.incrementModificationCount(1);
+      gEditedElement.innerHTML = html;
+
+      // Update document title
+      // (must do this for proper conversion of "escaped" characters)
+      var title = "";
+      var titlenodelist = editor.document.getElementsByTagName("title");
+      if (titlenodelist) {
+        var titleNode = titlenodelist.item(0);
+        if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
+          title = titleNode.firstChild.data;
+        // XXX HACK glazou
+        if (title == "\n")
+          title = "";
+      }
+      if (editor.document.title != title)
+        SetDocumentTitle(title);
+      editor.endTransaction();
+    }
+    else {
+      SelectFocusNodeAncestor(gEditedElement);
+      editor.insertHTML(html);
+      // show NVU_NS nodes
+      MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
+    }
+  } catch (e) {}
 
   // Reset editor focus
   gContentWindow.focus();
@@ -660,56 +705,6 @@ function editNodeCancel() {
 
   // restore focus
   gContentWindow.focus();
-  gEditedElement = null;
-}
-
-function editHeadStart() {
-  var editor = document.getElementById("kpzInput");
-  editor.value = gViewedElement.innerHTML;
-
-  // Set initial focus
-  editor.focus();
-  editor.setSelectionRange(0,0);
-  gEditedElement = gViewedElement;
-}
-
-function editHeadFinish() {
-  var editor = GetCurrentEditor();
-  if (!editor)
-    return;
-
-  var input = document.getElementById("kpzInput");
-  var html = input.value.replace(/\s*$/, '');
-
-  if (html) try {
-    editor.beginTransaction();
-    editor.incrementModificationCount(1);
-
-    gEditedElement.innerHTML = html;
-
-    // Update document title
-    // (must do this for proper conversion of "escaped" characters)
-    var title = "";
-    var titlenodelist = editor.document.getElementsByTagName("title");
-    if (titlenodelist) {
-      var titleNode = titlenodelist.item(0);
-      if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
-        title = titleNode.firstChild.data;
-      // XXX HACK glazou
-      if (title == "\n")
-        title = "";
-    }
-    if (editor.document.title != title)
-      SetDocumentTitle(title);
-
-    editor.endTransaction();
-  } catch (e) {
-    alert(e);
-  }
-
-  // Reset editor focus
-  gContentWindow.focus();
-  viewNodeSource(gEditedElement);
   gEditedElement = null;
 }
 

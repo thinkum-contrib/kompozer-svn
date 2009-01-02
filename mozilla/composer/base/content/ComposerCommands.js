@@ -408,22 +408,23 @@ function goDoCommandParams(command, params)
 
 function pokeStyleUI(uiID, aDesiredState)
 {
- try {
-  var commandNode = top.document.getElementById(uiID);
-  if (!commandNode)
-    return;
-
-  var uiState = ("true" == commandNode.getAttribute("state"));
-  if (aDesiredState != uiState)
+  try
   {
-    var newState;
-    if (aDesiredState)
-      newState = "true";
-    else
-      newState = "false";
-    commandNode.setAttribute("state", newState);
-  }
- } catch(e) { dump("poking UI for "+uiID+" failed: "+e+"\n"); }
+    var commandNode = top.document.getElementById(uiID);
+    if (!commandNode)
+      return;
+
+    var uiState = ("true" == commandNode.getAttribute("state"));
+    if (aDesiredState != uiState)
+    {
+      var newState;
+      if (aDesiredState)
+        newState = "true";
+      else
+        newState = "false";
+      commandNode.setAttribute("state", newState);
+    }
+  } catch(e) { dump("poking UI for "+uiID+" failed: "+e+"\n"); }
 }
 
 function doStyleUICommand(cmdStr)
@@ -877,7 +878,6 @@ var nsPublishAsCommand =
 }
 
 // Kaze: this replaces the cmd_class command that used to be handled by the core patch
-// blatantly stolen from BlueGriffon
 var nsClassCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -893,11 +893,9 @@ var nsClassCommand =
     aParams.setBooleanValue("state_enabled", enabled);
     aParams.setBooleanValue("state_mixed", false);
     var selContainer = GetSelectionContainer();
-    if (selContainer)
-    {
+    if (selContainer) {
       var classes = GetEditorClasses(selContainer.node).classes;
-      if (classes)
-      {
+      if (classes) {
         aParams.setCStringValue("state_attribute", classes);
         return;
       }
@@ -908,31 +906,51 @@ var nsClassCommand =
 
   doCommandParams: function(aCommandName, aParams, aRefCon)
   {
+    var editor = GetCurrentEditor();
+    var selection = editor.selection;
+    var selContainer = GetSelectionContainer();
     var className = aParams.getCStringValue("state_attribute");
-    var node = GetSelectionContainer().node;
+    var node;
 
-    var retValue = GetEditorClasses(node);
-    var classes = retValue.classes;
-    node = retValue.node;
+    if (!selContainer.oneElementSelected && (selection.anchorNode == selection.focusNode)) {
+      // create a <span> element on the selection
+      var txtElement = editor.document.createTextNode(selection.toString());
+      if (!txtElement) return;
 
-    var newList = className;
-    if (classes)
-    {
-      var list = classes.split(" ");
-      var found = false;
-      newList = "";
-      for (var i = 0; i < list.length; i++)
-      {
-        if (list[i] == className)
-          found = true;
-        else
-          newList += list[i] + " ";
-      }
-      if (!found)
-        newList += className;
+      var spanElement = editor.createElementWithDefaults("span");
+      spanElement.setAttribute("class", className);
+      spanElement.appendChild(txtElement);
+
+      editor.insertElementAtSelection(spanElement, true);
+      window.content.focus();        
     }
 
-    GetCurrentEditor().setAttribute(node, "class", newList);
+    else {
+      // add a new class to the selection container
+      var retValue = GetEditorClasses(selContainer.node);
+      var classes = retValue.classes;
+      node = retValue.node;
+
+      var newList = className;
+      if (classes) {
+        var list = classes.split(" ");
+        var found = false;
+        newList = "";
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] == className)
+            found = true;
+          else
+            newList += list[i] + " ";
+        }
+        if (!found)
+          newList += className;
+      }
+
+      if (newList.length)
+        GetCurrentEditor().setAttribute(node, "class", newList);
+      else
+        GetCurrentEditor().removeAttribute(node, "class");
+    }
   }
 }
 
