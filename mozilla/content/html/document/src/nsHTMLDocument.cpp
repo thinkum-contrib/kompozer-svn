@@ -1374,6 +1374,9 @@ nsHTMLDocument::CreateProcessingInstruction(const nsAString& aTarget,
                                             const nsAString& aData,
                                             nsIDOMProcessingInstruction** aReturn)
 {
+#ifdef MOZ_STANDALONE_COMPOSER
+  return nsDocument::CreateProcessingInstruction(aTarget, aData, aReturn);
+#else
   if (IsXHTML()) {
     return nsDocument::CreateProcessingInstruction(aTarget, aData, aReturn);
   }
@@ -1382,6 +1385,7 @@ nsHTMLDocument::CreateProcessingInstruction(const nsAString& aTarget,
   *aReturn = nsnull;
 
   return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
+#endif
 }
 
 NS_IMETHODIMP

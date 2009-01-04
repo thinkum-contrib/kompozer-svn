@@ -65,6 +65,11 @@
 #include "nsContentSink.h"
 #include "nsTHashtable.h"
 #include "nsNetUtil.h"
+
+#ifdef MOZ_STANDALONE_COMPOSER
+#include "nsIDOMProcessingInstruction.h"
+#endif
+
 //
 // XXX THIS IS TEMPORARY CODE
 // There's a considerable amount of copied code from the
@@ -677,6 +682,59 @@ nsHTMLFragmentContentSink::AddComment(const nsIParserNode& aNode)
 NS_IMETHODIMP
 nsHTMLFragmentContentSink::AddProcessingInstruction(const nsIParserNode& aNode)
 {
+#ifdef MOZ_STANDALONE_COMPOSER
+  FlushText();
+
+  nsAutoString piText(aNode.GetText());
+
+  // is the string long enough to contain <?php?> ?
+  if (piText.Length() >= 7) {
+    // retrieve the target of the processing instruction
+    nsString::const_iterator start, end;
+    piText.BeginReading(start);
+    start.advance(2);
+    end = start;
+    end.advance(3);
+
+    // check if it's a PHP processing instruction
+    NS_NAMED_LITERAL_STRING(phpString, "php");
+    if (Substring(start, end).Equals(phpString,
+                                     nsCaseInsensitiveStringComparator()))
+    {
+      // skip leading whitespaces in PI's data
+      start = end;
+      while (*start == ' '  ||
+             *start == '\n' ||
+             *start == '\r' ||
+             *start == '\t')
+        ++start;
+
+      // get PI's data
+      piText.EndReading(end);
+      end.advance(-2);
+      nsAutoString data(Substring(start, end));
+
+      // create PI node
+      nsCOMPtr<nsIContent> node;
+      nsresult rv = NS_NewXMLProcessingInstruction(getter_AddRefs(node),
+                                                   mNodeInfoManager,
+                                                   phpString, 
+                                                   data);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      nsCOMPtr<nsIDOMProcessingInstruction> domPI(do_QueryInterface(node));
+      NS_ENSURE_TRUE(domPI, NS_ERROR_UNEXPECTED);
+
+      nsIContent *parent = GetCurrentContent();
+
+      if (nsnull == parent) {
+        parent = mRoot;
+      }
+      
+      parent->AppendChildTo(node, PR_FALSE);
+    }
+  }
+#endif /* MOZ_STANDALONE_COMPOSER */
   return NS_OK;
 }
 

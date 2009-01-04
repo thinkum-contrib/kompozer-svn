@@ -67,6 +67,9 @@
 
 #include "nsIDOMText.h"
 #include "nsIDOMComment.h"
+#ifdef MOZ_STANDALONE_COMPOSER
+#include "nsIDOMProcessingInstruction.h"
+#endif
 #include "nsIDOMDocument.h"
 #include "nsIDOMNSDocument.h"
 #include "nsIDOMDOMImplementation.h"
@@ -466,7 +469,7 @@ public:
 
   NS_DECL_ISUPPORTS
 
-	// nsIRequest
+  // nsIRequest
   NS_IMETHOD GetName(nsACString &result)
   {
     result.AssignLiteral("about:layout-dummy-request");
@@ -523,7 +526,7 @@ public:
     return NS_OK;
   }
 
- 	// nsIChannel
+  // nsIChannel
   NS_IMETHOD GetOriginalURI(nsIURI **aOriginalURI)
   {
     *aOriginalURI = gURI;
@@ -709,6 +712,9 @@ public:
   nsresult AddLeaf(const nsIParserNode& aNode);
   nsresult AddLeaf(nsGenericHTMLElement* aContent);
   nsresult AddComment(const nsIParserNode& aNode);
+#ifdef MOZ_STANDALONE_COMPOSER
+  nsresult AddProcessingInstruction(const nsIParserNode& aNode);
+#endif
   nsresult End();
 
   nsresult GrowStack();
@@ -1545,6 +1551,98 @@ SinkContext::AddComment(const nsIParserNode& aNode)
 
   return rv;
 }
+
+#ifdef MOZ_STANDALONE_COMPOSER
+nsresult
+SinkContext::AddProcessingInstruction(const nsIParserNode& aNode)
+{
+  SINK_TRACE_NODE(SINK_TRACE_CALLS,
+                  "SinkContext::AddLeaf", 
+                  nsHTMLTag(aNode.GetNodeType()), 
+                  mStackPos, mSink);
+  FlushTextAndRelease();
+
+  if (!mSink) {
+    return NS_ERROR_UNEXPECTED;
+  }
+
+  nsAutoString piText(aNode.GetText());
+  PRInt32 tokenType = aNode.GetTokenType();
+
+  // is the string long enough to contain <?php?> ?
+  if (piText.Length() >= 7) {
+    // retrieve the target of the processing instruction
+    nsString::const_iterator start, end;
+    piText.BeginReading(start);
+    start.advance(2);
+    end = start;
+    end.advance(3);
+
+    // check if it's a PHP processing instruction
+    NS_NAMED_LITERAL_STRING(phpString, "php");
+    if (Substring(start, end).Equals(phpString,
+                                     nsCaseInsensitiveStringComparator()))
+    {
+      // skip leading whitespaces in PI's data
+      start = end;
+      while (*start == ' '  ||
+             *start == '\n' ||
+             *start == '\r' ||
+             *start == '\t')
+        ++start;
+
+      // get PI's data
+      piText.EndReading(end);
+      end.advance(-2);
+      nsAutoString data(Substring(start, end));
+
+      // create PI node
+      nsCOMPtr<nsIContent> node;
+      nsresult rv = NS_NewXMLProcessingInstruction(getter_AddRefs(node),
+                                                   mSink->mNodeInfoManager,
+                                                   phpString, 
+                                                   data);
+      NS_ENSURE_SUCCESS(rv, rv);
+
+      nsCOMPtr<nsIDOMProcessingInstruction> domPI(do_QueryInterface(node));
+      NS_ENSURE_TRUE(domPI, NS_ERROR_UNEXPECTED);
+
+      NS_ASSERTION(mStackPos > 0, "stack out of bounds");
+      if (mStackPos <= 0) {
+        return NS_ERROR_FAILURE;
+      }
+
+      nsGenericHTMLElement* parent;
+      if (!mSink->mBody && !mSink->mFrameset && mSink->mHead) {
+        parent = mSink->mHead;
+      } else {
+        parent = mStack[mStackPos - 1].mContent;
+      }
+
+      // If the parent has an insertion point, insert rather than append.
+      if (mStack[mStackPos - 1].mInsertionPoint != -1) {
+        parent->InsertChildAt(node,
+                              mStack[mStackPos - 1].mInsertionPoint++,
+                              PR_FALSE);
+      } else {
+        parent->AppendChildTo(node, PR_FALSE);
+      }
+
+      DidAddContent(node, PR_FALSE);
+
+#ifdef DEBUG
+      if (mPreAppend &&
+          SINK_LOG_TEST(gSinkLogModuleInfo, SINK_ALWAYS_REFLOW)) {
+        mSink->ForceReflow();
+      }
+#endif /* DEBUG */
+      return rv;
+    }
+  }
+  NS_WARNING("only PHP processing instructions are preserved in HTML documents");
+  return NS_OK;
+}
+#endif /* MOZ_STANDALONE_COMPOSER */
 
 nsresult
 SinkContext::End()
@@ -3112,7 +3210,7 @@ HTMLContentSink::SetDocumentTitle(const nsAString& aTitle, const nsIParserNode* 
 
 /**
  * This gets called by the parsing system when we find a comment
- * @update	gess11/9/98
+ * @update  gess11/9/98
  * @param   aNode contains a comment token
  * @return  error code
  */
@@ -3132,7 +3230,7 @@ HTMLContentSink::AddComment(const nsIParserNode& aNode)
 
 /**
  * This gets called by the parsing system when we find a PI
- * @update	gess11/9/98
+ * @update  gess11/9/98
  * @param   aNode contains a comment token
  * @return  error code
  */
@@ -3143,6 +3241,10 @@ HTMLContentSink::AddProcessingInstruction(const nsIParserNode& aNode)
 
   MOZ_TIMER_START(mWatch);
   // Implementation of AddProcessingInstruction() should start here
+
+#ifdef MOZ_STANDALONE_COMPOSER
+  nsresult rv = mCurrentContext->AddProcessingInstruction(aNode);
+#endif
 
   MOZ_TIMER_STOP(mWatch);
 

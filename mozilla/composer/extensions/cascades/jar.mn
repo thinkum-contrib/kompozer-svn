@@ -52,3 +52,6 @@ classic.jar:
      skin/classic/editor/icons/style.png                     (skin/icons/style.png)
      skin/classic/editor/icons/css.png                       (skin/icons/css.png)
      skin/classic/editor/icons/smallicons/css.png            (skin/icons/smallicons/css.png)
++    skin/classic/editor/icons/grip-hrz-after.gif            (/themes/classic/global/splitter/grip-hrz-after.gif)
++    skin/classic/editor/icons/grip-hrz-before.gif           (/themes/classic/global/splitter/grip-hrz-before.gif)
+

@@ -74,6 +74,10 @@
 #include "nsUnicharUtils.h"
 #include "nsReadableUtils.h"
 
+#ifdef MOZ_STANDALONE_COMPOSER
+#define NVU_NS NS_LITERAL_STRING("http://disruptive-innovations.com/zoo/nvu")
+#endif
+
 nsresult NS_NewDomSelection(nsISelection **aDomSelection);
 
 enum nsRangeIterationDirection {
@@ -296,10 +300,47 @@ nsDocumentEncoder::SerializeNodeStart(nsIDOMNode* aNode, PRInt32 aStartOffset,
       // we need to tell the serializer if the original had children.
       // Some serializers (notably XML) need this information 
       // in order to handle empty tags properly.
+
+#ifdef MOZ_STANDALONE_COMPOSER
+      // don't serialize NVU_NS elements
+      PRBool isInNvuTag = PR_FALSE;
+      //if (type == nsIDOMNode::ELEMENT_NODE && !(mFlags & nsIDocumentEncoder::PreserveNvuElements))
+      if (true)
+      {
+        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+        nsAutoString namespaceURI;
+        nsresult rv = element->GetNamespaceURI(namespaceURI);
+        if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
+          isInNvuTag = PR_TRUE;
+        else
+        {
+          nsCOMPtr<nsIDOMNode> parentNode;
+          nsresult rv = aNode->GetParentNode(getter_AddRefs(parentNode));
+          if (NS_SUCCEEDED(rv) && parentNode)
+          {
+            element = do_QueryInterface(parentNode);
+            if (element)
+            {
+              nsresult rv = element->GetNamespaceURI(namespaceURI);
+              if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
+                isInNvuTag = PR_TRUE;
+            }
+          }
+        }
+      }
+      if (!isInNvuTag)
+      {
+        PRBool hasChildren;
+        mSerializer->AppendElementStart(element, 
+                                        NS_SUCCEEDED(aNode->HasChildNodes(&hasChildren)) && hasChildren,
+                                        aStr);
+      }
+#else
       PRBool hasChildren;
       mSerializer->AppendElementStart(element, 
                                       NS_SUCCEEDED(aNode->HasChildNodes(&hasChildren)) && hasChildren,
                                       aStr);
+#endif
       break;
     }
     case nsIDOMNode::TEXT_NODE:
@@ -348,8 +389,42 @@ nsDocumentEncoder::SerializeNodeEnd(nsIDOMNode* aNode,
   switch (type) {
     case nsIDOMNode::ELEMENT_NODE:
     {
+#ifdef MOZ_STANDALONE_COMPOSER
+      // don't serialize NVU_NS elements
+      PRBool isInNvuTag = PR_FALSE;
+      //if (type == nsIDOMNode::ELEMENT_NODE && !(mFlags & nsIDocumentEncoder::PreserveNvuElements))
+      if (true)
+      {
+        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+        nsAutoString namespaceURI;
+        nsresult rv = element->GetNamespaceURI(namespaceURI);
+        if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
+          isInNvuTag = PR_TRUE;
+        else
+        {
+          nsCOMPtr<nsIDOMNode> parentNode;
+          nsresult rv = aNode->GetParentNode(getter_AddRefs(parentNode));
+          if (NS_SUCCEEDED(rv) && parentNode)
+          {
+            element = do_QueryInterface(parentNode);
+            if (element)
+            {
+              nsresult rv = element->GetNamespaceURI(namespaceURI);
+              if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
+                isInNvuTag = PR_TRUE;
+            }
+          }
+        }
+      }
+      if (!isInNvuTag)
+      {
+        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+        mSerializer->AppendElementEnd(element, aStr);
+      }
+#else
       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
       mSerializer->AppendElementEnd(element, aStr);
+#endif
       break;
     }
   }
@@ -1086,8 +1161,14 @@ nsHTMLCopyEncoder::Init(nsIDocument* aDocument,
   mIsCopying = PR_TRUE;
   mDocument = aDocument;
 
-
+#ifdef MOZ_STANDALONE_COMPOSER
+  if (!aMimetype.IsEmpty())
+    mMimeType = aMimetype;
+  else
+    mMimeType.AssignLiteral("text/html");
+#else
   mMimeType.AssignLiteral("text/html");
+#endif
   
   // Make all links absolute when copying
   // (see related bugs #57296, #41924, #58646, #32768)

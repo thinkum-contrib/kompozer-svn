@@ -239,10 +239,32 @@ toolbaritem menuitem {
   padding-left: 20px;
 }
 
-
 /* Kaze */
 #structToolbar .toolbarbutton-text {
   margin: 0 !important;
   text-align: left !important;
+}
+
+splitter#browser-splitter grippy {
+  display: block !important;
+  cursor: pointer;
+  border-left: 1px solid ThreeDShadow;
+  border-right: 1px solid ThreeDShadow;
+  min-width:  115px;
+  min-height: 4px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  /*background-image: url("chrome://global/skin/splitter/grip-hrz-after.gif");*/
+  background-image: url("chrome://editor/skin/icons/grip-hrz-after.gif");
+  /*background-position: center;*/
+}
+
+splitter#browser-splitter[state="collapsed"] grippy {
+  /*background-image: url("chrome://global/skin/splitter/grip-hrz-before.gif");*/
+  background-image: url("chrome://editor/skin/icons/grip-hrz-before.gif");
+}
+
+splitter#browser-splitter grippy:hover {
+  background-color: #CCCCFF;
 }
 
