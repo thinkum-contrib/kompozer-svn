@@ -118,10 +118,12 @@ function cleanPopup(menuPopup) {
   }
 }
 
-function InitIDSelectMenu(menuPopup) {
+function InitIDSelectMenu(menuPopup, fromSidebar) {
   cleanPopup(menuPopup);
   
-  var id = gContextMenuFiringDocumentElement.getAttribute("id");
+  //var id = gContextMenuFiringDocumentElement.getAttribute("id");
+  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var id = elt.getAttribute("id");
   if (id)
   {
     var menuEntry = document.createElementNS(XUL_NS, "menuitem");
@@ -147,7 +149,14 @@ function InitIDSelectMenu(menuPopup) {
     for (index = 0; index < idListLength; index++)
       idListArray.push(idList.item(index).substr(1));
     */
-  var idListArray = CssUtils.getAllIdsForDocument(GetCurrentEditor().document);
+  var editor, idListArray;
+  if (fromSidebar) {
+    editor = GetCurrentEditorFromSidebar();
+    idListArray = window.top.CssUtils.getAllIdsForDocument(editor.document);
+  } else {
+    editor = GetCurrentEditor();
+    idListArray = CssUtils.getAllIdsForDocument(editor.document);
+  }
   if (idListArray && idListArray.length) {
     if (id) {
       var menuSep = document.createElementNS(XUL_NS, "menuseparator");
@@ -177,10 +186,12 @@ function InitIDSelectMenu(menuPopup) {
   }
 }
 
-function InitClassSelectMenu(menuPopup) {
+function InitClassSelectMenu(menuPopup, fromSidebar) {
   cleanPopup(menuPopup);
 
-  var classes   = gContextMenuFiringDocumentElement.getAttribute("class");
+  //var classes = gContextMenuFiringDocumentElement.getAttribute("class");
+  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var classes = elt.getAttribute("class");
   var classesArray, classesArrayLength;
   if (classes)
   {
@@ -216,7 +227,15 @@ function InitClassSelectMenu(menuPopup) {
       classListArray.push(classList.item(index).substr(1));
     classListArray.sort();
   */
-  var classListArray = CssUtils.getAllClassesForDocument(GetCurrentEditor().document);
+  //var classListArray = CssUtils.getAllClassesForDocument(GetCurrentEditor().document);
+  var editor, classListArray;
+  if (fromSidebar) {
+    editor = GetCurrentEditorFromSidebar();
+    classListArray = window.top.CssUtils.getAllClassesForDocument(editor.document);
+  } else {
+    editor = GetCurrentEditor();
+    classListArray = CssUtils.getAllClassesForDocument(editor.document);
+  }
   if (classListArray && classListArray.length)
   {
     if (classesArrayLength)
@@ -260,7 +279,7 @@ function InitClassSelectMenu(menuPopup) {
   }
 }
 
-function onClassSelectChange() {             // modified
+function onClassSelectChange(fromSidebar) {             // modified
   var menuPopup = document.getElementById("classSelectMenuPopup");
   var resultingClassAttribute = "";
   var classEntry = menuPopup.firstChild;
@@ -277,18 +296,24 @@ function onClassSelectChange() {             // modified
     classEntry = classEntry.nextSibling;
   }
   // <Kaze>
-  //~ GetCurrentEditor().setAttribute(gContextMenuFiringDocumentElement, "class", resultingClassAttribute);
+  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
+  //~ GetCurrentEditor().setAttribute(elt, "class", resultingClassAttribute);
   if (/^[\s]*$/.test(resultingClassAttribute))
-    GetCurrentEditor().removeAttribute(gContextMenuFiringDocumentElement, "class");
+    editor.removeAttribute(elt, "class");
   else
-    GetCurrentEditor().setAttribute(gContextMenuFiringDocumentElement, "class", resultingClassAttribute);
+    editor.setAttribute(elt, "class", resultingClassAttribute);
   // refresh the structure toolbar
-  gLastFocusNode = null;
-  setTimeout("UpdateStructToolbar();", 100);
+  //gLastFocusNode = null;
+  //setTimeout("UpdateStructToolbar();", 100);
+  if (fromSidebar)
+    window.top.setTimeout("ResetStructToolbar();", 100);
+  else
+    setTimeout("ResetStructToolbar();", 100);
   // </Kaze>
 }
 
-function onIDSelectChange() {                // modified
+function onIDSelectChange(fromSidebar) {                // modified
   var menuPopup = document.getElementById("idSelectMenuPopup");
   var classEntry = menuPopup.firstChild;
   var resultingID;
@@ -307,24 +332,30 @@ function onIDSelectChange() {                // modified
   // <Kaze>
   if (resultingID) {
     var currID = null;
-    if (gContextMenuFiringDocumentElement.hasAttribute("id"))
-      currID = gContextMenuFiringDocumentElement.getAttribute("id");
+    var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+    var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
+    if (elt.hasAttribute("id"))
+      currID = elt.getAttribute("id");
 
     if (resultingID == currID) { // user reselects the element's current ID
       // in this case, just remove the current ID attribute
-      GetCurrentEditor().removeAttribute(gContextMenuFiringDocumentElement, "id");
+      editor.removeAttribute(elt, "id");
     }
     else {                       // user selects a new ID
       // first, check if an element (or more...) already has this ID
       var currElt;
-      while (currElt  = GetCurrentEditor().document.getElementById(resultingID))
-	      GetCurrentEditor().removeAttribute(currElt, "id");
+      while (currElt = editor.document.getElementById(resultingID))
+	      editor().removeAttribute(currElt, "id");
       // apply new ID on the selected element
-      GetCurrentEditor().setAttribute(gContextMenuFiringDocumentElement, "id", resultingID);
+      editor().setAttribute(elt, "id", resultingID);
     }
   }
   // refresh the structure toolbar
-  gLastFocusNode = null;
-  setTimeout("UpdateStructToolbar();", 100);
+  //gLastFocusNode = null;
+  //setTimeout("UpdateStructToolbar();", 100);
+  if (fromSidebar)
+    window.top.setTimeout("ResetStructToolbar();", 100);
+  else
+    setTimeout("ResetStructToolbar();", 100);
   // </Kaze>
 }

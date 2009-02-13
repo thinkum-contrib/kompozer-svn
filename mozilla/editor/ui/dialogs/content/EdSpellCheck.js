@@ -84,7 +84,7 @@ function Startup()
 
   }
   catch(ex) {
-   dump("*** Exception error: InitSpellChecker\n");
+    alert("*** Exception error: InitSpellChecker\n" + ex);
     window.close();
     return;
   }

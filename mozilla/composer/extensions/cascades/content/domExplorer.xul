@@ -31,6 +31,7 @@
   <script type="application/x-javascript" src="chrome://editor/content/sitemanagerUtils.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/domExplorer.js"/>
+  <script type="application/x-javascript" src="chrome://cascades/content/cascadesOverlay.js"/>
 
   <script type="application/x-javascript" src="chrome://cascades/content/EdCssProps.js" />
   <script type="application/x-javascript" src="chrome://cascades/content/EdCssProps-utils.js" />
@@ -77,6 +78,24 @@
     <!-- Trees: using a vbox/deck to avoid loosing space because of the tabpanels' border -->
     <vbox id="domTreeDeck" flex="1" class="html">
 
+      <!-- HTML popup, like on the structToolbar -->
+      <popup id="htmlTreeContext">
+        <menu id="idSelectMenu"
+              label="id" oncommand="onIDSelectChange(true)">
+              <!--label="&idSelectMenu.label;" oncommand="onIDSelectChange()">-->
+          <menupopup id="idSelectMenuPopup" onpopupshowing="InitIDSelectMenu(this, true)"/>
+        </menu>
+        <menu id="classSelectMenu"
+              label="class" oncommand="onClassSelectChange(true)">
+              <!--label="&classSelectMenu.label;" oncommand="onClassSelectChange()">-->
+          <menupopup id="classSelectMenuPopup" onpopupshowing="InitClassSelectMenu(this, true)"/>
+        </menu>
+        <menuseparator />
+        <menuitem id="styleProperties"
+                  label="style" oncommand="openCSSPropsDialog(this);" />
+                  <!--label="&inlineStyles.label;" accesskey="&inlinestyles.accesskey;" oncommand="openCSSPropsDialog(this);" />-->
+      </popup>
+
       <!-- HTML elements -->
       <tree id="htmlTree" flex="1" seltype="single"
             onclick="onSelectHtmlItem(event);"
@@ -89,7 +108,7 @@
         <treecols>
           <treecol id="elementCol" persist="width ordinal hidden" label="Elements" primary="true" flex="1"/>
         </treecols>
-        <treechildren id="elementList" flex="1"/>
+        <treechildren id="elementList" flex="1" context="htmlTreeContext"/>
       </tree>
 
       <!-- splitter -->

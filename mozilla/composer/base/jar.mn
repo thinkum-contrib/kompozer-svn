@@ -101,7 +101,7 @@ comm.jar:
 +   content/wallet/walletTasksOverlay.xul                     (content/walletTasksOverlay.xul)
 #
 %   content communicator           %content/communicator/
-#+  content/communicator/RealTimeSpell.js                (resources/content/RealTimeSpell.js)
+#+  content/communicator/RealTimeSpell.js                     (resources/content/RealTimeSpell.js)
     content/communicator/askViewZoom.xul                      (/xpfe/communicator/resources/content/askViewZoom.xul)
     content/communicator/askViewZoom.js                       (/xpfe/communicator/resources/content/askViewZoom.js)
     content/communicator/builtinURLs.js                       (/xpfe/communicator/resources/content/builtinURLs.js)

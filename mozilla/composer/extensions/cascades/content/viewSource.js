@@ -181,7 +181,7 @@ function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/edit
 
   toolbar.removeAttribute("label");
 
-  if ( IsInHTMLSourceMode() ) {
+  if (IsInHTMLSourceMode()) {
     document.getElementById("structSpacer").setAttribute("flex", "1"); // Kaze
     // we have destroyed the contents of the status bar and are about to recreate it;
     // but we don't want to do that in Source mode
@@ -708,6 +708,13 @@ function editNodeCancel() {
   gEditedElement = null;
 }
 
+function toggleSourceDock(menuitem) {
+  var deck     = document.getElementById("kpzDeck");
+  //var splitter = document.getElementById("kpzDeck");
+  //splitter.collapsed = menuitem.checked;
+  deck.collapsed = menuitem.value;
+  alert(menuitem.value);
+}
 
 /*****************************************************************************\
  *                                                                           *

@@ -2035,7 +2035,7 @@ function SetEditMode(mode)
     }
 
     source = "<ol><li>" + source + "</li></ol>";
-alert(source); // kaze
+//alert(source); // kaze
     InsertColoredSourceView(gSourceTextEditor, source);
 
     //InsertColoredSourceView(gSourceTextEditor, source.slice(start));
@@ -3885,7 +3885,6 @@ function RemoveTOC()
 
 function doOpenSiteManager()
 {
-  alert("sitemanager started");
   window.openDialog("chrome://editor/content/sitemanager.xul","_blank", 
                     "chrome,close,titlebar,modal,resizable=yes", "", "", null);
 }

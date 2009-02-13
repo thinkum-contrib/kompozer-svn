@@ -64,6 +64,17 @@
   <script type="application/x-javascript" src="chrome://global/content/viewPartialSource.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>
 
+  <!--
+     -<menupopup id="menu_View_Popup">
+     -  <menuitem id="viewSourceDock" type="checkbox" accesskey="&HTMLSourceMode.accesskey;"
+     -            insertbefore="blockOutlines"
+     -            oncommand="toggleSourceDock(this);"
+     -            key="key_sourceDockToggle"
+     -            label="&HTMLSourceMode.label;"/>
+     -  <menuseparator insertbefore="blockOutlines"/>
+     -</menupopup>
+     -->
+
   <!-- Tools menu item + keyboard shortcut -->
   <menupopup id="taskPopup">
     <menuitem label="&cascadesMenuItem.label;" key="stylekb"
@@ -72,7 +83,7 @@
               insertafter="menu_validate"/>
   </menupopup>
   <keyset id="editorKeys">
-    <key id="stylekb" keycode="&cascadesMenuItem.keybinding;" observes="cmd_cssEditor"/>
+    <key id="stylekb"  keycode="&cascadesMenuItem.keybinding;" observes="cmd_cssEditor"/>
   </keyset>
 
   <!-- Toolbar button -->
@@ -160,6 +171,7 @@
       <key id="key_editPrevSibling"  keycode="VK_UP"                 command="cmd_editPrevSibling" modifiers="alt"/>
       <key id="key_editNextSibling"  keycode="VK_DOWN"               command="cmd_editNextSibling" modifiers="alt"/>
       <key id="key_editFirstChild"   keycode="VK_RIGHT"              command="cmd_editFirstChild"  modifiers="alt"/>
+      <key id="key_sourceDockToggle" keycode="VK_F8"/>
     </keyset>
 
     <!-- context menu -->
@@ -210,7 +222,9 @@
     </popup>
 
     <!-- HTML source browser/editor -->
-    <deck id="kpzDeck" insertafter="EditModeToolbar" selectedIndex="0" style="min-height: 5em;">
+    <deck id="kpzDeck" insertafter="EditModeToolbar" selectedIndex="0"
+          style="min-height: 5em;"
+          collapsed="true">
       <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
                ondblclick="editNodeToggle();"
                context="viewSourceContextMenu"/>
@@ -222,6 +236,7 @@
     <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="false"
               insertafter="EditModeToolbar"
               resizebefore="farthest"
+              state="collapsed"
               collapse="after">
       <grippy />
     </splitter>

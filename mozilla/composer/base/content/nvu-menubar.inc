@@ -108,6 +108,12 @@
                 hidden="true"
                 label="&HTMLSourceMode.label;"/>
       <menuitem id="viewPreviewMode"               type="radio" group="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"/>
+      <!-- Kaze -->
+      <menuseparator/>
+      <menuitem id="viewSourceDock"                type="checkbox"           accesskey="&HTMLSourceMode.accesskey;" observes="cmd_SourceDockToggle"
+                key="key_sourceDockToggle"
+                label="&HTMLSourceMode.label;"/>
+      <!-- /Kaze -->
       <menuseparator />
       <!-- disabled because Gecko does not allow generated content on BR after Moz1.7
         <menuitem id="viewParagraphMarks" type="checkbox" label="&viewParagraphMarks.label;"

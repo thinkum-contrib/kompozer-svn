@@ -457,125 +457,123 @@ function newCssPropertyChildren(cssText, baseUrl) {
   return propChildren;
 }
 
-// CSS sandbox
-
-/*
- *function FillCssTree(sheetsTree) {
- *  // remove all entries in the tree
- *  //CleanSheetsTree(sheetsTree);
- *
- *  // Look for the stylesheets attached to the current document
- *  // Get them from the STYLE and LINK elements because of async sheet loading :
- *  // the LINK element is always here while the corresponding sheet might be
- *  // delayed by network
- *  var headNode = GetHeadElement();
- *  if ( headNode && headNode.hasChildNodes() ) {
- *    var ssn = headNode.childNodes.length;
- *    objectsArray = new Array();
- *    if (ssn) {
- *      var i;
- *      gInsertIndex = -1;
- *      for (i=0; i<ssn; i++) {
- *        var ownerNode = headNode.childNodes[i];
- *        AddSheetEntryToTree(sheetsTree, ownerNode); 
- *      }
- *    }
- *  }
- *}
- *
- *function onSelectCssItem(e) {
- *  // get the selected tree item (if any)
- *  //var selectedItem = getSelectedItem(gDialog.sheetsTree);
- *  var selectedItem = getSelectedItem(gDialog.cssTree);
- *
- *  if (!objectsArray)
- *    return;
- *  // look for the object in objectsArray corresponding to the
- *  // selectedItem
- *  var i, l = objectsArray.length;
- *  var cssElt = null;
- *  var type   = null;
- *  if (selectedItem) {
- *    for (i=0; i<l; i++) {
- *      if (objectsArray[i].xulElt == selectedItem) {
- *        type   = objectsArray[i].type;
- *        cssElt = objectsArray[i].cssElt;
- *        break;
- *      }
- *    }
- *  }
- *
- *  if (!cssElt) return;
- *  if (type != STYLE_RULE) return;
- *
- *  if (gLastSelectedStyle) {
- *    var tmp = gLastSelectedStyle.getElementsByTagName("treechildren").item(0);
- *    gLastSelectedStyle.removeChild(tmp);
- *    gLastSelectedStyle.removeAttribute("container");
- *    gLastSelectedStyle.removeAttribute("open");
- *  }
- *  gLastSelectedStyle = selectedItem;
- *
- *  var properties = PrettyPrintCSS(cssElt.cssText, null, true);
- *  var treechildren = document.createElementNS(XUL_NS, "treechildren");
- *  var rules = PrettyPrintCSS(cssElt.cssText).split("\n");
- *  for (i=0; i<rules.length; i++) {
- *    var treeitem = document.createElementNS(XUL_NS, "treeitem");
- *    var treerow  = document.createElementNS(XUL_NS, "treerow");
- *    var treecell = document.createElementNS(XUL_NS, "treecell");
- *    treecell.setAttribute("label", rules[i]);
- *    treerow.appendChild(treecell);
- *    treeitem.appendChild(treerow);
- *    treechildren.appendChild(treeitem);
- *  }
- *  selectedItem.setAttribute("container", "true");
- *  selectedItem.setAttribute("open", "true");
- *  selectedItem.appendChild(treechildren);
- *}
- *
- *function onMouseOverCssItem(e) {
- *  // get hovered item index
- *  var row = {};
- *  var col = {};
- *  var obj = {};
- *  // see: mozilla/browser/components/bookmarks/content/bookmarksTree.xml
- *  gDialog.cssTree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
- *  var index = row.value;
- *  if (index < 0)
- *    return;
- *
- *  // get hovered CSS rule
- *  var selectedItem = gDialog.cssTree.contentView.getItemAtIndex(index);
- *  var cssElt = null;
- *  if (selectedItem) {
- *    var i, l = objectsArray.length;
- *    for (i=0; i<l; i++) {
- *      if (objectsArray[i].xulElt == selectedItem) {
- *        cssElt = objectsArray[i].cssElt;
- *        break;
- *      }
- *    }
- *  }
- *
- *  // debug
- *  if (!cssElt) return;
- *  var properties = PrettyPrintCSS(cssElt.cssText, null, true);
- *  var selector   = cssElt.selectorText;
- *  gDialog.domPanelText.value = properties;
- *  document.getElementById("domLabel").setAttribute("value", selector);
- *
- *  //panel.openPopup(); // Gecko 1.9 only :-(
- *  return;
- *
- *  gDialog.domPanelText.value = cssElt.cssText;
- *  gDialog.domPanel.openPopup();
- *}
- *
- *function onMouseOutCssItem(e) {
- *  return;
- *  gDialog.domPanel.hidePopup();
- *}
- */
+/* CSS sandbox
+  *function FillCssTree(sheetsTree) {
+  *  // remove all entries in the tree
+  *  //CleanSheetsTree(sheetsTree);
+  *
+  *  // Look for the stylesheets attached to the current document
+  *  // Get them from the STYLE and LINK elements because of async sheet loading :
+  *  // the LINK element is always here while the corresponding sheet might be
+  *  // delayed by network
+  *  var headNode = GetHeadElement();
+  *  if ( headNode && headNode.hasChildNodes() ) {
+  *    var ssn = headNode.childNodes.length;
+  *    objectsArray = new Array();
+  *    if (ssn) {
+  *      var i;
+  *      gInsertIndex = -1;
+  *      for (i=0; i<ssn; i++) {
+  *        var ownerNode = headNode.childNodes[i];
+  *        AddSheetEntryToTree(sheetsTree, ownerNode); 
+  *      }
+  *    }
+  *  }
+  *}
+  *
+  *function onSelectCssItem(e) {
+  *  // get the selected tree item (if any)
+  *  //var selectedItem = getSelectedItem(gDialog.sheetsTree);
+  *  var selectedItem = getSelectedItem(gDialog.cssTree);
+  *
+  *  if (!objectsArray)
+  *    return;
+  *  // look for the object in objectsArray corresponding to the
+  *  // selectedItem
+  *  var i, l = objectsArray.length;
+  *  var cssElt = null;
+  *  var type   = null;
+  *  if (selectedItem) {
+  *    for (i=0; i<l; i++) {
+  *      if (objectsArray[i].xulElt == selectedItem) {
+  *        type   = objectsArray[i].type;
+  *        cssElt = objectsArray[i].cssElt;
+  *        break;
+  *      }
+  *    }
+  *  }
+  *
+  *  if (!cssElt) return;
+  *  if (type != STYLE_RULE) return;
+  *
+  *  if (gLastSelectedStyle) {
+  *    var tmp = gLastSelectedStyle.getElementsByTagName("treechildren").item(0);
+  *    gLastSelectedStyle.removeChild(tmp);
+  *    gLastSelectedStyle.removeAttribute("container");
+  *    gLastSelectedStyle.removeAttribute("open");
+  *  }
+  *  gLastSelectedStyle = selectedItem;
+  *
+  *  var properties = PrettyPrintCSS(cssElt.cssText, null, true);
+  *  var treechildren = document.createElementNS(XUL_NS, "treechildren");
+  *  var rules = PrettyPrintCSS(cssElt.cssText).split("\n");
+  *  for (i=0; i<rules.length; i++) {
+  *    var treeitem = document.createElementNS(XUL_NS, "treeitem");
+  *    var treerow  = document.createElementNS(XUL_NS, "treerow");
+  *    var treecell = document.createElementNS(XUL_NS, "treecell");
+  *    treecell.setAttribute("label", rules[i]);
+  *    treerow.appendChild(treecell);
+  *    treeitem.appendChild(treerow);
+  *    treechildren.appendChild(treeitem);
+  *  }
+  *  selectedItem.setAttribute("container", "true");
+  *  selectedItem.setAttribute("open", "true");
+  *  selectedItem.appendChild(treechildren);
+  *}
+  *
+  *function onMouseOverCssItem(e) {
+  *  // get hovered item index
+  *  var row = {};
+  *  var col = {};
+  *  var obj = {};
+  *  // see: mozilla/browser/components/bookmarks/content/bookmarksTree.xml
+  *  gDialog.cssTree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
+  *  var index = row.value;
+  *  if (index < 0)
+  *    return;
+  *
+  *  // get hovered CSS rule
+  *  var selectedItem = gDialog.cssTree.contentView.getItemAtIndex(index);
+  *  var cssElt = null;
+  *  if (selectedItem) {
+  *    var i, l = objectsArray.length;
+  *    for (i=0; i<l; i++) {
+  *      if (objectsArray[i].xulElt == selectedItem) {
+  *        cssElt = objectsArray[i].cssElt;
+  *        break;
+  *      }
+  *    }
+  *  }
+  *
+  *  // debug
+  *  if (!cssElt) return;
+  *  var properties = PrettyPrintCSS(cssElt.cssText, null, true);
+  *  var selector   = cssElt.selectorText;
+  *  gDialog.domPanelText.value = properties;
+  *  document.getElementById("domLabel").setAttribute("value", selector);
+  *
+  *  //panel.openPopup(); // Gecko 1.9 only :-(
+  *  return;
+  *
+  *  gDialog.domPanelText.value = cssElt.cssText;
+  *  gDialog.domPanel.openPopup();
+  *}
+  *
+  *function onMouseOutCssItem(e) {
+  *  return;
+  *  gDialog.domPanel.hidePopup();
+  *}
+  */
 
 // These functions are already defined in editorUtilities.js
 // but they don't work here

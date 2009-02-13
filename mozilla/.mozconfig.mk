@@ -12,6 +12,7 @@ MOZ_CO_PROJECT=composer
 # --disable-debug is used by configure (not client.mk)
 # --enable-xpfe-components is used by configure (not client.mk)
 # --disable-tests is used by configure (not client.mk)
+# --enable-extensions=default spellcheck is used by configure (not client.mk)
 # --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data is used by configure (not client.mk)
 # --enable-default-toolkit=gtk2 is used by configure (not client.mk)
 # --enable-xft is used by configure (not client.mk)

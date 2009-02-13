@@ -221,13 +221,15 @@ function SetupComposerWindowCommands()
   // Edit Mode commands
   if (GetCurrentEditorType() == "html")
   {
-    commandTable.registerCommand("cmd_NormalMode",         nsNormalModeCommand);
-    commandTable.registerCommand("cmd_AllTagsMode",        nsAllTagsModeCommand);
-    commandTable.registerCommand("cmd_HTMLSourceMode",     nsHTMLSourceModeCommand);
-    commandTable.registerCommand("cmd_PreviewMode",        nsPreviewModeCommand);
-    commandTable.registerCommand("cmd_FinishHTMLSource",   nsFinishHTMLSource);
-    commandTable.registerCommand("cmd_CancelHTMLSource",   nsCancelHTMLSource);
-    commandTable.registerCommand("cmd_updateStructToolbar", nsUpdateStructToolbarCommand);
+    commandTable.registerCommand("cmd_NormalMode",           nsNormalModeCommand);
+    commandTable.registerCommand("cmd_AllTagsMode",          nsAllTagsModeCommand);
+    commandTable.registerCommand("cmd_HTMLSourceMode",       nsHTMLSourceModeCommand);
+    commandTable.registerCommand("cmd_PreviewMode",          nsPreviewModeCommand);
+    commandTable.registerCommand("cmd_FinishHTMLSource",     nsFinishHTMLSource);
+    commandTable.registerCommand("cmd_CancelHTMLSource",     nsCancelHTMLSource);
+    commandTable.registerCommand("cmd_updateStructToolbar",  nsUpdateStructToolbarCommand);
+    // Kaze
+    commandTable.registerCommand("cmd_SourceDockToggle",     nsSourceDockToggle);
   }
 
   windowControllers.insertControllerAt(0, editorController);
@@ -3976,6 +3978,31 @@ var nsPreviewModeCommand =
   doCommand: function(aCommand)
   {
     SetEditMode(kDisplayModePreview);
+  }
+};
+
+// Kaze: source dock
+var nsSourceDockToggle =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsHTMLEditor());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    alert("coucou");
+    var deck = document.getElementById("kpzDeck");
+    //if (deck.hasAttribute("collapsed"))
+      //deck.removeAttribute("collapsed");
+    //else
+      //deck.setAttribute("collapsed", "true");
+
+    alert(deck.tagName);
+    deck.collapsed = !deck.collapsed;
   }
 };
 
