@@ -228,8 +228,7 @@ function SetupComposerWindowCommands()
     commandTable.registerCommand("cmd_FinishHTMLSource",     nsFinishHTMLSource);
     commandTable.registerCommand("cmd_CancelHTMLSource",     nsCancelHTMLSource);
     commandTable.registerCommand("cmd_updateStructToolbar",  nsUpdateStructToolbarCommand);
-    // Kaze
-    commandTable.registerCommand("cmd_SourceDockToggle",     nsSourceDockToggle);
+    commandTable.registerCommand("cmd_SourceDockToggle",     nsSourceDockToggle); // Kaze
   }
 
   windowControllers.insertControllerAt(0, editorController);
@@ -3994,15 +3993,7 @@ var nsSourceDockToggle =
 
   doCommand: function(aCommand)
   {
-    alert("coucou");
-    var deck = document.getElementById("kpzDeck");
-    //if (deck.hasAttribute("collapsed"))
-      //deck.removeAttribute("collapsed");
-    //else
-      //deck.setAttribute("collapsed", "true");
-
-    alert(deck.tagName);
-    deck.collapsed = !deck.collapsed;
+    toggleSourceDock(); // defined in mozilla/composer/extensions/cascades/viewSource.js
   }
 };
 

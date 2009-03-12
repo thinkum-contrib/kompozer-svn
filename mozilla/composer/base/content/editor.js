@@ -2035,7 +2035,6 @@ function SetEditMode(mode)
     }
 
     source = "<ol><li>" + source + "</li></ol>";
-//alert(source); // kaze
     InsertColoredSourceView(gSourceTextEditor, source);
 
     //InsertColoredSourceView(gSourceTextEditor, source.slice(start));

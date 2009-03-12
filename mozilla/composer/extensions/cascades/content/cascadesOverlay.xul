@@ -176,11 +176,13 @@
 
     <!-- context menu -->
     <popup id="viewSourceContextMenu" onpopupshowing="onViewSourceContextMenu();">
-      <menuitem id="vMenu_copy"      label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
-      <menuseparator/>
-      <menuitem id="vMenu_selectAll" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
-      <menuitem id="vMenu_findAgain"    label="find" hidden="true"/>
-      <menuseparator/>
+      <!--
+         -<menuitem id="vMenu_copy"      label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
+         -<menuseparator/>
+         -<menuitem id="vMenu_selectAll" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+         -<menuitem id="vMenu_findAgain"    label="find" hidden="true"/>
+         -<menuseparator/>
+         -->
       <menu id="viewTextZoomMenu" label="&menu_textSize.label;" accesskey="&menu_textSize.accesskey;">
         <menupopup>                    
           <menuitem id="vMenu_textEnlarge" command="cmd_textZoomEnlarge" 
@@ -210,13 +212,15 @@
          -<menuitem label="&redoCmd.label;"      accesskey="&redo.accesskey;"      command="cmd_redo"/>
          -<menuseparator/>
          -->
-      <menuitem label="&cutCmd.label;"       accesskey="&cut.accesskey;"       command="cmd_cut"/>
-      <menuitem label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
-      <menuitem label="&pasteCmd.label;"     accesskey="&paste.accesskey;"     command="cmd_paste"/>
-      <menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
-      <menuseparator/>
-      <menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
-      <menuseparator/>
+      <!--
+         -<menuitem label="&cutCmd.label;"       accesskey="&cut.accesskey;"       command="cmd_cut"/>
+         -<menuitem label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
+         -<menuitem label="&pasteCmd.label;"     accesskey="&paste.accesskey;"     command="cmd_paste"/>
+         -<menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
+         -<menuseparator/>
+         -<menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+         -<menuseparator/>
+         -->
       <menuitem label="&confirmNode.label;" command="cmd_editNodeToggle" key="key_editNodeToggle"/>
       <menuitem label="&cancelNode.label;"  command="cmd_editNodeCancel" key="key_editNodeCancel"/>
     </popup>
@@ -226,7 +230,7 @@
           style="min-height: 5em;"
           collapsed="true">
       <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
-               ondblclick="editNodeToggle();"
+               onclick="onClickSourceDock(event);"
                context="viewSourceContextMenu"/>
       <!--
          -<textbox id="kpzInput"   flex="1" multiline="true" type="text" value=""
@@ -236,6 +240,7 @@
     <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="false"
               insertafter="EditModeToolbar"
               resizebefore="farthest"
+              oncommand="updateViewSourceCheckbox(this);"
               state="collapsed"
               collapse="after">
       <grippy />

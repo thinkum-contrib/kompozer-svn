@@ -69,6 +69,9 @@
       <command id="cmd_AllTagsMode"      oncommand="goDoCommand('cmd_AllTagsMode')"    label="&AllTagsMode.label;"/>
       <command id="cmd_HTMLSourceMode"   oncommand="goDoCommand('cmd_HTMLSourceMode')"/>
       <command id="cmd_PreviewMode"      oncommand="goDoCommand('cmd_PreviewMode')"    label="&PreviewMode.label;"/>
+      <!-- Kaze -->
+      <command id="cmd_SourceDockToggle" oncommand="goDoCommand('cmd_SourceDockToggle')" label="&HTMLSourceMode.label;"/>
+      <!-- /Kaze -->
 
       <!-- only used in context popup menu -->
       <command id="cmd_editLink"         oncommand="goDoCommand('cmd_editLink')"/>
@@ -285,7 +288,8 @@
     <!-- Kaze -->
     <key id="revertkb"            key="&filerevert.keybinding;"     observes="cmd_revert"     modifiers="accel"/>
     <key id="previewkb"       keycode="&filepreview.keybinding;"    observes="cmd_preview" />
-    <key id="key_openHelp"    keycode="VK_F1" oncommand="openHelp('comp-doc', 'chrome://help/locale/nvu.rdf');"/>
+    <key id="key_SourceDockToggle"    keycode="VK_F8"               observes="cmd_SourceDockToggle"/>
+    <key id="key_openHelp"            keycode="VK_F1" oncommand="openHelp('comp-doc', 'chrome://help/locale/nvu.rdf');"/>
     <!-- /Kaze -->
     <key id="key_quit"/>
     <key id="key_undo"/>

@@ -590,6 +590,35 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
  *                                                                           *
 \*****************************************************************************/
 
+function toggleSourceDock(forceShow) {
+  var deck     = document.getElementById("kpzDeck");
+  var menuitem = document.getElementById("viewSourceDock");
+  var splitter = document.getElementById("browser-splitter");
+
+  if (forceShow || deck.hasAttribute("collapsed")) {
+    deck.removeAttribute("collapsed");
+    menuitem.setAttribute("checked", "true");
+    splitter.setAttribute("state", "expand");
+  } else {
+    deck.setAttribute("collapsed", "true");
+    menuitem.removeAttribute("checked");
+    splitter.setAttribute("state", "collapsed");
+  }
+}
+
+function updateViewSourceCheckbox(splitter) {
+  var menuitem = document.getElementById("viewSourceDock");
+  if (splitter.getAttribute("state") == "collapsed")
+    menuitem.removeAttribute("checked");
+  else
+    menuitem.setAttribute("checked", "true");
+}
+
+function onClickSourceDock(e) {
+  if (e.button == 0)
+    editNodeToggle();
+}
+
 function editNodeToggle() {
   var deck = document.getElementById("kpzDeck");
 
@@ -706,14 +735,6 @@ function editNodeCancel() {
   // restore focus
   gContentWindow.focus();
   gEditedElement = null;
-}
-
-function toggleSourceDock(menuitem) {
-  var deck     = document.getElementById("kpzDeck");
-  //var splitter = document.getElementById("kpzDeck");
-  //splitter.collapsed = menuitem.checked;
-  deck.collapsed = menuitem.value;
-  alert(menuitem.value);
 }
 
 /*****************************************************************************\
