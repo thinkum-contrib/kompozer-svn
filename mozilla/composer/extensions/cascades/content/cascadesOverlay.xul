@@ -227,7 +227,7 @@
 
     <!-- HTML source browser/editor -->
     <deck id="kpzDeck" insertafter="EditModeToolbar" selectedIndex="0"
-          style="min-height: 5em;"
+          style="min-height: 7em;"
           collapsed="true">
       <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
                onclick="onClickSourceDock(event);"

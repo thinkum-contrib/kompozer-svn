@@ -607,6 +607,7 @@ function toggleSourceDock(forceShow) {
 }
 
 function updateViewSourceCheckbox(splitter) {
+  // this is triggered when the user clicks on the splitter
   var menuitem = document.getElementById("viewSourceDock");
   if (splitter.getAttribute("state") == "collapsed")
     menuitem.removeAttribute("checked");
