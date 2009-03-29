@@ -233,7 +233,7 @@ function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/edit
   //} while (tag != "body" && tag != "head" && tag != "html");
   //} while (tmp != bodyElement);
   
-  // Kaze / TODO: only call if the previewer is visible / not collapsed
+  // display the source if the previewer is not collapsed
   //viewPartialSourceForFragment(gLastFocusNode);
   //viewNodeSource(gLastFocusNode); // faster and nicer but requires to patch the trunk to escape NvuNS nodes
   viewNodeSource(node);
@@ -403,6 +403,10 @@ function onViewSourceContextMenu() {
 }
 
 function viewNodeSource(node) {
+  // cancel if the source dock is collapsed
+  if (document.getElementById("kpzDeck").collapsed)
+    return;
+
   //highlightNode(null);
   gViewedElement = node;
 
@@ -599,6 +603,8 @@ function toggleSourceDock(forceShow) {
     deck.removeAttribute("collapsed");
     menuitem.setAttribute("checked", "true");
     splitter.setAttribute("state", "expand");
+    // display the current node's source
+    viewNodeSource(gLastFocusNode);
   } else {
     deck.setAttribute("collapsed", "true");
     menuitem.removeAttribute("checked");
@@ -611,8 +617,11 @@ function updateViewSourceCheckbox(splitter) {
   var menuitem = document.getElementById("viewSourceDock");
   if (splitter.getAttribute("state") == "collapsed")
     menuitem.removeAttribute("checked");
-  else
+  else {
     menuitem.setAttribute("checked", "true");
+    // display the current node's source
+    viewNodeSource(gLastFocusNode);
+  }
 }
 
 function onClickSourceDock(e) {

@@ -148,3 +148,10 @@ button .filePicker {
   height: 24px;
 }
 
+/* Kaze: hide all tabs if the tabbox is disabled */
+tabbox tab {
+  visibility: visible;
+}
+tabbox.disabled tab {
+  visibility: hidden;
+}

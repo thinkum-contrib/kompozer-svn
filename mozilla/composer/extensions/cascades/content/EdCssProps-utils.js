@@ -102,6 +102,8 @@ function getRuleIndexInRulesList(rulelist, rule)
 //   param boolean openOnly
 function getLocalFileURL(openOnly)
 {
+  if (!nsIFilePicker)
+    var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
   var fileType = "*";
   if (openOnly)

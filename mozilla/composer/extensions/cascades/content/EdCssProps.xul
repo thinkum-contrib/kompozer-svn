@@ -40,7 +40,8 @@
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://editor/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://editor/skin/EditorDialog.css"?>
-<?xml-stylesheet type="text/css" href="chrome://cascades/content/EdCssProps.css"?>
+<!--<?xml-stylesheet type="text/css" href="chrome://cascades/content/EdCssProps.css"?>-->
+<?xml-stylesheet type="text/css" href="chrome://editor/skin/EdCssProps.css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
@@ -154,7 +155,7 @@
                 id="expertModeCheckbox"
                 oncommand="toggleExpertMode();"/>
     </vbox>
-    <tabbox id="sheetTabbox">
+    <tabbox id="sheetTabbox" class="disabled">
       <tabs>
         <tab id="sheetInfoTab"
              label="&sheetInfoTab.label;"

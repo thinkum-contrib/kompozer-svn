@@ -232,10 +232,7 @@
       <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
                onclick="onClickSourceDock(event);"
                context="viewSourceContextMenu"/>
-      <!--
-         -<textbox id="kpzInput"   flex="1" multiline="true" type="text" value=""
-         -         context="editSourceContextMenu"/>
-         -->
+      <!-- a textbox will be dynamically created here when necessary -->
     </deck>
     <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="false"
               insertafter="EditModeToolbar"

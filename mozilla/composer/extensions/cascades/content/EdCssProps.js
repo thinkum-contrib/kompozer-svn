@@ -588,7 +588,10 @@ function onSelectCSSTreeItem(tab)
   if (gDialog.selectedType != STYLE_RULE) {
     // user did not select a CSSStyleRule, let's fallback to Info tab
     tab = GENERAL_TAB;
-  }
+    // Kaze: hide the other tabs
+    gDialog.sheetTabbox.setAttribute("class", "disabled");
+  } else
+    gDialog.sheetTabbox.removeAttribute("class");
   if (!tab) {
     // this method gets called by a selection in the tree. Is there a
     // tab already selected ? If yes, keep it; if no, fallback to the
