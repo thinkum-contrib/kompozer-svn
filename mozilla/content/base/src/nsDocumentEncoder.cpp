@@ -1161,7 +1161,10 @@ nsHTMLCopyEncoder::Init(nsIDocument* aDocument,
   mIsCopying = PR_TRUE;
   mDocument = aDocument;
 
-#ifdef MOZ_STANDALONE_COMPOSER
+#ifdef MOZ_STANDALONE_COMPOSER_17
+  // XXX this code has been applied to Nvu (gecko 1.7)
+  // but it breaks cut/copy with KompoZer (gecko 1.8.1)
+  // so let's forget it for the moment - hence the "_17" in the #ifdef
   if (!aMimetype.IsEmpty())
     mMimeType = aMimetype;
   else
