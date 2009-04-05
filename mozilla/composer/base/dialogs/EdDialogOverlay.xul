@@ -84,7 +84,7 @@
            oninput="ChangeLinkLocation();">
         <menupopup class="autocomplete-history-popup"
                popupalign="topleft" popupanchor="bottomleft"
-               oncommand="this.parentNode.value = event.target.getAttribute('label');"/>
+               oncommand="this.parentNode.value = event.target.getAttribute('label'); ChangeLinkLocation();"/>
       </textbox>
     </vbox>
     <toolbarbutton tooltiptext="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"

@@ -82,7 +82,7 @@ static const nsXREAppData kAppData = {
   NS_STRINGIFY(APP_VERSION),
   NS_STRINGIFY(BUILD_ID),
   "{136c295a-4a5a-41cf-bf24-5cee526720d5}",
-  "Copyright (c) 2008 contributors",
+  "Copyright (c) 2009 contributors",
   NS_XRE_ENABLE_EXTENSION_MANAGER
 };
 

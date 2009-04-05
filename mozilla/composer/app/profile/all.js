@@ -58,9 +58,10 @@ pref("xpinstall.dialog.progress.type.chrome", "Extension:Manager-extensions");
 // this application as an extension target, and by the SmartUpdate system to identify
 // this application to the Update server.
 pref("app.id", "{136c295a-4a5a-41cf-bf24-5cee526720d5}");
-pref("app.version", 
-#expand __APP_VERSION__
-);
+pref("app.version", "0.8a2");
+//pref("app.version", 
+//#expand __APP_VERSION__
+//);
 pref("app.extensions.version", "1.0");
 pref("app.build_id", 
 #expand __BUILD_ID__
@@ -133,9 +134,10 @@ pref("keyword.enabled", false);
 pref("general.useragent.locale",        "en-US");
 pref("general.useragent.contentlocale", "chrome://navigator-region/locale/region.properties");
 pref("general.useragent.vendor",        "kompozer.net");
-pref("general.useragent.vendorSub", 
-#expand __APP_VERSION__
-);
+pref("general.useragent.vendorSub",     "0.8a2");
+//pref("general.useragent.vendorSub",
+//#expand __APP_VERSION__
+//);
 
 pref("general.startup.browser",             false);
 pref("general.startup.mail",                false);

@@ -714,14 +714,20 @@ function EditorStartup()
   if ("arguments" in window && window.arguments.length > 0 && window.arguments[0]) try {
     var nsCommandLine = window.arguments[0].QueryInterface(Components.interfaces.nsICommandLine);
     if (nsCommandLine.length) {
-      url = nsCommandLine.getArgument(0);
+      var argNr = 0;
+      while (!url) {
+        url = nsCommandLine.getArgument(argNr);
+        if (url.substring(0, 1) == "-") // ignore "dashUnknown" arguments
+          url = null;
+        argNr++;
+      }
     }
   } catch(e) {
-    url = window.arguments[0];
+    //url = window.arguments[0];
   }
 
   // Kaze: if no URL is passed, use the default blank page (not in the core any more)
-  if(!url || !url.length) try {
+  if (!url || !url.length) try {
     url  = gPrefs.getCharPref("editor.default.doctype") == "xhtml" ? "about:x" : "about:";
     url += gPrefs.getBoolPref("editor.default.strictness") ? "strictblank" : "blank";
   } catch(e) {

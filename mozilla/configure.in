@@ -4410,7 +4410,7 @@ composer)
   MOZ_XUL_APP=1
   MOZ_STANDALONE_COMPOSER=1
   MOZ_COMPOSER=1
-  MOZ_APP_VERSION=`cat $topsrcdir/composer/config/version.txt`
+  MOZ_APP_VERSION="`cat $topsrcdir/composer/config/version.txt`"
   NECKO_PROTOCOLS="http,ftp,file,jar,viewsource,res,data"
   AC_DEFINE(MOZ_STANDALONE_COMPOSER)
   ;;

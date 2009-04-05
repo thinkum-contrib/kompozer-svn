@@ -358,6 +358,8 @@ function saveFontPrefs()
         var fixedSizePref    = "font.size.fixed."    + language;
         var minSizePref      = "font.minimum-size."  + language;
         var currDefaultFont  = "serif", currVariableSize = 12, currFixedSize = 12, minSizeVal = 0;
+        // Kaze: for some reason, 'getIntPref' doesn't work any more with Gecko 1.8.1
+        //       => using 'getPref' or 'GetIntPref' instead
         try
           {
             currDefaultFont = parent.hPrefWindow.getPref( "string", defaultFontPref );
@@ -365,17 +367,20 @@ function saveFontPrefs()
             //currFixedSize = pref.getIntPref( fixedSizePref );
             //minSizeVal = pref.getIntPref( minSizePref );
             currVariableSize = pref.GetIntPref( variableSizePref );
-            currFixedSize = pref.GetIntPref( fixedSizePref );
-            minSizeVal = pref.GetIntPref( minSizePref );
+            currFixedSize    = pref.GetIntPref( fixedSizePref );
+            minSizeVal       = pref.GetIntPref( minSizePref );
+            //currVariableSize = parent.hPrefWindow.getPref( "int", variableSizePref );
+            //currFixedSize    = parent.hPrefWindow.getPref( "int", fixedSizePref );
+            //minSizeVal       = parent.hPrefWindow.getPref( "int", minSizePref );
           }
         catch(e)
           {
-        alert("getIntPref error!"); // Kaze
           }
         if( currDefaultFont != dataObject.languageData[language].defaultFont )
           parent.hPrefWindow.setPref( "string", defaultFontPref, dataObject.languageData[language].defaultFont );
 
         // Kaze: for some reason, 'setIntPref' isn't recognized after the first call of this pref window
+        //       => using 'setPref' or 'SetIntPref' instead
         if( currVariableSize != dataObject.languageData[language].variableSize )
           pref.SetIntPref( variableSizePref, dataObject.languageData[language].variableSize );
           //pref.setIntPref( variableSizePref, dataObject.languageData[language].variableSize );
@@ -402,13 +407,11 @@ function saveFontPrefs()
       }
     catch(e)
       {
-        alert("getIntPref error!"); // Kaze
       }
     if( currFonts != documentFonts )
       pref.SetIntPref( "browser.display.use_document_fonts", documentFonts );
       //pref.setIntPref( "browser.display.use_document_fonts", documentFonts );
       //parent.hPrefWindow.setPref( "int", "browser.display.use_document_fonts", documentFonts );
-    alert("prefs saved"); // Kaze
   }
 
 function saveState()
@@ -476,16 +479,22 @@ function selectLanguage()
       }
 
     // and set the default font type and the font sizes
+    // Kaze: for some reason, 'getIntPref' doesn't work any more with Gecko 1.8.1
+    //       => using 'getPref' or 'GetIntPref' instead
     try
       {
         defaultFont.value = parent.hPrefWindow.getPref("string", "font.default." + languageList.value);
 
         var variableSizePref = "font.size.variable." + languageList.value;
-        var sizeVarVal = parent.hPrefWindow.pref.getIntPref( variableSizePref );
+        //var sizeVarVal = parent.hPrefWindow.pref.getIntPref( variableSizePref );
+        var sizeVarVal = parent.hPrefWindow.pref.GetIntPref( variableSizePref );
+        //var sizeVarVal = parent.hPrefWindow.getPref( "int", variableSizePref );
         variableSize.selectedItem = variableSize.getElementsByAttribute( "value", sizeVarVal )[0];
 
         var fixedSizePref = "font.size.fixed." + languageList.value;
-        var sizeFixedVal = parent.hPrefWindow.pref.getIntPref( fixedSizePref );
+        //var sizeFixedVal = parent.hPrefWindow.pref.getIntPref( fixedSizePref );
+        var sizeFixedVal = parent.hPrefWindow.pref.GetIntPref( fixedSizePref );
+        //var sizeFixedVal = parent.hPrefWindow.getPref( "int", fixedSizePref );
         fixedSize.selectedItem = fixedSize.getElementsByAttribute( "value", sizeFixedVal )[0];
       }
     catch(e) { } // font size lists can simply default to the first entry
@@ -494,7 +503,9 @@ function selectLanguage()
     try 
       {
         var minSizePref = "font.minimum-size." + languageList.value;
-        minSizeVal = parent.hPrefWindow.pref.getIntPref( minSizePref );
+        //minSizeVal = parent.hPrefWindow.pref.getIntPref( minSizePref );
+        minSizeVal = parent.hPrefWindow.pref.GetIntPref( minSizePref );
+        //minSizeVal = parent.hPrefWindow.getPref( "int", minSizePref );
       }
     catch(e) { }
     minSizeSelect( minSizeVal );

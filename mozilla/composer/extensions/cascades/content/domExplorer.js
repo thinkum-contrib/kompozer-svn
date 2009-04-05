@@ -124,12 +124,15 @@ function UpdateDomTrees(node) {
         + "\n node = " + node.nodeName
         + "\n gLastSelectedElement = " + gLastSelectedElement.nodeName
     );
-  } catch(e){
+  } catch(e) {
+    // XXX
     alert(e);
   }
 
   gLastSelectedElement = node;
-  gDialog.htmlTree.view.selection.clearSelection();
+  try { // htmlTree is hidden if we're in CSS-only mode
+    gDialog.htmlTree.view.selection.clearSelection();
+  } catch(e) {}
 
   //NotifyProcessors(kProcessorsWhenSelectionChanges, element);
   //if ((element == gLastFocusNode) && (oneElementSelected == gLastFocusNodeWasSelected))
@@ -140,11 +143,13 @@ function UpdateDomTrees(node) {
   // show the selected node in the HTML tree
   gDialog.htmlTreeDisabled = true;
 
-  var itemIndex = gDialog.htmlTree.contentView.getIndexOfItem(selectedItem);
-  gDialog.htmlTree.view.selection.select(itemIndex);
-  gDialog.htmlTree.treeBoxObject.ensureRowIsVisible(itemIndex);
+  try { // htmlTree is hidden if we're in CSS-only mode
+    var itemIndex = gDialog.htmlTree.contentView.getIndexOfItem(selectedItem);
+    gDialog.htmlTree.view.selection.select(itemIndex);
+    gDialog.htmlTree.treeBoxObject.ensureRowIsVisible(itemIndex);
 
-  gDialog.htmlTreeDisabled = false;
+    gDialog.htmlTreeDisabled = false;
+  } catch(e) {}
 }
 
 function CleanXulTree(treechildren) {
