@@ -726,6 +726,10 @@ function EditorStartup()
     //url = window.arguments[0];
   }
 
+  // Kaze: discard URL if it starts with a dash (= unrecognized argument)
+  if (url.substring(0,1) == "-")
+    url = null;
+
   // Kaze: if no URL is passed, use the default blank page (not in the core any more)
   if (!url || !url.length) try {
     url  = gPrefs.getCharPref("editor.default.doctype") == "xhtml" ? "about:x" : "about:";

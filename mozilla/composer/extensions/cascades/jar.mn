@@ -9,7 +9,7 @@ cascades.jar:
      content/cascades/ExtractStyles.js            (content/ExtractStyles.js)
      content/cascades/ExtractStyles.xul           (content/ExtractStyles.xul)
      content/cascades/cascadesOverlay.js          (content/cascadesOverlay.js)
-     content/cascades/cascadesOverlay.xul         (content/cascadesOverlay.xul)
+*+   content/cascades/cascadesOverlay.xul         (content/cascadesOverlay.xul)
      content/cascades/commonCssProps.js           (content/commonCssProps.js)
      content/cascades/compatibility.js            (content/compatibility.js)
      content/cascades/tabsOverlay.xul             (content/tabsOverlay.xul)

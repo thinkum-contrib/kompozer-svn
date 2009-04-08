@@ -101,7 +101,12 @@ postflight_all:
 	  $(DIST_PPC)/$(MOZ_PKG_APPNAME)/$(APPNAME)/$(BUILDCONFIG_JAR) \
 	  $(DIST_X86)/$(MOZ_PKG_APPNAME)/$(APPNAME)/$(BUILDCONFIG_JAR)
 	mkdir -p $(DIST_UNI)/$(MOZ_PKG_APPNAME)
+ifdef MOZ_STANDALONE_COMPOSER
+# for some reason, dist/universal is a folder when building KompoZer
+	rm -rf $(DIST_X86)/universal
+else
 	rm -f $(DIST_X86)/universal
+endif
 	ln -s $(DIST_UNI) $(DIST_X86)/universal
 	rm -rf $(DIST_UNI)/$(MOZ_PKG_APPNAME)/$(APPNAME)
 	$(TOPSRCDIR)/build/macosx/universal/unify \

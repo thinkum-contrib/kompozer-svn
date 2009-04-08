@@ -11,16 +11,14 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is Mozilla.org
+# The Original Code is the Mozilla Installer code.
 #
-# The Initial Developer of the Original Code is
-# Netscape Communications Corporation.
-# Portions created by the Initial Developer are Copyright (C) 2003
+# The Initial Developer of the Original Code is Mozilla Foundation
+# Portions created by the Initial Developer are Copyright (C) 2006
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#   Daniel Glazman (daniel@glazman.org), on behalf of Lindows.com
-#   Fabien Cazenave (kaze@kompozer.net)
+#  Robert Strong <robert.bugzilla@gmail.com>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,14 +34,17 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH     = ..
-topsrcdir = @top_srcdir@
-srcdir    = @srcdir@
-VPATH     = @srcdir@
+# NSIS defines for nightly builds.
+# The release build branding.nsi is located in other-license/branding/firefox/
+!define BrandShortName        "Bon Echo"
+!define BrandFullName         "Bon Echo"
+# BrandFullNameInternal is used for some registry and file system values that
+# should not contain release that may be in the BrandFullName (e.g. Beta 1, etc.)
+!define BrandFullNameInternal "Bon Echo"
+!define CompanyName           "mozilla.org"
+!define URLInfoAbout          "http://www.mozilla.org"
+!define URLUpdateInfo         "http://www.mozilla.org/projects/firefox"
+!define SurveyURL             "https://survey.mozilla.com/1/Mozilla%20Firefox/${AppVersion}/${AB_CD}/exit.html"
 
-include $(DEPTH)/config/autoconf.mk
-
-#DIRS     = base extensions components locales src app
-DIRS      = base extensions components locales app installer
-
-include $(topsrcdir)/config/rules.mk
+# Percentage of new "Standard" installs to enable talkback for
+!define RandomPercent         "75"
