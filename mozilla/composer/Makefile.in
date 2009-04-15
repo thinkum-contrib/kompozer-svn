@@ -44,6 +44,8 @@ VPATH     = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 #DIRS     = base extensions components locales src app
-DIRS      = base extensions components locales app installer
+DIRS      = base extensions components locales app
+# add "installer" dir to build on MacOS X
+#DIRS      = base extensions components locales app installer
 
 include $(topsrcdir)/config/rules.mk
