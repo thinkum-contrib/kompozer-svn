@@ -24,6 +24,10 @@
   <script type="application/x-javascript" src="chrome://editor/content/processors.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/phpAndComments.js"/>
 
+  <!-- Kaze: view source -->
+  <script type="application/x-javascript" src="chrome://editor/content/viewSource.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/viewPartialSource.js"/>
+
   <script type="application/x-javascript">
 // Kaze: the tabeditor's "oncommand" event doesn't update the window title
 //       on Ctrl + Tab / PgUpDn, let's use a Timeout for that

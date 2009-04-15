@@ -104,6 +104,7 @@
             onmouseout="onMouseOutHtmlItem(event);"
             hidecolumnpicker="true"
             disableKeyNavigation="true"
+          hidevscroll="true" class="plain"
             enableColumnDrag="true">
         <treecols>
           <treecol id="elementCol" persist="width ordinal hidden" label="Elements" primary="true" flex="1"/>

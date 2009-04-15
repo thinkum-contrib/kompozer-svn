@@ -37,19 +37,7 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-<!--<!DOCTYPE window SYSTEM "chrome://cascades/locale/cascadesOverlay.dtd">-->
-<!DOCTYPE window [
-<!ENTITY % cascadesDTD SYSTEM "chrome://cascades/locale/cascadesOverlay.dtd">
-%cascadesDTD;
-<!ENTITY % viewSourceDTD SYSTEM "chrome://cascades/locale/viewSource.dtd" >
-%viewSourceDTD;
-<!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
-%editorOverlayDTD;
-<!ENTITY % sourceDTD SYSTEM "chrome://global/locale/viewSource.dtd" >
-%sourceDTD;
-<!ENTITY % findBarDTD SYSTEM "chrome://global/locale/findbar.dtd" >
-%findBarDTD;
-]>
+<!DOCTYPE window SYSTEM "chrome://cascades/locale/cascadesOverlay.dtd">
 
 <overlay id="cascadesToolbar" 
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -61,8 +49,8 @@
   <script type="application/x-javascript" src="chrome://cascades/content/EdCssUtils.js"/>
 
   <!-- Kaze: view source -->
-  <script type="application/x-javascript" src="chrome://global/content/viewPartialSource.js"/>
-  <script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>
+  <!--<script type="application/x-javascript" src="chrome://global/content/viewPartialSource.js"/>-->
+  <!--<script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>-->
 
   <!--
      -<menupopup id="menu_View_Popup">
@@ -147,25 +135,12 @@
   <vbox id="appcontent">
 
     <!-- commands and keys -->
-    <command id="cmd_highlightSyntax"  oncommand="highlightSyntax();"/>
-    <command id="cmd_wrapLongLines"    oncommand="wrapLongLines()"/>
-    <command id="cmd_textZoomReduce"   oncommand="ZoomManager.prototype.getInstance().reduce();"/>
-    <command id="cmd_textZoomEnlarge"  oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
-    <command id="cmd_textZoomReset"    oncommand="ZoomManager.prototype.getInstance().reset();"/>
-    <command id="cmd_editNodeToggle"   oncommand="editNodeToggle();"/>
-    <command id="cmd_editNodeCancel"   oncommand="editNodeCancel();"/>
     <command id="cmd_editCurrentNode"  oncommand="selectNeighborElement(NODE_SELF);"/> 
     <command id="cmd_editParentNode"   oncommand="selectNeighborElement(NODE_PARENT);"/>
     <command id="cmd_editPrevSibling"  oncommand="selectNeighborElement(NODE_PREVSIBLING);"/>
     <command id="cmd_editNextSibling"  oncommand="selectNeighborElement(NODE_NEXTSIBLING);"/>
     <command id="cmd_editFirstChild"   oncommand="selectNeighborElement(NODE_FIRSTCHILD);"/>
     <keyset id="viewSourceKeys">
-      <key id="key_textZoomEnlarge"  key="&textEnlarge.commandkey;"  command="cmd_textZoomEnlarge" modifiers="accel"/>
-      <key id="key_textZoomEnlarge2" key="&textEnlarge.commandkey2;" command="cmd_textZoomEnlarge" modifiers="accel"/>
-      <key id="key_textZoomReduce"   key="&textReduce.commandkey;"   command="cmd_textZoomReduce"  modifiers="accel"/>
-      <key id="key_textZoomReset"    key="&textReset.commandkey;"    command="cmd_textZoomReset"   modifiers="accel"/>
-      <key id="key_editNodeToggle"   keycode="VK_RETURN"             command="cmd_editNodeToggle"  modifiers="alt"/>
-      <key id="key_editNodeCancel"   keycode="VK_ESCAPE"             command="cmd_editNodeCancel"/>
 #ifndef XP_MACOSX
       <key id="key_editCurrentNode"  keycode="VK_BACK"               command="cmd_editCurrentNode" modifiers="alt"/>
       <key id="key_editParentNode"   keycode="VK_LEFT"               command="cmd_editParentNode"  modifiers="alt"/>
@@ -184,74 +159,6 @@
 #endif
     </keyset>
 
-    <!-- context menu -->
-    <popup id="viewSourceContextMenu" onpopupshowing="onViewSourceContextMenu();">
-      <!--
-         -<menuitem id="vMenu_copy"      label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
-         -<menuseparator/>
-         -<menuitem id="vMenu_selectAll" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
-         -<menuitem id="vMenu_findAgain"    label="find" hidden="true"/>
-         -<menuseparator/>
-         -->
-      <menu id="viewTextZoomMenu" label="&menu_textSize.label;" accesskey="&menu_textSize.accesskey;">
-        <menupopup>                    
-          <menuitem id="vMenu_textEnlarge" command="cmd_textZoomEnlarge" 
-                    label="&menu_textEnlarge.label;" accesskey="&menu_textEnlarge.accesskey;"
-                    key="key_textZoomEnlarge"/>
-          <menuitem id="vMenu_textReduce" command="cmd_textZoomReduce" 
-                    label="&menu_textReduce.label;" accesskey="&menu_textReduce.accesskey;"
-                    key="key_textZoomReduce"/>
-          <menuseparator/>
-          <menuitem id="vMenu_textReset" command="cmd_textZoomReset"
-                    label="&menu_textReset.label;" accesskey="&menu_textReset.accesskey;"
-                    key="key_textZoomReset"/>
-        </menupopup>
-      </menu>
-      <menuitem id="vMenu_wrapLongLines"   type="checkbox" command="cmd_wrapLongLines"   checked="false"
-                label="&menu_wrapLongLines.title;" accesskey="&menu_wrapLongLines.accesskey;"/>
-      <menuitem id="vMenu_highlightSyntax" type="checkbox" command="cmd_highlightSyntax" hidden="true"
-                label="&menu_highlightSyntax.label;" accesskey="&menu_highlightSyntax.accesskey;"/>
-      <menuseparator/>
-      <menuitem id="vMenu_editNode"     label="&editNode.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
-      <menuitem id="vMenu_editHead"     label="&editHead.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
-      <menuitem id="vMenu_editBody"     label="&editBody.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
-    </popup>
-    <popup id="editSourceContextMenu">
-      <!--
-         -<menuitem label="&undoCmd.label;"      accesskey="&undo.accesskey;"      command="cmd_undo"/>
-         -<menuitem label="&redoCmd.label;"      accesskey="&redo.accesskey;"      command="cmd_redo"/>
-         -<menuseparator/>
-         -->
-      <!--
-         -<menuitem label="&cutCmd.label;"       accesskey="&cut.accesskey;"       command="cmd_cut"/>
-         -<menuitem label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
-         -<menuitem label="&pasteCmd.label;"     accesskey="&paste.accesskey;"     command="cmd_paste"/>
-         -<menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
-         -<menuseparator/>
-         -<menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
-         -<menuseparator/>
-         -->
-      <menuitem label="&confirmNode.label;" command="cmd_editNodeToggle" key="key_editNodeToggle"/>
-      <menuitem label="&cancelNode.label;"  command="cmd_editNodeCancel" key="key_editNodeCancel"/>
-    </popup>
-
-    <!-- HTML source browser/editor -->
-    <deck id="kpzDeck" insertafter="EditModeToolbar" selectedIndex="0"
-          style="min-height: 7em;"
-          collapsed="true">
-      <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
-               onclick="onClickSourceDock(event);"
-               context="viewSourceContextMenu"/>
-      <!-- a textbox will be dynamically created here when necessary -->
-    </deck>
-    <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="false"
-              insertafter="EditModeToolbar"
-              resizebefore="farthest"
-              oncommand="updateViewSourceCheckbox(this);"
-              state="collapsed"
-              collapse="after">
-      <grippy />
-    </splitter>
   </vbox>
 
 </overlay>

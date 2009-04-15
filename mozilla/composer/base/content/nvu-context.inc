@@ -90,7 +90,58 @@
       <menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
       <menuseparator/>
       <menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+      <menuseparator/>
+      <menuitem label="&confirmNode.label;"  key="key_editNodeToggle"          command="cmd_editNodeToggle"/>
+      <menuitem label="&cancelNode.label;"   key="key_editNodeCancel"          command="cmd_editNodeCancel"/>
     </popup>
+
+    <popup id="viewSourceContext" onpopupshowing="onViewSourceContextMenu();">
+      <!--
+         -<menuitem id="vMenu_copy"      label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
+         -<menuseparator/>
+         -<menuitem id="vMenu_selectAll" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+         -<menuitem id="vMenu_findAgain"    label="find" hidden="true"/>
+         -<menuseparator/>
+         -->
+      <menu id="viewTextZoomMenu" label="&menu_textSize.label;" accesskey="&menu_textSize.accesskey;">
+        <menupopup>                    
+          <menuitem id="vMenu_textEnlarge" command="cmd_textZoomEnlarge" 
+                    label="&menu_textEnlarge.label;" accesskey="&menu_textEnlarge.accesskey;"
+                    key="key_textZoomEnlarge"/>
+          <menuitem id="vMenu_textReduce" command="cmd_textZoomReduce" 
+                    label="&menu_textReduce.label;" accesskey="&menu_textReduce.accesskey;"
+                    key="key_textZoomReduce"/>
+          <menuseparator/>
+          <menuitem id="vMenu_textReset" command="cmd_textZoomReset"
+                    label="&menu_textReset.label;" accesskey="&menu_textReset.accesskey;"
+                    key="key_textZoomReset"/>
+        </menupopup>
+      </menu>
+      <menuitem id="vMenu_wrapLongLines"   type="checkbox" command="cmd_wrapLongLines"   checked="false"
+                label="&menu_wrapLongLines.title;" accesskey="&menu_wrapLongLines.accesskey;"/>
+      <menuitem id="vMenu_highlightSyntax" type="checkbox" command="cmd_highlightSyntax" hidden="true"
+                label="&menu_highlightSyntax.label;" accesskey="&menu_highlightSyntax.accesskey;"/>
+      <menuseparator/>
+      <menuitem id="vMenu_editNode"     label="&editNode.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editHead"     label="&editHead.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editBody"     label="&editBody.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+    </popup>
+    <!--
+       -<popup id="editSourceContextMenu">
+       -  <menuitem label="&undoCmd.label;"      accesskey="&undo.accesskey;"      command="cmd_undo"/>
+       -  <menuitem label="&redoCmd.label;"      accesskey="&redo.accesskey;"      command="cmd_redo"/>
+       -  <menuseparator/>
+       -  <menuitem label="&cutCmd.label;"       accesskey="&cut.accesskey;"       command="cmd_cut"/>
+       -  <menuitem label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
+       -  <menuitem label="&pasteCmd.label;"     accesskey="&paste.accesskey;"     command="cmd_paste"/>
+       -  <menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
+       -  <menuseparator/>
+       -  <menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
+       -  <menuseparator/>
+       -  <menuitem label="&confirmNode.label;"  key="key_editNodeToggle"          command="cmd_editNodeToggle"/>
+       -  <menuitem label="&cancelNode.label;"   key="key_editNodeCancel"          command="cmd_editNodeCancel"/>
+       -</popup>
+       -->
 
     <popup id="structToolbarContext">
       <menuitem id="structSelect"     label="&structSelect.label;"
@@ -120,3 +171,4 @@
                                       accesskey="&advancedproperties.accesskey;"
                                       oncommand="OpenAdvancedProperties()"/>
     </popup>
+

@@ -594,6 +594,24 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
  *                                                                           *
 \*****************************************************************************/
 
+function SetSourceDockVisible(show) {
+  var deck     = document.getElementById("kpzDeck");
+  var menuitem = document.getElementById("viewSourceDock");
+  var splitter = document.getElementById("browser-splitter");
+
+  if (show) {
+    deck.removeAttribute("collapsed");
+    splitter.setAttribute("state", "expand");
+    splitter.setAttribute("hidden", "false");
+    // display the current node's source
+    viewNodeSource(gLastFocusNode);
+  } else {
+    deck.setAttribute("collapsed", "true");
+    splitter.setAttribute("state", "collapsed");
+    splitter.setAttribute("hidden", "true");
+  }
+}
+
 function toggleSourceDock(forceShow) {
   var deck     = document.getElementById("kpzDeck");
   var menuitem = document.getElementById("viewSourceDock");
@@ -601,13 +619,13 @@ function toggleSourceDock(forceShow) {
 
   if (forceShow || deck.hasAttribute("collapsed")) {
     deck.removeAttribute("collapsed");
-    menuitem.setAttribute("checked", "true");
+    //menuitem.setAttribute("checked", "true");
     splitter.setAttribute("state", "expand");
     // display the current node's source
     viewNodeSource(gLastFocusNode);
   } else {
     deck.setAttribute("collapsed", "true");
-    menuitem.removeAttribute("checked");
+    //menuitem.removeAttribute("checked");
     splitter.setAttribute("state", "collapsed");
   }
 }
@@ -655,10 +673,13 @@ function editNodeToggle() {
     gSourceEditor.setAttribute("flex", "1");
     gSourceEditor.setAttribute("type", "text");
     gSourceEditor.setAttribute("multiline", "true");
+    gSourceEditor.setAttribute("context", "editorSourceContext");
     deck.appendChild(gSourceEditor);
     // start editing
     editNodeStart();
     deck.selectedIndex = 1;
+    // ensure the source dock is visible
+    SetSourceDockVisible(true);
     // auto-confirm changes when the user clicks outside the source editor
     gSourceEditor.setAttribute("onblur", "editNodeToggle();");
   }

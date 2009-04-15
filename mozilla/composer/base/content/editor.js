@@ -50,16 +50,25 @@ var prefAuthorString = "";
 const SIS_CTRID                 = "@mozilla.org/scriptableinputstream;1"
 const cnsIScriptableInputStream = Components.interfaces.nsIScriptableInputStream;
 
-const kDisplayModeNormal = 0;
+const kDisplayModeNormal  = 0;
 const kDisplayModeAllTags = 1;
-const kDisplayModeSource = 2;
+const kDisplayModeSource  = 2; // Kaze: to be removed
 const kDisplayModePreview = 3;
-const kDisplayModeMenuIDs = ["viewNormalMode", "viewAllTagsMode", "viewSourceMode", "viewPreviewMode"];
-const kDisplayModeTabIDS = ["NormalModeButton", "TagModeButton", "SourceModeButton", "PreviewModeButton"];
-const kNormalStyleSheet = "chrome://editor/content/EditorContent.css";
-const kAllTagsStyleSheet = "chrome://editor/content/EditorAllTags.css";
+const kDisplayModeMenuIDs = ["viewNormalMode",   "viewAllTagsMode", "editSourceMode",   "viewPreviewMode"];
+const kDisplayModeTabIDS  = ["NormalModeButton", "TagModeButton",   "SourceModeButton", "PreviewModeButton"];
+const kNormalStyleSheet         = "chrome://editor/content/EditorContent.css";
+const kAllTagsStyleSheet        = "chrome://editor/content/EditorAllTags.css";
 const kParagraphMarksStyleSheet = "chrome://editor/content/EditorParagraphMarks.css";
 const kBlockOutlinesStyleSheet  = "chrome://editor/content/EditorBlockOutlines.css";
+
+// <Kaze> adding some Edit modes:
+const kEditModeDesign  = 0;
+const kEditModeSplit   = 1;
+const kEditModeText    = 2;
+const kEditModeSource  = 3;
+const kEditModeMenuIDs = ["editDesignMode",   "editSplitMode",   "editTextMode",   "editSourceMode"];
+const kEditModeTabIDS  = ["DesignModeButton", "SplitModeButton", "TextModeButton", "SourceModeButton"];
+// </Kaze>
 
 const kBlockOutlinesAttr = "blockoutlines";
 
@@ -68,6 +77,9 @@ const kHTMLMimeType = "text/html";
 const kXMLMimeType  = "text/xml";
 
 const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
+
+// Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
+const kColoredSourceView = false;
 
 var gPreviousNonSourceDisplayMode = 1;
 var gEditorDisplayMode = -1;
@@ -727,7 +739,7 @@ function EditorStartup()
   }
 
   // Kaze: discard URL if it starts with a dash (= unrecognized argument)
-  if (url.substring(0,1) == "-")
+  if (url && url.substring(0,1) == "-")
     url = null;
 
   // Kaze: if no URL is passed, use the default blank page (not in the core any more)
@@ -1986,12 +1998,12 @@ function SetEditMode(mode)
           doctypeNode.setAttribute("value", doctypeText);
         }
         // XXX HACK ALERT Glazou
-        // else
+        else if (!kColoredSourceView)
           doctypeNode.collapsed = true;
       }
     }
-    // Get the entire document's source string
 
+    // Get the entire document's source string
     var flags = (editor.documentCharacterSet == "ISO-8859-1")
       ? 32768  // OutputEncodeLatin1Entities
       : 16384; // OutputEncodeBasicEntities
@@ -2020,34 +2032,44 @@ function SetEditMode(mode)
 
     flags |= 1 << 5; // OutputRaw
     flags |= 1024;   // OutputLFLineBreak
-    //flags |= 131072; // colored source view
 
-    NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
+    if (kColoredSourceView) { // Nvu
+      //flags |= 131072; // colored source view
 
-    var mimeType = kHTMLMimeType;
-    /*if (IsXHTMLDocument())
-      mimeType = kXMLMimeType;*/
-    var source = editor.outputToString(mimeType, flags);
-    var start = source.search(/\<span class='/i);
-    if (start == -1) start = 0;
-    gSourceTextEditor.selectAll();
-    // gSourceTextEditor.insertText(source.slice(start));
+      NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
 
-    if (false /*IsXHTMLDocument()*/)
-    {
-      source = source.replace( /\n$/gi , String(""));
-      source = source.slice(start).replace( /\n/gi , String("</li><li>"));
+      var mimeType = kHTMLMimeType;
+      /*if (IsXHTMLDocument())
+        mimeType = kXMLMimeType;*/
+      var source = editor.outputToString(mimeType, flags);
+      var start = source.search(/\<span class='/i);
+      if (start == -1) start = 0;
+      gSourceTextEditor.selectAll();
+      // gSourceTextEditor.insertText(source.slice(start));
+
+      if (false /*IsXHTMLDocument()*/)
+      {
+        source = source.replace( /\n$/gi , String(""));
+        source = source.slice(start).replace( /\n/gi , String("</li><li>"));
+      }
+      else
+      {
+        source = source.replace( /<br>$/gi , String("")).replace( /\n$/gi , String(""));
+        source = source.slice(start).replace( /<br>/gi , String("</li><li>")).replace( /\n/gi , String("</li><li>"));
+      }
+
+      source = "<ol><li>" + source + "</li></ol>";
+      InsertColoredSourceView(gSourceTextEditor, source);
+
+      //InsertColoredSourceView(gSourceTextEditor, source.slice(start));
     }
-    else
-    {
-      source = source.replace( /<br>$/gi , String("")).replace( /\n$/gi , String(""));
-      source = source.slice(start).replace( /<br>/gi , String("</li><li>")).replace( /\n/gi , String("</li><li>"));
+    else { // Composer
+      var source = editor.outputToString(kHTMLMimeType, flags);
+      var start = source.search(/<html/i);
+      if (start == -1) start = 0;
+      gSourceTextEditor.selectAll();
+      gSourceTextEditor.insertText(source.slice(start));
     }
-
-    source = "<ol><li>" + source + "</li></ol>";
-    InsertColoredSourceView(gSourceTextEditor, source);
-
-    //InsertColoredSourceView(gSourceTextEditor, source.slice(start));
 
     gSourceTextEditor.resetModificationCount();
     gSourceTextEditor.addDocumentStateListener(gSourceTextListener);
@@ -2055,38 +2077,41 @@ function SetEditMode(mode)
     gSourceContentWindow.commandManager.addCommandObserver(gSourceTextObserver, "cmd_undo");
     gSourceContentWindow.contentWindow.focus();
     goDoCommand("cmd_moveTop");
-    // let's show the preserved selection :-)
-    var sourceDoc = gSourceTextEditor.document;
-    var startSel  = sourceDoc.getElementById("start-selection");
-    var endSel    = sourceDoc.getElementById("end-selection");
-    if (startSel)
-    {
-      var sourceSel = gSourceTextEditor.selection;
-      sourceSel.removeAllRanges();
-      var range = gSourceTextEditor.document.createRange();
-      if (endSel && (endSel != startSel))
+
+    if (kColoredSourceView) { // Nvu
+      // let's show the preserved selection :-)
+      var sourceDoc = gSourceTextEditor.document;
+      var startSel  = sourceDoc.getElementById("start-selection");
+      var endSel    = sourceDoc.getElementById("end-selection");
+      if (startSel)
       {
-        range.setStartBefore(startSel);
-        // <Kaze>
-        //range.setEndAfter(endSel);
-        try { // sometimes 'endSel' is out of bonds
-          range.setEndAfter(endSel);
-        } catch(e) {
+        var sourceSel = gSourceTextEditor.selection;
+        sourceSel.removeAllRanges();
+        var range = gSourceTextEditor.document.createRange();
+        if (endSel && (endSel != startSel))
+        {
+          range.setStartBefore(startSel);
+          // <Kaze>
+          //range.setEndAfter(endSel);
+          try { // sometimes 'endSel' is out of bonds
+            range.setEndAfter(endSel);
+          } catch(e) {
+            range.setEndAfter(startSel);
+          }
+          // </Kaze>
+        }
+        else
+        {
+          range.setStartAfter(startSel);
           range.setEndAfter(startSel);
         }
-        // </Kaze>
+        sourceSel.addRange(range);
+
+        setTimeout("gSourceTextEditor.scrollSelectionIntoView(true)", 100)
       }
       else
-      {
-        range.setStartAfter(startSel);
-        range.setEndAfter(startSel);
-      }
-      sourceSel.addRange(range);
-
-      setTimeout("gSourceTextEditor.scrollSelectionIntoView(true)", 100)
+        gSourceTextEditor.beginningOfDocument()
     }
-    else
-      gSourceTextEditor.beginningOfDocument()
   }
   else if (previousMode == kDisplayModeSource)
   {
@@ -2143,8 +2168,10 @@ function SetEditMode(mode)
     gSourceContentWindow.commandManager.removeCommandObserver(gSourceTextObserver, "cmd_undo");
     gSourceTextEditor.removeDocumentStateListener(gSourceTextListener);
     gSourceTextEditor.enableUndo(false);
-    //gSourceTextEditor.selectAll();
-    //gSourceTextEditor.deleteSelection(gSourceTextEditor.eNone);
+    if (!kColoredSourceView) { // Composer
+      gSourceTextEditor.selectAll();
+      gSourceTextEditor.deleteSelection(gSourceTextEditor.eNone);
+    }
     gSourceTextEditor.resetModificationCount();
 
     gContentWindow.focus();

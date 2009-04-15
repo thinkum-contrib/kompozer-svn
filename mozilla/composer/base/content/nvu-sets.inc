@@ -5,6 +5,16 @@
 
   <commandset id="viewZoomCommands"/>
 
+  <commandset id="viewSourceCommands">
+    <command id="cmd_highlightSyntax"  oncommand="highlightSyntax();"/>
+    <command id="cmd_wrapLongLines"    oncommand="wrapLongLines()"/>
+    <command id="cmd_textZoomReduce"   oncommand="ZoomManager.prototype.getInstance().reduce();"/>
+    <command id="cmd_textZoomEnlarge"  oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
+    <command id="cmd_textZoomReset"    oncommand="ZoomManager.prototype.getInstance().reset();"/>
+    <command id="cmd_editNodeToggle"   oncommand="editNodeToggle();"/>
+    <command id="cmd_editNodeCancel"   oncommand="editNodeCancel();"/>
+  </commandset>
+
   <commandset id="tasksCommands">
     <commandset id="globalEditMenuItems"/>
     <commandset id="selectEditMenuItems"/>
@@ -67,10 +77,12 @@
 
       <command id="cmd_NormalMode"       oncommand="goDoCommand('cmd_NormalMode')"     label="&NormalMode.label;"/>
       <command id="cmd_AllTagsMode"      oncommand="goDoCommand('cmd_AllTagsMode')"    label="&AllTagsMode.label;"/>
-      <command id="cmd_HTMLSourceMode"   oncommand="goDoCommand('cmd_HTMLSourceMode')"/>
+      <command id="cmd_HTMLSourceMode"   oncommand="goDoCommand('cmd_HTMLSourceMode')" label="&HTMLSourceMode.label;"/>
       <command id="cmd_PreviewMode"      oncommand="goDoCommand('cmd_PreviewMode')"    label="&PreviewMode.label;"/>
       <!-- Kaze -->
-      <command id="cmd_SourceDockToggle" oncommand="goDoCommand('cmd_SourceDockToggle')" label="&HTMLSourceMode.label;"/>
+      <command id="cmd_DesignMode"       oncommand="goDoCommand('cmd_DesignMode')"     label="&DesignMode.label;"/>
+      <command id="cmd_SplitMode"        oncommand="goDoCommand('cmd_SplitMode')"      label="&SplitMode.label;"/>
+      <command id="cmd_SourceDockToggle" oncommand="goDoCommand('cmd_SourceDockToggle')"/>
       <!-- /Kaze -->
 
       <!-- only used in context popup menu -->
@@ -332,5 +344,13 @@
     <key                           key="&increaseFontSize.keybinding2;"    observes="cmd_increaseFont"  modifiers="accel"/>
 
     <key id="insertlinkkb"         key="&insertlink.keybinding;"           observes="cmd_link"          modifiers="accel"/>
+
+    <!-- viewSource -->
+    <key id="key_textZoomEnlarge"  key="&textEnlarge.commandkey;"  command="cmd_textZoomEnlarge" modifiers="accel"/>
+    <key id="key_textZoomEnlarge2" key="&textEnlarge.commandkey2;" command="cmd_textZoomEnlarge" modifiers="accel"/>
+    <key id="key_textZoomReduce"   key="&textReduce.commandkey;"   command="cmd_textZoomReduce"  modifiers="accel"/>
+    <key id="key_textZoomReset"    key="&textReset.commandkey;"    command="cmd_textZoomReset"   modifiers="accel"/>
+    <key id="key_editNodeToggle"   keycode="VK_RETURN"             command="cmd_editNodeToggle"  modifiers="alt"/>
+    <key id="key_editNodeCancel"   keycode="VK_ESCAPE"             command="cmd_editNodeCancel"/>
   </keyset>
 

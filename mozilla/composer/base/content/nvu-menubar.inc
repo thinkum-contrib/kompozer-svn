@@ -102,17 +102,14 @@
         </menupopup>
       </menu>
       <menuseparator id="viewSep1"/>
-      <menuitem id="viewNormalMode" checked="true" type="radio" group="mode" accesskey="&NormalMode.accesskey;"     observes="cmd_NormalMode"/>
-      <menuitem id="viewAllTagsMode"               type="radio" group="mode" accesskey="&AllTagsMode.accesskey;"    observes="cmd_AllTagsMode"/>
-      <menuitem id="viewSourceMode"                type="radio" group="mode" accesskey="&HTMLSourceMode.accesskey;" observes="cmd_HTMLSourceMode"
-                hidden="true"
-                label="&HTMLSourceMode.label;"/>
-      <menuitem id="viewPreviewMode"               type="radio" group="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"/>
+      <menuitem id="viewNormalMode" checked="true" type="radio" name="mode" accesskey="&NormalMode.accesskey;"     observes="cmd_NormalMode"/>
+      <menuitem id="viewAllTagsMode"               type="radio" name="mode" accesskey="&AllTagsMode.accesskey;"    observes="cmd_AllTagsMode"/>
+      <menuitem id="viewPreviewMode"               type="radio" name="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"/>
       <!-- Kaze -->
       <menuseparator/>
-      <menuitem id="viewSourceDock"                type="checkbox"           accesskey="&HTMLSourceMode.accesskey;" observes="cmd_SourceDockToggle"
-                key="key_sourceDockToggle"
-                label="&HTMLSourceMode.label;"/>
+      <menuitem id="editDesignMode" checked="true" type="radio" name="edit" accesskey="&DesignMode.accesskey;"     observes="cmd_DesignMode"/>
+      <menuitem id="editSplitMode"                 type="radio" name="edit" accesskey="&SplitMode.accesskey;"      observes="cmd_SplitMode"/>
+      <menuitem id="editSourceMode"                type="radio" name="edit" accesskey="&HTMLSourceMode.accesskey;" observes="cmd_HTMLSourceMode"/>
       <!-- /Kaze -->
       <menuseparator />
       <!-- disabled because Gecko does not allow generated content on BR after Moz1.7

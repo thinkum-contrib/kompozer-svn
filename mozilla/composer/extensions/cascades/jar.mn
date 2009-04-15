@@ -21,7 +21,6 @@ cascades.jar:
      content/cascades/auralProps.xul              (content/auralProps.xul)
      content/cascades/allProps.xul                (content/allProps.xul)
      content/cascades/allProps.js                 (content/allProps.js)
-     content/cascades/viewSource.js               (content/viewSource.js)
      content/cascades/domExplorer.xul             (content/domExplorer.xul)
      content/cascades/domExplorer.js              (content/domExplorer.js)
      content/cascades/contents.rdf                (content/contents.rdf)
@@ -31,9 +30,8 @@ en-US.jar:
      locale/cascades/ExtractStyles.dtd            (locale/en-US/ExtractStyles.dtd)
      locale/cascades/cascadesOverlay.dtd          (locale/en-US/cascadesOverlay.dtd)
      locale/cascades/cascades.properties          (locale/en-US/cascades.properties)
-     locale/cascades/viewSource.dtd               (locale/en-US/viewSource.dtd)
      locale/cascades/domExplorer.dtd              (locale/en-US/domExplorer.dtd)
-     locale/cascades/contents.rdf                 (locale/en-US/contents.rdf)
+#    locale/cascades/contents.rdf                 (locale/en-US/contents.rdf)
 
 classic.jar:
 +    skin/classic/editor/EdCssProps.css                      (skin/EdCssProps.css)

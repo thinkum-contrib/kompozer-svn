@@ -228,7 +228,9 @@ function SetupComposerWindowCommands()
     commandTable.registerCommand("cmd_FinishHTMLSource",     nsFinishHTMLSource);
     commandTable.registerCommand("cmd_CancelHTMLSource",     nsCancelHTMLSource);
     commandTable.registerCommand("cmd_updateStructToolbar",  nsUpdateStructToolbarCommand);
-    commandTable.registerCommand("cmd_SourceDockToggle",     nsSourceDockToggle); // Kaze
+    commandTable.registerCommand("cmd_SourceDockToggle",     nsSourceDockToggle);  // Kaze
+    commandTable.registerCommand("cmd_DesignMode",           nsDesignModeCommand); // Kaze
+    commandTable.registerCommand("cmd_SplitMode",            nsSplitModeCommand);  // Kaze
   }
 
   windowControllers.insertControllerAt(0, editorController);
@@ -3980,7 +3982,7 @@ var nsPreviewModeCommand =
   }
 };
 
-// Kaze: source dock
+// <Kaze> source dock
 var nsSourceDockToggle =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -3996,6 +3998,54 @@ var nsSourceDockToggle =
     toggleSourceDock(); // defined in mozilla/composer/extensions/cascades/viewSource.js
   }
 };
+
+var nsDesignModeCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsDocumentEditable() && IsHTMLEditor());
+    //return (IsHTMLEditor());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    toggleSourceDock(); // defined in mozilla/composer/extensions/cascades/viewSource.js
+    var deck     = document.getElementById("kpzDeck");
+    var splitter = document.getElementById("browser-splitter");
+
+    deck.setAttribute("collapsed", "true");
+    splitter.setAttribute("state", "collapsed");
+    splitter.setAttribute("hidden", "true");
+  }
+};
+
+var nsSplitModeCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsDocumentEditable() && IsHTMLEditor());
+    //return (IsHTMLEditor());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var deck     = document.getElementById("kpzDeck");
+    var splitter = document.getElementById("browser-splitter");
+
+    deck.removeAttribute("collapsed");
+    splitter.setAttribute("state", "expand");
+    splitter.setAttribute("hidden", "false");
+    // display the current node's source
+    viewNodeSource(gLastFocusNode);
+  }
+};
+// </Kaze>
 
 //-----------------------------------------------------------------------------------
 var nsInsertOrEditTableCommand =
