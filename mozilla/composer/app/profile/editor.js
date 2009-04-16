@@ -110,7 +110,7 @@ pref("editor.always_show_publish_dialog",    false);
 
 /*
  * What are the entities that you want Mozilla to save using mnemonic
- * names rather than numeric codes? E.g. If set, we'll output &nbsp;
+ * names rather than numeric codes? E.g. if set, we'll output &nbsp;
  * otherwise, we may output 0xa0 depending on the charset.
  *
  * "none"   : don't use any entity names; only use numeric codes.
@@ -133,75 +133,111 @@ pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
 
-/*
- *  +——————————————————————————————————————+
- *  |  Nvu/KompoZer specific preferences   |
- *  +——————————————————————————————————————+
- */
+/***********************************************\
+ *                                             *
+ *     Nvu/KompoZer specific preferences       *
+ *                                             *
+\***********************************************/
 
-pref("tipoftheday.openAtStartup",            true);
-//pref("pinger.pinged",                         " "); // Kaze: pinger has been removed
+pref("tipoftheday.openAtStartup",                true);
+//pref("pinger.pinged",                             " "); // Kaze: pinger has been removed
 
-// help menu
-pref("editor.site.url",                      "chrome://editor-region/locale/region.properties");
-pref("editor.faq.url",                       "chrome://editor-region/locale/region.properties");
-pref("editor.devorg.url",                    "chrome://editor-region/locale/region.properties");
-pref("editor.forums.url",                    "chrome://editor-region/locale/region.properties");
-pref("editor.bugReports.url",                "chrome://editor-region/locale/region.properties");
-pref("editor.support.url",                   "chrome://editor-region/locale/region.properties");
-pref("editor.L10N.url",                      "chrome://editor-region/locale/region.properties");
-pref("editor.CCuserGuide.url",               "chrome://editor-region/locale/region.properties");
-pref("editor.aboutLinspire.url",             "chrome://editor-region/locale/region.properties");
-pref("editor.aboutDI.url",                   "chrome://editor-region/locale/region.properties");
+// Help Menu                                  
+pref("editor.site.url",                          "chrome://editor-region/locale/region.properties");
+pref("editor.faq.url",                           "chrome://editor-region/locale/region.properties");
+pref("editor.devorg.url",                        "chrome://editor-region/locale/region.properties");
+pref("editor.forums.url",                        "chrome://editor-region/locale/region.properties");
+pref("editor.bugReports.url",                    "chrome://editor-region/locale/region.properties");
+pref("editor.support.url",                       "chrome://editor-region/locale/region.properties");
+pref("editor.L10N.url",                          "chrome://editor-region/locale/region.properties");
+pref("editor.CCuserGuide.url",                   "chrome://editor-region/locale/region.properties");
+pref("editor.aboutLinspire.url",                 "chrome://editor-region/locale/region.properties");
+pref("editor.aboutDI.url",                       "chrome://editor-region/locale/region.properties");
 
-// new page settings
-pref("editor.custom_language",               "");
-pref("editor.custom_direction",              "none");
-pref("editor.custom_charset",                "ISO-8859-1");
-pref("editor.table.default_align",           "");
-pref("editor.table.default_valign",          "");
-pref("editor.table.default_wrapping",        "");
-pref("editor.table.default_cellspacing",     2);
-pref("editor.table.default_cellpadding",     2);
-pref("editor.CR_creates_new_p",              true);
+// New Page Settings                          
+pref("editor.custom_language",                   "");
+pref("editor.custom_direction",                  "none");
+pref("editor.custom_charset",                    "ISO-8859-1");
+pref("editor.table.default_align",               "");
+pref("editor.table.default_valign",              "");
+pref("editor.table.default_wrapping",            "");
+pref("editor.table.default_cellspacing",         2);
+pref("editor.table.default_cellpadding",         2);
+pref("editor.CR_creates_new_p",                  true);
 
-// default doctype
-pref("editor.default.doctype",               "html");
-pref("editor.default.strictness",            true); // Kaze
+// Default Doctype                            
+pref("editor.default.doctype",                   "html");
+pref("editor.default.strictness",                true); // Kaze
 
-// spell checker
-pref("spellchecker.enablerealtimespell",     false);
+// Spell Checker
+pref("spellchecker.enablerealtimespell",         false);
 pref("spellchecker.realtimespell.warning_color", "orange");
-pref("editor.showDisableSpellCheckWarning",  true);
+pref("editor.showDisableSpellCheckWarning",      true);
 
-// Kaze: extensions, Gecko 1.8.1
-pref("extensions.getMoreExtensionsURL",      "http://kompozer.net/xpi/");
-pref("extensions.getMoreThemesURL",          "http://kompozer.net/jar/");
+// Helper Applications
+pref("editor.helpers.browser.useSystem",         true);
+pref("editor.helpers.text.useSystem",            true);
+pref("editor.helpers.image.useSystem",           true);
+pref("editor.helpers.media.useSystem",           true);
+pref("editor.helpers.file.useSystem",            true);
+pref("editor.helpers.ftp.useSystem",             true);
 
-// Kaze: CSS editor
-pref("extensions.CaScadeS.expertMode",       true);
-pref("extensions.CaScadeS.dropdownLists",    true);
+// use the Debian-sensible browser by default (deprecated by helper apps?)
+pref("network.protocol-handler.app.http",        "/usr/bin/x-www-browser");
+pref("network.protocol-handler.app.https",       "/usr/bin/x-www-browser");
+pref("network.protocol-handler.app.ftp",         "/usr/bin/x-www-browser");
+pref("network.protocol-handler.app.file",        "/usr/bin/x-www-browser");
 
-// Kaze: site manager
-pref("editor.nvu.sitemanager.treeView",      true); // TODO: rename/delete this pref
-pref("extensions.sitemanager.openInNewTab",  true); // Kaze: this pref has been renamed
-pref("extensions.sitemanager.filter.html",   "htm, html, xhtml");
-pref("extensions.sitemanager.filter.css",    "css");
-pref("extensions.sitemanager.filter.images", "ico, jpg, jpeg, png, gif, bmp");
-pref("extensions.sitemanager.filter.media",  "ogg, ogm, mpeg, mpg, mp3, mp4, mov, wma, wmv, avi");
-pref("extensions.sitemanager.filter.text",   "txt, ht*, js, xml, asp, jsp, php*");
+// Extensions, Gecko 1.8.1
+pref("extensions.getMoreExtensionsURL",          "http://kompozer.net/xpi/");
+pref("extensions.getMoreThemesURL",              "http://kompozer.net/jar/");
 
-// Kaze: helper applications
-pref("editor.helpers.browser.useSystem",     true);
-pref("editor.helpers.text.useSystem",        true);
-pref("editor.helpers.image.useSystem",       true);
-pref("editor.helpers.media.useSystem",       true);
-pref("editor.helpers.file.useSystem",        true);
-pref("editor.helpers.ftp.useSystem",         true);
+// CSS Editor                              
+pref("extensions.CaScadeS.expertMode",           true);
+pref("extensions.CaScadeS.dropdownLists",        true);
 
-// Kaze: use the Debian-sensible browser by default (deprecated by the helper apps?)
-pref("network.protocol-handler.app.http",    "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.https",   "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.ftp",     "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.file",    "/usr/bin/x-www-browser");
+// Site Manager                            
+//pref("editor.nvu.sitemanager.treeView",          true); // TODO: rename/delete this pref
+pref("extensions.sitemanager.openInNewTab",      true);
+pref("extensions.sitemanager.filter.html",       "htm, html, xhtml");
+pref("extensions.sitemanager.filter.css",        "css");
+pref("extensions.sitemanager.filter.images",     "ico, jpg, jpeg, png, gif, bmp");
+pref("extensions.sitemanager.filter.media",      "ogg, ogm, mpeg, mpg, mp3, mp4, mov, wma, wmv, avi");
+pref("extensions.sitemanager.filter.text",       "txt, ht*, js, xml, asp, jsp, php*");
+
+// FireFTP
+pref("extensions.sitemanager.welcomemode",       false);
+pref("extensions.sitemanager.errormode",         true);
+pref("extensions.sitemanager.refreshmode",       true);
+pref("extensions.sitemanager.passwordmode",      true);
+pref("extensions.sitemanager.sessionsmode",      true);
+pref("extensions.sitemanager.hiddenmode",        false);
+pref("extensions.sitemanager.interfacemode",     0);
+pref("extensions.sitemanager.network",           30);
+pref("extensions.sitemanager.timeoutmode",       true);
+pref("extensions.sitemanager.retry",             10);
+pref("extensions.sitemanager.attempts",          40);
+pref("extensions.sitemanager.destructmode",      false);
+pref("extensions.sitemanager.filemode",          1);
+pref("extensions.sitemanager.asciifiles",        "ai,bas,bat,c,cc,cgi,conf,cpp,css,diz,eps,h,htaccess,htm,html,hqx,java,jsp,map,nfo,pas,php,pl,ps,py,rdf,rss,sh,shtml,txt,uue,xml");
+pref("extensions.sitemanager.loadmode",          1);
+pref("extensions.sitemanager.logmode",           true);
+pref("extensions.sitemanager.debugmode",         false);
+pref("extensions.sitemanager.bytesmode",         false);
+pref("extensions.sitemanager.nopromptmode",      false);
+pref("extensions.sitemanager.logerrormode",      false);
+pref("extensions.sitemanager.keepalivemode",     true);
+pref("extensions.sitemanager.proxytype",         "");
+pref("extensions.sitemanager.proxyhost",         "");
+pref("extensions.sitemanager.proxyport",         0);
+pref("extensions.sitemanager.folder",            "");
+pref("extensions.sitemanager.donated",           false);
+pref("extensions.sitemanager.loadurl",           "");
+pref("extensions.sitemanager.integrateftplinks", false);
+pref("extensions.sitemanager.temppasvmode",      true);
+pref("extensions.sitemanager.defaultaccount",    "");
+pref("extensions.sitemanager.activeportmode",    false);
+pref("extensions.sitemanager.activelow",         1);
+pref("extensions.sitemanager.activehigh",        65535);
+pref("extensions.sitemanager.timestampsmode",    false);
 

@@ -1,0 +1,118 @@
+comm.jar:       
+*+  content/editor/sitemanager.js                            (content/sitemanager.js)
+    content/editor/sitemanagerUtils.js                       (content/sitemanagerUtils.js)
+    content/editor/sitemanager.xul                           (content/sitemanager.xul)
+    content/editor/url-loader.js                             (content/url-loader.js)
+    content/editor/ftpDirParser.js                           (content/ftpDirParser.js)
+*   content/editor/localDirParser.js                         (content/localDirParser.js)
+#   FireFTP
+%   content fireftp                                          %content/fireftp/ xpcnativewrappers=yes
+%   overlay chrome://editor/content/editor.xul               chrome://fireftp/content/fireftpOverlay.xul
+    content/fireftp/blank.html                               (content/fireftp/blank.html)
+    content/fireftp/accountManager.xul                       (content/fireftp/accountManager.xul)
+    content/fireftp/alert.xul                                (content/fireftp/alert.xul)
+    content/fireftp/asciiFiles.xul                           (content/fireftp/asciiFiles.xul)
+    content/fireftp/confirmFile.xul                          (content/fireftp/confirmFile.xul)
+    content/fireftp/diff.xul                                 (content/fireftp/diff.xul)
+    content/fireftp/fireftp.xul                              (content/fireftp/fireftp.xul)
+    content/fireftp/fireftpOverlay.xul                       (content/fireftp/fireftpOverlay.xul)
+    content/fireftp/password.xul                             (content/fireftp/password.xul)
+    content/fireftp/password2.xul                            (content/fireftp/password2.xul)
+    content/fireftp/preferences.xul                          (content/fireftp/preferences.xul)
+    content/fireftp/programs.xul                             (content/fireftp/programs.xul)
+    content/fireftp/properties.xul                           (content/fireftp/properties.xul)
+    content/fireftp/remoteEdit.xul                           (content/fireftp/remoteEdit.xul)
+    content/fireftp/welcome.xul                              (content/fireftp/welcome.xul)
+    content/fireftp/connection/controlSocket.js              (content/fireftp/connection/controlSocket.js)
+    content/fireftp/connection/dataSocket.js                 (content/fireftp/connection/dataSocket.js)
+    content/fireftp/connection/ftpController.js              (content/fireftp/connection/ftpController.js)
+    content/fireftp/connection/transfer.js                   (content/fireftp/connection/transfer.js)
+    content/fireftp/dialogs/accountManager.js                (content/fireftp/dialogs/accountManager.js)
+    content/fireftp/dialogs/asciiFiles.js                    (content/fireftp/dialogs/asciiFiles.js)
+    content/fireftp/dialogs/confirmFile.js                   (content/fireftp/dialogs/confirmFile.js)
+    content/fireftp/dialogs/diff.js                          (content/fireftp/dialogs/diff.js)
+    content/fireftp/dialogs/preferences.js                   (content/fireftp/dialogs/preferences.js)
+    content/fireftp/dialogs/programs.js                      (content/fireftp/dialogs/programs.js)
+    content/fireftp/dialogs/properties.js                    (content/fireftp/dialogs/properties.js)
+    content/fireftp/dialogs/remoteEdit.js                    (content/fireftp/dialogs/remoteEdit.js)
+    content/fireftp/etc/UIUpdate.js                          (content/fireftp/etc/UIUpdate.js)
+    content/fireftp/etc/common.js                            (content/fireftp/etc/common.js)
+    content/fireftp/etc/diff.js                              (content/fireftp/etc/diff.js)
+    content/fireftp/etc/dragDrop.js                          (content/fireftp/etc/dragDrop.js)
+    content/fireftp/etc/fileSort.js                          (content/fireftp/etc/fileSort.js)
+    content/fireftp/etc/globals.js                           (content/fireftp/etc/globals.js)
+    content/fireftp/etc/loadUnload.js                        (content/fireftp/etc/loadUnload.js)
+    content/fireftp/etc/log.js                               (content/fireftp/etc/log.js)
+    content/fireftp/etc/misc.js                              (content/fireftp/etc/misc.js)
+    content/fireftp/etc/preferences.js                       (content/fireftp/etc/preferences.js)
+    content/fireftp/etc/programs.js                          (content/fireftp/etc/programs.js)
+    content/fireftp/etc/search.js                            (content/fireftp/etc/search.js)
+    content/fireftp/etc/treeHighlighter.js                   (content/fireftp/etc/treeHighlighter.js)
+    content/fireftp/etc/treeSync.js                          (content/fireftp/etc/treeSync.js)
+    content/fireftp/etc/sessionsPasswords.js                 (content/fireftp/etc/sessionsPasswords.js)
+    content/fireftp/local/localDirTree.js                    (content/fireftp/local/localDirTree.js)
+    content/fireftp/local/localFile.js                       (content/fireftp/local/localFile.js)
+    content/fireftp/local/localTree.js                       (content/fireftp/local/localTree.js)
+    content/fireftp/remote/remoteDirTree.js                  (content/fireftp/remote/remoteDirTree.js)
+    content/fireftp/remote/remoteTree.js                     (content/fireftp/remote/remoteTree.js)
+
+classic.jar:
+%   skin    fireftp classic/1.0                              %skin/classic/fireftp/
++   skin/classic/editor/icons/reload.png                     (content/images/reload.png)
++   skin/classic/editor/icons/rename.png                     (content/images/rename.png)
++   skin/classic/editor/icons/createdir.png                  (content/images/createdir.png)
++   skin/classic/editor/icons/remove.png                     (content/images/remove.png)
++   skin/classic/editor/icons/smallStop.png                  (content/images/smallStop.png)
++   skin/classic/editor/icons/reload-disabled.png            (content/images/reload-disabled.png)
++   skin/classic/editor/icons/rename-disabled.png            (content/images/rename-disabled.png)
++   skin/classic/editor/icons/createdir-disabled.png         (content/images/createdir-disabled.png)
++   skin/classic/editor/icons/remove-disabled.png            (content/images/remove-disabled.png)
++   skin/classic/editor/icons/smallStop-disabled.png         (content/images/smallStop-disabled.png)
++   skin/classic/editor/sitemanager.css                      (skin/sitemanager.css)
++   skin/classic/editor/icons/directory.gif                  (content/images/directory.gif)
++   skin/classic/editor/icons/link.gif                       (content/images/link.gif)
++   skin/classic/editor/icons/sitemanager.png                (content/images/sitemanager.png)
+    skin/classic/communicator/sidebar/customize.css          (../../../themes/classic/communicator/sidebar/customize.css)
+    skin/classic/communicator/sidebar/preview.css            (../../../themes/classic/communicator/sidebar/preview.css)
+    skin/classic/communicator/sidebar/sbtab-twisty-open.gif  (../../../themes/classic/communicator/sidebar/sbtab-twisty-open.gif)
+    skin/classic/communicator/sidebar/sbtab-twisty.gif       (../../../themes/classic/communicator/sidebar/sbtab-twisty.gif)
+    skin/classic/communicator/sidebar/sidebar.css            (../../../themes/classic/communicator/sidebar/sidebar.css)
+    skin/classic/communicator/sidebar/sidebarBindings.xml    (../../../themes/classic/communicator/sidebar/sidebarBindings.xml)
+    skin/classic/communicator/sidebar/sidebarListView.css    (../../../themes/classic/communicator/sidebar/sidebarListView.css)
++   skin/classic/fireftp/fireftp.css                         (skin/fireftp.css)
++   skin/classic/fireftp/overlay.css                         (skin/overlay.css)
+    skin/classic/fireftp/icons/cbox-check.gif                (skin/icons/cbox-check.gif)
+    skin/classic/fireftp/icons/close.png                     (skin/icons/close.png)
+    skin/classic/fireftp/icons/fireftp.png                   (skin/icons/fireftp.png)
+    skin/classic/fireftp/icons/fireftp16.png                 (skin/icons/fireftp16.png)
+    skin/classic/fireftp/icons/fireftp24.png                 (skin/icons/fireftp24.png)
+    skin/classic/fireftp/icons/fireftp32.png                 (skin/icons/fireftp32.png)
+    skin/classic/fireftp/icons/notfound.png                  (skin/icons/notfound.png)
+    skin/classic/fireftp/icons/properties.png                (skin/icons/properties.png)
+
+en-US.jar:
+%   locale       fireftp en-US                               %locale/en-US/fireftp/
+    locale/en-US/fireftp/accountManager.dtd                  (locale/en-US/accountManager.dtd)
+    locale/en-US/fireftp/confirmFile.dtd                     (locale/en-US/confirmFile.dtd)
+    locale/en-US/fireftp/diff.dtd                            (locale/en-US/diff.dtd)
+    locale/en-US/fireftp/fireftp.dtd                         (locale/en-US/fireftp.dtd)
+    locale/en-US/fireftp/password2.dtd                       (locale/en-US/password2.dtd)
+    locale/en-US/fireftp/password.dtd                        (locale/en-US/password.dtd)
+    locale/en-US/fireftp/preferences.dtd                     (locale/en-US/preferences.dtd)
+    locale/en-US/fireftp/programs.dtd                        (locale/en-US/programs.dtd)
+    locale/en-US/fireftp/properties.dtd                      (locale/en-US/properties.dtd)
+    locale/en-US/fireftp/remoteEdit.dtd                      (locale/en-US/remoteEdit.dtd)
+    locale/en-US/fireftp/strings.properties                  (locale/en-US/strings.properties)
+
+
+
+
+
+
+
+
+
+
+
+
+

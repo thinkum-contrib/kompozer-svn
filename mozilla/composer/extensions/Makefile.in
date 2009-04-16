@@ -43,7 +43,8 @@ VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS      = cascades sitemanager2 tipoftheday help
+#DIRS      = cascades sitemanager2 tipoftheday help
+DIRS      = cascades sitemanager tipoftheday help
 
 include $(topsrcdir)/config/rules.mk
 

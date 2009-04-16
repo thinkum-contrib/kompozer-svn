@@ -951,38 +951,3 @@ pref("privacy.popups.sound_enabled",          true);
 pref("privacy.popups.sound_url",              "");
 pref("privacy.popups.statusbar_icon_enabled", true);
 
-/*
-// Nvu/KompoZer prefs - should be in editor.js?
-pref("tipoftheday.openAtStartup",             true);
-//pref("pinger.pinged",                         " "); // Kaze: pinger has been removed
-
-// Kaze: use the Debian-sensible browser by default
-pref("network.protocol-handler.app.http",  "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.https", "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.ftp",   "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.file",  "/usr/bin/x-www-browser");
-
-pref("spellchecker.enablerealtimespell",         false);
-pref("spellchecker.realtimespell.warning_color", "orange");
-
-// Kaze: CSS editor
-pref("extensions.CaScadeS.expertMode",    true);
-pref("extensions.CaScadeS.dropdownLists", true);
-
-// Nvu/KompoZer prefs - should be in editor.js?
-pref("tipoftheday.openAtStartup",             true);
-//pref("pinger.pinged",                         " "); // Kaze: pinger has been removed
-
-// Kaze: use the Debian-sensible browser by default
-pref("network.protocol-handler.app.http",  "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.https", "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.ftp",   "/usr/bin/x-www-browser");
-pref("network.protocol-handler.app.file",  "/usr/bin/x-www-browser");
-
-pref("spellchecker.enablerealtimespell",         false);
-pref("spellchecker.realtimespell.warning_color", "orange");
-
-// Kaze: CSS editor
-pref("extensions.CaScadeS.expertMode",    true);
-pref("extensions.CaScadeS.dropdownLists", true);
-*/

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://fireftp/skin/overlay.css" type="text/css"?>
+
+<!DOCTYPE window SYSTEM "chrome://fireftp/locale/fireftp.dtd">
+<overlay id    = "fireftpOverlay"
+         xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript">
+    function loadFireFTP() { toOpenWindowByType('mozilla:fireftp', 'chrome://fireftp/content/'); }
+  </script>
+
+  <menupopup    id = "taskPopup">
+    <menuitem   id = "fireftptoolsmenu"
+      class        = "menuitem-iconic"
+      label        = "FireFTP"
+      accesskey    = "F"
+      insertbefore = "sep_addon_list"
+      oncommand    = "loadFireFTP()"/>
+  </menupopup>
+
+  <!--
+     -<popup           id="contentAreaContextMenu">
+     -  <menuitem      id="fireftpcontentarea" label="&viewFireFTP;" oncommand="loadFireFTPFromContentArea()"
+     -                 class="menuitem-iconic" />
+     -  <menuitem      id="fireftpcontextmenu" label="&openFireFTP;" oncommand="loadFireFTPFromContext()"
+     -                 class="menuitem-iconic" position="3"/>
+     -</popup>
+     -->
+
+  <toolbarpalette  id = "NvuToolbarPalette">
+    <toolbarbutton id = "fireftp-button"
+          class       = "toolbarbutton-1 chromeclass-toolbar-additional"
+          label       = "FireFTP"
+          tooltiptext = "FireFTP"
+          oncommand   = "loadFireFTP()"/>
+  </toolbarpalette>
+
+</overlay>

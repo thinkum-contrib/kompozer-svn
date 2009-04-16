@@ -19,9 +19,10 @@
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#  Brian Ryner <bryner@brianryner.com>
+#  Brian Ryner     <bryner@brianryner.com>
 #  Jonathan Wilson <jonwil@tpgi.com.au>
-#  Dan Mosedale <dmose@mozilla.org>
+#  Dan Mosedale    <dmose@mozilla.org>
+#  Fabien Cazenave <kaze@kompozer.net>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -37,19 +38,19 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../..
-topsrcdir	= @top_srcdir@
-srcdir		= @srcdir@
-VPATH		= @srcdir@
+DEPTH     = ../..
+topsrcdir = @top_srcdir@
+srcdir    = @srcdir@
+VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		= profile
+DIRS      = profile
 
-PREF_JS_EXPORTS =  \
-    $(srcdir)/profile/all.js \
-    $(srcdir)/profile/editor.js \
-    $(NULL)
+PREF_JS_EXPORTS = \
+	$(srcdir)/profile/all.js    \
+	$(srcdir)/profile/editor.js \
+	$(NULL)
 
 ifeq ($(USE_SHORT_LIBNAME), 1)
 PROGRAM = kompozer$(BIN_SUFFIX)
@@ -67,12 +68,12 @@ endif
 	#$(NULL)
 REQUIRES = \
 	appshell \
-	string \
-	xpcom \
-	xulapp \
+	string   \
+	xpcom    \
+	xulapp   \
 	$(NULL)
 
-// Kaze: required to build on Mozilla 1.8 and later
+# Kaze: required to build on Mozilla 1.8 and later
 MOZILLA_INTERNAL_API = 1
 LOCAL_INCLUDES = -I$(topsrcdir)/toolkit/xre
 
@@ -129,14 +130,14 @@ endif
 else
 include $(topsrcdir)/config/static-config.mk
 
-EXTRA_DEPS	+= \
+EXTRA_DEPS     += \
 	$(STATIC_EXTRA_DEPS) \
 	$(NULL)
-DEFINES		+= $(STATIC_DEFINES)
-CPPSRCS		+= $(STATIC_CPPSRCS)
-EXTRA_DSO_LIBS	+= $(STATIC_EXTRA_DSO_LIBS)
-REQUIRES	+= $(STATIC_REQUIRES)
-EXTRA_LIBS	+= $(STATIC_EXTRA_LIBS)
+DEFINES        += $(STATIC_DEFINES)
+CPPSRCS        += $(STATIC_CPPSRCS)
+EXTRA_DSO_LIBS += $(STATIC_EXTRA_DSO_LIBS)
+REQUIRES       += $(STATIC_REQUIRES)
+EXTRA_LIBS     += $(STATIC_EXTRA_LIBS)
 endif
 
 ifeq ($(OS_ARCH),WINNT)
@@ -177,14 +178,14 @@ endif
 APP_VERSION = $(shell cat $(srcdir)/../config/version.txt)
 # Kaze: XXX the quotes should not appear in the application
 # DEFINES += -DAPP_VERSION=\"$(APP_VERSION)\"
-DEFINES += -DAPP_VERSION=$(APP_VERSION)
+DEFINES   += -DAPP_VERSION=$(APP_VERSION)
 
-BUILD_ID = $(shell cat $(DEPTH)/config/build_number)
-DEFINES += -DBUILD_ID=\"$(BUILD_ID)\"
+BUILD_ID   = $(shell cat $(DEPTH)/config/build_number)
+DEFINES   += -DBUILD_ID=\"$(BUILD_ID)\"
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 ifdef BUILD_STATIC_LIBS
-LIBS	+= -framework QuickTime -framework IOKit
+LIBS      += -framework QuickTime -framework IOKit
 ifdef USE_PREBINDING
 BIN_FLAGS += -Wl,-headerpad -Wl,5a0c
 endif
@@ -213,18 +214,15 @@ endif
 
 $(PROGRAM): $(DIST)/lib/$(LIB_PREFIX)xulapp_s.$(LIB_SUFFIX)
 
-# Kaze: on Ubuntu, the icon looks much better when editorWindow16.xpm isn't linked ;-)
 DESKTOP_ICONS := \
 	mozicon256.png \
-  mozicon50.xpm \
+	mozicon50.xpm \
 	mozicon16.xpm \
 	default.xpm \
 	$(NULL)
-	#~ editorWindow.xpm \
-	#~ editorWindow16.xpm \
 
 libs:: $(DESKTOP_ICONS)
-	$(INSTALL) $^ $(DIST)/bin/chrome/icons/default
+    $(INSTALL) $^ $(DIST)/bin/chrome/icons/default
 
 ifeq ($(OS_ARCH),OS2)
 ifdef BUILD_STATIC_LIBS
