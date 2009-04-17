@@ -222,7 +222,7 @@ DESKTOP_ICONS := \
 	$(NULL)
 
 libs:: $(DESKTOP_ICONS)
-    $(INSTALL) $^ $(DIST)/bin/chrome/icons/default
+	$(INSTALL) $^ $(DIST)/bin/chrome/icons/default
 
 ifeq ($(OS_ARCH),OS2)
 ifdef BUILD_STATIC_LIBS
