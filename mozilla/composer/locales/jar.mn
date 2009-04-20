@@ -5,17 +5,8 @@
 %   locale branding               @AB_CD@  %locale/@AB_CD@/branding/
 +   locale/@AB_CD@/branding/brand.dtd                                           (@AB_CD@/chrome/branding/brand.dtd)
 +   locale/@AB_CD@/branding/brand.properties                                    (@AB_CD@/chrome/branding/brand.properties)
-#*+  locale/@AB_CD@/communicator/contents.rdf                                    (generic/chrome/communicator/contents.rdf)
-#*+  locale/@AB_CD@/communicator-platform/contents.rdf                           (generic/chrome/communicator-platform/contents.rdf)
-#*+  locale/@AB_CD@/editor/contents.rdf                                          (generic/chrome/editor/contents.rdf)
-#*+  locale/@AB_CD@/editor-region/contents.rdf                                   (generic/chrome/editor-region/contents.rdf)
-#*+  locale/@AB_CD@/global/contents.rdf                                          (generic/chrome/global/contents.rdf)
-#*+  locale/@AB_CD@/global-platform/contents.rdf                                 (generic/chrome/global-platform/contents.rdf)
-#*+  locale/@AB_CD@/navigator-platform/contents.rdf                              (generic/chrome/navigator-platform/contents.rdf)
-#*+  locale/@AB_CD@/tipoftheday/contents.rdf                                     (generic/chrome/tipoftheday/contents.rdf)
 #
 %   locale editor                 @AB_CD@  %locale/@AB_CD@/editor/
-+   locale/@AB_CD@/editor/contents-region.rdf                                   (@AB_CD@/chrome/editor/contents-region.rdf)
 +   locale/@AB_CD@/editor/EdAdvancedEdit.dtd                                    (@AB_CD@/chrome/editor/EdAdvancedEdit.dtd)
 +   locale/@AB_CD@/editor/EdColorPicker.dtd                                     (@AB_CD@/chrome/editor/EdColorPicker.dtd)
 +   locale/@AB_CD@/editor/EdConvertToTable.dtd                                  (@AB_CD@/chrome/editor/EdConvertToTable.dtd)
@@ -53,7 +44,6 @@
 +   locale/@AB_CD@/editor/EditorTableProperties.dtd                             (@AB_CD@/chrome/editor/EditorTableProperties.dtd)
 +   locale/@AB_CD@/editor/EditorTextAreaProperties.dtd                          (@AB_CD@/chrome/editor/EditorTextAreaProperties.dtd)
 +   locale/@AB_CD@/editor/MarkupCleaner.dtd                                     (@AB_CD@/chrome/editor/MarkupCleaner.dtd)
-+   locale/@AB_CD@/editor/Nvu-totd-en.rdf                                       (@AB_CD@/chrome/editor/Nvu-totd-en.rdf)
 +   locale/@AB_CD@/editor/Validator.dtd                                         (@AB_CD@/chrome/editor/Validator.dtd)
 *+  locale/@AB_CD@/editor/aboutDialog.dtd                                       (@AB_CD@/chrome/editor/aboutDialog.dtd)
 *+  locale/@AB_CD@/editor/credits.html                                          (@AB_CD@/chrome/editor/credits.html)
@@ -73,16 +63,17 @@
 +   locale/@AB_CD@/editor/pref-publish.dtd                                      (@AB_CD@/chrome/editor/pref-publish.dtd)
 +   locale/@AB_CD@/editor/pref-toolbars.dtd                                     (@AB_CD@/chrome/editor/pref-toolbars.dtd)
 +   locale/@AB_CD@/editor/region.properties                                     (@AB_CD@/chrome/editor/region.properties)
-+   locale/@AB_CD@/editor/sitemanager.dtd                                       (@AB_CD@/chrome/editor/sitemanager.dtd)
-+   locale/@AB_CD@/editor/sitemanager.properties                                (@AB_CD@/chrome/editor/sitemanager.properties)
+#+   locale/@AB_CD@/editor/sitemanager.dtd                                       (@AB_CD@/chrome/editor/sitemanager.dtd)
+#+   locale/@AB_CD@/editor/sitemanager.properties                                (@AB_CD@/chrome/editor/sitemanager.properties)
 +   locale/@AB_CD@/editor/tabeditor.dtd                                         (@AB_CD@/chrome/editor/tabeditor.dtd)
 +   locale/@AB_CD@/editor/tabeditor.properties                                  (@AB_CD@/chrome/editor/tabeditor.properties)
 +   locale/@AB_CD@/editor/utilityOverlay.dtd                                    (@AB_CD@/chrome/editor/utilityOverlay.dtd)
 #
 +   locale/@AB_CD@/editor-region/region.properties                              (@AB_CD@/chrome/editor-region/region.properties)
 #
-%   locale tipoftheday            @AB_CD@  %locale/@AB_CD@/tipoftheday/
-+   locale/@AB_CD@/tipoftheday/tipoftheday.dtd                                  (@AB_CD@/chrome/tipoftheday/tipoftheday.dtd)
+#%   locale tipoftheday            @AB_CD@  %locale/@AB_CD@/tipoftheday/
+#+   locale/@AB_CD@/tipoftheday/tipoftheday.dtd                                  (@AB_CD@/chrome/tipoftheday/tipoftheday.dtd)
+#   locale/@AB_CD@/editor/Nvu-totd-en.rdf                                       (@AB_CD@/chrome/editor/Nvu-totd-en.rdf)
 #
 +   locale/@AB_CD@/global-platform/win/nsWindowsHooks.properties                (@AB_CD@/chrome/global-platform/win/nsWindowsHooks.properties)
 #

@@ -23,15 +23,15 @@ cascades.jar:
      content/cascades/allProps.js                 (content/allProps.js)
      content/cascades/domExplorer.xul             (content/domExplorer.xul)
      content/cascades/domExplorer.js              (content/domExplorer.js)
-     content/cascades/contents.rdf                (content/contents.rdf)
+#    content/cascades/contents.rdf                (content/contents.rdf)
 
 en-US.jar:
-     locale/cascades/EdCssProps.dtd               (locale/en-US/EdCssProps.dtd)
-     locale/cascades/ExtractStyles.dtd            (locale/en-US/ExtractStyles.dtd)
-     locale/cascades/cascadesOverlay.dtd          (locale/en-US/cascadesOverlay.dtd)
-     locale/cascades/cascades.properties          (locale/en-US/cascades.properties)
-     locale/cascades/domExplorer.dtd              (locale/en-US/domExplorer.dtd)
-#    locale/cascades/contents.rdf                 (locale/en-US/contents.rdf)
+     locale/en-US/cascades/EdCssProps.dtd               (locale/en-US/EdCssProps.dtd)
+     locale/en-US/cascades/ExtractStyles.dtd            (locale/en-US/ExtractStyles.dtd)
+     locale/en-US/cascades/cascadesOverlay.dtd          (locale/en-US/cascadesOverlay.dtd)
+     locale/en-US/cascades/cascades.properties          (locale/en-US/cascades.properties)
+     locale/en-US/cascades/domExplorer.dtd              (locale/en-US/domExplorer.dtd)
+#    locale/en-US/cascades/contents.rdf                 (locale/en-US/contents.rdf)
 
 classic.jar:
 +    skin/classic/editor/EdCssProps.css                      (skin/EdCssProps.css)
@@ -50,6 +50,6 @@ classic.jar:
      skin/classic/editor/icons/style.png                     (skin/icons/style.png)
      skin/classic/editor/icons/css.png                       (skin/icons/css.png)
      skin/classic/editor/icons/smallicons/css.png            (skin/icons/smallicons/css.png)
-+    skin/classic/editor/icons/grip-hrz-after.gif            (/themes/classic/global/splitter/grip-hrz-after.gif)
-+    skin/classic/editor/icons/grip-hrz-before.gif           (/themes/classic/global/splitter/grip-hrz-before.gif)
+#    skin/classic/editor/icons/grip-hrz-after.gif            (/themes/classic/global/splitter/grip-hrz-after.gif)
+#    skin/classic/editor/icons/grip-hrz-before.gif           (/themes/classic/global/splitter/grip-hrz-before.gif)
 

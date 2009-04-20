@@ -1,9 +1,15 @@
 tipoftheday.jar:
-%   content tipoftheday                      jar:tipoftheday.jar!/content/tipoftheday/
-%   locale  tipoftheday              en-US   jar:en-US.jar!/locale/en-US/tipoftheday/
+#%   content tipoftheday                      jar:tipoftheday.jar!/content/tipoftheday/
+#%   locale  tipoftheday              en-US   jar:en-US.jar!/locale/en-US/tipoftheday/
+%   content tipoftheday                      %content/tipoftheday/
     content/tipoftheday/tipoftheday.css                      (content/tipoftheday.css)
     content/tipoftheday/tipoftheday.xml                      (content/tipoftheday.xml)
     content/tipoftheday/tipoftheday.xul                      (content/tipoftheday.xul)
     content/tipoftheday/tipoftheday.js                       (content/tipoftheday.js)
     content/tipoftheday/totd.png                             (content/totd.png)
-    content/tipoftheday/contents.rdf                         (content/contents.rdf)
+
+en-US.jar:
+%   locale  tipoftheday              en-US   %locale/en-US/tipoftheday/
+#%   locale tipoftheday            @AB_CD@  %locale/@AB_CD@/tipoftheday/
++   locale/en-US/tipoftheday/tipoftheday.dtd                 (en-US/chrome/tipoftheday/tipoftheday.dtd)
++   locale/en-US/tipoftheday/tipoftheday.rdf                 (en-US/chrome/tipoftheday/tipoftheday.rdf)

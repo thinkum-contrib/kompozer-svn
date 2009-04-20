@@ -5,6 +5,7 @@ comm.jar:
     content/editor/url-loader.js                             (content/url-loader.js)
     content/editor/ftpDirParser.js                           (content/ftpDirParser.js)
 *   content/editor/localDirParser.js                         (content/localDirParser.js)
++   content/editor/EditorPublishSettings.xul                 (content/EditorPublishSettings.xul)
 #   FireFTP
 %   content fireftp                                          %content/fireftp/ xpcnativewrappers=yes
 %   overlay chrome://editor/content/editor.xul               chrome://fireftp/content/fireftpOverlay.xul
@@ -91,28 +92,18 @@ classic.jar:
     skin/classic/fireftp/icons/properties.png                (skin/icons/properties.png)
 
 en-US.jar:
-%   locale       fireftp en-US                               %locale/en-US/fireftp/
-    locale/en-US/fireftp/accountManager.dtd                  (locale/en-US/accountManager.dtd)
-    locale/en-US/fireftp/confirmFile.dtd                     (locale/en-US/confirmFile.dtd)
-    locale/en-US/fireftp/diff.dtd                            (locale/en-US/diff.dtd)
-    locale/en-US/fireftp/fireftp.dtd                         (locale/en-US/fireftp.dtd)
-    locale/en-US/fireftp/password2.dtd                       (locale/en-US/password2.dtd)
-    locale/en-US/fireftp/password.dtd                        (locale/en-US/password.dtd)
-    locale/en-US/fireftp/preferences.dtd                     (locale/en-US/preferences.dtd)
-    locale/en-US/fireftp/programs.dtd                        (locale/en-US/programs.dtd)
-    locale/en-US/fireftp/properties.dtd                      (locale/en-US/properties.dtd)
-    locale/en-US/fireftp/remoteEdit.dtd                      (locale/en-US/remoteEdit.dtd)
-    locale/en-US/fireftp/strings.properties                  (locale/en-US/strings.properties)
-
-
-
-
-
-
-
-
-
-
-
-
-
+%   locale       sitemanager en-US                           %locale/en-US/sitemanager/
++   locale/en-US/sitemanager/sitemanager.dtd                 (locale/en-US/sitemanager/sitemanager.dtd)
++   locale/en-US/sitemanager/sitemanager.properties          (locale/en-US/sitemanager/sitemanager.properties)
+%   locale       fireftp     en-US                           %locale/en-US/fireftp/
++   locale/en-US/fireftp/accountManager.dtd                  (locale/en-US/accountManager.dtd)
++   locale/en-US/fireftp/confirmFile.dtd                     (locale/en-US/confirmFile.dtd)
++   locale/en-US/fireftp/diff.dtd                            (locale/en-US/diff.dtd)
++   locale/en-US/fireftp/fireftp.dtd                         (locale/en-US/fireftp.dtd)
++   locale/en-US/fireftp/password2.dtd                       (locale/en-US/password2.dtd)
++   locale/en-US/fireftp/password.dtd                        (locale/en-US/password.dtd)
++   locale/en-US/fireftp/preferences.dtd                     (locale/en-US/preferences.dtd)
++   locale/en-US/fireftp/programs.dtd                        (locale/en-US/programs.dtd)
++   locale/en-US/fireftp/properties.dtd                      (locale/en-US/properties.dtd)
++   locale/en-US/fireftp/remoteEdit.dtd                      (locale/en-US/remoteEdit.dtd)
++   locale/en-US/fireftp/strings.properties                  (locale/en-US/strings.properties)

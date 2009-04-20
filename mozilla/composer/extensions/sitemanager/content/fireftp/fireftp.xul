@@ -324,7 +324,7 @@
     <splitter id="logsplitter" collapse="after" resizebefore="closest" onmousedown="checkLogMouseDown()" onmouseup="checkLogCollapsed()">
       <grippy/>
     </splitter>
-    <browser  id="cmdlog" src="blank.html" flex="1" persist="height"/>
+    <browser  id="cmdlog" src="chrome://fireftp/content/blank.html" flex="1" persist="height"/>
 
   </vbox>
 

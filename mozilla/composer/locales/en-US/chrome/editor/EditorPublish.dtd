@@ -88,3 +88,23 @@
 <!ENTITY savePassword.tooltip       "Select this to save your password securely using Password Manager">
 
 <!ENTITY selectDirectory.label      "Select directory">
+
+<!-- new strings -->
+<!ENTITY generalSettings.label      "General Settings">
+<!ENTITY ftpSettings.label          "FTP Settings">
+<!ENTITY localSettings.label        "Local Settings">
+<!ENTITY siteDirectory.label        "Site Folder:">
+<!ENTITY siteDirectory.tooltip      "The folder on your hard drive where your site is saved">
+<!ENTITY browsePrefix.label         "Prefix:">
+<!ENTITY browsePrefix.tooltip       "Prefix to remove of the FTP part of the url, e.g. /public_html">
+
+<!ENTITY connection.label           "Connection Type">
+<!ENTITY port.label                 "Port:">
+<!ENTITY pasv.label                 "Passive Mode">
+<!ENTITY security.label             "Security">
+<!ENTITY none.label                 "None">
+<!ENTITY authtls.label              "Auth TLS (Best)">
+<!ENTITY authssl.label              "Auth SSL (Better)">
+<!ENTITY implicit.label             "Implicit SSL (Good)">
+<!ENTITY treesync.label             "Keep directories in sync while navigating">
+

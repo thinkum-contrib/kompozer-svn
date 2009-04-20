@@ -51,7 +51,7 @@
           if(!window._tipoftheday)
           {
             window._tipoftheday = this;
-	    // window.addEventListener("focus", this.launch, false);
+            // window.addEventListener("focus", this.launch, false);
           }
         ]]>
       </constructor>

@@ -259,10 +259,10 @@ endif
 ifneq (,$(filter gtk gtk2,$(MOZ_WIDGET_TOOLKIT)))
 
 ICON_FILES	= \
-		$(srcdir)/mozicon256.png \
-		$(srcdir)/mozicon50.xpm \
-		$(srcdir)/mozicon16.xpm \
-		$(NULL)
+	$(srcdir)/mozicon256.png \
+	$(srcdir)/mozicon50.xpm \
+	$(srcdir)/mozicon16.xpm \
+	$(NULL)
 
 libs:: $(ICON_FILES)
 	$(INSTALL) $^ $(DIST)/bin/icons
