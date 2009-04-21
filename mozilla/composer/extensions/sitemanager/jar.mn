@@ -1,4 +1,4 @@
-comm.jar:       
+comm.jar:
 *+  content/editor/sitemanager.js                            (content/sitemanager.js)
     content/editor/sitemanagerUtils.js                       (content/sitemanagerUtils.js)
     content/editor/sitemanager.xul                           (content/sitemanager.xul)
@@ -93,8 +93,8 @@ classic.jar:
 
 en-US.jar:
 %   locale       sitemanager en-US                           %locale/en-US/sitemanager/
-+   locale/en-US/sitemanager/sitemanager.dtd                 (locale/en-US/sitemanager/sitemanager.dtd)
-+   locale/en-US/sitemanager/sitemanager.properties          (locale/en-US/sitemanager/sitemanager.properties)
++   locale/en-US/sitemanager/sitemanager.dtd                 (locale/en-US/sitemanager.dtd)
++   locale/en-US/sitemanager/sitemanager.properties          (locale/en-US/sitemanager.properties)
 %   locale       fireftp     en-US                           %locale/en-US/fireftp/
 +   locale/en-US/fireftp/accountManager.dtd                  (locale/en-US/accountManager.dtd)
 +   locale/en-US/fireftp/confirmFile.dtd                     (locale/en-US/confirmFile.dtd)

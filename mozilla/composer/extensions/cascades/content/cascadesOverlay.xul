@@ -21,7 +21,7 @@
    -
    - Contributor(s):
    -   Original author: Daniel Glazman (daniel@glazman.org)
-   -   Fabien Cazenave (kaze@kompozer.net)
+   -   Contributor:     Fabien Cazenave (kaze@kompozer.net)
    -
    - Alternatively, the contents of this file may be used under the terms of
    - either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -47,10 +47,6 @@
 
   <script type="application/x-javascript" src="chrome://cascades/content/cascadesOverlay.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/EdCssUtils.js"/>
-
-  <!-- Kaze: view source -->
-  <!--<script type="application/x-javascript" src="chrome://global/content/viewPartialSource.js"/>-->
-  <!--<script type="application/x-javascript" src="chrome://cascades/content/viewSource.js"/>-->
 
   <!--
      -<menupopup id="menu_View_Popup">
