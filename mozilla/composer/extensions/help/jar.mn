@@ -1,7 +1,7 @@
 help.jar:
-%       content help                                     %content/help/
-%       overlay chrome://editor/content/editor.xul       chrome://help/content/helpMenuOverlay.xul
-*       content/help/help.xul                            (content/help.xul)
+% content help %content/help/
+%       overlay chrome://editor/content/editor.xul chrome://help/content/helpMenuOverlay.xul
+*+      content/help/help.xul                            (content/help.xul)
 *       content/help/contextHelp.js                      (content/contextHelp.js)
 *       content/help/help.js                             (content/help.js)
 *       content/help/helpMenuOverlay.xul                 (content/helpMenuOverlay.xul)
@@ -10,8 +10,24 @@ help.jar:
 *       content/help/toolbarCustomization.js             (content/toolbarCustomization.js)
 *       content/help/platformClasses.css                 (content/platformClasses.css)
 
+classic.jar:
+% skin help classic/1.0 %skin/classic/help/
+*+      skin/classic/help/sidebar.css                    (skin/sidebar.css)
+        skin/classic/help/barcode.jpg                    (skin/barcode.jpg)
+        skin/classic/help/ffToolbar.png                  (skin/ffToolbar.png)
+        skin/classic/help/help.css                       (skin/help.css)
+        skin/classic/help/helpFileLayout.css             (skin/helpFileLayout.css)
+        skin/classic/help/sbtab-twisty-open.gif          (skin/sbtab-twisty-open.gif)
+        skin/classic/help/sbtab-twisty.gif               (skin/sbtab-twisty.gif)
+        skin/classic/help/sidebarBindings.xml            (skin/sidebarBindings.xml)
+        skin/classic/help/throbber-busy.gif              (skin/throbber-busy.gif)
+        skin/classic/help/throbber.png                   (skin/throbber.png)
+        skin/classic/help/Toolbar.png                    (skin/Toolbar.png)
+        skin/classic/help/topnav.jpg                     (skin/topnav.jpg)
+        skin/classic/help/Weblink.png                    (skin/Weblink.png)
+
 en-US.jar:
-%       locale       help       en-US                    %locale/en-US/help/
+% locale help en-US %locale/en-US/help/
         locale/en-US/help/help.properties                (locale/en-US/help.properties)
 *       locale/en-US/help/help.dtd                       (locale/en-US/help.dtd)
 *+      locale/en-US/help/helpMenuOverlay.dtd            (locale/en-US/helpMenuOverlay.dtd)
@@ -49,20 +65,4 @@ en-US.jar:
         locale/en-US/help/images/tut_formating_tb.png    (locale/en-US/helpOnComposer/images/tut_formating_tb.png)
         locale/en-US/help/images/tut_status_tb.png       (locale/en-US/helpOnComposer/images/tut_status_tb.png)
         locale/en-US/help/images/tut_tabbrowser_tb.png   (locale/en-US/helpOnComposer/images/tut_tabbrowser_tb.png)
-
-classic.jar:
-%       skin help               classic/1.0              %skin/help/
-*       skin/help/sidebar.css                            (skin/sidebar.css)
-        skin/help/sbtab-twisty.gif                       (skin/sbtab-twisty.gif)
-        skin/help/help.css                               (skin/help.css)
-        skin/help/barcode.jpg                            (skin/barcode.jpg)
-        skin/help/topnav.jpg                             (skin/topnav.jpg)
-        skin/help/helpFileLayout.css                     (skin/helpFileLayout.css)
-        skin/help/sbtab-twisty-open.gif                  (skin/sbtab-twisty-open.gif)
-        skin/help/sidebarBindings.xml                    (skin/sidebarBindings.xml)
-        skin/help/Toolbar.png                            (skin/Toolbar.png)
-        skin/help/ffToolbar.png                          (skin/ffToolbar.png)
-        skin/help/throbber.png                           (skin/throbber.png)
-        skin/help/throbber-busy.gif                      (skin/throbber-busy.gif)
-        skin/help/Weblink.png                            (skin/Weblink.png)
 

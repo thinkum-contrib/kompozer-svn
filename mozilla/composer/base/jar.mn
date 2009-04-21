@@ -1,14 +1,5 @@
 comm.jar:
-#%   content communicator %content/communicator/ xpcnativewrappers=yes
-#%   overlay chrome://editor/content/editor.xul chrome://global/content/globalOverlay.xul 
-#%   overlay chrome://editor/content/editor.xul chrome://global/content/charsetOverlay.xul 
-#%   overlay chrome://editor/content/editor.xul chrome://communicator/content/communicatorOverlay.xul
-#%   overlay chrome://editor/content/editor.xul chrome://communicator/content/contentAreaContextOverlay.xul
-#%   overlay chrome://editor/content/editor.xul chrome://communicator/content/tasksOverlay.xul
-#%   overlay chrome://editor/content/editor.xul chrome://communicator/content/sidebar/sidebarOverlay.xul
-#%   overlay chrome://editor/content/editor.xul chrome://editor/content/composerOverlay.xul
-#%   overlay chrome://editor/content/editor.xul chrome://editor/content/utilityOverlay.xul
-%   content editor                 %content/editor/
+%   content editor %content/editor/
 +   content/editor/ComposerCommands.js                        (content/ComposerCommands.js)
 +   content/editor/viewSource.js                              (content/viewSource.js)
 +   content/editor/EdColorPicker.js                           (content/colourPicker.js)
@@ -101,7 +92,7 @@ comm.jar:
 #
 +   content/wallet/walletTasksOverlay.xul                     (content/walletTasksOverlay.xul)
 #
-%   content communicator           %content/communicator/
+%   content communicator %content/communicator/
 #+  content/communicator/RealTimeSpell.js                     (resources/content/RealTimeSpell.js)
     content/communicator/askViewZoom.xul                      (/xpfe/communicator/resources/content/askViewZoom.xul)
     content/communicator/askViewZoom.js                       (/xpfe/communicator/resources/content/askViewZoom.js)
@@ -145,7 +136,7 @@ comm.jar:
     content/communicator/sidebar/PageNotFound.xul             (/xpfe/components/sidebar/resources/PageNotFound.xul)
     content/communicator/sidebar/local-panels.rdf             (/xpfe/components/sidebar/resources/local-panels.rdf)
 #
-%   content communicator-platform  %content/communicator-platform/  platform
+%   content communicator-platform %content/communicator-platform/ platform
 #   content/communicator-platform/mac/platformBrowserBindings.xul      (/xpfe/communicator/resources/content/mac/platformBrowserBindings.xul)
 #   content/communicator-platform/mac/platformEditorBindings.xul       (/xpfe/communicator/resources/content/mac/platformEditorBindings.xul)
 #   content/communicator-platform/mac/platformCommunicatorOverlay.xul  (/xpfe/communicator/resources/content/mac/platformCommunicatorOverlay.xul)
@@ -177,7 +168,7 @@ comm.jar:
 #endif
 #endif
 #
-%   content navigator              %content/navigator/
+%   content navigator %content/navigator/
     content/navigator/sessionHistoryUI.js                     (/xpfe/browser/resources/content/sessionHistoryUI.js)
 
 toolkit.jar:
@@ -304,9 +295,6 @@ classic.jar:
     skin/classic/editor/icons/editmode-normal.gif             (skin/icons/editmode-normal.gif)
     skin/classic/editor/icons/editmode-preview.gif            (skin/icons/editmode-preview.gif)
     skin/classic/editor/icons/editmode-tags.gif               (skin/icons/editmode-tags.gif)
-#   skin/classic/editor/icons/editmode-design.gif             (skin/icons/editmode-design.gif)
-#   skin/classic/editor/icons/editmode-split.gif              (skin/icons/editmode-split.gif)
-#   skin/classic/editor/icons/editmode-html.gif               (skin/icons/editmode-html.gif)
     skin/classic/editor/icons/editmode-design.png             (skin/icons/editmode-design.png)
     skin/classic/editor/icons/editmode-split.png              (skin/icons/editmode-split.png)
     skin/classic/editor/icons/editmode-html.png               (skin/icons/editmode-html.png)
@@ -332,7 +320,6 @@ classic.jar:
     skin/classic/editor/icons/smallicons/find.png             (skin/icons/smallicons/find.png)
     skin/classic/editor/icons/smallicons/cut.png              (skin/icons/smallicons/cut.png)
     skin/classic/editor/icons/smallicons/copy.png             (skin/icons/smallicons/copy.png)
-#+  contents.rdf                                              (skin/contents.rdf)
     skin/classic/editor/icons/document-blank.png              (skin/icons/document-blank.png)
     skin/classic/editor/icons/document-html.png               (skin/icons/document-html.png)
     skin/classic/editor/icons/document-image.png              (skin/icons/document-image.png)
@@ -343,7 +330,6 @@ classic.jar:
     skin/classic/editor/EditorDialog.css                      (/themes/classic/editor/EditorDialog.css)
 #
 %   skin navigator classic/1.0 %skin/classic/navigator/
-#*  skin/classic/navigator/contents.rdf                       (/themes/classic/navigator/contents.rdf)
     skin/classic/navigator/navigator.css                      (/themes/classic/navigator/navigator.css)
 #   the following files are probably useless, but just in case...
     skin/classic/navigator/linkToolbar.css                    (/themes/classic/navigator/linkToolbar.css)

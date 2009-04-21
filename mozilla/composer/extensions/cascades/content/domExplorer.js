@@ -164,6 +164,30 @@ function CleanXulTree(treechildren) {
 
 /*****************************************************************************\
  *                                                                           *
+ *   Duplicate of /composer/editor/viewSource.js                             *
+ *                                                                           *
+\*****************************************************************************/
+
+const NODE_SELF        = 0;
+const NODE_PARENT      = 1;
+const NODE_PREVSIBLING = 2;
+const NODE_NEXTSIBLING = 3;
+const NODE_FIRSTCHILD  = 4;
+
+function getNeighborElement(node, dir) {
+  return window.top.getNeighborElement(node, dir);
+}
+
+function selectNeighborElement(dir) {
+  return window.top.selectNeighborElement(dir);
+}
+
+function SelectFocusNodeAncestor(element, scroll) {
+  return window.top.SelectFocusNodeAncestor(element, scroll);
+}
+
+/*****************************************************************************\
+ *                                                                           *
  *   HTML tree                                                               *
  *                                                                           *
 \*****************************************************************************/

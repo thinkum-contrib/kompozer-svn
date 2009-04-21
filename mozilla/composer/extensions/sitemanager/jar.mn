@@ -7,8 +7,8 @@ comm.jar:
 *   content/editor/localDirParser.js                         (content/localDirParser.js)
 +   content/editor/EditorPublishSettings.xul                 (content/EditorPublishSettings.xul)
 #   FireFTP
-%   content fireftp                                          %content/fireftp/ xpcnativewrappers=yes
-%   overlay chrome://editor/content/editor.xul               chrome://fireftp/content/fireftpOverlay.xul
+% content fireftp %content/fireftp/ xpcnativewrappers=yes
+% overlay chrome://editor/content/editor.xul chrome://fireftp/content/fireftpOverlay.xul
     content/fireftp/blank.html                               (content/fireftp/blank.html)
     content/fireftp/accountManager.xul                       (content/fireftp/accountManager.xul)
     content/fireftp/alert.xul                                (content/fireftp/alert.xul)
@@ -58,7 +58,7 @@ comm.jar:
     content/fireftp/remote/remoteTree.js                     (content/fireftp/remote/remoteTree.js)
 
 classic.jar:
-%   skin    fireftp classic/1.0                              %skin/classic/fireftp/
+% skin fireftp classic/1.0 %skin/classic/fireftp/
 +   skin/classic/editor/icons/reload.png                     (content/images/reload.png)
 +   skin/classic/editor/icons/rename.png                     (content/images/rename.png)
 +   skin/classic/editor/icons/createdir.png                  (content/images/createdir.png)
@@ -73,13 +73,13 @@ classic.jar:
 +   skin/classic/editor/icons/directory.gif                  (content/images/directory.gif)
 +   skin/classic/editor/icons/link.gif                       (content/images/link.gif)
 +   skin/classic/editor/icons/sitemanager.png                (content/images/sitemanager.png)
-    skin/classic/communicator/sidebar/customize.css          (../../../themes/classic/communicator/sidebar/customize.css)
-    skin/classic/communicator/sidebar/preview.css            (../../../themes/classic/communicator/sidebar/preview.css)
-    skin/classic/communicator/sidebar/sbtab-twisty-open.gif  (../../../themes/classic/communicator/sidebar/sbtab-twisty-open.gif)
-    skin/classic/communicator/sidebar/sbtab-twisty.gif       (../../../themes/classic/communicator/sidebar/sbtab-twisty.gif)
-    skin/classic/communicator/sidebar/sidebar.css            (../../../themes/classic/communicator/sidebar/sidebar.css)
-    skin/classic/communicator/sidebar/sidebarBindings.xml    (../../../themes/classic/communicator/sidebar/sidebarBindings.xml)
-    skin/classic/communicator/sidebar/sidebarListView.css    (../../../themes/classic/communicator/sidebar/sidebarListView.css)
+    skin/classic/communicator/sidebar/customize.css          (/themes/classic/communicator/sidebar/customize.css)
+    skin/classic/communicator/sidebar/preview.css            (/themes/classic/communicator/sidebar/preview.css)
+    skin/classic/communicator/sidebar/sbtab-twisty-open.gif  (/themes/classic/communicator/sidebar/sbtab-twisty-open.gif)
+    skin/classic/communicator/sidebar/sbtab-twisty.gif       (/themes/classic/communicator/sidebar/sbtab-twisty.gif)
+    skin/classic/communicator/sidebar/sidebar.css            (/themes/classic/communicator/sidebar/sidebar.css)
+    skin/classic/communicator/sidebar/sidebarBindings.xml    (/themes/classic/communicator/sidebar/sidebarBindings.xml)
+    skin/classic/communicator/sidebar/sidebarListView.css    (/themes/classic/communicator/sidebar/sidebarListView.css)
 +   skin/classic/fireftp/fireftp.css                         (skin/fireftp.css)
 +   skin/classic/fireftp/overlay.css                         (skin/overlay.css)
     skin/classic/fireftp/icons/cbox-check.gif                (skin/icons/cbox-check.gif)
@@ -92,10 +92,10 @@ classic.jar:
     skin/classic/fireftp/icons/properties.png                (skin/icons/properties.png)
 
 en-US.jar:
-%   locale       sitemanager en-US                           %locale/en-US/sitemanager/
+% locale sitemanager en-US %locale/en-US/sitemanager/
 +   locale/en-US/sitemanager/sitemanager.dtd                 (locale/en-US/sitemanager.dtd)
 +   locale/en-US/sitemanager/sitemanager.properties          (locale/en-US/sitemanager.properties)
-%   locale       fireftp     en-US                           %locale/en-US/fireftp/
+% locale fireftp en-US %locale/en-US/fireftp/
 +   locale/en-US/fireftp/accountManager.dtd                  (locale/en-US/accountManager.dtd)
 +   locale/en-US/fireftp/confirmFile.dtd                     (locale/en-US/confirmFile.dtd)
 +   locale/en-US/fireftp/diff.dtd                            (locale/en-US/diff.dtd)

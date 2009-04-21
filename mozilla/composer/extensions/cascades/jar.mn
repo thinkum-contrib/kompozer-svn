@@ -1,6 +1,6 @@
 cascades.jar:
-%    content cascades               %content/cascades/
-%    overlay chrome://editor/content/editor.xul   chrome://cascades/content/cascadesOverlay.xul
+% content cascades %content/cascades/
+% overlay chrome://editor/content/editor.xul chrome://cascades/content/cascadesOverlay.xul
      content/cascades/EdCssProps.js               (content/EdCssProps.js)
      content/cascades/EdCssProps-utils.js         (content/EdCssProps-utils.js)
      content/cascades/EdCssProps.xul              (content/EdCssProps.xul)
@@ -25,7 +25,7 @@ cascades.jar:
 #    content/cascades/contents.rdf                (content/contents.rdf)
 
 en-US.jar:
-%    locale       cascades       en-US   %locale/en-US/cascades/
+% locale cascades en-US %locale/en-US/cascades/
      locale/en-US/cascades/EdCssProps.dtd               (locale/en-US/EdCssProps.dtd)
      locale/en-US/cascades/ExtractStyles.dtd            (locale/en-US/ExtractStyles.dtd)
      locale/en-US/cascades/cascadesOverlay.dtd          (locale/en-US/cascadesOverlay.dtd)
@@ -50,6 +50,4 @@ classic.jar:
      skin/classic/editor/icons/style.png                     (skin/icons/style.png)
      skin/classic/editor/icons/css.png                       (skin/icons/css.png)
      skin/classic/editor/icons/smallicons/css.png            (skin/icons/smallicons/css.png)
-#    skin/classic/editor/icons/grip-hrz-after.gif            (/themes/classic/global/splitter/grip-hrz-after.gif)
-#    skin/classic/editor/icons/grip-hrz-before.gif           (/themes/classic/global/splitter/grip-hrz-before.gif)
 

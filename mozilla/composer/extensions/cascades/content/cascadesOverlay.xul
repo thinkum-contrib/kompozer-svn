@@ -138,19 +138,19 @@
     <command id="cmd_editFirstChild"   oncommand="selectNeighborElement(NODE_FIRSTCHILD);"/>
     <keyset id="viewSourceKeys">
 #ifndef XP_MACOSX
-      <key id="key_editCurrentNode"  keycode="VK_BACK"               command="cmd_editCurrentNode" modifiers="alt"/>
-      <key id="key_editParentNode"   keycode="VK_LEFT"               command="cmd_editParentNode"  modifiers="alt"/>
-      <key id="key_editPrevSibling"  keycode="VK_UP"                 command="cmd_editPrevSibling" modifiers="alt"/>
-      <key id="key_editNextSibling"  keycode="VK_DOWN"               command="cmd_editNextSibling" modifiers="alt"/>
-      <key id="key_editFirstChild"   keycode="VK_RIGHT"              command="cmd_editFirstChild"  modifiers="alt"/>
+      <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="alt"/>
+      <key id="key_editParentNode"   keycode="VK_LEFT"  command="cmd_editParentNode"  modifiers="alt"/>
+      <key id="key_editPrevSibling"  keycode="VK_UP"    command="cmd_editPrevSibling" modifiers="alt"/>
+      <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="alt"/>
+      <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="alt"/>
       <key id="key_sourceDockToggle" keycode="VK_F8"/>
 #else
       <!-- alt+arrow is used for word selection on MacOS X, using ctrl+arrow instead -->
-      <key id="key_editCurrentNode"  keycode="VK_BACK"               command="cmd_editCurrentNode" modifiers="control"/>
-      <key id="key_editParentNode"   keycode="VK_LEFT"               command="cmd_editParentNode"  modifiers="control"/>
-      <key id="key_editPrevSibling"  keycode="VK_UP"                 command="cmd_editPrevSibling" modifiers="control"/>
-      <key id="key_editNextSibling"  keycode="VK_DOWN"               command="cmd_editNextSibling" modifiers="control"/>
-      <key id="key_editFirstChild"   keycode="VK_RIGHT"              command="cmd_editFirstChild"  modifiers="control"/>
+      <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="control"/>
+      <key id="key_editParentNode"   keycode="VK_LEFT"  command="cmd_editParentNode"  modifiers="control"/>
+      <key id="key_editPrevSibling"  keycode="VK_UP"    command="cmd_editPrevSibling" modifiers="control"/>
+      <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="control"/>
+      <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="control"/>
       <!-- key_sourceDockToggle is missing, we have to find another shortcut key -->
 #endif
     </keyset>
