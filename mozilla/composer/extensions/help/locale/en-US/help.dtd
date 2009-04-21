@@ -1,0 +1,86 @@
+<!ENTITY printCmd.commandkey             "p">
+
+<!ENTITY viewCustomizeToolbar.label      "Customize…">
+<!ENTITY viewCustomizeToolbar.accesskey  "C">
+
+<!ENTITY findOnCmd.commandkey            "F">
+<!ENTITY findAgainCmd.commandkey         "G">
+<!ENTITY findAgainCmd.commandkey         "G">
+<!ENTITY findAgainCmd.commandkey2        "VK_F3">
+<!ENTITY findDialog.title                "Find in This Page">
+<!ENTITY findDialogFrame.title           "Find in This Frame">
+<!ENTITY findField.label                 "Find what:">
+<!ENTITY findField.accesskey             "n">
+<!ENTITY caseSensitiveCheckbox.label     "Match case">
+<!ENTITY caseSensitiveCheckbox.accesskey "c">
+<!ENTITY wrapCheckbox.label              "Wrap">
+<!ENTITY wrapCheckbox.accesskey          "W">
+<!ENTITY backwardsCheckbox.label         "Search backwards">
+<!ENTITY backwardsCheckbox.accesskey     "b">
+<!ENTITY findField.tooltip               "Type one or more words to search for">
+<!ENTITY findButton.label                "Find Next">
+<!ENTITY findButton.accesskey            "F">
+<!ENTITY cancelButton.label              "Cancel">
+<!ENTITY up.label                        "Up">
+<!ENTITY up.accesskey                    "U">
+<!ENTITY down.label                      "Down">
+<!ENTITY down.accesskey                  "D">
+<!ENTITY direction.label                 "Direction">
+
+<!ENTITY find.label                      "Find:">
+<!ENTITY findNext.label                  "Find Next">
+<!ENTITY findNext.tooltip                "Find the next occurrence of the phrase">
+<!ENTITY findPrevious.label              "Find Previous">
+<!ENTITY findPrevious.tooltip            "Find the previous occurrence of the phrase">
+<!ENTITY findCloseButton.tooltip         "Close Find bar">
+<!ENTITY highlight.label                 "Highlight">
+<!ENTITY highlight.tooltip               "Highlight all occurrences of the phrase (Ctrl+Enter)">
+
+<!ENTITY backButton.label                "Back">
+<!ENTITY backButton.accesskey            "B">
+<!ENTITY backButton.tooltip              "Go back one page">
+<!ENTITY forwardButton.label             "Forward">
+<!ENTITY forwardButton.accesskey         "F">
+<!ENTITY forwardButton.tooltip           "Go forward one page">
+<!ENTITY homeButton.label                "Home">
+<!ENTITY homeButton.tooltip              "Go to the Help Start Page">
+<!ENTITY printButton.label               "Print">
+<!ENTITY printButton.tooltip             "Print this page">
+<!ENTITY findBtn.label                   "Find">
+<!ENTITY sidebarBtn.label                "Toggle Sidebar">
+<!ENTITY sidebarBtn.tooltip              "Show or Hide the Help Sidebar">
+<!ENTITY textZoomReduceBtn.label         "Decrease Text Size">
+<!ENTITY textZoomReduceBtn.accesskey     "D">
+<!ENTITY textZoomReduceBtn.tooltip       "Decrease the size of the text in Help documents.">
+<!ENTITY textZoomEnlargeBtn.label        "Increase Text Size">
+<!ENTITY textZoomEnlargeBtn.accesskey    "I">
+<!ENTITY textZoomEnlargeBtn.tooltip      "Increase the size of the text in Help documents.">
+<!ENTITY customizeButton.tooltip         "Customize which buttons are shown on the Help toolbar.">
+<!ENTITY reloadCmd.label                 "Reload">
+<!ENTITY reloadCmd.accesskey             "R">
+<!ENTITY closeWindow.commandkey          "W">
+<!ENTITY copyCmd.label                   "Copy">
+<!ENTITY copyCmd.accesskey               "C">
+
+<!ENTITY throbberItem.title              "Activity Indicator">
+
+<!ENTITY cmd_CustomizeToolbars.label     "Customize" >
+
+<!ENTITY searchtab.label                 "Search">
+<!ENTITY searchtab.accesskey             "S">
+<!ENTITY searchbtn.label                 "Find">
+<!ENTITY toctab.label                    "Contents">
+<!ENTITY toctab.accesskey                "C">
+<!ENTITY indextab.label                  "Index">
+<!ENTITY indextab.accesskey              "I">
+<!ENTITY ixname.label                    "Name">
+<!ENTITY glossarytab.label               "Glossary">
+<!ENTITY glossarytab.accesskey           "G">
+<!ENTITY glossname.label                 "Name">
+<!ENTITY gobtn.label                     "Search">
+<!ENTITY name.label                      "Item">
+
+<!ENTITY textZoomReduceCmd.commandkey    "-">
+<!ENTITY textZoomEnlargeCmd.commandkey   "+">
+<!ENTITY textZoomEnlargeCmd.commandkey2  "="> <!-- + is above this key on many keyboards -->
+<!ENTITY textZoomResetCmd.commandkey     "0">
