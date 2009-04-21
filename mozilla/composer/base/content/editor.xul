@@ -95,7 +95,7 @@
 #include nvu-sets.inc
 # #endif
 
-  <tipoftheday id="tipoftheday" src="chrome://editor/locale/Nvu-totd-en.rdf" item="random"/>
+  <tipoftheday id="tipoftheday" src="chrome://tipoftheday/locale/tipoftheday.rdf" item="random"/>
 
   <popupset id="editorContentContextSet">
     <popup id="main-toolbar-context-menu">

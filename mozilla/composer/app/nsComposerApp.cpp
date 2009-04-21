@@ -20,8 +20,9 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Brian Ryner <bryner@brianryner.com>
- *  Daniel Glazman <daniel.glazman@disruptive-innovations.com>
+ *  Brian Ryner     <bryner@brianryner.com>
+ *  Daniel Glazman  <daniel.glazman@disruptive-innovations.com>
+ *  Fabien Cazenave <kaze@kompozer.net>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -77,12 +78,12 @@
 static const nsXREAppData kAppData = {
   sizeof(nsXREAppData),
   nsnull,
-  nsnull,
+  "kompozer.net",
   "KompoZer",
   NS_STRINGIFY(APP_VERSION),
   NS_STRINGIFY(BUILD_ID),
   "{136c295a-4a5a-41cf-bf24-5cee526720d5}",
-  "Copyright (c) 2009 contributors",
+  "Copyright (c) 2006-2009 contributors",
   NS_XRE_ENABLE_EXTENSION_MANAGER
 };
 
