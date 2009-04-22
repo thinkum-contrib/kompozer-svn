@@ -1,0 +1,11 @@
+help.jar:
+	../sidebar.css                           (skin/sidebar.css)
+	../sbtab-twisty.gif                      (skin/sbtab-twisty.gif)
+	../help.css                              (skin/help.css)
+	../helpFileLayout.css                    (skin/helpFileLayout.css)
+	../Toolbar.png                           (skin/Toolbar.png)
+	../sbtab-twisty-open.gif                 (skin/sbtab-twisty-open.gif)
+	../throbber-busy.gif                     (skin/throbber-busy.gif)
+	../sidebarBindings.xml                   (skin/sidebarBindings.xml)
+	../zoomImg.png                           (skin/zoomImg.png)
+	Toolbar.png                              (skin/toolbar.png)
