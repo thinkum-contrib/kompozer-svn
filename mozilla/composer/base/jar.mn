@@ -327,6 +327,7 @@ classic.jar:
     skin/classic/editor/icons/document-script.png             (skin/icons/document-script.png)
     skin/classic/editor/icons/document-style.png              (skin/icons/document-style.png)
     skin/classic/editor/icons/document-text.png               (skin/icons/document-text.png)
+    skin/classic/editor/icons/console.png                     (skin/icons/console.png)
     skin/classic/editor/EditorDialog.css                      (/themes/classic/editor/EditorDialog.css)
 #
 %   skin navigator classic/1.0 %skin/classic/navigator/

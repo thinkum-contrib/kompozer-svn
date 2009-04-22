@@ -100,3 +100,15 @@
 #siteManagerButton { /* Kaze */
   list-style-image: url("chrome://editor/skin/icons/sitemanager.png");
 }
+
+#localTab { /* Kaze */
+  list-style-image: url("chrome://editor/skin/icons/folder-local.png");
+}
+
+#remoteTab { /* Kaze */
+  list-style-image: url("chrome://editor/skin/icons/folder-remote.png");
+}
+
+#localTab .tab-text, #remoteTab .tab-text { /* Kaze */
+  padding-left: 4px;
+}

@@ -268,3 +268,15 @@ splitter#browser-splitter grippy:hover {
   background-color: #CCCCFF;
 }
 
+/* Kaze: adding a few icons in the menu */
+#javascriptConsole {
+  list-style-image: url("chrome://editor/skin/icons/console.png");
+}
+
+#menu_publishSettings {
+  list-style-image: url("chrome://editor/skin/icons/sitemanager.png");
+}
+
+#menu_CaScadeS {
+  list-style-image: url("chrome://editor/skin/icons/style.png");
+}

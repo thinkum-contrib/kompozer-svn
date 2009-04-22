@@ -66,3 +66,6 @@
 <!ENTITY renameButton.tooltip     "Rename file or folder">
 
 <!ENTITY filterControl.label      "View:">
+
+<!ENTITY localTab.label           "Local">
+<!ENTITY remoteTab.label          "Remote">

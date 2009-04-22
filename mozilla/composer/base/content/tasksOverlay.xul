@@ -43,6 +43,7 @@
                 accesskey="&javaScriptConsoleCmd.accesskey;" 
                 key="key_javascriptConsole"
                 command="Tools:Console"
+                class="menuitem-iconic"
                 insertbefore="sep_addon_list"/>
                 <!--insertbefore="menu_preferences"/>-->
       <!-- Kaze: disabled

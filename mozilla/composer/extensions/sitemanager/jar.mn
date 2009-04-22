@@ -6,6 +6,8 @@ comm.jar:
     content/editor/ftpDirParser.js                           (content/ftpDirParser.js)
 *   content/editor/localDirParser.js                         (content/localDirParser.js)
 +   content/editor/EditorPublishSettings.xul                 (content/EditorPublishSettings.xul)
++   content/editor/EditorPublishSettings.js                  (content/EditorPublishSettings.js)
++   content/editor/publishprefs.js                           (content/publishprefs.js)
 #   FireFTP
 % content fireftp %content/fireftp/ xpcnativewrappers=yes
 % overlay chrome://editor/content/editor.xul chrome://fireftp/content/fireftpOverlay.xul
@@ -72,6 +74,8 @@ classic.jar:
 +   skin/classic/editor/sitemanager.css                      (skin/sitemanager.css)
 +   skin/classic/editor/icons/directory.gif                  (content/images/directory.gif)
 +   skin/classic/editor/icons/link.gif                       (content/images/link.gif)
++   skin/classic/editor/icons/folder-local.png               (content/images/folder-local.png)
++   skin/classic/editor/icons/folder-remote.png              (content/images/folder-remote.png)
 +   skin/classic/editor/icons/sitemanager.png                (content/images/sitemanager.png)
     skin/classic/communicator/sidebar/customize.css          (/themes/classic/communicator/sidebar/customize.css)
     skin/classic/communicator/sidebar/preview.css            (/themes/classic/communicator/sidebar/preview.css)

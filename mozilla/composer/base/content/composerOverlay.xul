@@ -29,7 +29,7 @@
 
   <!-- Items in the Edit menu used only by Composer app -->
   <menupopup id="edEditMenuPopup">
-    <menuitem id="menu_publishSettings" observes="cmd_publishSettings" insertafter="menu_detachTemplate"/>
+    <menuitem id="menu_publishSettings" observes="cmd_publishSettings" class="menuitem-iconic" insertafter="menu_detachTemplate"/>
   </menupopup>
 
 </overlay>    

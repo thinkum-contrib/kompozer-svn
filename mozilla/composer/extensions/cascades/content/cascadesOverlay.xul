@@ -61,9 +61,11 @@
 
   <!-- Tools menu item + keyboard shortcut -->
   <menupopup id="taskPopup">
-    <menuitem label="&cascadesMenuItem.label;" key="stylekb"
+    <menuitem id="menu_CaScadeS"
+              label="&cascadesMenuItem.label;" key="stylekb"
               accesskey="&cascadesMenuItem.accesskey;"
               observes="cmd_cssEditor"
+              class="menuitem-iconic"
               insertafter="menu_validate"/>
   </menupopup>
   <keyset id="editorKeys">

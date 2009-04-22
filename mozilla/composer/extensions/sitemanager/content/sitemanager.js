@@ -51,6 +51,7 @@ var gLastDirOpenOrClose = -1;
 
 var iconFinder;
 var gFilterRE; // Kaze
+var gHelpers = window.top.gHelpers; // Kaze
 
 const ATOM_CTRID       = "@mozilla.org/atom-service;1";
 const ICONFINDER_CTRID = "@disruptive-innovations.com/nvu/iconfinder;1";
@@ -294,6 +295,7 @@ function Startup()
   gDialog.removeFileOrDirButton = document.getElementById("removeFileOrDirButton");
   gDialog.stopButton            = document.getElementById("stopButton");
   gDialog.mainBox               = document.getElementById("mainBox");
+  gDialog.tabBox                = document.getElementById("sitemanagerTabbox");    // Kaze
 
   gDialog.progressmeter         = document.getElementById("progressmeter");
 
@@ -326,6 +328,15 @@ function Startup()
   SetWindowLocation();
 
   window.top.OnSidebarLoad();
+}
+
+function onSelectLocalRemote(tabbox) { // Kaze
+  // note: (tabbox.selectedIndex > 0) <=> remote view
+  // TODO: don't initialize the site tree if the tab hasn't been changed
+  SetupTreeView();
+  FillSiteList();
+  FilterAllItems();
+  SetupTree();
 }
 
 function SetupTree()
@@ -362,7 +373,10 @@ function FillSiteList()
 
   for (i = 0; i < count; i++) {
     var name = gPublishSiteData[i].siteName;
-    var siteUrl = _GetUrlForPasswordManager(gPublishSiteData[i]);
+    //var siteUrl = _GetUrlForPasswordManager(gPublishSiteData[i]);
+    // Kaze: select the URL that corresponds to the selected tab
+    var siteUrl = gDialog.tabBox.selectedIndex ? 
+      _GetUrlForPasswordManager(gPublishSiteData[i]) : gHelpers.path2url(gPublishSiteData[i].localPath);
 
     gTreeView.addRow(null,
                      name,
