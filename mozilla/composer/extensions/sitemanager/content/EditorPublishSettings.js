@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Fabien Cazenave <kaze@kompozer.net>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -70,6 +71,11 @@ function Startup()
   gDialog.BrowsePrefixInput = document.getElementById("BrowsePrefixInput"); // Kaze
   gDialog.UsernameInput     = document.getElementById("UsernameInput");
   gDialog.PasswordInput     = document.getElementById("PasswordInput");
+  gDialog.PasvModeInput     = document.getElementById("PasvModeInput");     // Kaze
+  gDialog.ipv6ModeInput     = document.getElementById("ipv6ModeInput");     // Kaze
+  gDialog.SecurityInput     = document.getElementById("SecurityInput");     // Kaze
+  gDialog.ftpPortInput      = document.getElementById("ftpPortInput");      // Kaze
+  gDialog.TreeSyncInput     = document.getElementById("TreeSyncInput");     // Kaze
   gDialog.SavePassword      = document.getElementById("SavePassword");
   gDialog.SetDefaultButton  = document.getElementById("SetDefaultButton");
   gDialog.RemoveSiteButton  = document.getElementById("RemoveSiteButton");
@@ -248,6 +254,11 @@ function InitSiteSettings(selectedSiteIndex)
   gDialog.BrowseUrlInput.value    = haveData ? gPublishSiteData[selectedSiteIndex].browseUrl    : "";
   gDialog.BrowsePrefixInput.value = haveData ? gPublishSiteData[selectedSiteIndex].browsePrefix : ""; // Kaze
   gDialog.UsernameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].username     : "";
+  gDialog.PasvModeInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].passiveMode  : ""; // Kaze
+  gDialog.ipv6ModeInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].IPv6         : ""; // Kaze
+  gDialog.SecurityInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].security     : ""; // Kaze
+  gDialog.ftpPortInput            = haveData ? gPublishSiteData[gCUrrentSiteIndex].ftpPort      : ""; // Kaze
+  gDialog.TreeSyncInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].treeSync     : ""; // Kaze
 
   var savePassord = haveData && gPasswordManagerOn;
   gDialog.PasswordInput.value  = savePassord ? gPublishSiteData[selectedSiteIndex].password : "";
@@ -352,6 +363,11 @@ function UpdateSettings()
   // Kaze: new prefs
   gPublishSiteData[gCurrentSiteIndex].localPath    = gDialog.LocalPathInput.value;
   gPublishSiteData[gCurrentSiteIndex].browsePrefix = gDialog.BrowsePrefixInput.value;
+  gPublishSiteData[gCUrrentSiteIndex].passiveMode  = gDialog.PasvModeInput;
+  gPublishSiteData[gCUrrentSiteIndex].IPv6         = gDialog.ipv6ModeInput;
+  gPublishSiteData[gCUrrentSiteIndex].security     = gDialog.SecurityInput;
+  gPublishSiteData[gCUrrentSiteIndex].ftpPort      = gDialog.ftpPortInput;
+  gPublishSiteData[gCUrrentSiteIndex].treeSync     = gDialog.TreeSyncInput;
 
   if (gCurrentSiteIndex == gDefaultSiteIndex)
     gDefaultSiteName = newName;
