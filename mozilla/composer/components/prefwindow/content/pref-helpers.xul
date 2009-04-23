@@ -43,7 +43,7 @@
 <!DOCTYPE page [
 <!ENTITY % helpersDTD SYSTEM "chrome://editor/locale/pref-helpers.dtd">
 %helpersDTD;
-<!ENTITY % siteManagerDTD SYSTEM "chrome://editor/locale/sitemanager.dtd">
+<!ENTITY % siteManagerDTD SYSTEM "chrome://sitemanager/locale/sitemanager.dtd">
 %siteManagerDTD;
 ]>
 
