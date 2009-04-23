@@ -21,7 +21,6 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Jan Varga          <jan@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -79,10 +78,8 @@ PRTimeToSeconds(PRTime t_usec)
 // initiated by the server (PORT command) or by the client (PASV command).
 // Client initiation is the most common case and is attempted first.
 
-// added mShowHidden and mScheduledFor* for MOZ_STANDALONE_COMPOSER
 nsFTPChannel::nsFTPChannel()
     : mIsPending(0),
-      mShowHidden(PR_FALSE),
       mLoadFlags(LOAD_NORMAL),
       mSourceOffset(0),
       mAmount(0),
@@ -90,10 +87,6 @@ nsFTPChannel::nsFTPChannel()
       mFTPState(nsnull),
       mStatus(NS_OK),
       mCanceled(PR_FALSE),
-      mScheduledForDELE(PR_FALSE),
-      mScheduledForMKD(PR_FALSE),
-      mScheduledForRMD(PR_FALSE),
-      mScheduledForRNFR(PR_FALSE),
       mStartPos(LL_MaxUint())
 {
 }
@@ -164,45 +157,6 @@ nsFTPChannel::IsPending(PRBool *result) {
     *result = mIsPending;
     return NS_OK;
 }
-
-// <MOZ_STANDALONE_COMPOSER>
-////////////////////////////////////////////////////////////////////////////////
-// nsIFTPChannel methods:
-
-NS_IMETHODIMP
-nsFTPChannel::DeleteFile()
-{
-  ClearSchedules();
-  mScheduledForDELE = PR_TRUE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFTPChannel::CreateDirectory()
-{
-  ClearSchedules();
-  mScheduledForMKD = PR_TRUE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFTPChannel::RemoveDirectory()
-{
-  ClearSchedules();
-  mScheduledForRMD = PR_TRUE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFTPChannel::RenameTo(const nsAString & aNewName)
-{
-  ClearSchedules();
-  mScheduledForRNFR = PR_TRUE;
-  mScheduledNewName = aNewName;
-  return NS_OK;
-}
-// </MOZ_STANDALONE_COMPOSER>
-
 
 NS_IMETHODIMP
 nsFTPChannel::GetStatus(nsresult *status)
@@ -445,12 +399,6 @@ nsFTPChannel::SetupState(PRUint64 startPos, const nsACString& entityID)
     if (NS_FAILED(rv)) return rv;
 
     (void) mFTPState->SetWriteStream(mUploadStream);
-
-    // MOZ_STANDALONE_COMPOSER
-    (void) mFTPState->ScheduleForFileDeletion(mScheduledForDELE);
-    (void) mFTPState->ScheduleForDirCreation(mScheduledForMKD);
-    (void) mFTPState->ScheduleForDirRemoval(mScheduledForRMD);
-    (void) mFTPState->ScheduleForRenaming(mScheduledForRNFR, mScheduledNewName);
 
     rv = mFTPState->Connect();
     if (NS_FAILED(rv)) return rv;
@@ -784,18 +732,3 @@ nsFTPChannel::GetUploadStream(nsIInputStream **stream)
     return NS_OK;
 }
 
-/*
-// MOZ_STANDALONE_COMPOSER
-NS_IMETHODIMP
-nsFTPChannel::SetShowHidden(PRBool hidden)
-{
-    mShowHidden = hidden;
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFTPChannel::GetShowHidden(PRBool *hidden)
-{
-    *hidden = mShowHidden;
-    return NS_OK;
-} */

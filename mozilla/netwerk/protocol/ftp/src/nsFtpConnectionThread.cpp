@@ -22,7 +22,6 @@
  *
  * Contributor(s):
  *   Bradley Baetz <bbaetz@student.usyd.edu.au>
- *   Jan Varga     <jan@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -78,9 +77,6 @@
 #include "nsICacheListener.h"
 
 #include "nsIResumableChannel.h"
-
-// MOZ_STANDALONE_COMPOSER
-#include "nsIDirectoryListing.h"
 
 static NS_DEFINE_CID(kStreamConverterServiceCID, NS_STREAMCONVERTERSERVICE_CID);
 static NS_DEFINE_CID(kStreamListenerTeeCID,      NS_STREAMLISTENERTEE_CID);
@@ -1006,99 +1002,6 @@ nsFtpState::Process()
 
             break;
             
-// <MOZ_STANDALONE_COMPOSER>
-// DELE
-          case FTP_S_DELE:
-            rv = S_dele();
-
-            if (NS_FAILED(rv))
-                mInternalError = rv;
-            
-            MoveToNextState(FTP_R_DELE);
-            break;
-            
-          case FTP_R_DELE:
-            mState = R_dele();
-
-            if (FTP_ERROR == mState)
-                mInternalError = NS_ERROR_FAILURE;
-
-            break;
-            
-// MKD        
-          case FTP_S_MKD:
-            rv = S_mkd();
-
-            if (NS_FAILED(rv))
-                mInternalError = rv;
-            
-            MoveToNextState(FTP_R_MKD);
-            break;
-            
-          case FTP_R_MKD:
-            mState = R_mkd();
-
-            if (FTP_ERROR == mState)
-                mInternalError = NS_ERROR_FAILURE;
-
-            break;
-            
-// RMD        
-          case FTP_S_RMD:
-            rv = S_rmd();
-
-            if (NS_FAILED(rv))
-                mInternalError = rv;
-            
-            MoveToNextState(FTP_R_RMD);
-            break;
-            
-          case FTP_R_RMD:
-            mState = R_rmd();
-
-            if (FTP_ERROR == mState)
-                mInternalError = NS_ERROR_FAILURE;
-
-            break;
-            
-// RNFR
-          case FTP_S_RNFR:
-            rv = S_rnfr();
-
-            if (NS_FAILED(rv))
-                mInternalError = rv;
-            
-            MoveToNextState(FTP_R_RNFR);
-            break;
-            
-          case FTP_R_RNFR:
-            mState = R_rnfr();
-
-            if (FTP_ERROR == mState)
-                mInternalError = NS_ERROR_FAILURE;
-
-            break;
-
-// RNTO
-          case FTP_S_RNTO:
-            rv = S_rnto();
-
-            if (NS_FAILED(rv))
-                mInternalError = rv;
-            
-            MoveToNextState(FTP_R_RNTO);
-            break;
-            
-          case FTP_R_RNTO:
-            mState = R_rnto();
-
-            if (FTP_ERROR == mState)
-                mInternalError = NS_ERROR_FAILURE;
-
-            break;
-// <MOZ_STANDALONE_COMPOSER>
-            
-
           default:
             ;
             
@@ -1473,23 +1376,10 @@ nsFtpState::S_cwd() {
 FTP_STATE
 nsFtpState::R_cwd() {
     if (mResponseCode/100 == 2) {
-        // MOZ_STANDALONE_COMPOSER
-        //if (mAction == PUT)
-            //return FTP_S_STOR;
-        switch (mAction) {
-          case PUT:
+        if (mAction == PUT)
             return FTP_S_STOR;
-          case DEL:
-            return FTP_S_DELE;
-          case MKDIR:
-            return FTP_S_MKD;
-          case RMDIR:
-            return FTP_S_RMD;
-          case RENAME:
-            return FTP_S_RNFR;
-          default:
-            return FTP_S_LIST;
-        }
+        
+        return FTP_S_LIST;
     }
     
     return FTP_ERROR;
@@ -1637,19 +1527,8 @@ nsFtpState::S_list() {
     nsCAutoString listString;
     if (mServerType == FTP_VMS_TYPE)
         listString.AssignLiteral("LIST *.*;0" CRLF);
-    else {
+    else
         listString.AssignLiteral("LIST" CRLF);
-        // MOZ_STANDALONE_COMPOSER
-        /*
-         *nsCOMPtr<nsIDirectoryListing> listing = do_QueryInterface(mChannel);
-         *PRBool showHidden;
-         *listing->GetShowHidden(&showHidden);
-         *if (showHidden)
-         *    listString.Append("LIST -a" CRLF);
-         *else
-         *    listString.Append("LIST" CRLF);
-         */
-    }
 
     return SendFTPCommand(listString);
 
@@ -1918,16 +1797,6 @@ nsFtpState::R_pasv() {
     }
 
     nsMemory::Free(response);
-
-    // MOZ_STANDALONE_COMPOSER
-    if (mAction == DEL) 
-        return FTP_S_DELE;
-    if (mAction == MKDIR)
-        return FTP_S_MKD;
-    if (mAction == RMDIR)
-        return FTP_S_RMD;
-    if (mAction == RENAME)
-        return FTP_S_RNFR;
 
     PRBool newDataConn = PR_TRUE;
     if (mDPipeRequest) {
@@ -2774,118 +2643,4 @@ nsFtpState::ConvertDirspecFromVMS(nsCString& dirSpec)
         dirSpec.ReplaceChar(']', '/');
     }
     LOG(("(%x) ConvertDirspecFromVMS   to: \"%s\"\n", this, dirSpec.get()));
-}
-
-// additional methods for MOZ_STANDALONE_COMPOSER
-nsresult
-nsFtpState::SingleAbsolutePathCommand(FTP_ACTION aAction) {
-    NS_ASSERTION(mAction == aAction, "Wrong state to be here");
-    
-    nsCAutoString delStr;
-    nsresult rv;
-    nsCOMPtr<nsIURL> aURL(do_QueryInterface(mURL, &rv));
-    if (NS_FAILED(rv)) return rv;
-
-    rv = aURL->GetFilePath(delStr);
-    delStr.Cut(0,1);
-    if (NS_FAILED(rv)) return rv;
-    NS_ASSERTION(!delStr.IsEmpty(), "What does it mean to store a empty path");
-        
-    if (mServerType == FTP_VMS_TYPE) {
-        ConvertFilespecToVMS(delStr);
-    }
-    NS_UnescapeURL(delStr);
-    switch(aAction) {
-      case DEL:
-        delStr.Insert("DELE ",0);
-        break;
-      case MKDIR:
-        delStr.Insert("MKD ",0);
-        break;
-      case RMDIR:
-        delStr.Insert("RMD ",0);
-        break;
-      case RENAME:
-        delStr.Insert("RNFR ",0);
-        break;
-      default:
-        // we never hit this
-        break;
-    }
-    delStr.Append(CRLF);
-
-    return SendFTPCommand(delStr);
-}
-
-
-nsresult
-nsFtpState::S_dele() {
-    return SingleAbsolutePathCommand(DEL);
-}
-
-FTP_STATE
-nsFtpState::R_dele() {
-    if (mResponseCode/100 == 2) {
-        //(DONE)
-        mNextState = FTP_COMPLETE;
-        return FTP_COMPLETE;
-    }
-
-   return FTP_ERROR;
-}
-
-nsresult
-nsFtpState::S_mkd() {
-    return SingleAbsolutePathCommand(MKDIR);
-}
-FTP_STATE
-nsFtpState::R_mkd() {
-   return R_dele();
-}
-
-nsresult
-nsFtpState::S_rmd() {
-    return SingleAbsolutePathCommand(RMDIR);
-}
-
-FTP_STATE
-nsFtpState::R_rmd() {
-   return R_dele();
-}
-
-nsresult
-nsFtpState::S_rnfr() {
-    return SingleAbsolutePathCommand(RENAME);
-}
-
-FTP_STATE
-nsFtpState::R_rnfr() {
-   if (mResponseCode/100 > 3)
-     return FTP_ERROR;
-
-   return FTP_S_RNTO;
-}
-
-nsresult
-nsFtpState::S_rnto() {
-    nsCAutoString sizeBuf(mNewPath);
-    if (sizeBuf.IsEmpty() || sizeBuf.First() != '/')
-        sizeBuf.Insert(mPwd,0);
-    if (mServerType == FTP_VMS_TYPE)
-        ConvertFilespecToVMS(sizeBuf);
-    sizeBuf.Insert("RNTO ",0);
-    sizeBuf.Append(CRLF);
-
-    return SendFTPCommand(sizeBuf);
-}
-
-FTP_STATE
-nsFtpState::R_rnto() {
-    if (mResponseCode/100 == 2) {
-        //(DONE)
-        mNextState = FTP_COMPLETE;
-        return FTP_COMPLETE;
-    }
-
-   return FTP_ERROR;
 }

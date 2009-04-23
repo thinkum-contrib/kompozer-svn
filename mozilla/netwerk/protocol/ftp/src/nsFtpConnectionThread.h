@@ -21,7 +21,6 @@
  *
  * Contributor(s):
  *   Bradley Baetz <bbaetz@student.usyd.edu.au>
- *   Jan Varga     <jan@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -86,7 +85,6 @@ typedef enum _FTP_STATE {
 
 ///////////////////////
 //// Command channel connection setup states
-//// the 5 last items are related to MOZ_STANDALONE_COMPOSER
     FTP_S_USER, FTP_R_USER,
     FTP_S_PASS, FTP_R_PASS,
     FTP_S_SYST, FTP_R_SYST,
@@ -100,17 +98,11 @@ typedef enum _FTP_STATE {
     FTP_S_STOR, FTP_R_STOR,
     FTP_S_LIST, FTP_R_LIST,
     FTP_S_PASV, FTP_R_PASV,
-    FTP_S_PWD,  FTP_R_PWD,
-    FTP_S_DELE, FTP_R_DELE,
-    FTP_S_MKD,  FTP_R_MKD,
-    FTP_S_RMD,  FTP_R_RMD,
-    FTP_S_RNFR, FTP_R_RNFR,
-    FTP_S_RNTO, FTP_R_RNTO
+    FTP_S_PWD,  FTP_R_PWD
 } FTP_STATE;
 
 // higher level ftp actions
-//typedef enum _FTP_ACTION {GET, PUT} FTP_ACTION;
-typedef enum _FTP_ACTION {GET, PUT, DEL, MKDIR, RMDIR, RENAME} FTP_ACTION;
+typedef enum _FTP_ACTION {GET, PUT} FTP_ACTION;
 
 class DataRequestForwarder;
 class nsFTPChannel;
@@ -143,34 +135,6 @@ public:
     // and when the data pipe has finished.
     void DataConnectionEstablished();    
     void DataConnectionComplete();
-
-
-    // <MOZ_STANDALONE_COMPOSER>
-    inline void ScheduleForFileDeletion(PRBool aEnabled) {
-      if (aEnabled)
-        mAction = DEL;
-    }
-    
-    inline void ScheduleForDirCreation(PRBool aEnabled) {
-      if (aEnabled)
-        mAction = MKDIR;
-    }
-
-    inline void ScheduleForDirRemoval(PRBool aEnabled) {
-      if (aEnabled)
-        mAction = RMDIR;
-    }
-
-    inline void ScheduleForRenaming(PRBool aEnabled, const nsAutoString & aNewPath) {
-      if (aEnabled)
-      {
-        mAction = RENAME;
-        mNewPath = ToNewCString(aNewPath);
-      }
-    }
-    // </MOZ_STANDALONE_COMPOSER>
-
-
 private:
     ///////////////////////////////////
     // BEGIN: STATE METHODS
@@ -191,13 +155,6 @@ private:
     nsresult        S_stor(); FTP_STATE       R_stor();
     nsresult        S_pasv(); FTP_STATE       R_pasv();
     nsresult        S_pwd();  FTP_STATE       R_pwd();
-
-    // MOZ_STANDALONE_COMPOSER
-    nsresult        S_dele(); FTP_STATE       R_dele();
-    nsresult        S_mkd();  FTP_STATE       R_mkd();
-    nsresult        S_rmd();  FTP_STATE       R_rmd();
-    nsresult        S_rnfr(); FTP_STATE       R_rnfr();
-    nsresult        S_rnto(); FTP_STATE       R_rnto();
     // END: STATE METHODS
     ///////////////////////////////////
 
@@ -215,9 +172,6 @@ private:
     nsresult BuildStreamConverter(nsIStreamListener** convertStreamListener);
     nsresult SetContentType();
     PRBool CanReadEntry();
-
-    // MOZ_STANDALONE_COMPOSER
-    nsresult SingleAbsolutePathCommand(FTP_ACTION aAction);
 
     ///////////////////////////////////
     // Private members
@@ -263,9 +217,6 @@ private:
     nsString               mFilename;   // url filename (if any)
     nsCString              mPath;       // the url's path
     nsCString              mPwd;        // login Path
-
-        // ****** MOZ_STANDALONE_COMPOSER
-    nsCString              mNewPath;    // the requested new path if we rename
 
         // ****** other vars
     PRUint8                mSuspendCount;// number of times we've been suspended.

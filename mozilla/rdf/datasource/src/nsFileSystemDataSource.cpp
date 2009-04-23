@@ -20,7 +20,6 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Jan Varga          <jan@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -46,7 +45,6 @@
 #include "nsCOMPtr.h"
 #include "nsIEnumerator.h"
 #include "nsIRDFDataSource.h"
-#include "nsIRDFDirectoryDataSource.h" // MOZ_STANDALONE_COMPOSER
 #include "nsIRDFNode.h"
 #include "nsIRDFObserver.h"
 #include "nsIServiceManager.h"
@@ -105,13 +103,11 @@ static NS_DEFINE_CID(kRDFServiceCID,               NS_RDFSERVICE_CID);
 static const char kFileProtocol[]         = "file://";
 
 
-// added nsIRDFDirectoryDataSource for MOZ_STANDALONE_COMPOSER
-class FileSystemDataSource : public nsIRDFFileSystemDataSource,
-                             public nsIRDFDirectoryDataSource
+
+class FileSystemDataSource : public nsIRDFFileSystemDataSource
 {
 private:
-    nsCOMPtr<nsISupportsArray>  mObservers;
-    PRBool                      mShowHidden; // MOZ_STANDALONE_COMPOSER
+    nsCOMPtr<nsISupportsArray> mObservers;
 
     static PRInt32 gRefCnt;
 
@@ -156,9 +152,6 @@ public:
 
     // nsIRDFDataSource methods
     NS_DECL_NSIRDFDATASOURCE
-
-    // nsIRDFDirectoryDataSource methods (MOZ_STANDALONE_COMPOSER)
-    NS_DECL_NSIRDFDIRECTORYDATASOURCE
 
     // helper methods
     static PRBool   isFileURI(nsIRDFResource* aResource);
@@ -283,7 +276,6 @@ FileSystemDataSource::isDirURI(nsIRDFResource* source)
 
 
 FileSystemDataSource::FileSystemDataSource(void)
-    : mShowHidden(PR_FALSE)
 {
     if (gRefCnt++ == 0)
     {
@@ -421,10 +413,7 @@ FileSystemDataSource::~FileSystemDataSource (void)
 
 
 
-//NS_IMPL_ISUPPORTS1(FileSystemDataSource, nsIRDFDataSource)
-NS_IMPL_ISUPPORTS2(FileSystemDataSource,
-                   nsIRDFDataSource,
-                   nsIRDFDirectoryDataSource)
+NS_IMPL_ISUPPORTS1(FileSystemDataSource, nsIRDFDataSource)
 
 
 
@@ -630,8 +619,7 @@ FileSystemDataSource::GetTarget(nsIRDFResource *source,
         {
             // Oh this is evil. Somebody kill me now.
             nsCOMPtr<nsISimpleEnumerator> children;
-            //rv = GetFolderList(source, PR_FALSE, PR_TRUE, getter_AddRefs(children));
-            rv = GetFolderList(source, mShowHidden, PR_TRUE, getter_AddRefs(children)); // MOZ_STANDALONE_COMPOSER
+            rv = GetFolderList(source, PR_FALSE, PR_TRUE, getter_AddRefs(children));
             if (NS_FAILED(rv) || (rv == NS_RDF_NO_VALUE)) return(rv);
 
             PRBool hasMore;
@@ -715,8 +703,7 @@ FileSystemDataSource::GetTargets(nsIRDFResource *source,
     {
         if (property == kNC_Child)
         {
-            //return GetFolderList(source, PR_FALSE, PR_FALSE, targets);
-            return GetFolderList(source, mShowHidden, PR_FALSE, targets); // MOZ_STANDALONE_COMPOSER
+            return GetFolderList(source, PR_FALSE, PR_FALSE, targets);
         }
         else if (property == kNC_Name)
         {
@@ -907,11 +894,6 @@ FileSystemDataSource::HasAssertion(nsIRDFResource *source,
                 if (isEqual)
                     *hasAssertion = !isDir;
             }
-        }
-        else if (property == kNC_Child)
-        {   // MOZ_STANDALONE_COMPOSER
-            // XXXvarga check if |target| is parent of |source|
-            *hasAssertion = PR_TRUE;
         }
     }
 
@@ -1125,181 +1107,6 @@ FileSystemDataSource::EndUpdateBatch()
 {
     return NS_OK;
 }
-
-
-// <MOZ_STANDALONE_COMPOSER>
-NS_IMETHODIMP
-FileSystemDataSource::GetShowHidden(PRBool* aShowHidden)
-{
-    *aShowHidden = mShowHidden;
-    return NS_OK;
-}
-
-
-
-NS_IMETHODIMP
-FileSystemDataSource::SetShowHidden(PRBool aShowHidden)
-{
-    mShowHidden = aShowHidden;
-    return NS_OK;
-}
-
-
-
-NS_IMETHODIMP
-FileSystemDataSource::GetParentDirectory(nsIRDFResource* aSource, nsIRDFResource** _retval)
-{
-    const char* spec;
-    nsresult rv = aSource->GetValueConst(&spec);
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIURI> uri;
-    rv = NS_NewURI(getter_AddRefs(uri), nsDependentCString(spec));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(uri);
-    if (!fileURL)
-        return NS_ERROR_UNEXPECTED;
-
-    nsCOMPtr<nsIFile> file;
-    rv = fileURL->GetFile(getter_AddRefs(file));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIFile> parent;
-    file->GetParent(getter_AddRefs(parent));
-    if (parent) {
-        nsCAutoString parentSpec;
-        rv = NS_GetURLSpecFromFile(parent, parentSpec);
-        if (NS_FAILED(rv)) return rv;
-
-        rv = gRDFService->GetResource(parentSpec, _retval);
-        if (NS_FAILED(rv)) return rv;
-    }
-    else
-        _retval = nsnull;
-    
-    return NS_OK;
-}
-
-
-
-NS_IMETHODIMP
-FileSystemDataSource::GetParentDirectories(nsIRDFResource* aSource, nsISimpleEnumerator** _retval)
-{
-    nsCOMPtr<nsISupportsArray> array;
-    nsresult rv = NS_NewISupportsArray(getter_AddRefs(array));
-    if (NS_FAILED(rv)) return rv;
-
-    while (PR_TRUE) {
-        const char* spec;
-        rv = aSource->GetValueConst(&spec);
-        if (NS_FAILED(rv)) return rv;
-
-        nsCOMPtr<nsIURI> uri;
-        rv = NS_NewURI(getter_AddRefs(uri), nsDependentCString(spec));
-        if (NS_FAILED(rv)) return rv;
-
-        nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(uri);
-        if (!fileURL)
-            return NS_ERROR_UNEXPECTED;
-
-        nsCOMPtr<nsIFile> file;
-        rv = fileURL->GetFile(getter_AddRefs(file));
-        if (NS_FAILED(rv)) return rv;
-
-        nsCOMPtr<nsIFile> parent;
-        file->GetParent(getter_AddRefs(parent));
-        if (!parent)
-            break;
-
-        nsCAutoString parentSpec;
-        rv = NS_GetURLSpecFromFile(parent, parentSpec);
-        if (NS_FAILED(rv)) return rv;
-
-        nsCOMPtr<nsIRDFResource> resource;
-        rv = gRDFService->GetResource(parentSpec, getter_AddRefs(resource));
-        if (NS_FAILED(rv)) return rv;
-
-        array->AppendElement(resource);
-
-        aSource = resource;
-    }
-    
-    nsISimpleEnumerator* enumerator = new nsArrayEnumerator(array);
-    if (! enumerator)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(*_retval = enumerator);
-
-    return NS_OK;
-}
-
-
-
-NS_IMETHODIMP
-FileSystemDataSource::GetHomeDirectory(nsIRDFResource** _retval)
-{
-    nsCOMPtr<nsIFile> file;
-    nsresult rv = NS_GetSpecialDirectory("Home", getter_AddRefs(file));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCAutoString spec;
-    rv = NS_GetURLSpecFromFile(file, spec);
-    if (NS_FAILED(rv)) return rv;
-
-    return gRDFService->GetResource(spec, _retval);
-}
-
-
-
-NS_IMETHODIMP
-FileSystemDataSource::CreateNewDirectory(nsIRDFResource* aSource, const nsAString& aNewDirName)
-{
-    const char* spec;
-    nsresult rv = aSource->GetValueConst(&spec);
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIURI> uri;
-    rv = NS_NewURI(getter_AddRefs(uri), nsDependentCString(spec));
-    if (NS_FAILED(rv)) return rv;
-
-    nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(uri);
-    if (!fileURL)
-        return NS_ERROR_UNEXPECTED;
-
-    nsCOMPtr<nsIFile> file;
-    rv = fileURL->GetFile(getter_AddRefs(file));
-    if (NS_FAILED(rv)) return rv;
-
-    rv = file->Append(aNewDirName);
-    if (NS_FAILED(rv)) return rv;
-
-    rv = file->Create(nsIFile::DIRECTORY_TYPE, 0755);
-    if (NS_FAILED(rv)) return rv;
-
-    if (mObservers) {
-        nsCAutoString newDirSpec;
-        rv = NS_GetURLSpecFromFile(file, newDirSpec);
-        if (NS_FAILED(rv)) return rv;
-
-        nsCOMPtr <nsIRDFResource> resource;
-        rv = gRDFService->GetResource(newDirSpec, getter_AddRefs(resource));
-        if (NS_FAILED(rv)) return rv;
-
-        PRUint32 count;
-        rv = mObservers->Count(&count);
-        if (NS_FAILED(rv)) return rv;
-
-        for (PRUint32 i = 0; i < count; i++) {
-            nsIRDFObserver* observer = (nsIRDFObserver*) mObservers->ElementAt(i);
-            observer->OnAssert(this, aSource, kNC_Child, resource);
-            NS_RELEASE(observer);
-        }
-    }
-
-    return NS_OK;
-}
-// <MOZ_STANDALONE_COMPOSER>
 
 
 

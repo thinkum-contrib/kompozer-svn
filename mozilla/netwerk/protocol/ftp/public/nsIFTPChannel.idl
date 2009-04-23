@@ -20,7 +20,6 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Jan Varga          <jan@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -42,37 +41,9 @@ interface nsIRequestObserver;
 // this interface provides a way for the FTP connection to 
 // synchronize with the owning channel.
 
-//[scriptable, uuid(3476df52-1dd2-11b2-b928-925d89b33bc0)]
-[scriptable, uuid(deb19f2a-ad32-47c4-85f4-b799fd7f1e51)]
+[scriptable, uuid(3476df52-1dd2-11b2-b928-925d89b33bc0)]
 interface nsIFTPChannel : nsIChannel
 {
-  /**
-   * This method prepares the channel for the deletion of a file. The
-   * deletion itself will be performed when the channel is opened,
-   * synchronously or not.
-   */
-  void deleteFile();
-
-  /**
-   * This method prepares the channel for the creation of a new directory.
-   * The creation itself will be performed when the channel is opened,
-   * synchronously or not.
-   */
-  void createDirectory();
-
-  /**
-   * This method prepares the channel for the removal of a directory.
-   * The removal itself will be performed when the channel is opened,
-   * synchronously or not.
-   */
-  void removeDirectory();
-
-  /*
-   * This method prepares the channel for renaming. The renaming itself
-   * will be will be performed when the channel is opened,
-   * synchronously or not.
-   */
-  void renameTo(in AString aNewName);
 };
 
 [scriptable, uuid(455d4234-0330-43d2-bbfb-99afbecbfeb0)]

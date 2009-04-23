@@ -67,7 +67,6 @@ XPIDLSRCS	= \
 		nsIBufferedStreams.idl \
 		nsICancelable.idl \
 		nsIDownloader.idl \
-		nsIDirectoryListing.idl \
 		nsIEncodedChannel.idl \
 		nsIFileStreams.idl \
 		nsIIncrementalDownload.idl \

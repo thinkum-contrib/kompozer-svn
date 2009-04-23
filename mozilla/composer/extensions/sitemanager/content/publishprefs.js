@@ -244,9 +244,16 @@ function GetPublishData_internal(publishBranch, siteName)
 
   var savePassword = false;
   var publishOtherFiles = true;
+  var ipv6 = false;
+  var passiveMode = false;
+  var treeSync = false;
   try {
-    savePassword = publishBranch.getBoolPref(prefPrefix+"save_password");
+    savePassword      = publishBranch.getBoolPref(prefPrefix+"save_password");
     publishOtherFiles = publishBranch.getBoolPref(prefPrefix+"publish_other_files");
+    ipv6              = publishBranch.getBoolPref(prefPrefix+"ipv6");         // Kaze
+    passiveMode       = publishBranch.getBoolPref(prefPrefix+"passive_mode"); // Kaze
+    treeSync          = publishBranch.getBoolPref(prefPrefix+"tree_sync");    // Kaze
+    security          = publishBranch.getIntPref (prefPrefix+"security");     // Kaze
   } catch (e) {}
 
   var publishData = { 
@@ -262,7 +269,12 @@ function GetPublishData_internal(publishBranch, siteName)
     docDir            : FormatDirForPublishing(GetPublishStringPref(publishBranch, prefPrefix+"doc_dir")),
     otherDir          : FormatDirForPublishing(GetPublishStringPref(publishBranch, prefPrefix+"other_dir")),
     publishOtherFiles : publishOtherFiles,
-    saveDirs          : false
+    saveDirs          : false,
+    passiveMode       : passiveMode,                                                     // Kaze
+    IPv6              : ipv6,                                                            // Kaze
+    security          : security,                                                        // Kaze
+    ftpPort           : GetPublishStringPref(publishBranch, prefPrefix+"ftpPort"),       // Kaze
+    treeSync          : treeSync
   }
 
   // Get password from PasswordManager
@@ -434,10 +446,15 @@ function SavePublishData_Internal(publishPrefsBranch, publishData, siteIndex)
   SetPublishStringPref(publishPrefsBranch, prefPrefix+"browse_url",    publishData.browseUrl);
   SetPublishStringPref(publishPrefsBranch, prefPrefix+"browse_prefix", publishData.browsePrefix); // Kaze
   SetPublishStringPref(publishPrefsBranch, prefPrefix+"username",      publishData.username);
+  SetPublishStringPref(publishPrefsBranch, prefPrefix+"ftpPort",       publishData.ftpPort);      // Kaze
   
   try {
     publishPrefsBranch.setBoolPref(prefPrefix+"save_password",       publishData.savePassword);
     publishPrefsBranch.setBoolPref(prefPrefix+"publish_other_files", publishData.publishOtherFiles);
+    publishPrefsBranch.setBoolPref(prefPrefix+"ipv6",                publishData.IPv6);           // Kaze
+    publishPrefsBranch.setBoolPref(prefPrefix+"passive_mode",        publishData.passiveMode);    // Kaze
+    publishPrefsBranch.setBoolPref(prefPrefix+"tree_sync",           publishData.treeSync);       // Kaze
+    publishPrefsBranch.setIntPref (prefPrefix+"security",            publishData.security);       // Kaze
   } catch (e) {}
 
   // Save password using PasswordManager 

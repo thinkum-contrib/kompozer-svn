@@ -1,10 +1,10 @@
 # .mozconfig file for Ubuntu 
-# successfully tested on Dapper Drake (6.06.2) and Hardy Heron (8.04.1)
+# successfully tested on Hardy Heron (8.04.1 LTS)
+# see bug 465445 for Intrepid (8.10):
+#   https://bugzilla.mozilla.org/show_bug.cgi?id=465445
 #
 # main dependancies:
-#   libgtk2.0-dev     : installs atk, cairo, pango if needed
-#   libgnomevfs2-dev  : installs avahi, bonobo, idl, gconf, orbit if needed
-#   autoconf2.13      : other versions will *not* work
+#   build-essential + libgtk2.0-dev, libxt-dev, libidl-dev, autoconf2.13      
 #
 
 # build in a separate directory (optional)
@@ -14,16 +14,18 @@ mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
 mk_add_options MOZ_CO_PROJECT=composer
 ac_add_options --enable-application=composer
 
-# change these two line to build in debug mode
+# required
+ac_add_options --enable-xpfe-components
+ac_add_options --enable-extensions="default spellcheck"
+ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
+ac_add_options --disable-installer
+
+# change these lines to build in debug mode
 ac_add_options --enable-optimize 
 ac_add_options --disable-debug
-
-# adapt the following lines according to your distribution
-
-ac_add_options --enable-xpfe-components
 ac_add_options --disable-tests
-ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
 
+# Ubuntu 7.10 default flags: https://wiki.mozilla.org/Linux/Compiler_Options
 ac_add_options --enable-default-toolkit=gtk2
 ac_add_options --enable-xft
 ac_add_options --enable-pango

@@ -20,7 +20,6 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Jan Varga          <jan@mozdevgroup.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -122,18 +121,9 @@ public:
     void GetFTPEventSink(nsCOMPtr<nsIFTPEventSink> &aResult);
 
 protected:
-
     void InitProgressSink();
 
-//protected:
-    // <MOZ_STANDALONE_COMPOSER>
-    inline void ClearSchedules() {
-      mScheduledForDELE = PR_FALSE;
-      mScheduledForMKD  = PR_FALSE;
-      mScheduledForRMD  = PR_FALSE;
-      mScheduledForRNFR = PR_FALSE;
-    } // </MOZ_STANDALONE_COMPOSER>
-
+protected:
     nsCOMPtr<nsIURI>                mOriginalURI;
     nsCOMPtr<nsIURI>                mURL;
     
@@ -144,21 +134,8 @@ protected:
     nsCOMPtr<nsIFTPEventSink>       mFTPEventSink;
     nsCOMPtr<nsIInterfaceRequestor> mCallbacks;
 
-    // <MOZ_STANDALONE_COMPOSER>
-    PRPackedBool                    mScheduledForDELE;
-    PRPackedBool                    mScheduledForMKD;
-    PRPackedBool                    mScheduledForRMD;
-    PRPackedBool                    mScheduledForRNFR;
-    PRBool                          mShowHidden;
-    //PRPackedBool                    mShowHidden;
-    //PRPackedBool                    mIsPending;
-    // </MOZ_STANDALONE_COMPOSER>
-
     PRBool                          mIsPending;
     PRUint32                        mLoadFlags;
-
-    // MOZ_STANDALONE_COMPOSER
-    nsAutoString                    mScheduledNewName;
 
     PRUint32                        mSourceOffset;
     PRInt32                         mAmount;

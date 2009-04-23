@@ -147,14 +147,14 @@
           <groupbox>
             <caption label="&connection.label;"/>
             <hbox>
-              <checkbox id="PasvModeInput" oninput="onInputSettings();" label="&pasv.label;"/>
+              <checkbox id="PasvModeInput" oncommand="onInputSettings();" label="&pasv.label;"/>
               <spacer flex="1"/>
-              <checkbox id="ipv6ModeInput" oninput="onInputSettings();" label="IPv6"/>
+              <checkbox id="ipv6ModeInput" oncommand="onInputSettings();" label="IPv6"/>
             </hbox>
             <hbox align="center">
               <label value="&security.label;" control="security"/>
-              <menulist id="SecurityInput" flex="1" height="20" oncommand="onSecurityChange()">
-                <menupopup oninput="onInputSettings();">
+              <menulist id="SecurityInput" flex="1" height="20" oncommand="onSecurityChange(this);">
+                <menupopup oncommand="onInputSettings();">
                   <menuitem label="&none.label;"     value="" selected="true"/>
                   <menuseparator/>
                   <menuitem label="&authtls.label;"  value="authtls"/>
@@ -163,11 +163,11 @@
                 </menupopup>
               </menulist>
               <label value="&port.label;" control="port"/>
-              <textbox id="ftpPortInput" size="5" oninput="onInputSettings();" onblur="doPortCheck()"/>
+              <textbox id="ftpPortInput" size="5" oninput="onInputSettings();" onblur="doPortCheck(this);"/>
             </hbox>
           </groupbox>
           <hbox align="right">
-            <checkbox id="TreeSyncInput" oninput="onInputSettings();" label="&treesync.label;"/>
+            <checkbox id="TreeSyncInput" oncommand="onInputSettings();" label="&treesync.label;"/>
           </hbox>
           <spacer class="spacer"/>
         </vbox>

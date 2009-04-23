@@ -26,9 +26,8 @@ VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-#DIRS    = prefwindow filepicker ipc httpindex build
-DIRS    = prefwindow filepicker httpindex build
-#DIRS    = prefwindow filepicker
+#DIRS    = prefwindow filepicker httpindex build
+DIRS    = prefwindow filepicker
 
 include $(topsrcdir)/config/rules.mk
 

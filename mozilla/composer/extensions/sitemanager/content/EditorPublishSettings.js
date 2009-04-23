@@ -248,17 +248,18 @@ function InitSiteSettings(selectedSiteIndex)
   SetSelectedSiteIndex(selectedSiteIndex);
   var haveData = (gPublishSiteData && selectedSiteIndex != -1);
 
-  gDialog.SiteNameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].siteName     : "";
-  gDialog.LocalPathInput.value    = haveData ? gPublishSiteData[selectedSiteIndex].localPath    : ""; // Kaze
-  gDialog.PublishUrlInput.value   = haveData ? gPublishSiteData[selectedSiteIndex].publishUrl   : "";
-  gDialog.BrowseUrlInput.value    = haveData ? gPublishSiteData[selectedSiteIndex].browseUrl    : "";
-  gDialog.BrowsePrefixInput.value = haveData ? gPublishSiteData[selectedSiteIndex].browsePrefix : ""; // Kaze
-  gDialog.UsernameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].username     : "";
-  gDialog.PasvModeInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].passiveMode  : ""; // Kaze
-  gDialog.ipv6ModeInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].IPv6         : ""; // Kaze
-  gDialog.SecurityInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].security     : ""; // Kaze
-  gDialog.ftpPortInput            = haveData ? gPublishSiteData[gCUrrentSiteIndex].ftpPort      : ""; // Kaze
-  gDialog.TreeSyncInput           = haveData ? gPublishSiteData[gCUrrentSiteIndex].treeSync     : ""; // Kaze
+  gDialog.SiteNameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].siteName   : "";
+  gDialog.PublishUrlInput.value   = haveData ? gPublishSiteData[selectedSiteIndex].publishUrl : "";
+  gDialog.BrowseUrlInput.value    = haveData ? gPublishSiteData[selectedSiteIndex].browseUrl  : "";
+  gDialog.UsernameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].username   : "";
+  // Kaze: new prefs
+  gDialog.LocalPathInput.value        = haveData ? gPublishSiteData[selectedSiteIndex].localPath    : "";
+  gDialog.BrowsePrefixInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].browsePrefix : "";
+  gDialog.PasvModeInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].passiveMode  : false;
+  gDialog.ipv6ModeInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].IPv6         : false;
+  gDialog.SecurityInput.selectedIndex = haveData ? gPublishSiteData[gCurrentSiteIndex].security     : 0;
+  gDialog.ftpPortInput.value          = haveData ? gPublishSiteData[gCurrentSiteIndex].ftpPort      : "";
+  gDialog.TreeSyncInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].treeSync     : false;
 
   var savePassord = haveData && gPasswordManagerOn;
   gDialog.PasswordInput.value  = savePassord ? gPublishSiteData[selectedSiteIndex].password : "";
@@ -363,11 +364,11 @@ function UpdateSettings()
   // Kaze: new prefs
   gPublishSiteData[gCurrentSiteIndex].localPath    = gDialog.LocalPathInput.value;
   gPublishSiteData[gCurrentSiteIndex].browsePrefix = gDialog.BrowsePrefixInput.value;
-  gPublishSiteData[gCUrrentSiteIndex].passiveMode  = gDialog.PasvModeInput;
-  gPublishSiteData[gCUrrentSiteIndex].IPv6         = gDialog.ipv6ModeInput;
-  gPublishSiteData[gCUrrentSiteIndex].security     = gDialog.SecurityInput;
-  gPublishSiteData[gCUrrentSiteIndex].ftpPort      = gDialog.ftpPortInput;
-  gPublishSiteData[gCUrrentSiteIndex].treeSync     = gDialog.TreeSyncInput;
+  gPublishSiteData[gCurrentSiteIndex].passiveMode  = gDialog.PasvModeInput.checked;
+  gPublishSiteData[gCurrentSiteIndex].IPv6         = gDialog.ipv6ModeInput.checked;
+  gPublishSiteData[gCurrentSiteIndex].security     = gDialog.SecurityInput.selectedIndex;
+  gPublishSiteData[gCurrentSiteIndex].ftpPort      = gDialog.ftpPortInput.value;
+  gPublishSiteData[gCurrentSiteIndex].treeSync     = gDialog.TreeSyncInput.checked;
 
   if (gCurrentSiteIndex == gDefaultSiteIndex)
     gDefaultSiteName = newName;
@@ -452,3 +453,17 @@ function SelectSiteDirectory()
   // Kaze: required with Gecko 1.8.1
   gSettingsChanged = true;
 }
+
+// Courtesy of Mime Cuvalo (FireFTP)
+
+function onSecurityChange(menulist) {
+  gDialog.ftpPortInput.value = (menulist.value == "ssl") ? 990 : 21;
+}
+
+function doPortCheck(textbox) {
+  var port = parseInt(textbox.value);
+  if (!port || port < 1 || port > 65535)
+    port = (gDialog.SecurityInput.value == "ssl") ? 990 : 21;
+  textbox.value = port;
+}
+

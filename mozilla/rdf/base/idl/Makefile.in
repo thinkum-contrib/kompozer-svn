@@ -68,7 +68,6 @@ XPIDLSRCS	= \
 		nsIRDFXMLSink.idl \
 		nsIRDFXMLSource.idl \
 		nsIRDFInferDataSource.idl \
-		nsIRDFDirectoryDataSource.idl \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk

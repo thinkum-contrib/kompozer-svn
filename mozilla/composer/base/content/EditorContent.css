@@ -150,7 +150,7 @@ object
   background-image: url(chrome://editor/content/images/tag-obj.gif) ! important;
   background-repeat: no-repeat; 
   background-position: top left;
-  background-color: blue;
+  background-color: transparent;
   font-size: 16px;
   line-height: 18px;
 }
@@ -158,6 +158,24 @@ object > p
 {
   display: inline ! important;
   visibility: visible ! important;
+}
+
+/* Kaze: same thing for applets */
+applet
+{
+  display: block ! important;
+  visibility: visible ! important;
+  opacity: 0.5 ! important;
+  border: 1px solid red;
+  min-width: 50px;
+  min-height: 18px;
+  padding-left: 50px; 
+  background-image: url(chrome://editor/content/images/tag-app.gif) ! important;
+  background-repeat: no-repeat; 
+  background-position: top left;
+  background-color: transparent;
+  font-size: 16px;
+  line-height: 18px;
 }
 
 /* smileys */
