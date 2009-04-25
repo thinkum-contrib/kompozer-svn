@@ -49,15 +49,18 @@ var gTreeView;
 
 var gLastDirOpenOrClose = -1;
 
-var iconFinder;
-var gFilterRE; // Kaze
+var gContextMenu;                   // Kaze
+var gFilterRE;                      // Kaze
 var gHelpers = window.top.gHelpers; // Kaze
 
-const ATOM_CTRID       = "@mozilla.org/atom-service;1";
-const ICONFINDER_CTRID = "@disruptive-innovations.com/nvu/iconfinder;1";
-
-const nsIAtomService   = Components.interfaces.nsIAtomService;
-const diIIconFinder    = Components.interfaces.diIIconFinder;
+// this "iconFinder" part should be obsolete now
+/*
+ *var iconFinder;
+ *const ATOM_CTRID       = "@mozilla.org/atom-service;1";
+ *const ICONFINDER_CTRID = "@disruptive-innovations.com/nvu/iconfinder;1";
+ *const nsIAtomService   = Components.interfaces.nsIAtomService;
+ *const diIIconFinder    = Components.interfaces.diIIconFinder;
+ */
 
 function SetupTreeView()
 {
@@ -301,6 +304,19 @@ function Startup()
 
   gDialog.bundle                = document.getElementById("siteManagerBundle");
 
+  // Kaze: gContextMenu is added to handle the sitemanager context menu
+  gContextMenu = {
+    openItem      : document.getElementById("openItem"),
+    openRemote    : document.getElementById("openRemote"),
+    openAsText    : document.getElementById("openAsText"),
+    insertImage   : document.getElementById("insertImage"),
+    previewItem   : document.getElementById("previewItem"),
+    previewSep    : document.getElementById("previewSeparator"),
+    renameItem    : document.getElementById("renameItem"),
+    removeItem    : document.getElementById("removeItem"),
+    createDirItem : document.getElementById("createDirItem")
+  }
+
   // Kaze: disable iconFinder for now, use the new filters instead
   //iconFinder = Components.classes[ICONFINDER_CTRID].createInstance(diIIconFinder);
   SetupTreeFilters(); // Kaze
@@ -341,10 +357,10 @@ function onSelectLocalRemote(tabbox) { // Kaze
 
 function SetupTree()
 {
-  gTreeView.atomsvc = Components.classes[ATOM_CTRID].getService(nsIAtomService);
+  gTreeView.atomsvc      = Components.classes["@mozilla.org/atom-service;1"]
+                                     .getService(Components.interfaces.nsIAtomService);
   gTreeView.atomFiltered = gTreeView.atomsvc.getAtom("filtered");
-
-  gDialog.SiteTree.view = gTreeView ;
+  gDialog.SiteTree.view  = gTreeView ;
 
   // yeah man, let the user see the sites right now
   //gDialog.SiteTree.treeBoxObject.rowCountChanged(0, gFilteredItemsArray.length);
@@ -669,18 +685,18 @@ function openFile(e)
 function IsHiddenByFilter(filter, fileName)
 {
   /*
-	 *if (filter == "html")
-	 *  var re = /\.html?$|\.shtml?$/i ;
-	 *else if (filter == "images")
-	 *  re = /\.gif$|\.png$|\.jpg$|\.jpeg$|\.ico$/i ;
-	 *return !re.test(fileName);
+   *if (filter == "html")
+   *  var re = /\.html?$|\.shtml?$/i ;
+   *else if (filter == "images")
+   *  re = /\.gif$|\.png$|\.jpg$|\.jpeg$|\.ico$/i ;
+   *return !re.test(fileName);
    */
 
-	// Kaze: hide temp files
-	if (/^\~/.test(fileName))
-		return true;
-		
-	return !IsSelectedByFilter(filter, fileName);
+  // Kaze: hide temp files
+  if (/^\~/.test(fileName))
+    return true;
+    
+  return !IsSelectedByFilter(filter, fileName);
 }
 
 function SelectsFilter(e)
@@ -923,7 +939,7 @@ function Rename()
 {
   // get a reference to the prompt service component.
   var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                      .getService(Components.interfaces.nsIPromptService);
+                                .getService(Components.interfaces.nsIPromptService);
 
   var index = GetSelectedItem(gDialog.SiteTree);
   if (index == -1)
@@ -1194,14 +1210,14 @@ function IsSelectedByFilter(filter, fileName)
  *  }
  */
     
-	if (filter == "all")
-		return true;
+  if (filter == "all")
+    return true;
   
   var re = gFilterRE[filter];
   if (re)
     return re.test(fileName);
   else
-		return false;
+    return false;
   // Kaze: I needed to add this function for the default icons in the tree view
   // note: filters added for media, css, scripts
 /*
@@ -1226,51 +1242,33 @@ function IsSelectedByFilter(filter, fileName)
 }
 
 function openFile(e) {
-	if (e.button != 0)
-		return;
-	
+  if (e.button != 0)
+    return;
+  
   var item = gFilteredItemsArray[GetSelectedItem(gDialog.SiteTree)];
   var url = item.url;
 
   // if the item is a folder, do nothing
-	if (item.isContainer) {
-		return;
-	}
+  if (item.isContainer) {
+    return;
+  }
 
   // if the item is a HTML file, open in a new Composer
-	if (IsSelectedByFilter("html", url)) {
-		var prefs = window.top.GetPrefs();
-		var newTab = false; // default is false
-		try {
-			newTab = prefs.getBoolPref("extensions.sitemanager.openInNewTab");
-		} catch (e) {}
-    window.top.editPage(url, window.top, true, newTab);
+  if (IsSelectedByFilter("html", url)) {
+    EditDocument(url);
     return;
-	}
+  }
 
   // if the item is an image, insert in the current Composer
-	if (IsSelectedByFilter("images", url)) {
-    var publishData = window.top.CreatePublishDataFromUrl(url);
-    if (publishData || IsFileUrl(url)) {
-      if (publishData)
-        url = publishData.browseUrl + publishData.docDir + publishData.filename;
-      var editor = GetCurrentEditorFromSidebar();
-      if (editor) {
-        var imgElement  = editor.createElementWithDefaults("img");
-        imgElement.setAttribute("src", url);
-        imgElement.setAttribute("alt", "");
-        imgElement.setAttribute("border", "0");
-        editor.insertElementAtSelection(imgElement, true);
-      }
-    }
-    EnableAllUI(true);
+  if (IsSelectedByFilter("images", url)) {
+    InsertImage(url);
     return;
-	}
+  }
 
   // TODO: same thing with media files
 
   // if the item is a local file, open with an external application
-	//if (GetScheme(url) == "file") {
+  //if (GetScheme(url) == "file") {
   if (IsFileUrl(url)) {
     var helper = null;
     if (IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url))
@@ -1280,10 +1278,10 @@ function openFile(e) {
 
     if (helper) {
       // open local file with appropriate helper app
-      window.top.gHelpers.OpenUrlWith(url, helper);
+      gHelpers.OpenUrlWith(url, helper);
       /*
        *try {
-       *  window.top.gHelpers.OpenUrlWith(url, helper);
+       *  gHelpers.OpenUrlWith(url, helper);
        *} catch (e) {
        *  EnableAllUI(false);
        *  window.top.document.getElementById("tabeditor").endNavigationCallback = EndNavigation;
@@ -1293,10 +1291,10 @@ function openFile(e) {
     }
     else {
       // open local file with system default
-      window.top.gHelpers.OpenUrl(url);
+      gHelpers.OpenUrl(url);
     }
     return;
   }
-	
+  
 }
 

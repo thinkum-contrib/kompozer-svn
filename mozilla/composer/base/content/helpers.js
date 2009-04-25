@@ -76,7 +76,8 @@ var gHelpers = {
       var uri = Components.classes['@mozilla.org/network/standard-url;1']
         .createInstance(Components.interfaces.nsIURL);
       uri.filePath = path.replace(/\\/g, '/'); // Widows sucks
-      url = 'file://' + uri.spec + '/';
+      //url = 'file://' + uri.spec + '/';
+      url = 'file://' + uri.spec;
     } catch(e) {
       this.trace("could not get url from " + path);
     }

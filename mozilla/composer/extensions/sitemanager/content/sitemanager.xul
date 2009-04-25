@@ -67,10 +67,17 @@
           id="SiteTree" enableColumnDrag="true">
       <popupset>
         <popup id="siteManagerContext" onpopupshowing="initSiteManagerContextMenu(this)">
-          <menuitem id="createDirItem"   label="&createDirButton.tooltip;" oncommand="NewSubDir()"       disabled="true"/>
+          <menuitem id="createDirItem"   label="&createDirButton.tooltip;" oncommand="NewSubDir()"         disabled="true"/>
           <menuseparator />
-          <menuitem id="renameItem"      label="&renameMenu.label;"        oncommand="Rename()"          disabled="true"/>
-          <menuitem id="removeItem"      label="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()" disabled="true"/>
+          <menuitem id="openItem"        label="&openItem.label;"          oncommand="OpenItem()"/>
+          <menuitem id="openAsText"      label="&openAsText.label;"        oncommand="OpenItem('text')"    hidden="true"/>
+          <menuitem id="openRemote"      label="&openRemote.label;"        oncommand="OpenRemote()"        hidden="true"/>
+          <menuitem id="insertImage"     label="&insertImage.label;"       oncommand="InsertImage()"       hidden="true"/>
+          <menuseparator id="previewSeparator" hidden="true"/>
+          <menuitem id="previewItem"     label="&previewItem.label;"       oncommand="OpenItem('html')"    hidden="true"/>
+          <menuseparator />
+          <menuitem id="renameItem"      label="&renameMenu.label;"        oncommand="Rename()"            disabled="true"/>
+          <menuitem id="removeItem"      label="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()"   disabled="true"/>
           <menuseparator />
           <menuitem id="reloadItem"      label="&reloadButton.tooltip;"    oncommand="RefreshDirView()"/>
           <menuseparator />

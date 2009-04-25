@@ -127,15 +127,137 @@ function AllowEvents(tree, enabled)
     tree.setAttribute("allowevents", false);
 }
 
-// Kaze's sandbox
+// Kaze's sandbox, self-stolen from NsmConText.
+// NsmConText was my first extension. May it rest in peace...
+
 function initSiteManagerContextMenu(popup) {
   var index = gDialog.SiteTree.view.selection.currentIndex;
-  var item = gFilteredItemsArray[index];
+  var item  = gFilteredItemsArray[index];
+
+  gContextMenu.openRemote.hidden  = true;
+  gContextMenu.openAsText.hidden  = true;
+  gContextMenu.insertImage.hidden = true;
+  gContextMenu.previewItem.hidden = true;
+  gContextMenu.previewSep.hidden  = true;
+
+  gContextMenu.openItem.removeAttribute("style");
+  gContextMenu.insertImage.removeAttribute("style");
+
   if (item) {
     var disabled = (item.level == 0) ? "true" : "false";
-    document.getElementById("renameItem").setAttribute("disabled", disabled);
-    document.getElementById("removeItem").setAttribute("disabled", disabled);
-    document.getElementById("createDirItem").setAttribute("disabled", "false");
+    gContextMenu.renameItem.setAttribute("disabled", disabled);
+    gContextMenu.removeItem.setAttribute("disabled", disabled);
+    gContextMenu.createDirItem.setAttribute("disabled", "false");
+
+    if (item.isContainer) {
+      gContextMenu.openRemote.hidden = false;
+      gContextMenu.openItem.removeAttribute("style");
+    }
+    else {
+      if (IsSelectedByFilter("images", item.url)) {
+        gContextMenu.insertImage.setAttribute("style", "font-weight: bold");
+        gContextMenu.insertImage.hidden = false;
+      } else {
+        gContextMenu.openItem.setAttribute("style", "font-weight: bold");
+      }
+
+      if (IsSelectedByFilter("html", item.url)) {
+        gContextMenu.openAsText.hidden  = false;
+        gContextMenu.previewSep.hidden  = false;
+        gContextMenu.previewItem.hidden = false;
+      }
+    }
   }
+}
+
+function OpenItem(helper) {
+  var index = gDialog.SiteTree.view.selection.currentIndex;
+  var item  = gFilteredItemsArray[index];
+  var url   = item.url;
+
+  if (!helper) {
+    if (IsSelectedByFilter("html"), url) {
+      EditDocument(url);
+      return;
+    }
+    if (item.isContainer)
+      helper = "file";
+    else if (IsSelectedByFilter("images"), url)
+      helper = "image";
+    else if (IsSelectedByFilter("media"), url)
+      helper = "media";
+    else if (IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url))
+      helper = "text";
+  }
+  gHelpers.OpenUrlWith(url, helper);
+}
+
+function OpenRemote(helper) {
+  var index    = gDialog.SiteTree.view.selection.currentIndex;
+  var item     = gFilteredItemsArray[index];
+  var rowIndex = item.realIndex;
+
+  // Get related site item
+  while (gItemsArray[rowIndex].level > 0)
+    rowIndex--;
+  var siteItem = gItemsArray[rowIndex];
+  var siteName = siteItem.name;
+
+  // get FTP url of the current item
+  var count = gPublishSiteData.length;
+  for (var i = 0; i < count; i++) {
+    var publishData = gPublishSiteData[i];
+    if (siteName == publishData.siteName)
+      break;
+  }
+  var siteUrl = _GetUrlForPasswordManager(publishData) + "/" + publishData.browsePrefix;
+  var url = item.url.replace(siteItem.url, siteUrl);
+
+  if (!helper) {
+    if (item.isContainer)
+      gHelpers.OpenUrlWith(url, "ftp");
+    else
+      return; // TODO: open remote files in helper apps
+  }
+}
+
+function InsertImage(url) {
+  var publishData = window.top.CreatePublishDataFromUrl(url);
+
+  if (!url || !url.length) {
+    // get the current sitemanager item
+    var index = gDialog.SiteTree.view.selection.currentIndex;
+    url = gFilteredItemsArray[index].url;
+  }
+
+  if (publishData || IsFileUrl(url)) {
+    if (publishData)
+      url = publishData.browseUrl + publishData.docDir + publishData.filename;
+    var editor = GetCurrentEditorFromSidebar();
+    if (editor) {
+      var imgElement = editor.createElementWithDefaults("img");
+      imgElement.setAttribute("src", url);
+      imgElement.setAttribute("alt", "");
+      imgElement.setAttribute("border", "0");
+      editor.insertElementAtSelection(imgElement, true);
+    }
+  }
+  EnableAllUI(true);
+}
+
+function EditDocument(url) {
+  var newTab = false;
+  var prefs  = window.top.GetPrefs();
+
+  if (!url || !url.length) {
+    // get the current sitemanager item
+    var index = gDialog.SiteTree.view.selection.currentIndex;
+    url = gFilteredItemsArray[index].url;
+  }
+
+  try {
+    newTab = prefs.getBoolPref("extensions.sitemanager.openInNewTab");
+  } catch (e) {}
+  window.top.editPage(url, window.top, true, newTab);
 }
 
