@@ -234,6 +234,17 @@ EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_LIBS) \
 		    $(NULL)
 endif
 
+ifdef MOZ_X11
+ifdef MOZ_SVG_RENDERER_CAIRO
+EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_XLIB_LIBS) \
+		    $(NULL)
+endif
+ifdef MOZ_ENABLE_CANVAS
+EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_XRENDER_LIBS) \
+		    $(NULL)
+endif
+endif
+
 ifneq (,$(filter mac cocoa gtk,$(MOZ_WIDGET_TOOLKIT)))
 EXTRA_DSO_LDOPTS += \
 	$(TK_LIBS) \

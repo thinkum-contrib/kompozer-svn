@@ -758,6 +758,21 @@ static nsresult pref_InitInitialObjects()
     NS_WARNING("Error parsing application default preferences.");
   }
 
+  // Load files from defaults/syspref
+  nsCOMPtr<nsIFile> SysPrefDir;
+  rv = defaultPrefDir->GetParent(getter_AddRefs(SysPrefDir));
+  NS_ENSURE_SUCCESS(rv, rv);
+  rv = SysPrefDir->AppendNative(NS_LITERAL_CSTRING("syspref"));
+  NS_ENSURE_SUCCESS(rv, rv);
+  PRBool exists;
+  if (NS_SUCCEEDED(SysPrefDir->Exists(&exists)) && exists) {
+    rv = pref_LoadPrefsInDir(SysPrefDir, nsnull, 0);
+    if (NS_FAILED(rv)) {
+      NS_WARNING("Error parsing system default preferences.");
+    }
+
+  }
+
   // xxxbsmedberg: TODO load default prefs from a category
   // but the architecture is not quite there yet
 

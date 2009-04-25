@@ -102,6 +102,7 @@ ifdef MOZ_ENABLE_XFT
 EXTRA_DSO_LDOPTS += \
 		$(MOZ_XFT_LIBS) \
 		$(FT2_LIBS) \
+		-lfontconfig \
 		$(NULL)
 endif
 

@@ -42,15 +42,7 @@
 #include <windows.h>
 #endif
 
-#ifndef MAXPATHLEN
-#ifdef _MAX_PATH
-#define MAXPATHLEN _MAX_PATH
-#elif defined(CCHMAXPATH)
-#define MAXPATHLEN CCHMAXPATH
-#else
-#define MAXPATHLEN 1024
-#endif
-#endif
+#define MAXPATHLEN 4096
 
 #include "nscore.h"
 

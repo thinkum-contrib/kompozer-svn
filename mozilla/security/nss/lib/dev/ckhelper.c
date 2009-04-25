@@ -35,7 +35,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #ifdef DEBUG
-static const char CVS_ID[] = "@(#) $RCSfile: ckhelper.c,v $ $Revision: 1.34.28.1 $ $Date: 2007/11/16 05:25:07 $";
+static const char CVS_ID[] = "@(#) $RCSfile: ckhelper.c,v $ $Revision: 1.34.28.2 $ $Date: 2008/12/03 04:52:53 $";
 #endif /* DEBUG */
 
 #ifndef NSSCKEPV_H
@@ -359,6 +359,10 @@ nssCryptokiCertificate_GetAttributes (
 	session = sessionOpt ? 
 	          sessionOpt : 
 	          nssToken_GetDefaultSession(certObject->token);
+	if (!session) {
+	    nss_SetError(NSS_ERROR_INVALID_ARGUMENT);
+	    return PR_FAILURE;
+	}
 
 	slot = nssToken_GetSlot(certObject->token);
 	status = nssCKObject_GetAttributes(certObject->handle, 
@@ -457,6 +461,10 @@ nssCryptokiTrust_GetAttributes (
 	session = sessionOpt ? 
 	          sessionOpt : 
 	          nssToken_GetDefaultSession(trustObject->token);
+	if (!session) {
+	    nss_SetError(NSS_ERROR_INVALID_ARGUMENT);
+	    return PR_FAILURE;
+	}
 
 	slot = nssToken_GetSlot(trustObject->token);
 	status = nssCKObject_GetAttributes(trustObject->handle,
@@ -522,6 +530,10 @@ nssCryptokiCRL_GetAttributes (
 	session = sessionOpt ? 
 	          sessionOpt : 
 	          nssToken_GetDefaultSession(crlObject->token);
+	if (session == NULL) {
+	    nss_SetError(NSS_ERROR_INVALID_ARGUMENT);
+	    return PR_FAILURE;
+	}
 
 	slot = nssToken_GetSlot(crlObject->token);
 	status = nssCKObject_GetAttributes(crlObject->handle, 
@@ -580,14 +592,16 @@ nssCryptokiPrivateKey_SetCertificate (
     if (sessionOpt) {
 	if (!nssSession_IsReadWrite(sessionOpt)) {
 	    return PR_FAILURE;
-	} else {
-	    session = sessionOpt;
 	}
-    } else if (nssSession_IsReadWrite(defaultSession)) {
+	session = sessionOpt;
+    } else if (defaultSession && nssSession_IsReadWrite(defaultSession)) {
 	session = defaultSession;
     } else {
 	NSSSlot *slot = nssToken_GetSlot(token);
 	session = nssSlot_CreateSession(token->slot, NULL, PR_TRUE);
+	if (!session) {
+	    return PR_FAILURE;
+	}
 	createdSession = PR_TRUE;
 	nssSlot_Destroy(slot);
     }

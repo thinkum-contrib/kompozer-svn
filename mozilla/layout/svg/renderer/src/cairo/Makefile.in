@@ -95,6 +95,11 @@ LOCAL_INCLUDES  = \
                 -I$(topsrcdir)/gfx/src \
                 $(NULL)
 
+ifdef MOZ_X11
+CFLAGS		+= $(MOZ_CAIRO_XLIB_CFLAGS)
+CXXFLAGS	+= $(MOZ_CAIRO_XLIB_CFLAGS)
+endif
+
 ifdef MOZ_ENABLE_GTK
 LOCAL_INCLUDES +=  -I$(topsrcdir)/gfx/src/gtk
 CFLAGS         += $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)

@@ -94,7 +94,7 @@ FORCE_STATIC_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
 
-CXXFLAGS	+= $(MOZ_CAIRO_CFLAGS) $(TK_CFLAGS)
+CXXFLAGS	+= $(MOZ_CAIRO_CFLAGS) $(MOZ_CAIRO_XRENDER_CFLAGS) $(TK_CFLAGS)
 
 ifneq (,$(filter mac cocoa,$(MOZ_GFX_TOOLKIT)))
 # needed for nsDrawingSurfaceMac.h

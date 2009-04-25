@@ -199,8 +199,6 @@ classic.jar:
 +   skin/classic/editor/editorFormatToolbar.css               (skin/editorFormatToolbar.css)
 +   skin/classic/editor/editorPrimaryToolbar.css              (skin/editorPrimaryToolbar.css)
 +   skin/classic/editor/editorModeToolbar.css                 (skin/editorModeToolbar.css)
-    skin/classic/editor/icons/throbber-single.png             (skin/icons/throbber-single.png)
-    skin/classic/editor/icons/throbber-small.png              (skin/icons/throbber-small.png)
     skin/classic/editor/icons/btn1.gif                        (skin/icons/btn1.gif)
     skin/classic/editor/icons/btn2.png                        (skin/icons/btn2.png)
     skin/classic/editor/icons/borders-active.gif              (skin/icons/borders-active.gif)
