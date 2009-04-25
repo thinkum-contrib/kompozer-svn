@@ -587,7 +587,7 @@ pref("network.protocol-handler.expose-all", false);
 
 // these two lines should ensure the help window works properly
 pref("network.protocol-handler.expose.chrome", true);
-//pref("network.protocol-handler.warn-external.http", false);
+pref("network.protocol-handler.warn-external.http", false);
 
 pref("network.hosts.smtp_server",           "mail");
 pref("network.hosts.pop_server",            "mail");

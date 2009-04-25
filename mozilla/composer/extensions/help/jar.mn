@@ -8,7 +8,20 @@ help.jar:
 *       content/help/helpContextOverlay.xul              (content/helpContextOverlay.xul)
 *       content/help/customizeToolbar.xul                (content/customizeToolbar.xul)
 *       content/help/toolbarCustomization.js             (content/toolbarCustomization.js)
-*       content/help/platformClasses.css                 (content/platformClasses.css)
+#       content/help/platformClasses.css                 (content/platformClasses.css)
+#ifdef XP_MACOSX
++      content/help/platformClasses.css                  (content/mac/platformClasses.css)
+#else
+#ifdef XP_WIN32
++      content/help/platformClasses.css                  (content/win/platformClasses.css)
+#else
+#ifdef XP_OS2
++      content/help/platformClasses.css                  (content/win/platformClasses.css)
+#else
++      content/help/platformClasses.css                  (content/unix/platformClasses.css)
+#endif
+#endif
+#endif
 
 classic.jar:
 % skin help classic/1.0 %skin/classic/help/

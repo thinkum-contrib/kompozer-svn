@@ -133,10 +133,10 @@ toolbar[mode="text"] .toolbarbutton-icon {
   padding: 0 !important;
   min-width: 0;
   background-color: transparent;
-  list-style-image: url("chrome://editor/skin/icons/throbber-single.png");
+  list-style-image: url("chrome://editor/skin/icons/throbber.png");
 }
 
 #help-throbber[busy="true"] {
-  list-style-image: url("chrome://editor/skin/icons/throbber-single.png");
+  list-style-image: url("chrome://editor/skin/icons/throbber.png");
   -moz-opacity: 0.5;
 }

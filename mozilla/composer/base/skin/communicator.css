@@ -66,20 +66,20 @@
   padding: 0px !important;
   min-width: 0;
   background-color: transparent;
-  list-style-image: url("chrome://editor/skin/icons/throbber-single.png");
+  list-style-image: url("chrome://editor/skin/icons/throbber.png");
 }
 
 #navigator-throbber[busy="true"] {
-  list-style-image: url("chrome://editor/skin/icons/throbber-single.png");
+  list-style-image: url("chrome://editor/skin/icons/throbber.png");
 }
 
 toolbar[iconsize="small"] #navigator-throbber,
 toolbar[mode="text"] #navigator-throbber {
-  list-style-image: url("chrome://editor/skin/icons/throbber-small.png") !important;
+  list-style-image: url("chrome://editor/skin/icons/throbber.png") !important;
 }
 toolbar[iconsize="small"] #navigator-throbber[busy="true"],
 toolbar[mode="text"] #navigator-throbber[busy="true"] {
-  list-style-image: url("chrome://editor/skin/icons/throbber-small.png") !important;
+  list-style-image: url("chrome://editor/skin/icons/throbber.png") !important;
 }
 
 .sidebarTree {
