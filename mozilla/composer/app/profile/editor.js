@@ -199,6 +199,7 @@ pref("extensions.CaScadeS.dropdownLists",        true);
 // Site Manager                            
 //pref("editor.nvu.sitemanager.treeView",          true); // TODO: rename/delete this pref
 pref("extensions.sitemanager.openInNewTab",      true);
+pref("extensions.sitemanager.useSystemIcons",    false);
 pref("extensions.sitemanager.filter.html",       "htm, html, xhtml");
 pref("extensions.sitemanager.filter.css",        "css");
 pref("extensions.sitemanager.filter.images",     "ico, jpg, jpeg, png, gif, bmp");

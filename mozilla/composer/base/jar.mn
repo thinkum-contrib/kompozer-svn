@@ -231,7 +231,7 @@ classic.jar:
     skin/classic/editor/icons/dir-rtl-disabled.gif            (skin/icons/dir-rtl-disabled.gif)
     skin/classic/editor/icons/dir-rtl-hover.gif               (skin/icons/dir-rtl-hover.gif)
     skin/classic/editor/icons/dir-rtl.gif                     (skin/icons/dir-rtl.gif)
-    skin/classic/editor/icons/document-blank.png              (skin/icons/document-blank.png)
++   skin/classic/editor/icons/document-blank.png              (skin/icons/document-blank.png)
     skin/classic/editor/icons/document-html.png               (skin/icons/document-html.png)
     skin/classic/editor/icons/document-image.png              (skin/icons/document-image.png)
     skin/classic/editor/icons/document-media.png              (skin/icons/document-media.png)

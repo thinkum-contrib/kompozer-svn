@@ -52,6 +52,7 @@ var gLastDirOpenOrClose = -1;
 var gContextMenu;                   // Kaze
 var gFilterRE;                      // Kaze
 var gHelpers = window.top.gHelpers; // Kaze
+var gUseSystemIcons = false;    // Kaze
 
 // this "iconFinder" part should be obsolete now
 /*
@@ -114,30 +115,34 @@ function SetupTreeView()
         return null;
       if (gFilteredItemsArray[row].isSymLink)
         return "chrome://editor/skin/icons/link.gif";
+      if (gFilteredItemsArray[row].isContainerOpen)
+        return "chrome://editor/skin/icons/directoryopen.ico";
       if (gFilteredItemsArray[row].isContainer)
-        return "chrome://editor/skin/icons/directory.gif";
+        return "chrome://editor/skin/icons/directory.ico";
 
       // Kaze: this is a real file, gotta get its icon
       // iconFinder is disabled, at least for now
       //var path = "file:///" + gFilteredItemsArray[row].name;
       //return iconFinder.iconForURL(path);
 
-      // Let's use a predefined icon instead, at least it'll be cross-platform ;-)
-      var name = gFilteredItemsArray[row].name;
-      if (IsSelectedByFilter("html", name))
-        return "chrome://editor/skin/icons/document-html.png";
-      if (IsSelectedByFilter("css", name))
-        return "chrome://editor/skin/icons/document-style.png";
-      if (IsSelectedByFilter("images", name))
-        return "chrome://editor/skin/icons/document-image.png";
-      if (IsSelectedByFilter("media", name))
-        return "chrome://editor/skin/icons/document-media.png";
-      if (IsSelectedByFilter("text", name))
-        return "chrome://editor/skin/icons/document-text.png";
-
-      // file type not recognized by Composer, use blank icon
-      return "chrome://editor/skin/icons/document-blank.png";
-
+      if (gUseSystemIcons)
+        return "moz-icon://file:///" + gFilteredItemsArray[row].name + "?size=16";
+      else {
+        // Let's use a predefined icon instead, at least it'll be cross-platform ;-)
+        var name = gFilteredItemsArray[row].name;
+        if (IsSelectedByFilter("html", name))
+          return "chrome://editor/skin/icons/document-html.png";
+        if (IsSelectedByFilter("css", name))
+          return "chrome://editor/skin/icons/document-style.png";
+        if (IsSelectedByFilter("images", name))
+          return "chrome://editor/skin/icons/document-image.png";
+        if (IsSelectedByFilter("media", name))
+          return "chrome://editor/skin/icons/document-media.png";
+        if (IsSelectedByFilter("text", name))
+          return "chrome://editor/skin/icons/document-text.png";
+        // file type not recognized by Composer, use default icon
+        return "chrome://editor/skin/icons/document-blank.png";
+      }
     },
 
     getParentIndex: function( rowIndex )
@@ -317,9 +322,10 @@ function Startup()
     createDirItem : document.getElementById("createDirItem")
   }
 
-  // Kaze: disable iconFinder for now, use the new filters instead
+  // <Kaze> disable iconFinder for now, use the new filters instead
   //iconFinder = Components.classes[ICONFINDER_CTRID].createInstance(diIIconFinder);
-  SetupTreeFilters(); // Kaze
+  SetupTreeFilters();
+  // </Kaze>
 
   SetupTreeView();
   if (!window.top.gSiteManagerItemsArray.length) {
@@ -391,7 +397,7 @@ function FillSiteList()
     var name = gPublishSiteData[i].siteName;
     //var siteUrl = _GetUrlForPasswordManager(gPublishSiteData[i]);
     // Kaze: select the URL that corresponds to the selected tab
-    var siteUrl = gDialog.tabBox.selectedIndex ? 
+    var siteUrl = gDialog.tabBox.selectedIndex ? 
       _GetUrlForPasswordManager(gPublishSiteData[i]) : gHelpers.path2url(gPublishSiteData[i].localPath);
 
     gTreeView.addRow(null,
@@ -1189,6 +1195,9 @@ function SetupTreeFilters() {
     str = str.replace(/,[\s]*/g, '$|\.').replace(/\?/g, '.').replace(/\*/g, '.*');
     gFilterRE[filterName] = new RegExp('\.' + str + '$');
   }
+
+  // we can also use the system icons instead
+  gUseSystemIcons = prefs.getBoolPref("extensions.sitemanager.useSystemIcons");
 }
 
 function IsSelectedByFilter(filter, fileName)

@@ -261,3 +261,79 @@ function EditDocument(url) {
   window.top.editPage(url, window.top, true, newTab);
 }
 
+function GetItemProperties(url, recursive) {
+  if (!url || !url.length) {
+    // get the current sitemanager item
+    var index = gDialog.SiteTree.view.selection.currentIndex;
+    url = gFilteredItemsArray[index].url;
+  }
+	//localFile.showProperties(gHelpers.newLocalFile(url));
+	var file = gHelpers.newLocalFile(url);
+	var gSlash = "/";
+
+	// taken from FireFTP
+    try {
+      var date = new Date(file.lastModifiedTime);
+      //date     = gMonths[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear() + ' ' + date.toLocaleTimeString();
+
+      var recursiveFolderData = { type: "local", nFolders: 0, nFiles: 0, nSize: 0 };
+
+      if (file.isDirectory() && recursive) {
+        localTree.getRecursiveFolderData(file, recursiveFolderData);
+      }
+
+      var origWritable = file.isWritable();
+
+      var params = { path                : file.path,
+                     leafName            : file.leafName,
+                     fileSize            : file.fileSize,
+                     date                : date,
+                     origPermissions     : 0, // gSlash == "/" ? "-" + localTree.convertPermissions(false, file.permissions) : 0,
+                     permissions         : "",
+                     writable            : file.isWritable(),
+                     hidden              : file.isHidden(),
+                     isDirectory         : file.isDirectory(),
+                     multipleFiles       : false,
+                     isLinuxType         : true, // gSlash == "/",
+                     isLocal             : true,
+                     recursiveFolderData : file.isDirectory() && recursive ? recursiveFolderData : null,
+                     returnVal           : false,
+                     isSymlink           : file.isSymlink(),
+                     symlink             : file.isSymlink() ? file.target : "" };
+
+      window.openDialog("chrome://fireftp/content/properties.xul", "properties", "chrome,modal,dialog,resizable,centerscreen", params);
+
+      if (!params.returnVal) {
+        return false;
+      }
+
+      if (params.isLinuxType) {
+        if (params.permissions) {
+          if (gMac) {
+            var perm         = (file.isDirectory() ? "4" : "10") + params.permissions;
+            file.permissions = parseInt(perm, 8);
+          } else {
+            file.permissions = parseInt(params.permissions, 8);
+          }
+          return true;
+        }
+      } else if (origWritable != params.writable) {
+        if (params.writable) {
+          file.permissions = file.permissions == 365 ? 511 : 438;
+        } else {
+          file.permissions = file.permissions == 511 ? 365 : 292;
+        }
+
+        return true;
+      }
+    } catch (ex) {
+      debug(ex);
+    }
+
+    return false;
+}
+
+function debug(ex) {
+	return gHelpers.trace(ex);
+}
+

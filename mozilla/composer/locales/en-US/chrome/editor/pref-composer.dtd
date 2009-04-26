@@ -78,3 +78,5 @@
 
 <!ENTITY  siteManager.label                     "Site manager">
 <!ENTITY  openInNewTab.label                    "Always open a document in a new tab">
+<!-- KompoZer 0.8 -->
+<!ENTITY  useSystemIcons.label                  "Use system icons">

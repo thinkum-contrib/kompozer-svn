@@ -3930,7 +3930,7 @@ var nsNormalModeCommand =
 
   doCommand: function(aCommand)
   {
-    SetEditMode(kDisplayModeNormal);
+    SetDisplayMode(kDisplayModeNormal);
   }
 };
 
@@ -3946,23 +3946,7 @@ var nsAllTagsModeCommand =
 
   doCommand: function(aCommand)
   {
-    SetEditMode(kDisplayModeAllTags);
-  }
-};
-
-var nsHTMLSourceModeCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    return (IsDocumentEditable() && IsHTMLEditor());
-  },
-
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-
-  doCommand: function(aCommand)
-  {
-    SetEditMode(kDisplayModeSource);
+    SetDisplayMode(kDisplayModeAllTags);
   }
 };
 
@@ -3978,7 +3962,7 @@ var nsPreviewModeCommand =
 
   doCommand: function(aCommand)
   {
-    SetEditMode(kDisplayModePreview);
+    SetDisplayMode(kDisplayModePreview);
   }
 };
 
@@ -4012,13 +3996,7 @@ var nsDesignModeCommand =
 
   doCommand: function(aCommand)
   {
-    toggleSourceDock(); // defined in mozilla/composer/extensions/cascades/viewSource.js
-    var deck     = document.getElementById("kpzDeck");
-    var splitter = document.getElementById("browser-splitter");
-
-    deck.setAttribute("collapsed", "true");
-    splitter.setAttribute("state", "collapsed");
-    splitter.setAttribute("hidden", "true");
+    SetEditMode(kEditModeDesign);
   }
 };
 
@@ -4035,17 +4013,27 @@ var nsSplitModeCommand =
 
   doCommand: function(aCommand)
   {
-    var deck     = document.getElementById("kpzDeck");
-    var splitter = document.getElementById("browser-splitter");
-
-    deck.removeAttribute("collapsed");
-    splitter.setAttribute("state", "expand");
-    splitter.setAttribute("hidden", "false");
-    // display the current node's source
-    viewNodeSource(gLastFocusNode);
+    SetEditMode(kEditModeSplit);
   }
 };
+
 // </Kaze>
+
+var nsHTMLSourceModeCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsDocumentEditable() && IsHTMLEditor());
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    SetEditMode(kEditModeSource);
+  }
+};
 
 //-----------------------------------------------------------------------------------
 var nsInsertOrEditTableCommand =

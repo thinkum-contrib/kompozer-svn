@@ -19,8 +19,8 @@
   <stringbundle id="strings" src="chrome://fireftp/locale/strings.properties"/>
 
   <script type="application/x-javascript" src="chrome://fireftp/content/etc/common.js"/>
-  <script type="application/x-javascript" src="chrome://fireftp/content/dialogs/properties.js"/>
   <script type="application/x-javascript" src="chrome://fireftp/content/etc/misc.js"/>
+  <script type="application/x-javascript" src="chrome://fireftp/content/dialogs/properties.js"/>
 
   <grid flex="1" class="overflowBox">
     <columns>

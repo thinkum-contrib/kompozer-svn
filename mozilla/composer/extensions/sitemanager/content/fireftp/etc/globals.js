@@ -1,5 +1,5 @@
 var gFtp;                       // where the magic happens
-var gVersion  = "0.97.3";  // version of FireFTP we're using
+var gVersion  = "0.97.3";       // version of FireFTP we're using
 var gSlash;                     // holds '/' or '\\' depending on local system
 var gMac = false;               // true if we're on a Mac
 var gTransferTypes;             // holds 'Auto', 'Binary', 'ASCII'

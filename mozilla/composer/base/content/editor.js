@@ -52,10 +52,13 @@ const cnsIScriptableInputStream = Components.interfaces.nsIScriptableInputStream
 
 const kDisplayModeNormal  = 0;
 const kDisplayModeAllTags = 1;
-const kDisplayModeSource  = 2; // Kaze: to be removed
-const kDisplayModePreview = 3;
-const kDisplayModeMenuIDs = ["viewNormalMode",   "viewAllTagsMode", "editSourceMode",   "viewPreviewMode"];
-const kDisplayModeTabIDS  = ["NormalModeButton", "TagModeButton",   "SourceModeButton", "PreviewModeButton"];
+//const kDisplayModeSource  = 2; // Kaze: to be removed
+//const kDisplayModePreview = 3;
+//const kDisplayModeMenuIDs = ["viewNormalMode",   "viewAllTagsMode", "editSourceMode",   "viewPreviewMode"];
+//const kDisplayModeTabIDS  = ["NormalModeButton", "TagModeButton",   "SourceModeButton", "PreviewModeButton"];
+const kDisplayModePreview = 2;
+const kDisplayModeMenuIDs = ["viewNormalMode",   "viewAllTagsMode", "viewPreviewMode"];
+const kDisplayModeTabIDS  = ["NormalModeButton", "TagModeButton",   "PreviewModeButton"];
 const kNormalStyleSheet         = "chrome://editor/content/EditorContent.css";
 const kAllTagsStyleSheet        = "chrome://editor/content/EditorAllTags.css";
 const kParagraphMarksStyleSheet = "chrome://editor/content/EditorParagraphMarks.css";
@@ -64,10 +67,13 @@ const kBlockOutlinesStyleSheet  = "chrome://editor/content/EditorBlockOutlines.c
 // <Kaze> adding some Edit modes:
 const kEditModeDesign  = 0;
 const kEditModeSplit   = 1;
-const kEditModeText    = 2;
-const kEditModeSource  = 3;
-const kEditModeMenuIDs = ["editDesignMode",   "editSplitMode",   "editTextMode",   "editSourceMode"];
-const kEditModeTabIDS  = ["DesignModeButton", "SplitModeButton", "TextModeButton", "SourceModeButton"];
+//const kEditModeText    = 2;
+//const kEditModeSource  = 3;
+//const kEditModeMenuIDs = ["editDesignMode",   "editSplitMode",   "editTextMode",   "editSourceMode"];
+//const kEditModeTabIDS  = ["DesignModeButton", "SplitModeButton", "TextModeButton", "SourceModeButton"];
+const kEditModeSource  = 2;
+const kEditModeMenuIDs = ["editDesignMode",   "editSplitMode",   "editSourceMode"];
+const kEditModeTabIDS  = ["DesignModeButton", "SplitModeButton", "SourceModeButton"];
 // </Kaze>
 
 const kBlockOutlinesAttr = "blockoutlines";
@@ -81,27 +87,33 @@ const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 // Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
 const kColoredSourceView = false;
 
-var gPreviousNonSourceDisplayMode = 1;
-var gEditorDisplayMode = -1;
-var gDocWasModified = false;  // Check if clean document, if clean then unload when user "Opens"
-var gContentWindow = 0;
+var gPreviousNonSourceEditMode = 1; // TODO: check this, it might cause bug now that we have to tab groups
+var gEditorDisplayMode   = -1;
+var gEditorEditMode      = -1;     // Kaze
+var gDocWasModified      = false;  // Check if clean document, if clean then unload when user "Opens"
+var gContentWindow       = 0;
 var gSourceContentWindow = 0;
-var gSourceTextEditor = null;
+var gSourceTextEditor    = null;
 var gContentWindowDeck;
-// <Kaze> splitting the format toolbar
-//~ var gFormatToolbar;
-//~ var gFormatToolbarHidden = false;
-//~ var gViewFormatToolbar;
 var gFormatToolbar1, gFormatToolbar2;
 var gFormatToolbarHidden1 = false;
 var gFormatToolbarHidden2 = false;
 var gViewFormatToolbar1, gViewFormatToolbar2;
-// </Kaze>
-var gColorObj = { LastTextColor:"", LastBackgroundColor:"", LastHighlightColor:"",
-                  Type:"", SelectedType:"", NoDefault:false, Cancel:false,
-                  HighlightColor:"", BackgroundColor:"", PageColor:"",
-                  TextColor:"", TableColor:"", CellColor:""
-                };
+var gColorObj = {
+  LastTextColor       : "",
+  LastBackgroundColor : "",
+  LastHighlightColor  : "",
+  Type                : "",
+  SelectedType        : "",
+  NoDefault           : false,
+  Cancel              : false,
+  HighlightColor      : "",
+  BackgroundColor     : "",
+  PageColor           : "",
+  TextColor           : "",
+  TableColor          : "",
+  CellColor           : ""
+};
 var gDefaultTextColor = "";
 var gDefaultBackgroundColor = "";
 var gCSSPrefListener;
@@ -115,14 +127,14 @@ var gLastFocusNodeWasSelected = false;
 var gIsTemplate    = false;
 var gIsTemplateRef = false;
 
-var gScrollListener = null;
-var gResizeListener = null;
+var gScrollListener        = null;
+var gResizeListener        = null;
 var gEditorUpdatedListener = null;
-var gUpdateRulerTimeOutId = null;
+var gUpdateRulerTimeOutId  = null;
 
 var gSiteManagerNotificationHandler = null;
-var gSiteManagerItemsArray = null;
-var gSiteManagerCurrentFilter = "all";
+var gSiteManagerItemsArray          = null;
+var gSiteManagerCurrentFilter       = "all";
 
 var gWasInlineSpellCheckerEnabled = false;
 
@@ -658,15 +670,11 @@ function EditorStartup()
   if (is_HTMLEditor)
   {
     // XUL elements we use when switching from normal editor to edit source
-    gContentWindowDeck = document.getElementById("ContentWindowDeck");
-    // <Kaze> splitting the format toolbar
-    //~ gFormatToolbar = document.getElementById("FormatToolbar");
-    //~ gViewFormatToolbar = document.getElementById("viewFormatToolbar");
-    gFormatToolbar1 = document.getElementById("FormatToolbar1");
-    gFormatToolbar2 = document.getElementById("FormatToolbar2");
+    gContentWindowDeck  = document.getElementById("ContentWindowDeck");
+    gFormatToolbar1     = document.getElementById("FormatToolbar1");
+    gFormatToolbar2     = document.getElementById("FormatToolbar2");
     gViewFormatToolbar1 = document.getElementById("viewFormatToolbar1");
     gViewFormatToolbar2 = document.getElementById("viewFormatToolbar2");
-    // </Kaze>
   }
 
   // set up our global prefs object
@@ -1969,13 +1977,16 @@ function SetEditMode(mode)
 
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
-  var previousMode = gEditorDisplayMode;
-  if (!SetDisplayMode(mode))
+  //var previousMode = gEditorDisplayMode;
+  var previousMode = gEditorEditMode;
+  //if (!SetDisplayMode(mode))
+  if (!SetEditUI(mode))
     return;
 
   window.setCursor("wait");
 
-  if (mode == kDisplayModeSource)
+  //if (mode == kDisplayModeSource)
+  if (mode == kEditModeSource)
   {
     // Display the DOCTYPE as a non-editable string above edit area
     var domdoc;
@@ -2113,7 +2124,7 @@ function SetEditMode(mode)
         gSourceTextEditor.beginningOfDocument()
     }
   }
-  else if (previousMode == kDisplayModeSource)
+  else if (previousMode == kEditModeSource)
   {
 
     // Only rebuild document if a change was made in source window
@@ -2180,11 +2191,127 @@ function SetEditMode(mode)
   window.setCursor("auto");
 }
 
+function SetEditUI(mode)
+{
+	// Kaze: this function has been adapted from the former "SetDisplayMode" one
+  if (!IsHTMLEditor())
+    return false;
+
+  // Already in requested mode:
+  //  return false to indicate we didn't switch
+  if (mode == gEditorEditMode)
+    return false;
+
+	GetCurrentEditorElement().setAttribute("displaymode", mode);
+
+  NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
+
+  var previousMode = gEditorEditMode;
+  gEditorEditMode = mode;
+
+	// Load/unload appropriate override style sheet
+	try {
+		var editor = GetCurrentEditor();
+		editor.QueryInterface(nsIEditorStyleSheets);
+		editor instanceof Components.interfaces.nsIHTMLObjectResizer;
+
+		// <Kaze> implement "design" and "split" modes
+		var deck        = document.getElementById("kpzDeck");
+		var splitter    = document.getElementById("browser-splitter");
+		var displayTabs = document.getElementById("DisplayModeTabs")
+
+		switch (mode) {
+			case kEditModeDesign:
+			case kEditModeSource:
+				displayTabs.hidden = (mode == kEditModeSource);
+				deck.setAttribute("collapsed", "true");
+				splitter.setAttribute("state", "collapsed");
+				splitter.setAttribute("hidden", "true");
+				break;
+
+			case kEditModeSplit:
+				displayTabs.hidden = false;
+				deck.removeAttribute("collapsed");
+				splitter.setAttribute("state", "expand");
+				splitter.setAttribute("hidden", "false");
+				// display the current node's source
+				viewNodeSource(gLastFocusNode);
+				break;
+		}
+		// </Kaze>
+	} catch(e) {}
+
+  ResetStructToolbar();
+  if (mode == kEditModeSource)
+  {
+    // we need to disable inline spell checking
+    gWasInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+    gPrefs.setBoolPref("spellchecker.enablerealtimespell", false);  
+
+    // Switch to the sourceWindow (second in the deck)
+    gContentWindowDeck.selectedIndex = 1;
+
+    // Hide the formatting toolbar if not already hidden
+    gFormatToolbarHidden1      = gFormatToolbar1.hidden;
+    gFormatToolbarHidden2      = gFormatToolbar2.hidden;
+    gFormatToolbar1.disabled   = true;
+    gFormatToolbar2.disabled   = true;
+    gViewFormatToolbar1.hidden = true;
+    gViewFormatToolbar2.hidden = true;
+
+    gSourceContentWindow.contentWindow.focus();
+  }
+  else
+  {
+    // do we need to re-enable inline spell checking ?
+    if (previousMode == kEditModeSource)
+    {
+      var showDisableSpellCheckWarning = gPrefs.getBoolPref("editor.showDisableSpellCheckWarning");
+      if (showDisableSpellCheckWarning)
+      {
+        var isSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+        if (gWasInlineSpellCheckerEnabled || isSpellCheckerEnabled)
+          window.openDialog("chrome://editor/content/confirmInlineSpellChecking.xul", "_blank", "chrome,close=no,titlebar,modal", "");
+      }
+      else
+        gPrefs.setBoolPref("spellchecker.enablerealtimespell", gWasInlineSpellCheckerEnabled)
+    }
+
+    // Save the last non-source mode so we can cancel source editing easily
+    gPreviousNonSourceEditMode = mode;
+
+    // Switch to the normal editor (first in the deck)
+    gContentWindowDeck.selectedIndex = 0;
+
+    // Restore menus and toolbars
+    // gFormatToolbar.hidden = gFormatToolbarHidden;
+    gViewFormatToolbar1.hidden = false;
+    gViewFormatToolbar2.hidden = false;
+
+    gContentWindow.focus();
+  }
+
+  // update commands to disable or re-enable stuff
+  window.updateCommands("mode_switch");
+
+  // Set the selected tab at bottom of window:
+  // (Note: Setting "selectedIndex = mode" won't redraw tabs when menu is used.)
+  document.getElementById("EditModeTabs").selectedItem = document.getElementById(kEditModeTabIDS[mode]);
+
+  // Uncheck previous menuitem and set new check since toolbar may have been used
+  if (previousMode >= 0)
+    document.getElementById(kEditModeMenuIDs[previousMode]).setAttribute("checked","false");
+  document.getElementById(kEditModeMenuIDs[mode]).setAttribute("checked","true");
+  
+
+  return true;
+}
+
 function CancelHTMLSource()
 {
   // Don't convert source text back into the DOM document
   gSourceTextEditor.resetModificationCount();
-  SetDisplayMode(gPreviousNonSourceDisplayMode);
+  SetDisplayMode(gPreviousNonSourceEditMode);
 }
 
 function FinishHTMLSource()
@@ -2201,8 +2328,11 @@ function FinishHTMLSource()
       {
         AlertWithTitle(GetString("Alert"), GetString("NoHeadTag"));
         //cheat to force back to Source Mode
-        gEditorDisplayMode = kDisplayModePreview;
-        SetDisplayMode(kDisplayModeSource);
+				// Kaze
+        //gEditorDisplayMode = kDisplayModePreview;
+        //SetDisplayMode(kEditModeSource);
+        gEditorEditMode = kEditModeDesign;
+        SetEditMode(kEditModeSource);
         throw Components.results.NS_ERROR_FAILURE;
       }
 
@@ -2211,15 +2341,18 @@ function FinishHTMLSource()
       {
         AlertWithTitle(GetString("Alert"), GetString("NoBodyTag"));
         //cheat to force back to Source Mode
-        gEditorDisplayMode = kDisplayModePreview;
-        SetDisplayMode(kDisplayModeSource);
+				// Kaze
+        //gEditorDisplayMode = kDisplayModePreview;
+        //SetDisplayMode(kEditModeSource);
+        gEditorEditMode = kEditModeDesign;
+        SetEditMode(kEditModeSource);
         throw Components.results.NS_ERROR_FAILURE;
       }
     }
   }
 
   // Switch edit modes -- converts source back into DOM document
-  SetEditMode(gPreviousNonSourceDisplayMode);
+  SetEditMode(gPreviousNonSourceEditMode);
 }
 
 function SetDisplayMode(mode)
@@ -2239,6 +2372,7 @@ function SetDisplayMode(mode)
   var previousMode = gEditorDisplayMode;
   gEditorDisplayMode = mode;
 
+	/* Kaze: moved to SetEditUI
   ResetStructToolbar();
   if (mode == kDisplayModeSource)
   {
@@ -2250,18 +2384,12 @@ function SetDisplayMode(mode)
     gContentWindowDeck.selectedIndex = 1;
 
     // Hide the formatting toolbar if not already hidden
-    // <Kaze> splitting the format toolbar
-    //~ gFormatToolbarHidden = gFormatToolbar.hidden;
-    //    gFormatToolbar.hidden = true;
-    //~ gFormatToolbar.disabled = true;
-    //~ gViewFormatToolbar.hidden = true;
-    gFormatToolbarHidden1 = gFormatToolbar1.hidden;
-    gFormatToolbarHidden2 = gFormatToolbar2.hidden;
-    gFormatToolbar1.disabled = true;
-    gFormatToolbar2.disabled = true;
+    gFormatToolbarHidden1      = gFormatToolbar1.hidden;
+    gFormatToolbarHidden2      = gFormatToolbar2.hidden;
+    gFormatToolbar1.disabled   = true;
+    gFormatToolbar2.disabled   = true;
     gViewFormatToolbar1.hidden = true;
     gViewFormatToolbar2.hidden = true;
-    // </Kaze>
 
     gSourceContentWindow.contentWindow.focus();
   }
@@ -2280,6 +2408,7 @@ function SetDisplayMode(mode)
       else
         gPrefs.setBoolPref("spellchecker.enablerealtimespell", gWasInlineSpellCheckerEnabled)
     }
+		*/
 
     // Save the last non-source mode so we can cancel source editing easily
     gPreviousNonSourceDisplayMode = mode;
@@ -2319,32 +2448,30 @@ function SetDisplayMode(mode)
       }
     } catch(e) {}
 
+		/* Kaze: moved to SetEditUI()
     // Switch to the normal editor (first in the deck)
     gContentWindowDeck.selectedIndex = 0;
 
     // Restore menus and toolbars
     // gFormatToolbar.hidden = gFormatToolbarHidden;
-    // <Kaze> splitting the format toolbar
-    //~ gViewFormatToolbar.hidden = false;
     gViewFormatToolbar1.hidden = false;
     gViewFormatToolbar2.hidden = false;
-    // </Kaze>
 
     gContentWindow.focus();
   }
 
   // update commands to disable or re-enable stuff
   window.updateCommands("mode_switch");
+	*/
 
   // Set the selected tab at bottom of window:
   // (Note: Setting "selectedIndex = mode" won't redraw tabs when menu is used.)
-  document.getElementById("EditModeTabs").selectedItem = document.getElementById(kDisplayModeTabIDS[mode]);
+  document.getElementById("DisplayModeTabs").selectedItem = document.getElementById(kDisplayModeTabIDS[mode]);
 
   // Uncheck previous menuitem and set new check since toolbar may have been used
   if (previousMode >= 0)
     document.getElementById(kDisplayModeMenuIDs[previousMode]).setAttribute("checked","false");
   document.getElementById(kDisplayModeMenuIDs[mode]).setAttribute("checked","true");
-  
 
   return true;
 }
@@ -3162,11 +3289,8 @@ function RemoveInapplicableUIElements()
     HideItem("insertHTML");
     HideItem("insertFormMenu");
     HideItem("fileExportToText");
-    // <Kaze> splitting the format toolbar
-    //~ HideItem("viewFormatToolbar");
     HideItem("viewFormatToolbar1");
     HideItem("viewFormatToolbar2");
-    // </Kaze>
     HideItem("viewEditModeToolbar");
   }
 }
@@ -4222,8 +4346,10 @@ function _UpdateRulerRequestListener()
   gUpdateRulerTimeOutId = null;
 
   // Kaze: this looks like it's not enough, see editorRulers.js line 75
+  //if (document.getElementById("tabeditor").getAttribute("collapserulers") == "true" ||
+      //gEditorDisplayMode == kDisplayModeSource)
   if (document.getElementById("tabeditor").getAttribute("collapserulers") == "true" ||
-      gEditorDisplayMode == kDisplayModeSource)
+      gEditorEditMode == kEditModeSource)
     return; // early way out if the rulers are hidden...
 
   var editor = GetCurrentEditor();

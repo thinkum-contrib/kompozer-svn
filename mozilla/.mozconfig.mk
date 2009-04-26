@@ -6,7 +6,6 @@
 
 # PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 MOZ_OBJDIR=$(TOPSRCDIR)/../obj-$(CONFIG_GUESS)
-MOZ_CO_PROJECT=composer
 # --enable-application=composer is used by configure (not client.mk)
 # --enable-optimize is used by configure (not client.mk)
 # --disable-debug is used by configure (not client.mk)
@@ -24,7 +23,7 @@ MOZ_CO_PROJECT=composer
 # --enable-svg is used by configure (not client.mk)
 # --enable-svg-renderer=cairo is used by configure (not client.mk)
 # --enable-system-cairo is used by configure (not client.mk)
-# --disable-canvas is used by configure (not client.mk)
+# --enable-canvas is used by configure (not client.mk)
 # --with-system-png=/usr is used by configure (not client.mk)
 # --with-system-jpeg=/usr is used by configure (not client.mk)
 # --with-system-zlib=/usr is used by configure (not client.mk)

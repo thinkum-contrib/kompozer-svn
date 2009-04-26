@@ -34,7 +34,7 @@
   <script type="application/x-javascript">
   <!-- Add "shouldAutoSave", "autoSaveAmount" to _elementIDs when implemented -->
   <![CDATA[
-    var _elementIDs = ["maintainTableStructure", "preserveFormatting", "saveAssociatedFiles", "showPublishDialog", "recentFiles", "useCSS", "openInNewTab"];
+    var _elementIDs = ["maintainTableStructure", "preserveFormatting", "saveAssociatedFiles", "showPublishDialog", "recentFiles", "useCSS", "openInNewTab", "useSystemIcons"];
   ]]>
   </script>        
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
@@ -52,7 +52,7 @@
         value="10" 
         preftype="int" 
         prefstring="editor.history.url_maximum"
-        oninput=" ValidateNumber(this, null, 0, 99); LimitStringLength('recentFiles',2);"
+        oninput="ValidateNumber(this, null, 0, 99); LimitStringLength('recentFiles',2);"
       />
     </hbox>
   </groupbox>
@@ -144,6 +144,11 @@
       label      = "&openInNewTab.label;"
       id         = "openInNewTab"
       prefstring = "extensions.sitemanager.openInNewTab"
+    />
+    <checkbox
+      label      = "&useSystemIcons.label;"
+      id         = "useSystemIcons"
+      prefstring = "extensions.sitemanager.useSystemIcons"
     />
   </groupbox>
 </page>

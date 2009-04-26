@@ -48,12 +48,12 @@ var gHelpers = {
     
     if (/^file/i.test(url)) try {
       var uri = Components.classes['@mozilla.org/network/standard-url;1']
-        .createInstance(Components.interfaces.nsIURL);
+                          .createInstance(Components.interfaces.nsIURL);
       var file = Components.classes['@mozilla.org/file/local;1']
-        .createInstance(Components.interfaces.nsILocalFile);
+                          .createInstance(Components.interfaces.nsILocalFile);
       uri.spec = url;
         
-      try { // normal OS
+      try { // decent OS
         file.initWithPath(uri.path);
         path = hasUnescape ? unescape(file.path) : file.path;
       } catch (e) {}
@@ -171,12 +171,12 @@ var gHelpers = {
     } 
     
     // nsIMIMEService
-    else { // MacOS X hack: use nsIMIMEService if there is no other arguments than the *local* file to edit
-      try { // taken from ViewSourceWith :-/
+    else {  // MacOS X hack: use nsIMIMEService if there is no other arguments than the *local* file to edit
+      try { // taken from ViewSourceWith
         var dataFile = this.newLocalFile(url);
         var mimeInfo = this.newMIMEInfo(dataFile);
-        mimeInfo.alwaysAskBeforeHandling = false;
-        mimeInfo.preferredAction = Components.interfaces.nsIMIMEInfo.useHelperApp;
+        mimeInfo.alwaysAskBeforeHandling     = false;
+        mimeInfo.preferredAction             = Components.interfaces.nsIMIMEInfo.useHelperApp;
         mimeInfo.preferredApplicationHandler = appFile;
         mimeInfo.launchWithFile(dataFile);
         this.trace("started application '" + appPath + "' on '" + url + "'");
@@ -299,6 +299,22 @@ var gHelpers = {
       return false;
     }
   },
+
+  // Special directories - useful with portable apps
+	getSpecialDirectory : function(id) {
+		// see https://developer.mozilla.org/en/Code_snippets/File_I%2f%2fO#Getting_special_files
+    return Components.classes['@mozilla.org/file/directory_service;1']
+										 .getService(Components.interfaces.nsIProperties)
+										 .get(id, Components.interfaces.nsIFile);
+	},
+
+	getProfileDirectory : function() {
+		return getSpecialDirectory("ProfD");
+	},
+
+	getInstallationDirectory : function() {
+		return getSpecialDirectory("CurProcD");
+	},
 
   // debug
   trace : function(message, sender) {

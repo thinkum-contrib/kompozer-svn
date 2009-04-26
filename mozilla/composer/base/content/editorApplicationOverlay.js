@@ -129,8 +129,8 @@ function editPage(url, launchWindow, delay, newTab)
   try {
     // <Kaze> the original code has been moved to CheckWindowsForUrlMatch
     // Is there a Composer window we can use?
-		var win = CheckAllTabsForUrlMatch(url, launchWindow, newTab); // patched
-		//var win = CheckWindowsForUrlMatch(url, launchWindow, newTab); // original behavior
+    var win = CheckAllTabsForUrlMatch(url, launchWindow, newTab); // patched
+    //var win = CheckWindowsForUrlMatch(url, launchWindow, newTab); // original behavior
     if (win) {
       if (win != launchWindow)
         win.focus();

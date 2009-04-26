@@ -65,6 +65,12 @@
 #define kGreaterThan NS_LITERAL_STRING(">")
 #define kEndTag NS_LITERAL_STRING("</")
 
+#ifdef MOZ_STANDALONE_COMPOSER
+#include "nsIDOMDocumentType.h"
+#define kEscapedLessThan NS_LITERAL_STRING("&lt;")
+#define kEscapedGreaterThan NS_LITERAL_STRING("&gt;")
+#endif
+
 static const char kMozStr[] = "moz";
 static NS_DEFINE_CID(kLWBrkCID, NS_LWBRK_CID);
 
@@ -749,7 +755,46 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   // for serializing attributes other than "value".
   SerializeAttributes(content, name, aStr);
 
+#ifdef MOZ_STANDALONE_COMPOSER
+  PRBool isXhtml = PR_FALSE;
+  nsCOMPtr<nsIDOMDocument> domDoc;
+  aElement->GetOwnerDocument(getter_AddRefs(domDoc));
+  nsCOMPtr<nsIDOMDocumentType> docType;
+  nsresult rv = domDoc->GetDoctype(getter_AddRefs(docType));
+  if (NS_SUCCEEDED(rv) && docType)
+  {
+    
+    nsAutoString publicId;
+    rv = docType->GetPublicId(publicId);
+		if (NS_SUCCEEDED(rv) &&
+		   (publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Transitional//EN")) ||
+		    publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Strict//EN"))))
+		  isXhtml = PR_TRUE;
+  }
+
+  //PRBool notMinimizable = IsNotMinimizable(name);
+  /*
+   *if (mFlags & nsIDocumentEncoder::OutputForColoredSourceView)
+   *{
+	 *  if (isXhtml && !aHasChildren && !notMinimizable)
+   *  if (isXhtml && !aHasChildren)
+   *    AppendToString(NS_LITERAL_STRING(" /&gt;"), aStr);
+   *  else
+   *    AppendToString(kEscapedGreaterThan, aStr);
+   *  AppendToString(kSpanEnd, aStr, PR_FALSE, PR_FALSE);
+   *}
+   *else
+   *{
+   */
+    //if (isXhtml && !aHasChildren && !notMinimizable)
+    if (isXhtml && !aHasChildren)
+      AppendToString(NS_LITERAL_STRING(" />"), aStr);
+    else
+      AppendToString(kGreaterThan, aStr);
+  //}
+#else
   AppendToString(kGreaterThan, aStr);
+#endif
 
   if (LineBreakAfterOpen(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
@@ -808,6 +853,81 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
     if (!isContainer) return NS_OK;
   }
 
+#ifdef MOZ_STANDALONE_COMPOSER
+  nsCOMPtr<nsIDOMNode> node(do_QueryInterface(aElement));
+  PRBool hasChildren;
+  nsresult rv = node->HasChildNodes(&hasChildren);
+  if (NS_FAILED(rv))
+    return rv;
+
+  PRBool isXhtml = PR_FALSE;
+  nsCOMPtr<nsIDOMDocument> domDoc;
+  aElement->GetOwnerDocument(getter_AddRefs(domDoc));
+  nsCOMPtr<nsIDOMDocumentType> docType;
+  rv = domDoc->GetDoctype(getter_AddRefs(docType));
+  if (NS_SUCCEEDED(rv) && docType)
+  {
+    nsAutoString publicId;
+		rv = docType->GetPublicId(publicId);
+		if (NS_SUCCEEDED(rv) &&
+			 (publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Transitional//EN")) ||
+				publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Strict//EN"))))
+			isXhtml = PR_TRUE;
+    //nsReadingIterator<PRUnichar> beginPublicId;
+    //nsReadingIterator<PRUnichar> endPublicId;
+    //publicId.BeginReading(beginPublicId);
+    //publicId.EndReading(endPublicId);
+    //isXhtml = FindInReadable(NS_LITERAL_STRING("XHTML"), beginPublicId, endPublicId);
+  }
+
+  //PRBool notMinimizable = IsNotMinimizable(name);
+  //if (hasChildren || !isXhtml || notMinimizable ) {
+  if (hasChildren || !isXhtml) {
+    if (LineBreakBeforeClose(name, hasDirtyAttr)) {
+      AppendToString(mLineBreak, aStr);
+      mMayIgnoreLineBreakSequence = PR_TRUE;
+      mColPos = 0;
+      mAddSpace = PR_FALSE;
+    }
+    else if (mAddSpace) {
+      AppendToString(PRUnichar(' '), aStr);
+      mAddSpace = PR_FALSE;
+    }
+
+    EndIndentation(name, hasDirtyAttr, aStr);
+
+    nsAutoString nameStr;
+    name->ToString(nameStr);
+
+    /*
+     *if (mFlags & nsIDocumentEncoder::OutputForColoredSourceView)
+     *{
+     *  AppendToString(kTagSpanEnd, aStr, PR_FALSE, PR_FALSE);
+     *  AppendToString(NS_LITERAL_STRING("&lt;/"), aStr);
+     *}
+     *else
+     */
+      AppendToString(kEndTag, aStr);
+
+    AppendToString(nameStr.get(), -1, aStr);
+
+    /*
+     *if (mFlags & nsIDocumentEncoder::OutputForColoredSourceView)
+     *{
+     *  AppendToString(kEscapedGreaterThan, aStr);
+     *  AppendToString(kSpanEnd, aStr, PR_FALSE, PR_FALSE);
+     *}
+     *else
+     */
+      AppendToString(kGreaterThan, aStr);
+  }
+
+  /*
+   *if ((mFlags & nsIDocumentEncoder::OutputForColoredSourceView) &&
+   *    aElement == mEndSelectionContainer)
+   *  AppendToString(kSelectionEnd, aStr, PR_FALSE, PR_FALSE);
+   */
+#else
   if (LineBreakBeforeClose(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
     mMayIgnoreLineBreakSequence = PR_TRUE;
@@ -827,7 +947,7 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   AppendToString(kEndTag, aStr);
   AppendToString(nameStr.get(), -1, aStr);
   AppendToString(kGreaterThan, aStr);
-
+#endif
   if (LineBreakAfterClose(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
     mMayIgnoreLineBreakSequence = PR_TRUE;

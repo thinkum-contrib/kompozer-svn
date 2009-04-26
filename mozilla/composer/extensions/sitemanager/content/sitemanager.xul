@@ -25,6 +25,8 @@
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
 
+  <script type="application/x-javascript" src="chrome://fireftp/content/local/localFile.js"/>
+
   <stringbundle id="siteManagerBundle" src="chrome://sitemanager/locale/sitemanager.properties"/>
 
   <broadcaster id="args" value=""/>
@@ -82,6 +84,7 @@
           <menuitem id="reloadItem"      label="&reloadButton.tooltip;"    oncommand="RefreshDirView()"/>
           <menuseparator />
           <menuitem id="siteManagerItem" label="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
+          <menuitem id="properties"      label="&itemProperties.label;"    oncommand="GetItemProperties()"/>
         </popup>
       </popupset>
       <treecols>
