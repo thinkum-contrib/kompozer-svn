@@ -84,7 +84,7 @@
           <menuitem id="reloadItem"      label="&reloadButton.tooltip;"    oncommand="RefreshDirView()"/>
           <menuseparator />
           <menuitem id="siteManagerItem" label="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
-          <menuitem id="properties"      label="&itemProperties.label;"    oncommand="GetItemProperties()"/>
+          <menuitem id="properties"      label="&itemProperties.label;"    oncommand="GetItemProperties()" hidden="true"/>
         </popup>
       </popupset>
       <treecols>

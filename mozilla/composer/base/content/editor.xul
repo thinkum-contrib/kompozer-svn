@@ -165,10 +165,10 @@
                 oncommand="updateViewSourceCheckbox(this);"
                 state="collapsed"
                 collapse="after"/>
-      <deck id="kpzDeck" selectedIndex="0"
+      <deck id="SourceBrowserDeck" selectedIndex="0"
             style="min-height: 7em;"
             collapsed="true">
-        <browser id="kpzPreview" flex="1" disablehistory="true" src="about:blank"
+        <browser id="SourceBrowser" flex="1" disablehistory="true" src="about:blank"
                  onclick="onClickSourceDock(event);"
                  context="viewSourceContext"/>
         <!-- a textbox will be dynamically created here when necessary -->

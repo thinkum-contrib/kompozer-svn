@@ -382,7 +382,7 @@ function highlightNode(element) {
 \*****************************************************************************/
 
 function getBrowser() {
-  return document.getElementById("kpzPreview");
+  return document.getElementById("SourceBrowser");
 }
 
 function onViewSourceContextMenu() {
@@ -404,7 +404,7 @@ function onViewSourceContextMenu() {
 
 function viewNodeSource(node) {
   // cancel if the source dock is collapsed
-  if (document.getElementById("kpzDeck").collapsed)
+  if (gSourceBrowserDeck.collapsed)
     return;
 
   //highlightNode(null);
@@ -595,36 +595,34 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
 \*****************************************************************************/
 
 function SetSourceDockVisible(show) {
-  var deck     = document.getElementById("kpzDeck");
   var menuitem = document.getElementById("viewSourceDock");
   var splitter = document.getElementById("browser-splitter");
 
   if (show) {
-    deck.removeAttribute("collapsed");
+    gSourceBrowserDeck.removeAttribute("collapsed");
     splitter.setAttribute("state", "expand");
     splitter.setAttribute("hidden", "false");
     // display the current node's source
     viewNodeSource(gLastFocusNode);
   } else {
-    deck.setAttribute("collapsed", "true");
+    gSourceBrowserDeck.setAttribute("collapsed", "true");
     splitter.setAttribute("state", "collapsed");
     splitter.setAttribute("hidden", "true");
   }
 }
 
 function toggleSourceDock(forceShow) {
-  var deck     = document.getElementById("kpzDeck");
   var menuitem = document.getElementById("viewSourceDock");
   var splitter = document.getElementById("browser-splitter");
 
-  if (forceShow || deck.hasAttribute("collapsed")) {
-    deck.removeAttribute("collapsed");
+  if (forceShow || gSourceBrowserDeck.hasAttribute("collapsed")) {
+    gSourceBrowserDeck.removeAttribute("collapsed");
     //menuitem.setAttribute("checked", "true");
     splitter.setAttribute("state", "expand");
     // display the current node's source
     viewNodeSource(gLastFocusNode);
   } else {
-    deck.setAttribute("collapsed", "true");
+    gSourceBrowserDeck.setAttribute("collapsed", "true");
     //menuitem.removeAttribute("checked");
     splitter.setAttribute("state", "collapsed");
   }
@@ -648,8 +646,13 @@ function onClickSourceDock(e) {
 }
 
 function editNodeToggle() {
-  var deck = document.getElementById("kpzDeck");
+  // if we're in Source mode, confirm changes
+  if (IsInHTMLSourceMode()) {
+    FinishHTMLSource()
+    return;
+  }
 
+  // we're in the source dock
   if (gViewedElement.tagName.toLowerCase() == "html")
     gViewedElement = gViewedElement.firstChild;
   //var isHead = (gViewedElement.tagName.toLowerCase() == "head");
@@ -661,9 +664,9 @@ function editNodeToggle() {
     gSourceEditor.removeAttribute("onblur");
     // flush changes
     editNodeFlush();
-    deck.selectedIndex = 0;
+    gSourceBrowserDeck.selectedIndex = 0;
     // destroy the textbox
-    deck.removeChild(gSourceEditor);
+    gSourceBrowserDeck.removeChild(gSourceEditor);
     gSourceEditor = null;  // XXX does this free the memory as it should?
     GetCurrentEditor().selection.collapseToStart();
   }
@@ -674,10 +677,10 @@ function editNodeToggle() {
     gSourceEditor.setAttribute("type", "text");
     gSourceEditor.setAttribute("multiline", "true");
     gSourceEditor.setAttribute("context", "editorSourceContext");
-    deck.appendChild(gSourceEditor);
+    gSourceBrowserDeck.appendChild(gSourceEditor);
     // start editing
     editNodeStart();
-    deck.selectedIndex = 1;
+    gSourceBrowserDeck.selectedIndex = 1;
     // ensure the source dock is visible
     SetSourceDockVisible(true);
     // auto-confirm changes when the user clicks outside the source editor
@@ -757,8 +760,15 @@ function editNodeFlush() {
 }
 
 function editNodeCancel() {
+  // if we're in Source mode, cancel changes
+  if (IsInHTMLSourceMode()) {
+    CancelHTMLSource()
+    return;
+  }
+
+  // we're in the source dock
   //editNodeToggle();
-  document.getElementById("kpzDeck").selectedIndex = 0;
+  gSourceBrowserDeck.selectedIndex = 0;
 
   // show NVU_NS nodes
   MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);

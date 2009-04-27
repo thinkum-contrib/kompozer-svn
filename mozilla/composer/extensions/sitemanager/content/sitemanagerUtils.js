@@ -176,15 +176,15 @@ function OpenItem(helper) {
   var url   = item.url;
 
   if (!helper) {
-    if (IsSelectedByFilter("html"), url) {
+    if (IsSelectedByFilter("html", url)) {
       EditDocument(url);
       return;
     }
     if (item.isContainer)
       helper = "file";
-    else if (IsSelectedByFilter("images"), url)
+    else if (IsSelectedByFilter("images", url))
       helper = "image";
-    else if (IsSelectedByFilter("media"), url)
+    else if (IsSelectedByFilter("media", url))
       helper = "media";
     else if (IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url))
       helper = "text";

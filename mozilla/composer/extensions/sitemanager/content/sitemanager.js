@@ -116,7 +116,7 @@ function SetupTreeView()
       if (gFilteredItemsArray[row].isSymLink)
         return "chrome://editor/skin/icons/link.gif";
       if (gFilteredItemsArray[row].isContainerOpen)
-        return "chrome://editor/skin/icons/directoryopen.ico";
+        return "chrome://editor/skin/icons/directory-open.ico";
       if (gFilteredItemsArray[row].isContainer)
         return "chrome://editor/skin/icons/directory.ico";
 

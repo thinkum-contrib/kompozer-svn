@@ -122,26 +122,10 @@
       <menuitem id="vMenu_highlightSyntax" type="checkbox" command="cmd_highlightSyntax" hidden="true"
                 label="&menu_highlightSyntax.label;" accesskey="&menu_highlightSyntax.accesskey;"/>
       <menuseparator/>
-      <menuitem id="vMenu_editNode"     label="&editNode.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
-      <menuitem id="vMenu_editHead"     label="&editHead.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
-      <menuitem id="vMenu_editBody"     label="&editBody.label;"    command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editNode" label="&editNode.label;" command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editHead" label="&editHead.label;" command="cmd_editNodeToggle" key="key_editNodeToggle"/>
+      <menuitem id="vMenu_editBody" label="&editBody.label;" command="cmd_editNodeToggle" key="key_editNodeToggle"/>
     </popup>
-    <!--
-       -<popup id="editSourceContextMenu">
-       -  <menuitem label="&undoCmd.label;"      accesskey="&undo.accesskey;"      command="cmd_undo"/>
-       -  <menuitem label="&redoCmd.label;"      accesskey="&redo.accesskey;"      command="cmd_redo"/>
-       -  <menuseparator/>
-       -  <menuitem label="&cutCmd.label;"       accesskey="&cut.accesskey;"       command="cmd_cut"/>
-       -  <menuitem label="&copyCmd.label;"      accesskey="&copy.accesskey;"      command="cmd_copy"/>
-       -  <menuitem label="&pasteCmd.label;"     accesskey="&paste.accesskey;"     command="cmd_paste"/>
-       -  <menuitem label="&deleteCmd.label;"    accesskey="&delete.accesskey;"    command="cmd_delete"/>
-       -  <menuseparator/>
-       -  <menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
-       -  <menuseparator/>
-       -  <menuitem label="&confirmNode.label;"  key="key_editNodeToggle"          command="cmd_editNodeToggle"/>
-       -  <menuitem label="&cancelNode.label;"   key="key_editNodeCancel"          command="cmd_editNodeCancel"/>
-       -</popup>
-       -->
 
     <popup id="structToolbarContext">
       <menuitem id="structSelect"     label="&structSelect.label;"

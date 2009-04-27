@@ -313,7 +313,7 @@ function PageIsEmptyAndUntouched()
 
 function IsInHTMLSourceMode()
 {
-	// Kaze
+  // Kaze
   //return (gEditorDisplayMode == kDisplayModeSource);
   return (gEditorEditMode == kEditModeSource);
 }
