@@ -3971,7 +3971,7 @@ var nsSourceDockToggle =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
-    return (IsHTMLEditor());
+    return (IsHTMLEditor() && !IsInHTMLSourceMode());
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -3979,7 +3979,10 @@ var nsSourceDockToggle =
 
   doCommand: function(aCommand)
   {
-    toggleSourceDock(); // defined in mozilla/composer/extensions/cascades/viewSource.js
+    if (gEditorEditMode == kEditModeDesign)
+      SetEditMode(kEditModeSplit);
+    else
+      SetEditMode(kEditModeDesign);
   }
 };
 
@@ -4016,7 +4019,6 @@ var nsSplitModeCommand =
     SetEditMode(kEditModeSplit);
   }
 };
-
 // </Kaze>
 
 var nsHTMLSourceModeCommand =

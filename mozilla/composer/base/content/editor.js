@@ -81,7 +81,7 @@ const kColoredSourceView = false;
 
 var gPreviousNonSourceEditMode = 1;
 var gEditorDisplayMode    = -1;
-var gEditorEditMode       = -1;     // Kaze
+var gEditorEditMode       = 0;      // Kaze
 var gDocWasModified       = false;  // Check if clean document, if clean then unload when user "Opens"
 var gContentWindow        = 0;
 var gSourceContentWindow  = 0;

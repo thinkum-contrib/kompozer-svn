@@ -63,17 +63,12 @@
 +   locale/@AB_CD@/editor/pref-publish.dtd                                      (@AB_CD@/chrome/editor/pref-publish.dtd)
 +   locale/@AB_CD@/editor/pref-toolbars.dtd                                     (@AB_CD@/chrome/editor/pref-toolbars.dtd)
 +   locale/@AB_CD@/editor/region.properties                                     (@AB_CD@/chrome/editor/region.properties)
-#+   locale/@AB_CD@/editor/sitemanager.dtd                                       (@AB_CD@/chrome/editor/sitemanager.dtd)
-#+   locale/@AB_CD@/editor/sitemanager.properties                                (@AB_CD@/chrome/editor/sitemanager.properties)
 +   locale/@AB_CD@/editor/tabeditor.dtd                                         (@AB_CD@/chrome/editor/tabeditor.dtd)
 +   locale/@AB_CD@/editor/tabeditor.properties                                  (@AB_CD@/chrome/editor/tabeditor.properties)
 +   locale/@AB_CD@/editor/utilityOverlay.dtd                                    (@AB_CD@/chrome/editor/utilityOverlay.dtd)
 #
+%   locale editor-region          @AB_CD@  %locale/@AB_CD@/editor-region/
 +   locale/@AB_CD@/editor-region/region.properties                              (@AB_CD@/chrome/editor-region/region.properties)
-#
-#%   locale tipoftheday            @AB_CD@  %locale/@AB_CD@/tipoftheday/
-#+   locale/@AB_CD@/tipoftheday/tipoftheday.dtd                                  (@AB_CD@/chrome/tipoftheday/tipoftheday.dtd)
-#   locale/@AB_CD@/editor/Nvu-totd-en.rdf                                       (@AB_CD@/chrome/editor/Nvu-totd-en.rdf)
 #
 +   locale/@AB_CD@/global-platform/win/nsWindowsHooks.properties                (@AB_CD@/chrome/global-platform/win/nsWindowsHooks.properties)
 #

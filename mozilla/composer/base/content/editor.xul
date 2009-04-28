@@ -162,7 +162,6 @@
       <!-- HTML source browser/editor -->
       <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="true"
                 resizebefore="farthest"
-                oncommand="updateViewSourceCheckbox(this);"
                 state="collapsed"
                 collapse="after"/>
       <deck id="SourceBrowserDeck" selectedIndex="0"

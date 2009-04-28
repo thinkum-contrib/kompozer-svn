@@ -40,8 +40,7 @@
 var gViewedElement = null;
 var gEditedElement = null;
 var gSourceEditor  = null;
-//var gSourceBrowser = null;
-//var gSourceDeck    = null;
+var gSourceEditorModified = false;
     
 /*****************************************************************************\
  *                                                                           *
@@ -404,10 +403,10 @@ function onViewSourceContextMenu() {
 
 function viewNodeSource(node) {
   // cancel if the source dock is collapsed
-  if (gSourceBrowserDeck.collapsed)
+  if (!node || gSourceBrowserDeck.collapsed)
     return;
 
-  //highlightNode(null);
+  highlightNode(null);
   gViewedElement = node;
 
   // clone the fragment of interest and reset everything to be relative to it
@@ -594,98 +593,92 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
  *                                                                           *
 \*****************************************************************************/
 
-function SetSourceDockVisible(show) {
-  var menuitem = document.getElementById("viewSourceDock");
-  var splitter = document.getElementById("browser-splitter");
-
-  if (show) {
-    gSourceBrowserDeck.removeAttribute("collapsed");
-    splitter.setAttribute("state", "expand");
-    splitter.setAttribute("hidden", "false");
-    // display the current node's source
-    viewNodeSource(gLastFocusNode);
-  } else {
-    gSourceBrowserDeck.setAttribute("collapsed", "true");
-    splitter.setAttribute("state", "collapsed");
-    splitter.setAttribute("hidden", "true");
-  }
-}
-
-function toggleSourceDock(forceShow) {
-  var menuitem = document.getElementById("viewSourceDock");
-  var splitter = document.getElementById("browser-splitter");
-
-  if (forceShow || gSourceBrowserDeck.hasAttribute("collapsed")) {
-    gSourceBrowserDeck.removeAttribute("collapsed");
-    //menuitem.setAttribute("checked", "true");
-    splitter.setAttribute("state", "expand");
-    // display the current node's source
-    viewNodeSource(gLastFocusNode);
-  } else {
-    gSourceBrowserDeck.setAttribute("collapsed", "true");
-    //menuitem.removeAttribute("checked");
-    splitter.setAttribute("state", "collapsed");
-  }
-}
-
-function updateViewSourceCheckbox(splitter) {
-  // this is triggered when the user clicks on the splitter
-  var menuitem = document.getElementById("viewSourceDock");
-  if (splitter.getAttribute("state") == "collapsed")
-    menuitem.removeAttribute("checked");
-  else {
-    menuitem.setAttribute("checked", "true");
-    // display the current node's source
-    viewNodeSource(gLastFocusNode);
-  }
-}
-
 function onClickSourceDock(e) {
   if (e.button == 0)
     editNodeToggle();
 }
 
+function editNodeApply() {
+  gSourceBrowserDeck.removeAttribute("onblur");
+
+  // flush changes
+  editNodeFlush();
+  gSourceBrowserDeck.selectedIndex = 0;
+
+  // destroy the textbox
+  gSourceBrowserDeck.removeAttribute("onblur");
+  gSourceBrowserDeck.removeChild(gSourceEditor);
+  delete(gSourceEditor);
+
+  GetCurrentEditor().selection.collapseToStart();
+}
+
+function editNodeCancel() {
+  // this function is triggered when the users presses Esc:
+  // it can be called from the source dock or from the source tab
+
+  // if we're in Source mode, cancel changes
+  if (IsInHTMLSourceMode()) {
+    CancelHTMLSource()
+    return;
+  }
+
+  // we're leaving the source dock
+  //editNodeToggle();
+  gSourceBrowserDeck.selectedIndex = 0;
+  gSourceBrowserDeck.removeAttribute("onblur");
+  gSourceBrowserDeck.removeChild(gSourceEditor);
+  delete(gSourceEditor);
+
+  // show NVU_NS nodes
+  MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
+
+  // restore focus
+  gContentWindow.focus();
+  gEditedElement = null;
+}
+
 function editNodeToggle() {
-  // if we're in Source mode, confirm changes
+  // this function is triggered when the users presses Alt+Enter:
+  // it can be called to enter the source dock (start editing)
+  // or to leave the source dock or the source tab (flush changes)
+
+  // if we're in Source mode, apply changes
   if (IsInHTMLSourceMode()) {
     FinishHTMLSource()
     return;
   }
 
-  // we're in the source dock
+  // if we're editing an element in the source dock, apply changes
+  if (gEditedElement) {
+    editNodeApply();
+    return;
+  }
+
+  // we're entering the source dock, let's ensure it is visible
+  SetEditMode(kEditModeSplit);
+
+  // we can't edit the whole HTML tree with that source dock
+  // so if <html> is selected, edit the <head> node
   if (gViewedElement.tagName.toLowerCase() == "html")
     gViewedElement = gViewedElement.firstChild;
-  //var isHead = (gViewedElement.tagName.toLowerCase() == "head");
 
-  // Note: gSourceEditor is built dynamically
-  // because I haven't found any other way to clear its undo history.
+  // create gSourceEditor textbox dynamically:
+  // looks like it's the easiest way to clear its undo history
+  gSourceEditor = document.createElementNS(XUL_NS, "textbox");
+  gSourceEditor.setAttribute("flex",      "1");
+  gSourceEditor.setAttribute("type",      "text");
+  gSourceEditor.setAttribute("multiline", "true");
+  gSourceEditor.setAttribute("context",   "editorSourceContext");
+  gSourceEditor.setAttribute("oninput",   "gSourceEditorModified = true;");
+  gSourceBrowserDeck.appendChild(gSourceEditor);
 
-  if (gEditedElement) { // from editor to viewer
-    gSourceEditor.removeAttribute("onblur");
-    // flush changes
-    editNodeFlush();
-    gSourceBrowserDeck.selectedIndex = 0;
-    // destroy the textbox
-    gSourceBrowserDeck.removeChild(gSourceEditor);
-    gSourceEditor = null;  // XXX does this free the memory as it should?
-    GetCurrentEditor().selection.collapseToStart();
-  }
-  else {                // from viewer to editor
-    // create a textbox
-    gSourceEditor = document.createElementNS(XUL_NS, "textbox");
-    gSourceEditor.setAttribute("flex", "1");
-    gSourceEditor.setAttribute("type", "text");
-    gSourceEditor.setAttribute("multiline", "true");
-    gSourceEditor.setAttribute("context", "editorSourceContext");
-    gSourceBrowserDeck.appendChild(gSourceEditor);
-    // start editing
-    editNodeStart();
-    gSourceBrowserDeck.selectedIndex = 1;
-    // ensure the source dock is visible
-    SetSourceDockVisible(true);
-    // auto-confirm changes when the user clicks outside the source editor
-    gSourceEditor.setAttribute("onblur", "editNodeToggle();");
-  }
+  // start editing
+  editNodeStart();
+
+  // auto-confirm changes when the user clicks outside the source editor
+  gSourceBrowserDeck.selectedIndex = 1;
+  gSourceBrowserDeck.setAttribute("onblur", "editNodeApply();");
 }
 
 function editNodeStart() {
@@ -715,10 +708,16 @@ function editNodeStart() {
   // Set initial focus
   gSourceEditor.focus();
   gSourceEditor.setSelectionRange(0,0);
+  gSourceEditorModified = false;
   gEditedElement = gViewedElement;
 }
 
 function editNodeFlush() {
+  if (!gSourceEditorModified) {
+    editNodeCancel();
+    return;
+  }
+
   var editor = GetCurrentEditor();
   if (!editor || !gEditedElement) return;
 
@@ -755,25 +754,6 @@ function editNodeFlush() {
   } catch (e) {}
 
   // Reset editor focus
-  gContentWindow.focus();
-  gEditedElement = null;
-}
-
-function editNodeCancel() {
-  // if we're in Source mode, cancel changes
-  if (IsInHTMLSourceMode()) {
-    CancelHTMLSource()
-    return;
-  }
-
-  // we're in the source dock
-  //editNodeToggle();
-  gSourceBrowserDeck.selectedIndex = 0;
-
-  // show NVU_NS nodes
-  MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
-
-  // restore focus
   gContentWindow.focus();
   gEditedElement = null;
 }

@@ -55,7 +55,7 @@
       <key id="key_editFirstChild"     keycode="VK_RIGHT"    command="cmd_viewFirstChild"  />
     </keyset> -->
 
-    <!-- Toolbar -->
+    <!-- Toolbar (not working yet) -->
     <hbox id="domToolbar">
       <toolbarbutton id="refreshButton" tooltiptext="&refreshButton.label;" oncommand="Refresh();"/>
       <spacer flex="1"/>
@@ -78,7 +78,7 @@
     <!-- Trees: using a vbox/deck to avoid loosing space because of the tabpanels' border -->
     <vbox id="domTreeDeck" flex="1" class="html">
 
-      <!-- HTML popup, like on the structToolbar -->
+      <!-- HTML popup, like on the structToolbar (not working yet) -->
       <popup id="htmlTreeContext">
         <menu id="idSelectMenu"
               label="id" oncommand="onIDSelectChange(true)">
@@ -110,7 +110,8 @@
         <treecols>
           <treecol id="elementCol" persist="width ordinal hidden" label="Elements" primary="true" flex="1"/>
         </treecols>
-        <treechildren id="elementList" flex="1" context="htmlTreeContext"/>
+        <treechildren id="elementList" flex="1"/>
+        <!--<treechildren id="elementList" flex="1" context="htmlTreeContext"/>-->
       </tree>
 
       <!-- splitter -->

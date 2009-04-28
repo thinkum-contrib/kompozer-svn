@@ -48,17 +48,6 @@
   <script type="application/x-javascript" src="chrome://cascades/content/cascadesOverlay.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/EdCssUtils.js"/>
 
-  <!--
-     -<menupopup id="menu_View_Popup">
-     -  <menuitem id="viewSourceDock" type="checkbox" accesskey="&HTMLSourceMode.accesskey;"
-     -            insertbefore="blockOutlines"
-     -            oncommand="toggleSourceDock(this);"
-     -            key="key_sourceDockToggle"
-     -            label="&HTMLSourceMode.label;"/>
-     -  <menuseparator insertbefore="blockOutlines"/>
-     -</menupopup>
-     -->
-
   <!-- Tools menu item + keyboard shortcut -->
   <menupopup id="taskPopup">
     <menuitem id="menu_CaScadeS"
