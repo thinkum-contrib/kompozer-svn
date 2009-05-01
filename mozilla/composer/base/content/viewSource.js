@@ -310,7 +310,7 @@ function newCommandListener(button, element) {
 
 function newMouseOverListener(element) {
   return function() {
-    if (gEditedElement) // edition in progress
+    if (!gEditorFocus || gEditedElement) // window not focused or edition in progress
       return;
     highlightNode(element);
   };
@@ -318,7 +318,7 @@ function newMouseOverListener(element) {
 
 function newMouseOutListener(element) {
   return function() {
-    if (gEditedElement) // edition in progress
+    if (!gEditorFocus || gEditedElement) // window not focused or edition in progress
       return;
     highlightNode(null);
     gContentWindow.focus();
@@ -426,6 +426,7 @@ function viewNodeSource(node) {
   getBrowser().webNavigation
               .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(tmpNode.innerHTML),
                        loadFlags, null, null, null);
+  delete(tmpNode);
 }
 
 function viewPartialSourceForFragment(node) {
@@ -598,62 +599,20 @@ function onClickSourceDock(e) {
     editNodeToggle();
 }
 
-function editNodeApply() {
-  gSourceBrowserDeck.removeAttribute("onblur");
-
-  // flush changes
-  editNodeFlush();
-  gSourceBrowserDeck.selectedIndex = 0;
-
-  // destroy the textbox
-  gSourceBrowserDeck.removeAttribute("onblur");
-  gSourceBrowserDeck.removeChild(gSourceEditor);
-  delete(gSourceEditor);
-
-  GetCurrentEditor().selection.collapseToStart();
+function onInputSourceDock(e) {
+  if (e.keyCode == KeyEvent.DOM_VK_ESCAPE) {
+    // cancel default [Esc] behavior because it would cause gSourceEditor to blur
+    e.preventDefault();  // required in Gecko 1.8
+    e.stopPropagation();
+    // [Esc] has been pressed, cancel edition
+    editNodeCancel();
+  }
 }
 
-function editNodeCancel() {
-  // this function is triggered when the users presses Esc:
-  // it can be called from the source dock or from the source tab
-
-  // if we're in Source mode, cancel changes
-  if (IsInHTMLSourceMode()) {
-    CancelHTMLSource()
-    return;
-  }
-
-  // we're leaving the source dock
-  //editNodeToggle();
-  gSourceBrowserDeck.selectedIndex = 0;
-  gSourceBrowserDeck.removeAttribute("onblur");
-  gSourceBrowserDeck.removeChild(gSourceEditor);
-  delete(gSourceEditor);
-
-  // show NVU_NS nodes
-  MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
-
-  // restore focus
-  gContentWindow.focus();
-  gEditedElement = null;
-}
-
-function editNodeToggle() {
-  // this function is triggered when the users presses Alt+Enter:
-  // it can be called to enter the source dock (start editing)
-  // or to leave the source dock or the source tab (flush changes)
-
-  // if we're in Source mode, apply changes
-  if (IsInHTMLSourceMode()) {
-    FinishHTMLSource()
-    return;
-  }
-
-  // if we're editing an element in the source dock, apply changes
-  if (gEditedElement) {
-    editNodeApply();
-    return;
-  }
+function editNodeStart() {
+  // cancel if no editor (should never happen)
+  var editor = GetCurrentEditor();
+  if (!editor) return;
 
   // we're entering the source dock, let's ensure it is visible
   SetEditMode(kEditModeSplit);
@@ -673,22 +632,10 @@ function editNodeToggle() {
   gSourceEditor.setAttribute("oninput",   "gSourceEditorModified = true;");
   gSourceBrowserDeck.appendChild(gSourceEditor);
 
-  // start editing
-  editNodeStart();
-
-  // auto-confirm changes when the user clicks outside the source editor
-  gSourceBrowserDeck.selectedIndex = 1;
-  gSourceBrowserDeck.setAttribute("onblur", "editNodeApply();");
-}
-
-function editNodeStart() {
-  var editor = GetCurrentEditor();
-  if (!editor) return;
-
-  if (gViewedElement.tagName.toLowerCase() == "head") {
-    // <head> element
+  // get HTML markup
+  var tagName = gViewedElement.tagName.toLowerCase();
+  if (tagName == "head" || tagName == "body") {
     gSourceEditor.value = gViewedElement.innerHTML;
-    //editor.selection.collapseToStart();
   }
   else {
     // hide NVU_NS nodes
@@ -709,18 +656,28 @@ function editNodeStart() {
   gSourceEditor.focus();
   gSourceEditor.setSelectionRange(0,0);
   gSourceEditorModified = false;
+  gSourceBrowserDeck.selectedIndex = 1;
   gEditedElement = gViewedElement;
+
+  // auto-confirm changes when the user clicks outside the source editor
+  gSourceEditor.setAttribute("onblur", "editNodeApply();");
+
+  // cancel default [Esc] behavior because it would cause gSourceEditor to blur
+  gSourceEditor.addEventListener("keypress", onInputSourceDock, true);
 }
 
-function editNodeFlush() {
+function editNodeApply() {
+  // cancel if no modifications found
   if (!gSourceEditorModified) {
     editNodeCancel();
     return;
   }
 
+  // cancel if no editor (should never happen)
   var editor = GetCurrentEditor();
   if (!editor || !gEditedElement) return;
 
+  // flush changes
   var html = gSourceEditor.value.replace(/\s*$/, '');
   if (html) try {
     if (gViewedElement.tagName.toLowerCase() == "head") {
@@ -752,10 +709,50 @@ function editNodeFlush() {
       MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
     }
   } catch (e) {}
+  editNodeLeave();
+  GetCurrentEditor().selection.collapseToStart();
+}
 
-  // Reset editor focus
-  gContentWindow.focus();
+function editNodeCancel() {
+  // this function is triggered when the users presses Esc:
+  // it can be called from the source dock or from the source tab
+
+  // if we're in Source mode, cancel changes
+  if (IsInHTMLSourceMode()) {
+    CancelHTMLSource()
+  } else {
+    MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
+    editNodeLeave();
+  }
+}
+
+function editNodeToggle() {
+  // this function is triggered when the users presses Alt+Enter:
+  // it can be called to enter the source dock (start editing)
+  // or to leave the source dock or the source tab (flush changes)
+  //
+  if (IsInHTMLSourceMode()) // if we're in Source mode, apply changes
+    FinishHTMLSource()
+  else if (gEditedElement)  // if we're editing an element in the source dock, apply changes
+    editNodeApply();
+  else                      // if we're not already editing an element, start editing
+    editNodeStart();
+}
+
+function editNodeLeave() {
+  // refresh source dock (might be redundant)
+  viewNodeSource(gEditedElement);
   gEditedElement = null;
+
+  // destroy the textbox and switch to "view" mode
+  gSourceEditor.removeAttribute("onblur");
+  gSourceEditor.removeEventListener("keypress", onInputSourceDock, true);
+  gSourceBrowserDeck.selectedIndex = 0;
+  gSourceBrowserDeck.removeChild(gSourceEditor);
+  delete(gSourceEditor);
+
+  // set the focus to the main window
+  gContentWindow.focus();
 }
 
 /*****************************************************************************\

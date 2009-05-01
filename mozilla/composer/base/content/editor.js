@@ -82,6 +82,7 @@ const kColoredSourceView = false;
 var gPreviousNonSourceEditMode = 1;
 var gEditorDisplayMode    = -1;
 var gEditorEditMode       = 0;      // Kaze
+var gEditorFocus          = false;  // Kaze
 var gDocWasModified       = false;  // Check if clean document, if clean then unload when user "Opens"
 var gContentWindow        = 0;
 var gSourceContentWindow  = 0;
@@ -3564,6 +3565,8 @@ function GetNumberOfContiguousSelectedColumns()
 
 function EditorOnFocus()
 {
+  gEditorFocus = true; // Kaze
+
   // Current window already has the InsertCharWindow
   if ("InsertCharWindow" in window && window.InsertCharWindow) return;
 

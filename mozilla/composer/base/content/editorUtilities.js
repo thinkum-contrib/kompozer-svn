@@ -203,11 +203,11 @@ function GetSelectionAsText()
 
 
 /************* Get Current Editor and associated interfaces or info ***************/
-const nsIPlaintextEditor = Components.interfaces.nsIPlaintextEditor;
-const nsIHTMLEditor = Components.interfaces.nsIHTMLEditor;
-const nsITableEditor = Components.interfaces.nsITableEditor;
+const nsIPlaintextEditor   = Components.interfaces.nsIPlaintextEditor;
+const nsIHTMLEditor        = Components.interfaces.nsIHTMLEditor;
+const nsITableEditor       = Components.interfaces.nsITableEditor;
 const nsIEditorStyleSheets = Components.interfaces.nsIEditorStyleSheets;
-const nsIEditingSession = Components.interfaces.nsIEditingSession;
+const nsIEditingSession    = Components.interfaces.nsIEditingSession;
 
 function GetCurrentEditor()
 {

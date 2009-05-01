@@ -84,8 +84,10 @@
     // Kaze: prevents to close this window with [Return]
     window.addEventListener("keypress", noReturn, true);
     function noReturn(event) {
-        if (event.keyCode == KeyEvent.DOM_VK_RETURN)
+      if (event.keyCode == KeyEvent.DOM_VK_RETURN) {
+        event.preventDefault();  // required in Gecko 1.8
         event.stopPropagation();
+      }
     }
   </script>
   <keyset id="cascadeKeys">

@@ -5,7 +5,6 @@
 
 <!ENTITY findOnCmd.commandkey            "F">
 <!ENTITY findAgainCmd.commandkey         "G">
-<!ENTITY findAgainCmd.commandkey         "G">
 <!ENTITY findAgainCmd.commandkey2        "VK_F3">
 <!ENTITY findDialog.title                "Find in This Page">
 <!ENTITY findDialogFrame.title           "Find in This Frame">
