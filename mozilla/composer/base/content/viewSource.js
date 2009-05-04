@@ -717,10 +717,11 @@ function editNodeCancel() {
   // this function is triggered when the users presses Esc:
   // it can be called from the source dock or from the source tab
 
-  // if we're in Source mode, cancel changes
   if (IsInHTMLSourceMode()) {
+    // if we're in Source mode, discard changes
     CancelHTMLSource()
   } else {
+    // leave source dock without updating the document
     MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
     editNodeLeave();
   }
@@ -730,7 +731,7 @@ function editNodeToggle() {
   // this function is triggered when the users presses Alt+Enter:
   // it can be called to enter the source dock (start editing)
   // or to leave the source dock or the source tab (flush changes)
-  //
+
   if (IsInHTMLSourceMode()) // if we're in Source mode, apply changes
     FinishHTMLSource()
   else if (gEditedElement)  // if we're editing an element in the source dock, apply changes

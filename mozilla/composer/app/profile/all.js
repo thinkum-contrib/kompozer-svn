@@ -38,40 +38,37 @@
 // SYNTAX HINTS:  dashes are delimiters.  Use underscores instead.
 //  The first character after a period must be alphabetic.
 
+#filter substitution
+
 // pref("startup.homepage_override_url","chrome://browser-region/locale/region.properties");
 // pref("general.startup.browser", true);
-pref("browser.chromeURL",             "chrome://editor/content/"); // Gecko 1.7
-pref("toolkit.defaultChromeURI",      "chrome://editor/content/"); // Gecko 1.8
-pref("browser.hiddenWindowChromeURL", "chrome://editor/content/hiddenWindow.xul");
-//pref("toolkit.defaultChromeURI","chrome://editor/content/editor.xul");
+pref("browser.chromeURL",                       "chrome://editor/content/"); // Gecko 1.7
+pref("toolkit.defaultChromeURI",                "chrome://editor/content/"); // Gecko 1.8
+pref("browser.hiddenWindowChromeURL",           "chrome://editor/content/hiddenWindow.xul");
+                                                // see: http://xulfr.org/wiki/SpecificitesXulMacosx
 
-pref("xpinstall.dialog.confirm",              "chrome://mozapps/content/xpinstall/xpinstallConfirm.xul");
+pref("xpinstall.dialog.confirm",                "chrome://mozapps/content/xpinstall/xpinstallConfirm.xul");
 //pref("xpinstall.dialog.progress.skin",        "chrome://mozapps/content/extensions/extensions.xul?type=themes");
 //pref("xpinstall.dialog.progress.chrome",      "chrome://mozapps/content/extensions/extensions.xul?type=extensions");
 // changed with Gecko 1.8.1
-pref("xpinstall.dialog.progress.skin",        "chrome://mozapps/content/extensions/extensions.xul");
-pref("xpinstall.dialog.progress.chrome",      "chrome://mozapps/content/extensions/extensions.xul");
-pref("xpinstall.dialog.progress.type.skin",   "Extension:Manager-themes");
-pref("xpinstall.dialog.progress.type.chrome", "Extension:Manager-extensions");
+pref("xpinstall.dialog.progress.skin",          "chrome://mozapps/content/extensions/extensions.xul");
+pref("xpinstall.dialog.progress.chrome",        "chrome://mozapps/content/extensions/extensions.xul");
+pref("xpinstall.dialog.progress.type.skin",     "Extension:Manager-themes");
+pref("xpinstall.dialog.progress.type.chrome",   "Extension:Manager-extensions");
 
 // This is this application's unique identifier used by the Extension System to identify
 // this application as an extension target, and by the SmartUpdate system to identify
 // this application to the Update server.
-pref("app.id", "{136c295a-4a5a-41cf-bf24-5cee526720d5}");
-pref("app.version", "0.8a2");
-//pref("app.version", 
-//#expand __APP_VERSION__
-//);
-pref("app.extensions.version", "1.0");
-pref("app.build_id", 
-#expand __BUILD_ID__
-);
+pref("app.id",                                  "{136c295a-4a5a-41cf-bf24-5cee526720d5}");
+pref("app.version",                             "@APP_VERSION@");
+pref("app.extensions.version",                  "1.0");
+pref("app.build_id",                            @BUILD_ID@);
 
 // App-specific update preferences
 pref("app.update.enabled", true);               // Whether or not app updates are enabled
 pref("app.update.autoUpdateEnabled", true);     // Whether or not background app updates 
                                                 // are enabled
-pref("app.update.url", "chrome://mozapps/locale/update/update.properties");
+pref("app.update.url",                          "chrome://mozapps/locale/update/update.properties");
 pref("app.update.updatesAvailable", false);
 pref("app.update.interval", 86400000);          // Check for updates every day
 pref("app.update.lastUpdateDate", 0);           // UTC offset when last App update was 
@@ -88,7 +85,7 @@ pref("app.update.performed", false);            // Whether or not an update has 
 //
 pref("extensions.update.enabled", true);
 pref("extensions.update.autoUpdateEnabled", true);
-pref("extensions.update.url", "chrome://mozapps/locale/extensions/extensions.properties");
+pref("extensions.update.url",                   "chrome://mozapps/locale/extensions/extensions.properties");
 pref("extensions.update.autoUpdate", false);    // Automatically download and install 
                                                 // updates to themes and extensions. 
                                                 // Does nothing at present. 
@@ -97,8 +94,8 @@ pref("extensions.update.interval", 604800000);  // Check for updates to Extensio
 pref("extensions.update.lastUpdateDate", 0);    // UTC offset when last Extension/Theme 
                                                 // update was performed. 
 // Non-symmetric (not shared by extensions) extension-specific [update] preferences
-pref("extensions.getMoreExtensionsURL", "chrome://mozapps/locale/extensions/extensions.properties");
-pref("extensions.getMoreThemesURL",     "chrome://mozapps/locale/extensions/extensions.properties");
+pref("extensions.getMoreExtensionsURL",         "chrome://mozapps/locale/extensions/extensions.properties");
+pref("extensions.getMoreThemesURL",             "chrome://mozapps/locale/extensions/extensions.properties");
 pref("extensions.update.severity.threshold", 5);// The number of pending Extension/Theme
                                                 // updates you can have before the update
                                                 // notifier goes from low->medium severity.
@@ -122,76 +119,73 @@ pref("update.showSlidingNotification", true);   // Windows-only slide-up taskbar
 // 2 = high   (new version of Firefox/Security patch)
 pref("update.severity", 0); 
 
-pref("xpinstall.whitelist.add", "update.mozilla.org");
+pref("xpinstall.whitelist.add",                   "update.mozilla.org");
+                                                 
+pref("general.skins.selectedSkin",                "classic/1.0"); 
+pref("startup.homepage_override_url",             "chrome://navigator-region/locale/region.properties");
+pref("network.search.url",                        "http://cgi.netscape.com/cgi-bin/url_search.cgi?search=");
+                                                 
+pref("keyword.URL",                               "http://keyword.netscape.com/keyword/");
+pref("keyword.enabled",                           false);
+//pref("general.useragent.locale",                "chrome://navigator/locale/navigator.properties");
+pref("general.useragent.locale",                  "en-US");
+pref("general.useragent.contentlocale",           "chrome://navigator-region/locale/region.properties");
+pref("general.useragent.vendor",                  "kompozer.net");
+pref("general.useragent.vendorSub",               "@APP_VERSION@");
+                                                 
+pref("general.startup.browser",                   false);
+pref("general.startup.mail",                      false);
+pref("general.startup.news",                      false);
+pref("general.startup.editor",                    false);
+pref("general.startup.compose",                   false);
+pref("general.startup.addressbook",               false);
+pref("editor.standalone",                         true);
+                                                
+pref("general.open_location.last_url",            "");
+pref("general.open_location.last_window_choice",  0);
 
-pref("general.skins.selectedSkin", "classic/1.0"); 
-pref("startup.homepage_override_url","chrome://navigator-region/locale/region.properties");
-pref("network.search.url","http://cgi.netscape.com/cgi-bin/url_search.cgi?search=");
-
-pref("keyword.URL",     "http://keyword.netscape.com/keyword/");
-pref("keyword.enabled", false);
-//pref("general.useragent.locale", "chrome://navigator/locale/navigator.properties");
-pref("general.useragent.locale",        "en-US");
-pref("general.useragent.contentlocale", "chrome://navigator-region/locale/region.properties");
-pref("general.useragent.vendor",        "kompozer.net");
-pref("general.useragent.vendorSub",     "0.8a2");
-//pref("general.useragent.vendorSub",
-//#expand __APP_VERSION__
-//);
-
-pref("general.startup.browser",             false);
-pref("general.startup.mail",                false);
-pref("general.startup.news",                false);
-pref("general.startup.editor",              false);
-pref("general.startup.compose",             false);
-pref("general.startup.addressbook",         false);
-pref("editor.standalone",                   true);
-
-pref("general.open_location.last_url",           "");
-pref("general.open_location.last_window_choice", 0);
-
-pref("backups.number_of_prefs_copies", 1);
+pref("backups.number_of_prefs_copies",            1);
 
 // 0 = blank, 1 = home (browser.startup.homepage), 2 = last
-pref("browser.startup.page",                1);
-pref("browser.startup.homepage",            "chrome://navigator-region/locale/region.properties");
-pref("browser.startup.homepage.count", 1);
+pref("browser.startup.page",                      1);
+pref("browser.startup.homepage",                  "chrome://navigator-region/locale/region.properties");
+pref("browser.startup.homepage.count",            1);
 // "browser.startup.homepage_override" was for 4.x
-pref("browser.startup.homepage_override.1", true);
-pref("browser.startup.autoload_homepage",   true);
-
-pref("browser.cache.enable",                true); // see also network.http.use-cache
-pref("browser.cache.disk.enable",           true);
-pref("browser.cache.disk.capacity",         50000);
-pref("browser.cache.memory.enable",         true);
-pref("browser.cache.memory.capacity",       4096);
-pref("browser.cache.disk_cache_ssl",        false);
+pref("browser.startup.homepage_override.1",       true);
+pref("browser.startup.autoload_homepage",         true);
+                                                  
+pref("browser.cache.enable",                      true); // see also network.http.use-cache
+pref("browser.cache.disk.enable",                 true);
+pref("browser.cache.disk.capacity",               50000);
+pref("browser.cache.memory.enable",               true);
+pref("browser.cache.memory.capacity",             4096);
+pref("browser.cache.disk_cache_ssl",              false);
 // 0 = once-per-session, 1 = each-time, 2 = never, 3 = when-appropriate/automatically
-pref("browser.cache.check_doc_frequency",   3);
-
-pref("browser.display.use_document_fonts",  1);  // 0 = never, 1 = quick, 2 = always
-pref("browser.display.use_document_colors", true);
-pref("browser.display.use_system_colors",   false);
-pref("browser.display.foreground_color",    "#000000");
-pref("browser.display.background_color",    "#FFFFFF");
-pref("browser.display.force_inline_alttext", false); // true = force ALT text for missing images to be layed out inline
+pref("browser.cache.check_doc_frequency",         3);
+                                                  
+pref("browser.display.use_document_fonts",        1);  // 0 = never, 1 = quick, 2 = always
+pref("browser.display.use_document_colors",       true);
+pref("browser.display.use_system_colors",         false);
+pref("browser.display.foreground_color",          "#000000");
+pref("browser.display.background_color",          "#FFFFFF");
+pref("browser.display.force_inline_alttext",      false); // true = force ALT text for missing images to be layed out inline
 // 0 = no external leading, 
 // 1 = use external leading only when font provides, 
 // 2 = add extra leading both internal leading and external leading are zero
 pref("browser.display.normal_lineheight_calc_control", 2);
-pref("browser.display.show_image_placeholders", true); // true = show image placeholders while image is loaded and when image is broken
-pref("browser.anchor_color",                "#0000EE");
-pref("browser.active_color",                "#EE0000");
-pref("browser.visited_color",               "#551A8B");
-pref("browser.underline_anchors",           true);
-pref("browser.blink_allowed",               true);
-pref("browser.enable_automatic_image_resizing", false);
+pref("browser.display.show_image_placeholders",   true); // true = show image placeholders while image is loaded and when image is broken
+pref("browser.anchor_color",                      "#0000EE");
+pref("browser.active_color",                      "#EE0000");
+pref("browser.visited_color",                     "#551A8B");
+pref("browser.underline_anchors",                 true);
+pref("browser.blink_allowed",                     true);
+pref("browser.enable_automatic_image_resizing",   false);
 
-pref("browser.display.use_focus_colors",       false);
-pref("browser.display.focus_background_color", "#117722");
-pref("browser.display.focus_text_color",       "#ffffff");
-pref("browser.display.focus_ring_width",       1);
-pref("browser.display.focus_ring_on_anything", false);
+pref("browser.display.use_focus_colors",          false);
+pref("browser.display.focus_background_color",    "#117722");
+pref("browser.display.focus_text_color",          "#ffffff");
+pref("browser.display.focus_ring_width",          1);
+pref("browser.display.focus_ring_on_anything",    false);
 
 pref("browser.urlbar.autoFill", false);
 pref("browser.urlbar.showPopup", true);
@@ -358,11 +352,6 @@ pref("print.whileInPrintPreview", true);
 // Cache old Presentation when going into Print Preview
 pref("print.always_cache_old_pres", false);
 
-#ifdef LINSPIRE
-// For KDE only
-pref("print.printer_PostScript/default.print_command", "kprinter --stdin");
-#endif
-
 // Enables you to specify the gap from the edge of the paper to the margin
 // this is used by both Printing and Print Preview
 pref("print.print_edge_top",    0); // 1/100 of an inch
@@ -525,12 +514,12 @@ pref("capability.policy.default.DOMParser.parseFromStream",             "noAcces
 
 
 // Scripts & Windows prefs
-pref("browser.block.target_new_window",     false);
-pref("dom.disable_image_src_set",           false);
-pref("dom.disable_open_during_load",        false);
-pref("dom.disable_window_flip",             false);
-pref("dom.disable_window_move_resize",      false);
-pref("dom.disable_window_status_change",    false);
+pref("browser.block.target_new_window",             false);
+pref("dom.disable_image_src_set",                   false);
+pref("dom.disable_open_during_load",                false);
+pref("dom.disable_window_flip",                     false);
+pref("dom.disable_window_move_resize",              false);
+pref("dom.disable_window_status_change",            false);
 
 pref("dom.disable_window_open_feature.titlebar",    false);
 pref("dom.disable_window_open_feature.close",       false);
@@ -546,23 +535,23 @@ pref("dom.disable_window_open_feature.status",      false);
 
 pref("dom.allow_scripts_to_close_windows",          false);
 
-//pref("javascript.enabled",                  true);
-pref("javascript.enabled",                  false); // Kaze
-pref("javascript.allow.mailnews",           false);
-pref("javascript.options.strict",           false);
-pref("javascript.options.showInConsole",    true);
-
-// advanced prefs
-pref("advanced.always_load_images",         true);
-pref("security.enable_java",                true);
-pref("advanced.mailftp",                    false);
-pref("image.animation_mode",                "normal");
-
-pref("offline.startup_state",               0);
-pref("offline.send.unsent_messages",        0);
-pref("offline.download.download_messages",  0);
-pref("offline.prompt_synch_on_exit",        true);
-pref("offline.news.download.use_days",      0);
+//pref("javascript.enabled",                        true);
+pref("javascript.enabled",                          false); // Kaze
+pref("javascript.allow.mailnews",                   false);
+pref("javascript.options.strict",                   false);
+pref("javascript.options.showInConsole",            true);
+                                                   
+// advanced prefs                                  
+pref("advanced.always_load_images",                 true);
+pref("security.enable_java",                        true);
+pref("advanced.mailftp",                            false);
+pref("image.animation_mode",                        "normal");
+                                                   
+pref("offline.startup_state",                       0);
+pref("offline.send.unsent_messages",                0);
+pref("offline.download.download_messages",          0);
+pref("offline.prompt_synch_on_exit",                true);
+pref("offline.news.download.use_days",              0);
 
 // If there is ever a security firedrill that requires
 // us to block certian ports global, this is the pref 
@@ -583,15 +572,15 @@ pref("offline.news.download.use_days",      0);
 // By default, all protocol handlers are hidden.  This means
 // that composer will not respond to X-remote openURL commands
 // and it will also defer all link clicks to the user's browser.
-pref("network.protocol-handler.expose-all", false);
+pref("network.protocol-handler.expose-all",         false);
 
 // these two lines should ensure the help window works properly
-pref("network.protocol-handler.expose.chrome", true);
+pref("network.protocol-handler.expose.chrome",      true);
 pref("network.protocol-handler.warn-external.http", false);
 
-pref("network.hosts.smtp_server",           "mail");
-pref("network.hosts.pop_server",            "mail");
-pref("network.protocols.useSystemDefaults", true); // set to true if user links should use system default handlers
+pref("network.hosts.smtp_server",                   "mail");
+pref("network.hosts.pop_server",                    "mail");
+pref("network.protocols.useSystemDefaults",         true); // set to true if user links should use system default handlers
 
 // <http>
 pref("network.http.version", "1.1");      // default

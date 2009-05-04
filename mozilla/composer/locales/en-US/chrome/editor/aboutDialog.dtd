@@ -38,8 +38,8 @@
 
 <!ENTITY aboutDialog.title      "About &brandShortName;">
 <!ENTITY copyright              "Copyright and contributor information">
-<!ENTITY copyrightLink          "http://nvu.com/about.html">
+<!ENTITY copyrightLink          "http://kompozer.net/about/">
 <!ENTITY credits                "Credits">
 <!ENTITY aboutVersion           "version">
-<!ENTITY copyrightText          "&#169;1998-2007 Contributors. All Rights Reserved.">
+<!ENTITY copyrightText          "&#169;1998-2009 Contributors. All Rights Reserved.">
 <!ENTITY aboutLink              "&lt; About &brandShortName;">

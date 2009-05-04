@@ -46,35 +46,6 @@
 #include "nsBuildID.h"
 #include "prtypes.h"
 
-/*
- *static const nsXREAppData kAppData = {
- *  0,
- *  "KompoZer",
- *  APP_VERSION,
- *  BUILD_ID,
- *  "Copyright (c) 2006-2008 Contributors",
- *  PR_FALSE
- *};
- */
-
-/*
- *int main(int argc, char** argv)
- *{
- *  return xre_main(argc, argv, &kAppData);
- *}
- */
-
-/*
- *int main(int argc, char* argv[])
- *{
- *  nsXREAppData appData;
- *  appData.SetSplashEnabled(PR_FALSE);
- *  appData.SetProductName(NS_LITERAL_CSTRING("KompoZer"));
- *  appData.SetUseStartupPrefs(PR_TRUE);
- *  return xre_main(argc, argv, appData);
- *}
- */
-
 static const nsXREAppData kAppData = {
   sizeof(nsXREAppData),
   nsnull,

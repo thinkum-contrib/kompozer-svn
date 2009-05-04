@@ -10,7 +10,7 @@ comm.jar:
 +   content/editor/publishprefs.js                           (content/publishprefs.js)
 #   FireFTP
 % content fireftp %content/fireftp/ xpcnativewrappers=yes
-% overlay chrome://editor/content/editor.xul chrome://fireftp/content/fireftpOverlay.xul
+# overlay chrome://editor/content/editor.xul chrome://fireftp/content/fireftpOverlay.xul
     content/fireftp/blank.html                               (content/fireftp/blank.html)
     content/fireftp/accountManager.xul                       (content/fireftp/accountManager.xul)
     content/fireftp/alert.xul                                (content/fireftp/alert.xul)
@@ -18,7 +18,7 @@ comm.jar:
     content/fireftp/confirmFile.xul                          (content/fireftp/confirmFile.xul)
     content/fireftp/diff.xul                                 (content/fireftp/diff.xul)
     content/fireftp/fireftp.xul                              (content/fireftp/fireftp.xul)
-    content/fireftp/fireftpOverlay.xul                       (content/fireftp/fireftpOverlay.xul)
+#   content/fireftp/fireftpOverlay.xul                       (content/fireftp/fireftpOverlay.xul)
     content/fireftp/password.xul                             (content/fireftp/password.xul)
     content/fireftp/password2.xul                            (content/fireftp/password2.xul)
     content/fireftp/preferences.xul                          (content/fireftp/preferences.xul)
