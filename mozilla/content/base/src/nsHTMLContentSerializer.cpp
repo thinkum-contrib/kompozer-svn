@@ -60,15 +60,14 @@
 #include "nsILineBreakerFactory.h"
 #include "nsLWBrkCIID.h"
 
-#define kIndentStr NS_LITERAL_STRING("  ")
+#ifdef MOZ_STANDALONE_COMPOSER
+#include "nsIDOMDocumentType.h"
 #define kLessThan NS_LITERAL_STRING("<")
 #define kGreaterThan NS_LITERAL_STRING(">")
 #define kEndTag NS_LITERAL_STRING("</")
-
-#ifdef MOZ_STANDALONE_COMPOSER
-#include "nsIDOMDocumentType.h"
 #define kEscapedLessThan NS_LITERAL_STRING("&lt;")
 #define kEscapedGreaterThan NS_LITERAL_STRING("&gt;")
+#define kIndentStr NS_LITERAL_STRING("  ")
 #endif
 
 static const char kMozStr[] = "moz";
@@ -766,10 +765,13 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
     
     nsAutoString publicId;
     rv = docType->GetPublicId(publicId);
-		if (NS_SUCCEEDED(rv) &&
-		   (publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Transitional//EN")) ||
-		    publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Strict//EN"))))
-		  isXhtml = PR_TRUE;
+		if (NS_SUCCEEDED(rv)) {
+      nsReadingIterator<PRUnichar> beginPublicId;
+      nsReadingIterator<PRUnichar> endPublicId;
+      publicId.BeginReading(beginPublicId);
+      publicId.EndReading(endPublicId);
+      isXhtml = FindInReadable(NS_LITERAL_STRING("XHTML"), beginPublicId, endPublicId);
+    }
   }
 
   //PRBool notMinimizable = IsNotMinimizable(name);
@@ -869,15 +871,13 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   {
     nsAutoString publicId;
 		rv = docType->GetPublicId(publicId);
-		if (NS_SUCCEEDED(rv) &&
-			 (publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Transitional//EN")) ||
-				publicId.Equals(NS_LITERAL_STRING("-//W3C//DTD XHTML 1.0 Strict//EN"))))
-			isXhtml = PR_TRUE;
-    //nsReadingIterator<PRUnichar> beginPublicId;
-    //nsReadingIterator<PRUnichar> endPublicId;
-    //publicId.BeginReading(beginPublicId);
-    //publicId.EndReading(endPublicId);
-    //isXhtml = FindInReadable(NS_LITERAL_STRING("XHTML"), beginPublicId, endPublicId);
+		if (NS_SUCCEEDED(rv)) {
+      nsReadingIterator<PRUnichar> beginPublicId;
+      nsReadingIterator<PRUnichar> endPublicId;
+      publicId.BeginReading(beginPublicId);
+      publicId.EndReading(endPublicId);
+      isXhtml = FindInReadable(NS_LITERAL_STRING("XHTML"), beginPublicId, endPublicId);
+    }
   }
 
   //PRBool notMinimizable = IsNotMinimizable(name);

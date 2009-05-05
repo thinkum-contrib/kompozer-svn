@@ -606,8 +606,6 @@ function ToggleRelValue(val)
     globalElement.removeAttribute("rel");
 }
 
-
-
 function RemoveRelValues(aGroup)
 {
   var groupValues;

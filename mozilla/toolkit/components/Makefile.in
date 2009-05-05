@@ -69,7 +69,9 @@ else
 DIRS +=	\
 	autocomplete \
 	cookie \
+ifndef MOZ_STANDALONE_COMPOSER
 	help \
+endif
 	history \
 	passwordmgr \
 	satchel \
