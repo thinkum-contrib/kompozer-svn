@@ -69,14 +69,15 @@ else
 DIRS +=	\
 	autocomplete \
 	cookie \
-ifndef MOZ_STANDALONE_COMPOSER
-	help \
-endif
 	history \
 	passwordmgr \
 	satchel \
 	$(NULL)
+ifndef MOZ_STANDALONE_COMPOSER
+DIRS += help
+endif
 endif # MOZ_THUNDERBIRD
+
 
 ifdef MOZ_FEEDS
 DIRS += feeds

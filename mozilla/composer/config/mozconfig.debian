@@ -1,8 +1,7 @@
-# sh
-# Build configuration script for LINUX
-#
-# See http://www.mozilla.org/build/unix.html for build instructions.
-#
+# Build configuration script for Debian
+
+# build in a separate directory (optional)
+#mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
 
 export MOZILLA_OFFICIAL=1
 export BUILD_OFFICIAL=1
@@ -16,65 +15,57 @@ mk_add_options MOZ_STANDALONE_COMPOSER=1
 #export CC="gcc-3.0"
 #export CXX="g-3.0"
 
-# Uncomment the 3 following lines on Debian (this includes
-# Linspire)
+# Uncomment the 3 following lines on Debian
 export OS_LIBS="-lc -lpthread"
-export CFLAGS="-DDEBIAN"
-export CXXFLAGS="-DDEBIAN"
+#export CFLAGS="-DDEBIAN"
+#export CXXFLAGS="-DDEBIAN"
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-kompozer
 
-# Uncomment the two following lines on Linspire
-#export LINSPIRE=1
-#mk_add_options LINSPIRE=1
+# build the standalone composer, obviously
+mk_add_options MOZ_CO_PROJECT=composer
+ac_add_options --enable-application=composer
 
-# Uncomment the two following lines if you want the Site Manager
-# to use KDE mimetypes icons. Warning, experimental feature...
-# You may have to edit the following files
-#   mozilla/composer/app/Makefile.in
-#   mozilla/editor/libeditor/html/Makefile.in
-#   mozilla/composer/src/*
-#export SITE_MANAGER_KDE_ICON_STYLE=1
-#mk_add_options SITE_MANAGER_KDE_ICON_STYLE=1
+# change these two line to build in debug mode
+#ac_add_options --enable-optimize 
+#ac_add_options --disable-debug
 
-# Uncomment and edit this line if you want to build
-# outside of the source tree
-#mk_add_options MOZ_OBJDIR=/home/kaze/obj-kompozer
+# adapt the following lines according to your distribution
 
-# Comment out the following lines for a debug build
-ac_add_options --enable-optimize
-ac_add_options --disable-debug
+ac_add_options --prefix=/usr
+ac_add_options --disable-tests
+ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
 
-# You may need to uncomment and edit that line. On Linspire,
-# just uncomment it
-#ac_add_options --with-default-mozilla-five-home=/usr/lib/mozilla
+ac_add_options --enable-default-toolkit=gtk2
+ac_add_options --enable-xft
+ac_add_options --enable-pango
+ac_add_options --enable-postscript
+ac_add_options --disable-xprint
 
-# You probably have nothing to change below that line
-ac_add_options  --prefix=/usr
-ac_add_options  --disable-svg
-ac_add_options  --without-system-mng
-ac_add_options  --without-system-png
-ac_add_options  --disable-ldap
-ac_add_options  --disable-mailnews
-ac_add_options  --disable-installer
-ac_add_options  --disable-activex
-ac_add_options  --disable-activex-scripting
-ac_add_options  --disable-tests
-ac_add_options  --disable-oji
-ac_add_options  --disable-necko-disk-cache
-ac_add_options  --enable-single-profile
-ac_add_options  --disable-profilesharing
-ac_add_options  --enable-extensions=wallet,xml-rpc,xmlextras,pref,universalchardet,spellcheck
-ac_add_options  --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
-ac_add_options  --disable-pedantic
-ac_add_options  --disable-short-wchar
-ac_add_options  --disable-xprint
-ac_add_options  --enable-strip-libs
-ac_add_options  --enable-crypto
-ac_add_options  --disable-mathml
-ac_add_options  --with-system-zlib
-ac_add_options  --enable-toolkit=gtk2
-ac_add_options  --enable-default-toolkit=gtk2
-ac_add_options  --enable-xft
-ac_add_options  --disable-freetype2
+ac_add_options --enable-mathml
+ac_add_options --enable-svg
+ac_add_options --enable-svg-renderer=cairo
+ac_add_options --enable-system-cairo
+ac_add_options --enable-canvas
 
-# Note: Only include icon for mac, windows and os2
-ac_add_options --enable-image-decoders=default,-xbm
+ac_add_options --with-system-png=/usr
+ac_add_options --with-system-jpeg=/usr
+ac_add_options --with-system-zlib=/usr
+
+ac_add_options --enable-gnomevfs
+ac_add_options --enable-single-profile
+ac_add_options --disable-profilesharing
+ac_add_options --enable-system-myspell
+
+ac_add_options --disable-installer
+ac_add_options --enable-xpfe-components
+ac_add_options --with-default-mozilla-five-home=/usr/lib/kompozer
+ac_add_options --with-distribution-id=org.debian
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+
+ac_add_options --disable-elf-dynstr-gc
+ac_add_options --disable-gtktest
+ac_add_options --disable-strip
+ac_add_options --disable-strip-lib
+ac_add_options --disable-updater
+
