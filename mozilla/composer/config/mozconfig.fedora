@@ -1,59 +1,80 @@
 # sh
 # Build configuration script for FEDORA 3
+# Derived from the Ubuntu one:
+# successfully tested on Hardy Heron (8.04.1 LTS)
 #
-# See http://www.mozilla.org/build/unix.html for build instructions.
+# main dependancies:
+#   build-essential + libgtk2.0-dev, libxt-dev, libidl-dev, autoconf2.13      
 #
 
+# build in a separate directory (optional)
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
+
+# build the standalone composer, obviously
+mk_add_options MOZ_CO_PROJECT=composer
+ac_add_options --enable-application=composer
 export MOZILLA_OFFICIAL=1
 export BUILD_OFFICIAL=1
 
 export MOZ_STANDALONE_COMPOSER=1
 mk_add_options MOZ_STANDALONE_COMPOSER=1
 
-# if you want don't want to use gcc and g++ or want to use
+# if you want don't want to use gcc and g or want to use
 # a specific version of the compilers, specify it in the
 # two following lines and uncomment them
 #export CC="gcc-3.0"
-#export CXX="g++-3.0"
+#export CXX="g-3.0"
 
-# build in a separate directory (optional)
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
+export OS_LIBS="-lc -lpthread"
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-kompozer
 
-# Comment out the following lines for an optimized build
-ac_add_options --enable-optimize
+# change these lines to build in debug mode
+ac_add_options --enable-optimize 
 ac_add_options --disable-debug
+ac_add_options --disable-tests
 
-# You may need to uncomment and edit that line
-#ac_add_options --with-default-mozilla-five-home=/usr/lib/mozilla
+# required
+ac_add_options --enable-xpfe-components
+ac_add_options --enable-extensions="default spellcheck webdav gnomevfs"
+ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
+ac_add_options --disable-installer
 
-# You probably have nothing to change below that line
-ac_add_options  --disable-svg
-ac_add_options  --without-system-mng
-ac_add_options  --without-system-png
-ac_add_options  --disable-ldap
-ac_add_options  --disable-mailnews
-ac_add_options  --disable-installer
-ac_add_options  --disable-activex
-ac_add_options  --disable-activex-scripting
-ac_add_options  --disable-tests
-ac_add_options  --disable-oji
-ac_add_options  --disable-necko-disk-cache
-ac_add_options  --enable-single-profile
-ac_add_options  --disable-profilesharing
-ac_add_options  --enable-extensions=wallet,xml-rpc,xmlextras,pref,universalchardet,spellcheck
-ac_add_options  --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
-ac_add_options  --disable-pedantic
-ac_add_options  --disable-short-wchar
-ac_add_options  --enable-xprint
-ac_add_options  --enable-strip-libs
-ac_add_options  --enable-crypto
-ac_add_options  --disable-mathml
-ac_add_options  --with-system-zlib
-ac_add_options  --enable-toolkit=gtk2
-ac_add_options  --enable-default-toolkit=gtk2
-ac_add_options  --enable-xft
-# added for fedora3, not sure it's really required
-ac_add_options  --disable-freetype2
+ac_add_options --prefix=/usr
+ac_add_options --enable-default-toolkit=gtk2
+ac_add_options --enable-xft
+ac_add_options --enable-pango
+ac_add_options --enable-postscript
 
-# Note: Only include icon for mac, windows and os2
-ac_add_options --enable-image-decoders=default,-xbm
+# provisional
+#ac_add_options --enable-xprint
+ac_add_options --disable-xprint
+
+ac_add_options --enable-mathml
+ac_add_options --enable-svg
+ac_add_options --enable-svg-renderer=cairo
+ac_add_options --enable-system-cairo
+ac_add_options --enable-canvas
+
+ac_add_options --with-system-png=/usr
+ac_add_options --with-system-jpeg=/usr
+ac_add_options --with-system-zlib=/usr
+
+ac_add_options --enable-gnomevfs
+ac_add_options --enable-xinerama
+ac_add_options --enable-single-profile
+ac_add_options --disable-profilesharing
+ac_add_options --enable-system-myspell
+
+ac_add_options --disable-installer
+ac_add_options --enable-xpfe-components
+ac_add_options --with-default-mozilla-five-home=/usr/lib/kompozer
+ac_add_options --with-distribution-id=org.debian
+ac_add_options --with-system-nspr
+ac_add_options --with-system-nss
+
+ac_add_options --disable-elf-dynstr-gc
+ac_add_options --disable-gtktest
+ac_add_options --disable-strip
+ac_add_options --disable-strip-lib
+ac_add_options --disable-updater
+
