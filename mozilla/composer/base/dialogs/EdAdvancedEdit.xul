@@ -119,6 +119,7 @@
               <!-- Lists are built at runtime -->
               <menulist id="AddHTMLAttributeNameInput" editable="true" flex="1"
                         oninput="onInputHTMLAttributeName();"
+                        oncommand="alert('bouh!'); onChangeHTMLAttribute();"
                         onchange="onChangeHTMLAttribute();"/>
               <deck id="AddHTMLAttributeValueDeck" selectedIndex="0">
                 <hbox align="top">
@@ -127,6 +128,7 @@
                 </hbox>
                 <hbox align="top">
                   <menulist id="AddHTMLAttributeValueMenulist" editable="true" flex="1"
+                            oncommand="onInputHTMLAttributeValue();"
                             oninput="onInputHTMLAttributeValue();"/>
                 </hbox>
               </deck>

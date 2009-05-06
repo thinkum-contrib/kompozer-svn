@@ -336,8 +336,10 @@ function EditorOnLoad()
     gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
     gSourceTextEditor.rootElement.style.whiteSpace = "pre";
     gSourceTextEditor.rootElement.style.margin = 0;
-    gSourceTextEditor.rootElement.style.backgroundColor = "#f0f0f0";
-    gSourceTextEditor.rootElement.setAttribute("_moz_sourceview", "true");
+    if (kColoredSourceView) {
+      gSourceTextEditor.rootElement.style.backgroundColor = "#f0f0f0";
+      gSourceTextEditor.rootElement.setAttribute("_moz_sourceview", "true");
+    }
     var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
                                .createInstance(Components.interfaces.nsIControllerContext);
     controller.init(null);
@@ -1164,6 +1166,7 @@ function onParagraphFormatChange(paraMenuList, commandID)
       if ("value" in menuItem && menuItem.value == state)
       {
         paraMenuList.selectedItem = menuItem;
+        menuItem.checked = true;
         break;
       }
     }
@@ -1981,7 +1984,6 @@ function SetEditMode(mode)
 
   window.setCursor("wait");
 
-  //if (mode == kDisplayModeSource)
   if (mode == kEditModeSource)
   {
     // Display the DOCTYPE as a non-editable string above edit area
@@ -4290,8 +4292,6 @@ function _UpdateRulerRequestListener()
   gUpdateRulerTimeOutId = null;
 
   // Kaze: this looks like it's not enough, see editorRulers.js line 75
-  //if (document.getElementById("tabeditor").getAttribute("collapserulers") == "true" ||
-      //gEditorDisplayMode == kDisplayModeSource)
   if (document.getElementById("tabeditor").getAttribute("collapserulers") == "true" ||
       gEditorEditMode == kEditModeSource)
     return; // early way out if the rulers are hidden...

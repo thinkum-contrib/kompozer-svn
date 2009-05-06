@@ -60,69 +60,68 @@ function SetupHTMLEditorCommands()
 
   //dump("Registering HTML editor commands\n");
 
-  commandTable.registerCommand("cmd_renderedHTMLEnabler", nsDummyHTMLCommand);
-  commandTable.registerCommand("cmd_dtdStrictness",  nsDummyStrictnessCommand);
-  commandTable.registerCommand("cmd_dtdStrictness2", nsDummyStrictness2Command);
+  commandTable.registerCommand("cmd_renderedHTMLEnabler",  nsDummyHTMLCommand);
+  commandTable.registerCommand("cmd_dtdStrictness",        nsDummyStrictnessCommand);
+  commandTable.registerCommand("cmd_dtdStrictness2",       nsDummyStrictness2Command);
+                                                           
+  commandTable.registerCommand("cmd_grid",                 nsGridCommand);
 
-  commandTable.registerCommand("cmd_grid",  nsGridCommand);
-
-  commandTable.registerCommand("cmd_listProperties",  nsListPropertiesCommand);
-  commandTable.registerCommand("cmd_pageProperties",  nsPagePropertiesCommand);
-  commandTable.registerCommand("cmd_colorProperties", nsColorPropertiesCommand);
-  commandTable.registerCommand("cmd_advancedProperties", nsAdvancedPropertiesCommand);
-  commandTable.registerCommand("cmd_objectProperties",   nsObjectPropertiesCommand);
-  commandTable.registerCommand("cmd_removeNamedAnchors", nsRemoveNamedAnchorsCommand);
-  commandTable.registerCommand("cmd_editLink",        nsEditLinkCommand);
+  commandTable.registerCommand("cmd_listProperties",       nsListPropertiesCommand);
+  commandTable.registerCommand("cmd_pageProperties",       nsPagePropertiesCommand);
+  commandTable.registerCommand("cmd_colorProperties",      nsColorPropertiesCommand);
+  commandTable.registerCommand("cmd_advancedProperties",   nsAdvancedPropertiesCommand);
+  commandTable.registerCommand("cmd_objectProperties",     nsObjectPropertiesCommand);
+  commandTable.registerCommand("cmd_removeNamedAnchors",   nsRemoveNamedAnchorsCommand);
+  commandTable.registerCommand("cmd_editLink",             nsEditLinkCommand);
   
-  commandTable.registerCommand("cmd_form",          nsFormCommand);
-  commandTable.registerCommand("cmd_inputtag",      nsInputTagCommand);
-  commandTable.registerCommand("cmd_inputimage",    nsInputImageCommand);
-  commandTable.registerCommand("cmd_textarea",      nsTextAreaCommand);
-  commandTable.registerCommand("cmd_select",        nsSelectCommand);
-  commandTable.registerCommand("cmd_button",        nsButtonCommand);
-  commandTable.registerCommand("cmd_label",         nsLabelCommand);
-  commandTable.registerCommand("cmd_fieldset",      nsFieldSetCommand);
-  commandTable.registerCommand("cmd_isindex",       nsIsIndexCommand);
-  commandTable.registerCommand("cmd_image",         nsImageCommand);
-  commandTable.registerCommand("cmd_hline",         nsHLineCommand);
-  commandTable.registerCommand("cmd_link",          nsLinkCommand);
-  commandTable.registerCommand("cmd_anchor",        nsAnchorCommand);
+  commandTable.registerCommand("cmd_form",                 nsFormCommand);
+  commandTable.registerCommand("cmd_inputtag",             nsInputTagCommand);
+  commandTable.registerCommand("cmd_inputimage",           nsInputImageCommand);
+  commandTable.registerCommand("cmd_textarea",             nsTextAreaCommand);
+  commandTable.registerCommand("cmd_select",               nsSelectCommand);
+  commandTable.registerCommand("cmd_button",               nsButtonCommand);
+  commandTable.registerCommand("cmd_label",                nsLabelCommand);
+  commandTable.registerCommand("cmd_fieldset",             nsFieldSetCommand);
+  commandTable.registerCommand("cmd_isindex",              nsIsIndexCommand);
+  commandTable.registerCommand("cmd_image",                nsImageCommand);
+  commandTable.registerCommand("cmd_hline",                nsHLineCommand);
+  commandTable.registerCommand("cmd_link",                 nsLinkCommand);
+  commandTable.registerCommand("cmd_anchor",               nsAnchorCommand);
   commandTable.registerCommand("cmd_insertHTMLWithDialog", nsInsertHTMLWithDialogCommand);
-  commandTable.registerCommand("cmd_insertBreak",   nsInsertBreakCommand);
-  commandTable.registerCommand("cmd_insertBreakAll",nsInsertBreakAllCommand);
+  commandTable.registerCommand("cmd_insertBreak",          nsInsertBreakCommand);
+  commandTable.registerCommand("cmd_insertBreakAll",       nsInsertBreakAllCommand);
 
-  commandTable.registerCommand("cmd_insertPHPCode", nsInsertPHPorCommentCommand);
-  commandTable.registerCommand("cmd_insertComment", nsInsertPHPorCommentCommand);
+  commandTable.registerCommand("cmd_insertPHPCode",        nsInsertPHPorCommentCommand);
+  commandTable.registerCommand("cmd_insertComment",        nsInsertPHPorCommentCommand);
 
-
-  commandTable.registerCommand("cmd_table",              nsInsertOrEditTableCommand);
-  commandTable.registerCommand("cmd_editTable",          nsEditTableCommand);
-  commandTable.registerCommand("cmd_SelectTable",        nsSelectTableCommand);
-  commandTable.registerCommand("cmd_SelectRow",          nsSelectTableRowCommand);
-  commandTable.registerCommand("cmd_SelectColumn",       nsSelectTableColumnCommand);
-  commandTable.registerCommand("cmd_SelectCell",         nsSelectTableCellCommand);
-  commandTable.registerCommand("cmd_SelectAllCells",     nsSelectAllTableCellsCommand);
-  commandTable.registerCommand("cmd_InsertTable",        nsInsertTableCommand);
-  commandTable.registerCommand("cmd_InsertRowAbove",     nsInsertTableRowAboveCommand);
-  commandTable.registerCommand("cmd_InsertRowBelow",     nsInsertTableRowBelowCommand);
-  commandTable.registerCommand("cmd_InsertColumnBefore", nsInsertTableColumnBeforeCommand);
-  commandTable.registerCommand("cmd_InsertColumnAfter",  nsInsertTableColumnAfterCommand);
-  commandTable.registerCommand("cmd_InsertCellBefore",   nsInsertTableCellBeforeCommand);
-  commandTable.registerCommand("cmd_InsertCellAfter",    nsInsertTableCellAfterCommand);
-  commandTable.registerCommand("cmd_DeleteTable",        nsDeleteTableCommand);
-  commandTable.registerCommand("cmd_DeleteRow",          nsDeleteTableRowCommand);
-  commandTable.registerCommand("cmd_DeleteColumn",       nsDeleteTableColumnCommand);
-  commandTable.registerCommand("cmd_DeleteCell",         nsDeleteTableCellCommand);
-  commandTable.registerCommand("cmd_DeleteCellContents", nsDeleteTableCellContentsCommand);
-  commandTable.registerCommand("cmd_JoinTableCells",     nsJoinTableCellsCommand);
-  commandTable.registerCommand("cmd_SplitTableCell",     nsSplitTableCellCommand);
-  commandTable.registerCommand("cmd_TableOrCellColor",   nsTableOrCellColorCommand);
-  commandTable.registerCommand("cmd_NormalizeTable",     nsNormalizeTableCommand);
-  commandTable.registerCommand("cmd_smiley",             nsSetSmiley);
-  commandTable.registerCommand("cmd_ConvertToTable",     nsConvertToTable);
-
-  commandTable.registerCommand("cmd_blockBorders",       nsBlockBordersCommand);
-  commandTable.registerCommand("cmd_glues",              nsGluesCommand);
+  commandTable.registerCommand("cmd_table",                nsInsertOrEditTableCommand);
+  commandTable.registerCommand("cmd_editTable",            nsEditTableCommand);
+  commandTable.registerCommand("cmd_SelectTable",          nsSelectTableCommand);
+  commandTable.registerCommand("cmd_SelectRow",            nsSelectTableRowCommand);
+  commandTable.registerCommand("cmd_SelectColumn",         nsSelectTableColumnCommand);
+  commandTable.registerCommand("cmd_SelectCell",           nsSelectTableCellCommand);
+  commandTable.registerCommand("cmd_SelectAllCells",       nsSelectAllTableCellsCommand);
+  commandTable.registerCommand("cmd_InsertTable",          nsInsertTableCommand);
+  commandTable.registerCommand("cmd_InsertRowAbove",       nsInsertTableRowAboveCommand);
+  commandTable.registerCommand("cmd_InsertRowBelow",       nsInsertTableRowBelowCommand);
+  commandTable.registerCommand("cmd_InsertColumnBefore",   nsInsertTableColumnBeforeCommand);
+  commandTable.registerCommand("cmd_InsertColumnAfter",    nsInsertTableColumnAfterCommand);
+  commandTable.registerCommand("cmd_InsertCellBefore",     nsInsertTableCellBeforeCommand);
+  commandTable.registerCommand("cmd_InsertCellAfter",      nsInsertTableCellAfterCommand);
+  commandTable.registerCommand("cmd_DeleteTable",          nsDeleteTableCommand);
+  commandTable.registerCommand("cmd_DeleteRow",            nsDeleteTableRowCommand);
+  commandTable.registerCommand("cmd_DeleteColumn",         nsDeleteTableColumnCommand);
+  commandTable.registerCommand("cmd_DeleteCell",           nsDeleteTableCellCommand);
+  commandTable.registerCommand("cmd_DeleteCellContents",   nsDeleteTableCellContentsCommand);
+  commandTable.registerCommand("cmd_JoinTableCells",       nsJoinTableCellsCommand);
+  commandTable.registerCommand("cmd_SplitTableCell",       nsSplitTableCellCommand);
+  commandTable.registerCommand("cmd_TableOrCellColor",     nsTableOrCellColorCommand);
+  commandTable.registerCommand("cmd_NormalizeTable",       nsNormalizeTableCommand);
+  commandTable.registerCommand("cmd_smiley",               nsSetSmiley);
+  commandTable.registerCommand("cmd_ConvertToTable",       nsConvertToTable);
+                                                           
+  commandTable.registerCommand("cmd_blockBorders",         nsBlockBordersCommand);
+  commandTable.registerCommand("cmd_glues",                nsGluesCommand);
 
 }
 
@@ -191,9 +190,9 @@ function SetupComposerWindowCommands()
   }
 
   // Kaze: CaScadeS should be registered here (not working yet)
-  commandTable.registerCommand("cmd_cssEditor",      nsCssEditorCommand);
+  commandTable.registerCommand("cmd_cssEditor",              nsCssEditorCommand);
   // Kaze: cmd_class and cmd_dir should be registered here instead of being in the core patch
-  commandTable.registerCommand("cmd_class",          nsClassCommand);
+  commandTable.registerCommand("cmd_class",                  nsClassCommand);
 
   // File-related commands
   commandTable.registerCommand("cmd_open",                   nsOpenCommand);

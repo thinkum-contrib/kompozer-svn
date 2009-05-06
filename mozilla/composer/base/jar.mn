@@ -4,7 +4,7 @@ comm.jar:
 +   content/editor/EdColorPicker.js                           (content/colourPicker.js)
 +   content/editor/EdColorPicker.xul                          (content/colourPicker.xul)
 +   content/editor/viewSource.js                              (content/viewSource.js)
-+   content/editor/EdAdvancedEdit.xul                         (content/EdAdvancedEdit.xul)
++   content/editor/EdAdvancedEdit.xul                         (dialogs/EdAdvancedEdit.xul)
 +   content/editor/EdColorProps.js                            (dialogs/EdColorProps.js)
 +   content/editor/EdColorProps.xul                           (dialogs/EdColorProps.xul)
 +   content/editor/EdDialogCommon.js                          (dialogs/EdDialogCommon.js)

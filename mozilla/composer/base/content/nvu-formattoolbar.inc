@@ -5,18 +5,18 @@
         tooltiptext="&ParagraphSelect.tooltip;">
         <observes element="cmd_paragraphState" attribute="state" onbroadcast="onParagraphFormatChange(this.parentNode, 'cmd_paragraphState')"/>
         <menupopup id="ParagraphPopup" oncommand="doStatefulCommand('cmd_paragraphState', event.target.value)">
-          <menuitem label="&bodyTextCmd.label;"            type="radio" value=""/>
-          <menuitem label="&paragraphParagraphCmd.label;"  type="radio" value="p"/>
-          <menuitem label="&heading1Cmd.label;"            type="radio" value="h1"/>
-          <menuitem label="&heading2Cmd.label;"            type="radio" value="h2"/>
-          <menuitem label="&heading3Cmd.label;"            type="radio" value="h3"/>
-          <menuitem label="&heading4Cmd.label;"            type="radio" value="h4"/>
-          <menuitem label="&heading5Cmd.label;"            type="radio" value="h5"/>
-          <menuitem label="&heading6Cmd.label;"            type="radio" value="h6"/>
-          <menuitem label="&paragraphAddressCmd.label;"    type="radio" value="address"/>
-          <menuitem label="&paragraphPreformatCmd.label;"  type="radio" value="pre"/>
+          <menuitem label="&bodyTextCmd.label;"            value=""/>
+          <menuitem label="&paragraphParagraphCmd.label;"  value="p"/>
+          <menuitem label="&heading1Cmd.label;"            value="h1"/>
+          <menuitem label="&heading2Cmd.label;"            value="h2"/>
+          <menuitem label="&heading3Cmd.label;"            value="h3"/>
+          <menuitem label="&heading4Cmd.label;"            value="h4"/>
+          <menuitem label="&heading5Cmd.label;"            value="h5"/>
+          <menuitem label="&heading6Cmd.label;"            value="h6"/>
+          <menuitem label="&paragraphAddressCmd.label;"    value="address"/>
+          <menuitem label="&paragraphPreformatCmd.label;"  value="pre"/>
           <menuseparator />
-          <menuitem label="&genericContainerCmd.label;"    type="radio" value="div"/>
+          <menuitem label="&genericContainerCmd.label;"    value="div"/>
         </menupopup>
       </menulist>
     </toolbaritem>
