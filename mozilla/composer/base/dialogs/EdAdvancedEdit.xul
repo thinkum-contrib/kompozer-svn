@@ -117,10 +117,11 @@
             </row>
             <row align="top" equalsize="always">
               <!-- Lists are built at runtime -->
-              <!-- Kaze: with Gecko 1.8, "oncommand" is required and "oninput" is useless -->
+              <!-- Kaze: with Gecko 1.8, "oncommand" is required as well as "oninput" -->
               <menulist id="AddHTMLAttributeNameInput" editable="true" flex="1"
-                        oncommand="onInputHTMLAttributeName();"
-                        onchange="onChangeHTMLAttribute();"/>
+                        oninput   = "onInputHTMLAttributeName();"
+                        oncommand = "onInputHTMLAttributeName();"
+                        onchange  = "onChangeHTMLAttribute();"/>
               <deck id="AddHTMLAttributeValueDeck" selectedIndex="0">
                 <hbox align="top">
                   <textbox id="AddHTMLAttributeValueTextbox" flex="1"

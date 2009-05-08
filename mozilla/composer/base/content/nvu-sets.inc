@@ -11,8 +11,15 @@
     <command id="cmd_textZoomReduce"   oncommand="ZoomManager.prototype.getInstance().reduce();"/>
     <command id="cmd_textZoomEnlarge"  oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
     <command id="cmd_textZoomReset"    oncommand="ZoomManager.prototype.getInstance().reset();"/>
+    <!-- DOM navigation -->
     <command id="cmd_editNodeToggle"   oncommand="editNodeToggle();"/>
     <command id="cmd_editNodeCancel"   oncommand="editNodeCancel();"/>
+    <command id="cmd_editCurrentNode"  oncommand="selectNeighborElement(NODE_SELF);"/> 
+    <command id="cmd_editParentNode"   oncommand="selectNeighborElement(NODE_PARENT);"/>
+    <command id="cmd_editPrevSibling"  oncommand="selectNeighborElement(NODE_PREVSIBLING);"/>
+    <command id="cmd_editNextSibling"  oncommand="selectNeighborElement(NODE_NEXTSIBLING);"/>
+    <command id="cmd_editFirstChild"   oncommand="selectNeighborElement(NODE_FIRSTCHILD);"/>
+
   </commandset>
 
   <commandset id="tasksCommands">
@@ -313,7 +320,7 @@
     <key id="key_selectAll"/>
     <key id="pastequotationkb"    key="&editpastequotation.keybinding;" observes="cmd_pasteQuote"  modifiers="accel, shift"/>
     <key id="findkb"              key="&editfind.keybinding;"       observes="cmd_find"       modifiers="accel"/>
-    <!-- Kaze: disable
+    <!-- Kaze: disabled
     <key id="findnextkb"          key="&editfindnext.keybinding;"   observes="cmd_findNext"   modifiers="accel"/>
     <key id="findprevkb"          key="&editfindprev.keybinding;"   observes="cmd_findPrev"   modifiers="accel,shift"/>
     <key keycode="&editfindnext.keybinding2;" observes="cmd_findNext"/>
@@ -344,7 +351,9 @@
     <key                           key="&increaseFontSize.keybinding2;"    observes="cmd_increaseFont"  modifiers="accel"/>
 
     <key id="insertlinkkb"         key="&insertlink.keybinding;"           observes="cmd_link"          modifiers="accel"/>
+  </keyset>
 
+  <keyset id="viewSourceKeys">
     <!-- viewSource -->
     <key id="key_textZoomEnlarge"  key="&textEnlarge.commandkey;"  command="cmd_textZoomEnlarge" modifiers="accel"/>
     <key id="key_textZoomEnlarge2" key="&textEnlarge.commandkey2;" command="cmd_textZoomEnlarge" modifiers="accel"/>
@@ -352,5 +361,22 @@
     <key id="key_textZoomReset"    key="&textReset.commandkey;"    command="cmd_textZoomReset"   modifiers="accel"/>
     <key id="key_editNodeToggle"   keycode="VK_RETURN"             command="cmd_editNodeToggle"  modifiers="alt"/>
     <key id="key_editNodeCancel"   keycode="VK_ESCAPE"             command="cmd_editNodeCancel"/>
+    <!-- DOM navigation -->
+#ifndef XP_MACOSX
+    <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="alt"/>
+    <key id="key_editParentNode"   keycode="VK_LEFT"  command="cmd_editParentNode"  modifiers="alt"/>
+    <key id="key_editPrevSibling"  keycode="VK_UP"    command="cmd_editPrevSibling" modifiers="alt"/>
+    <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="alt"/>
+    <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="alt"/>
+    <key id="key_sourceDockToggle" keycode="VK_F8"/>
+#else
+    <!-- alt+arrow is used for word selection on MacOS X, using ctrl+arrow instead -->
+    <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="control"/>
+    <key id="key_editParentNode"   keycode="VK_LEFT"  command="cmd_editParentNode"  modifiers="control"/>
+    <key id="key_editPrevSibling"  keycode="VK_UP"    command="cmd_editPrevSibling" modifiers="control"/>
+    <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="control"/>
+    <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="control"/>
+    <!-- key_sourceDockToggle is missing, we have to find another shortcut key -->
+#endif
   </keyset>
 

@@ -71,17 +71,8 @@
   <script type="application/x-javascript" src="chrome://global/content/dialogOverlay.js" />
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />
   
-  <!-- Kaze: disable useless stuff
-  <keyset id="cascadeKeys">
-    <key keycode="VK_RETURN" oncommand="alert('return'); return false;"/>
-    <key keycode="VK_ENTER" oncommand="alert('enter'); return true;"/>
-    <key keycode="VK_ESCAPE" oncommand="closeWindow(true);"/>
-  </keyset>
-  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-  <spacer id="dummy" style="display:none"/>
-   -->
+  <!-- Kaze: prevents to close this window with [Return] -->
   <script type="application/x-javascript">
-    // Kaze: prevents to close this window with [Return]
     window.addEventListener("keypress", noReturn, true);
     function noReturn(event) {
       if (event.keyCode == KeyEvent.DOM_VK_RETURN) {

@@ -1948,8 +1948,7 @@ const gModifiedFlagSrc = "chrome://editor/skin/icons/modified.gif";
 var gNewStyleRule = "StyleRule";
 
 function kzsStartup() {
-  // normal CaScadeS startup
-  Startup();
+  Startup(); // normal CaScadeS startup
   gDialog.cssTBox     = document.getElementById("cssTBox");
   gDialog.styleMenu   = document.getElementById("styleMenu");
   gDialog.menuTooltip = gDialog.styleMenu.getAttribute("tooltiptext");

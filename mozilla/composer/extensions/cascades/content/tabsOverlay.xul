@@ -77,12 +77,14 @@
                  label="&useCustomFontFamily.label;"
                  oncommand="onFontFamilySelect('-user-defined');"/>
         </radiogroup>
+        <!-- Kaze: with Gecko 1.8, "oncommand" is required as well as "oninput" -->
         <menulist id="customFontFamilyInput"
-                  size="12"
-                  editable="true"
-                  disabled="true"
-                  class="big-left-margin"
-                  oninput="ChangeValueOnInput(this, 'font-family', 'brownFoxLabel');">
+                  size      = "12"
+                  editable  = "true"
+                  disabled  = "true"
+                  class     = "big-left-margin"
+                  oninput   = "ChangeValueOnInput(this, 'font-family', 'brownFoxLabel');"
+                  oncommand = "ChangeValueOnInput(this, 'font-family', 'brownFoxLabel');">
           <menupopup onpopupshowing="initLocalFontFaceMenu(this)">
           <!-- Local font face items added at by initLocalFontFaceMenu() -->
           </menupopup>
@@ -494,12 +496,13 @@
           </menulist>
           <spacer/>
           <hbox align="center">
-            <menulist editable="true"
-                      style="width: 10em"
-                      id="topBorderWidthInput"
-                      oninput="ChangeValueOnInput(this, 'border-top-width', 'borderPreview');
-                               IfFourSidesSameStyle('border', 'width', null,
-                                                    'allFourBordersSame', 'borderPreview', this);">
+            <menulist id        = "topBorderWidthInput"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'border-top-width', 'borderPreview');
+                                   IfFourSidesSameStyle('border', 'width', null, 'allFourBordersSame', 'borderPreview', this);"
+                      oncommand = "ChangeValueOnInput(this, 'border-top-width', 'borderPreview');
+                                   IfFourSidesSameStyle('border', 'width', null, 'allFourBordersSame', 'borderPreview', this);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'border-top-width', null, false);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -574,10 +577,11 @@
           </menulist>
           <spacer/>
           <hbox align="center">
-            <menulist editable="true"
-                      style="width: 10em"
-                      id="rightBorderWidthInput"
-                      oninput="ChangeValueOnInput(this, 'border-right-width', 'borderPreview');">
+            <menulist id        = "rightBorderWidthInput"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'border-right-width', 'borderPreview');"
+                      oncommand = "ChangeValueOnInput(this, 'border-right-width', 'borderPreview');">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'border-right-width', null, false);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -649,10 +653,11 @@
           </menulist>
           <spacer/>
           <hbox align="center">
-            <menulist editable="true"
-                      style="width: 10em"
-                      id="bottomBorderWidthInput"
-                      oninput="ChangeValueOnInput(this, 'border-bottom-width', 'borderPreview');">
+            <menulist id        = "bottomBorderWidthInput"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'border-bottom-width', 'borderPreview');"
+                      oncommand = "ChangeValueOnInput(this, 'border-bottom-width', 'borderPreview');">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'border-bottom-width', null, false);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -724,10 +729,11 @@
           </menulist>
           <spacer/>
           <hbox align="center">
-            <menulist editable="true"
-                      style="width: 10em"
-                      id="leftBorderWidthInput"
-                      oninput="ChangeValueOnInput(this, 'border-left-width', 'borderPreview');">
+            <menulist id        = "leftBorderWidthInput"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'border-left-width', 'borderPreview');"
+                      oncommand = "ChangeValueOnInput(this, 'border-left-width', 'borderPreview');">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'border-left-width', null, false);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -964,9 +970,11 @@
         <row align="center">
           <label value="&width.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 10em"
-                      id="widthEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'width', null);">
+            <menulist id         = "widthEditableMenulist"
+                      editable   = "true"
+                      style      = "width: 10em"
+                      oninput    = "ChangeValueOnInput(this, 'width', null);"
+                      oncommand  = "ChangeValueOnInput(this, 'width', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'width', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'widthEditableMenulist');"
@@ -975,9 +983,11 @@
           <spacer/>
           <label value="&height.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 10em"
-                      id="heightEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'height', null);">
+            <menulist id        = "heightEditableMenulist"
+                      editable  = "true"
+                      style     = "width: 10em"
+                      oninput   = "ChangeValueOnInput(this, 'height', null);"
+                      oncommand = "ChangeValueOnInput(this, 'height', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'height', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'heightEditableMenulist');"
@@ -987,9 +997,11 @@
         <row align="center">
           <label value="&minWidth.label;"/>
           <hbox align="center">
-            <menulist editable="true"  style="width: 10em"
-                      id="minwidthEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'min-width', null);">
+            <menulist id        = "minwidthEditableMenulist"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'min-width', null);"
+                      oncommand = "ChangeValueOnInput(this, 'min-width', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'min-width', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'minwidthEditableMenulist');"
@@ -998,9 +1010,11 @@
           <spacer/>
           <label value="&minHeight.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 10em"
-                      id="minheightEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'min-height', null);">
+            <menulist id        = "minheightEditableMenulist"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'min-height', null);"
+                      oncommand = "ChangeValueOnInput(this, 'min-height', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'min-height', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'minheightEditableMenulist');"
@@ -1010,9 +1024,11 @@
         <row align="center">
           <label value="&maxWidth.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 10em"
-                      id="maxwidthEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'max-width', null);">
+            <menulist id        = "maxwidthEditableMenulist"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'max-width', null);"
+                      oncommand = "ChangeValueOnInput(this, 'max-width', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'max-width', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'maxwidthEditableMenulist');"
@@ -1021,9 +1037,11 @@
           <spacer/>
           <label value="&maxHeight.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 10em"
-                      id="maxheightEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'max-height', null);">
+            <menulist id        = "maxheightEditableMenulist"
+                      style     = "width: 10em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'max-height', null);"
+                      oncommand = "ChangeValueOnInput(this, 'max-height', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'max-height', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'maxheightEditableMenulist');"
@@ -1047,9 +1065,11 @@
         <row align="center">
           <label value="&top.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="margintopEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'margin-top', null);">
+            <menulist id        = "margintopEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'margin-top', null);"
+                      oncommand = "ChangeValueOnInput(this, 'margin-top', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'margin-top', null, true);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -1063,9 +1083,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="paddingtopEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'padding-top', null);">
+            <menulist id        = "paddingtopEditableMenulist"
+                      editable  = "true"
+                      style     = "width: 8em"
+                      oninput   = "ChangeValueOnInput(this, 'padding-top', null);"
+                      oncommand = "ChangeValueOnInput(this, 'padding-top', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'padding-top', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'paddingtopEditableMenulist');"
@@ -1073,9 +1095,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="topEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'top', null);">
+            <menulist id        = "topEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'top', null);"
+                      oncommand = "ChangeValueOnInput(this, 'top', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'top', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'topEditableMenulist');"
@@ -1085,9 +1109,11 @@
         <row align="center">
           <label value="&right.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="marginrightEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'margin-right', null);">
+            <menulist id        = "marginrightEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'margin-right', null);"
+                      oncommand = "ChangeValueOnInput(this, 'margin-right', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'margin-right', null, true);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -1101,9 +1127,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="paddingrightEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'padding-right', null);">
+            <menulist id        = "paddingrightEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'padding-right', null);"
+                      oncommand = "ChangeValueOnInput(this, 'padding-right', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'padding-right', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'paddingrightEditableMenulist');"
@@ -1111,9 +1139,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="rightEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'right', null);">
+            <menulist id        = "rightEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'right', null);"
+                      oncommand = "ChangeValueOnInput(this, 'right', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'right', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'rightEditableMenulist');"
@@ -1123,9 +1153,11 @@
         <row align="center">
           <label value="&bottom.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="marginbottomEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'margin-bottom', null);">
+            <menulist id        = "marginbottomEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'margin-bottom', null);"
+                      oncommand = "ChangeValueOnInput(this, 'margin-bottom', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'margin-bottom', null, true);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -1139,9 +1171,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="paddingbottomEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'padding-bottom', null);">
+            <menulist id        = "paddingbottomEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'padding-bottom', null);"
+                      oncommand = "ChangeValueOnInput(this, 'padding-bottom', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'padding-bottom', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'paddingbottomEditableMenulist');"
@@ -1149,9 +1183,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="bottomEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'bottom', null);">
+            <menulist id        = "bottomEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'bottom', null);"
+                      oncommand = "ChangeValueOnInput(this, 'bottom', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'bottom', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'bottomEditableMenulist');"
@@ -1161,9 +1197,11 @@
         <row align="center">
           <label value="&left.label;"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="marginleftEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'margin-left', null);">
+            <menulist id        = "marginleftEditableMenulist"
+                      editable  = "true"
+                      style     = "width: 8em"
+                      oninput   = "ChangeValueOnInput(this, 'margin-left', null);"
+                      oncommand = "ChangeValueOnInput(this, 'margin-left', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'margin-left', null, true);">
                 <!-- Kaze -->
                 <menuseparator/>
@@ -1177,9 +1215,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="paddingleftEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'padding-left', null);">
+            <menulist id        = "paddingleftEditableMenulist"
+                      style     = "width: 8em"
+                      editable  = "true"
+                      oninput   = "ChangeValueOnInput(this, 'padding-left', null);"
+                      oncommand = "ChangeValueOnInput(this, 'padding-left', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'padding-left', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'paddingleftEditableMenulist');"
@@ -1187,9 +1227,11 @@
           </hbox>
           <spacer flex="1"/>
           <hbox align="center">
-            <menulist editable="true" style="width: 8em"
-                      id="leftEditableMenulist"
-                      oninput="ChangeValueOnInput(this, 'left', null);">
+            <menulist id        = "leftEditableMenulist"
+                      editable  = "true"
+                      style     = "width: 8em"
+                      oninput   = "ChangeValueOnInput(this, 'left', null);"
+                      oncommand = "ChangeValueOnInput(this, 'left', null);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'left', null, true);"/>
             </menulist>
             <spinbuttons onup="Spinbutton(1, 'leftEditableMenulist');"
@@ -1203,7 +1245,6 @@
   <!-- AURAL TAB PANEL-->
   <vbox id="auralTabPanel">
     <grid>
-      <!-- <columns><column/><column flex="1"/><column/></columns> -->
       <columns><column/><column/><column/></columns>
       <rows>
         <row align="center">
@@ -1216,9 +1257,12 @@
               maxpos="1000"
               increment="10"
               pageincrement="100"/>
-          <menulist editable="true" style="width: 8em"
-                    id="volumeMenulist"
-                    oninput="ChangeValueOnInput(this, 'volume', null); UpdateScrollbar(this, 'volumeScrollbar');">
+          <!-- Kaze: with Gecko 1.8, "oncommand" is required as well as "oninput" -->
+          <menulist id="volumeMenulist"
+                    editable   = "true"
+                    style      = "width: 8em"
+                    oninput    = "ChangeValueOnInput(this, 'volume', null); UpdateScrollbar(this, 'volumeScrollbar');"
+                    oncommand  = "ChangeValueOnInput(this, 'volume', null); UpdateScrollbar(this, 'volumeScrollbar');">
             <menupopup>
               <menuitem label="&xsoftVolume.label;"/>
               <menuitem label="&softVolume.label;"/>
