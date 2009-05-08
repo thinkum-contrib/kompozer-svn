@@ -44,8 +44,8 @@ VPATH     = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 DIRS      = base extensions components locales app
-ifdef MOZ_INSTALLER
-  DIRS += installer
+ifdef MAC_INSTALLER
+DIRS     += installer
 endif
  
 include $(topsrcdir)/config/rules.mk

@@ -1,59 +1,76 @@
-# sh
-# Build configuration script for MAC OS X
-#
-# See http://www.mozilla.org/build/unix.html for build instructions.
+# Build configuration script for MacOS X
 # 
+# Basic build instructions:
+#  * copy this file to ~/.mozconfig or to the 'mozilla' directory
+#  * in the 'mozilla' directory, build with:
+#      make -f client.mk build_all
+#  * the result builds can be found in:
+#      * Intel/PPC binary: obj-dir/[i386|ppc]/dist/
+#      * universal binary: obj-dir/ppc/dist/universal/kompozer/
+#  * pack KompoZer.app in a disk image with:
+#      hdiutil create -srcfolder kompozer -volname "KompoZer" kompozer-x.y.z-mac.dmg -format UDZO -imagekey zlib-level=9 
+# 
+# For detailed build instructions, see:
+#   https://developer.mozilla.org/en/Build_Documentation
+#   https://developer.mozilla.org/en/Mac_OS_X_Build_Prerequisites
+#   https://developer.mozilla.org/en/Mac_OS_X_Universal_Binaries
 
-export MOZILLA_OFFICIAL=1
-export BUILD_OFFICIAL=1
+#export MOZILLA_OFFICIAL=1
+#export BUILD_OFFICIAL=1
 
-export MOZ_STANDALONE_COMPOSER=1
-mk_add_options MOZ_STANDALONE_COMPOSER=1
+#. $topsrcdir/browser/config/mozconfig
+. $topsrcdir/build/macosx/universal/mozconfig
 
-# Note: uncomment the two following lines if you want an opt build
+# Build the standalone composer, obviously
+ac_add_options --enable-application=composer
+
+# <Leopard> force gcc-4.0 for the PPC build (gcc-3.3 is not available on Leopard)
+# Override the 1.8 branch's choice of gcc-3.3 for the ppc portion of universal builds.
+# Use gcc-4.0 instead, and use it everywhere.
+if test "$MOZ_BUILD_APP" = "ppc" && test "$GCC_VERSION" = "3.3" ; then
+  GCC_VERSION=4.0
+  CC="gcc-$GCC_VERSION -arch $TARGET_CPU"
+  CXX="g++-$GCC_VERSION -arch $TARGET_CPU"
+fi
+# Pick the right SDK depending on the CPU. This doesn't even pretend to be cross-friendly,
+# but neither do other parts of the Camino build, and it's overridden easily enough.
+case `/usr/bin/uname -p` in
+  powerpc*)
+    ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.3.9.sdk
+    ac_add_options --enable-macos-target=10.3
+    ;;
+  i*86*)
+    ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.4u.sdk
+    ac_add_options --enable-macos-target=10.4
+    ;;
+esac
+# </Leopard>
+
+# Build outside of the source tree
+mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
+mk_add_options MOZ_MAKE_FLAGS=-j2
+
+# Uncomment the following lines for an optimized build
 #ac_add_options --disable-debug
-#ac_add_options --enable-optimize="-arch ppc -O2 -mcpu=970 -mtune=970 -mpowerpc -mpowerpc-gpopt -mpowerpc-gfxopt -faltivec"
+#ac_add_options --enable-optimize
+ac_add_options --disable-tests
 
-# Uncomment next line for parallel builds
-#mk_add_options MOZ_MAKE_FLAGS=-j4
-
-# Uncomment and edit this line if you want to build
-# outside of the source tree
-#mk_add_options MOZ_OBJDIR=/Users/glazman/nvu-0.70
-
-# if you want don't want to use gcc and g++ or want to use
-# a specific version of the compilers, specify it in the
-# two following lines and uncomment them
-#export CC="gcc-3.0"
-#export CXX="g++-3.0"
-
-# Options for 'configure' (same as command-line options).
+# MacOS specific options
+export MAC_INSTALLER=1
+mk_add_options MAC_INSTALLER=1
+ac_add_options --enable-installer
 ac_add_options --with-pthreads
 ac_add_options --enable-default-toolkit=mac
+ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.4u.sdk
+ac_add_options --disable-shared
+ac_add_options --enable-static
 
-# If you did not install the 10.2.8 SDK, uncomment the following
-# line and comment out the second one
-#ac_add_options --enable-macos-target=10.3
-ac_add_options --with-macos-sdk=/Developer/SDKs/MacOSX10.2.8.sdk
-
-ac_add_options --disable-svg
-ac_add_options --disable-ldap
-ac_add_options --disable-mailnews
-ac_add_options --disable-installer
-ac_add_options --disable-activex
-ac_add_options --disable-activex-scripting
-ac_add_options --disable-tests
-ac_add_options --disable-oji
-ac_add_options --disable-necko-disk-cache
-ac_add_options --disable-pedantic
-ac_add_options --disable-short-wchar
-ac_add_options --enable-strip-libs
-ac_add_options --enable-crypto
-ac_add_options --disable-mathml
+# Generic options - should be common to all KompoZer builds
+ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
+ac_add_options --enable-extensions="default spellcheck"
 ac_add_options --enable-single-profile
 ac_add_options --disable-profilesharing
-ac_add_options --enable-extensions=wallet,xml-rpc,xmlextras,pref,universalchardet,spellcheck
-ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
+ac_add_options --enable-mathml
+ac_add_options --enable-svg
+ac_add_options --enable-canvas
 
-# Note: Only include icon for mac, windows and os2
-ac_add_options  --enable-image-decoders=default,-xbm

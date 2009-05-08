@@ -8,16 +8,18 @@
 # build in a separate directory (optional)
 mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
 
-# build the standalone composer, obviously
-#mk_add_options MOZ_CO_PROJECT=composer
+# Build the standalone composer, obviously
 ac_add_options --enable-application=composer
 
-# change these lines to build in debug mode
-ac_add_options --enable-optimize 
-ac_add_options --disable-debug
+# Uncomment and edit this line if you want to build outside of the source tree
+#mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
+
+# Uncomment the following lines for an optimized build
+#ac_add_options --disable-debug
+#ac_add_options --enable-optimize
 ac_add_options --disable-tests
 
-# required
+# Required
 ac_add_options --enable-xpfe-components
 ac_add_options --enable-extensions="default spellcheck"
 ac_add_options --enable-necko-protocols=http,ftp,file,jar,viewsource,res,data
