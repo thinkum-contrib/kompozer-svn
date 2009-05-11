@@ -189,8 +189,9 @@ function SetupComposerWindowCommands()
     return;
   }
 
-  // Kaze: CaScadeS should be registered here (not working yet)
+  // Kaze: register two additional commands for the CSS and Text editors
   commandTable.registerCommand("cmd_cssEditor",              nsCssEditorCommand);
+  commandTable.registerCommand("cmd_extEditor",              nsExtEditorCommand);
   // Kaze: cmd_class and cmd_dir should be registered here instead of being in the core patch
   commandTable.registerCommand("cmd_class",                  nsClassCommand);
 
@@ -682,7 +683,8 @@ var nsSaveCommand =
       if (editorMimeType == "application/xhtml+xml")
         editorMimeType = "text/html";
 
-      result = SaveDocument(IsUrlAboutBlank(GetDocumentUrl()), false, editorMimeType);
+      //result = SaveDocument(IsUrlAboutBlank(GetDocumentUrl()), false, editorMimeType);
+      result = gTabEditor.SaveDocument(IsUrlAboutBlank(GetDocumentUrl()), false, editorMimeType); // Kaze
       window.content.focus();
     }
     return result;
@@ -705,7 +707,8 @@ var nsSaveAsCommand =
     if (editor)
     {
       FinishHTMLSource();
-      var result = SaveDocument(true, false, editor.contentsMIMEType);
+      //var result = SaveDocument(true, false, editor.contentsMIMEType);
+      var result = gTabEditor.SaveDocument(true, false, editor.contentsMIMEType); // Kaze
       window.content.focus();
       return result;
     }
@@ -952,6 +955,35 @@ var nsClassCommand =
         GetCurrentEditor().setAttribute(node, "class", newList);
       else
         GetCurrentEditor().removeAttribute(node, "class");
+    }
+  }
+}
+
+// Kaze: self-stolen from HandCoder 0.3.x
+var nsExtEditorCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return (IsDocumentEditable() && 
+            IsHTMLEditor() && 
+            GetScheme(GetDocumentUrl()) == "file")
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    // Don't continue if user canceled during prompt for saving
+    // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
+    if (!CheckAndSaveDocument("cmd_extEditor", DocumentHasBeenSaved()))
+      return;
+
+    // Check if we saved again just in case?
+    if (DocumentHasBeenSaved())
+    {
+      var url = GetDocumentUrl();
+      gHelpers.OpenUrlWith(url, "text");
     }
   }
 }
@@ -1894,27 +1926,27 @@ function SaveDocument(aSaveAs, aSaveCopy, aMimeType)
 
   if (mustShowFileDialog)
   {
-      try {
-        // Prompt for title if we are saving to HTML
-        if (!saveAsTextFile && (editorType == "html"))
-        {
-          var userContinuing = PromptAndSetTitleIfNone(); // not cancel
-          if (!userContinuing)
-            return false;
-        }
-
-        var dialogResult = PromptForSaveLocation(saveAsTextFile, editorType, aMimeType, urlstring);
-        if (dialogResult.filepickerClick == nsIFilePicker.returnCancel)
+    try {
+      // Prompt for title if we are saving to HTML
+      if (!saveAsTextFile && (editorType == "html"))
+      {
+        var userContinuing = PromptAndSetTitleIfNone(); // not cancel
+        if (!userContinuing)
           return false;
+      }
 
-        replacing = (dialogResult.filepickerClick == nsIFilePicker.returnReplace);
-        urlstring = dialogResult.resultingURIString;
-        tempLocalFile = dialogResult.resultingLocalFile;
+      var dialogResult = PromptForSaveLocation(saveAsTextFile, editorType, aMimeType, urlstring);
+      if (dialogResult.filepickerClick == nsIFilePicker.returnCancel)
+        return false;
+
+      replacing = (dialogResult.filepickerClick == nsIFilePicker.returnReplace);
+      urlstring = dialogResult.resultingURIString;
+      tempLocalFile = dialogResult.resultingLocalFile;
  
       // update the new URL for the webshell unless we are saving a copy
       if (!aSaveCopy)
         doUpdateURI = true;
-   } catch (e) {  return false; }
+    } catch (e) {  return false; }
   } // mustShowFileDialog
 
   var success = true;
@@ -2000,7 +2032,7 @@ function SaveDocument(aSaveAs, aSaveCopy, aMimeType)
     try {
       if (doUpdateURI)
       {
-         // If a local file, we must create a new uri from nsILocalFile
+        // If a local file, we must create a new uri from nsILocalFile
         if (tempLocalFile)
           docURI = GetFileProtocolHandler().newFileURI(tempLocalFile);
 
@@ -2324,7 +2356,8 @@ var nsRevertCommand =
       if (result == 0)
       {
         CancelHTMLSource();
-        EditorLoadUrl(GetDocumentUrl());
+        //EditorLoadUrl(GetDocumentUrl());
+        gTabEditor.LoadDocument(); // Kaze
       }
     }
   }
@@ -2539,7 +2572,6 @@ function RefreshTab(tab) { // refresh images in a tab
   }
   nsRefreshImagesCommand.doCommand();
 }
-
 // </Kaze>
 
 //-----------------------------------------------------------------------------------
@@ -2757,7 +2789,7 @@ var nsPreviewCommand =
 
   doCommand: function(aCommand)
   {
-      // Don't continue if user canceled during prompt for saving
+    // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
     if (!CheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
         return;

@@ -1949,6 +1949,10 @@ var gNewStyleRule = "StyleRule";
 
 function kzsStartup() {
   Startup(); // normal CaScadeS startup
+  // Kaze: prevents to close this window with [Return]
+  // disabled, I couldn't make it work properly
+  //window.addEventListener("keypress", noReturn, true);
+
   gDialog.cssTBox     = document.getElementById("cssTBox");
   gDialog.styleMenu   = document.getElementById("styleMenu");
   gDialog.menuTooltip = gDialog.styleMenu.getAttribute("tooltiptext");
@@ -1984,6 +1988,15 @@ function kzsStartup() {
   }
 }
 
+function noReturn(event) {
+  if (event.keyCode == KeyEvent.DOM_VK_RETURN) {
+    // if (document.commandDispatcher.focusedElement != gDialog.cssTBox) {
+    // if (document.commandDispatcher.focusedElement.id != "cssTBox") {
+      event.preventDefault();  // required in Gecko 1.8
+      // event.stopPropagation();
+    // }
+  }
+}
 function CancelAllChanges() {
   if (gDialog.head) try {
     GetHeadElement().innerHTML = gDialog.head;

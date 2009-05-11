@@ -330,7 +330,7 @@
           <label value="&opacity.label;"/>
           <scrollbar flex="1"
               id="opacityScrollbar"
-	            orient="horizontal"
+              orient="horizontal"
               align="horizontal"
               curpos="0"
               maxpos="1000"
@@ -501,7 +501,7 @@
                       editable  = "true"
                       oninput   = "ChangeValueOnInput(this, 'border-top-width', 'borderPreview');
                                    IfFourSidesSameStyle('border', 'width', null, 'allFourBordersSame', 'borderPreview', this);"
-                      oncommand = "ChangeValueOnInput(this, 'border-top-width', 'borderPreview');
+                      onchange  = "ChangeValueOnInput(this, 'border-top-width', 'borderPreview');
                                    IfFourSidesSameStyle('border', 'width', null, 'allFourBordersSame', 'borderPreview', this);">
               <menupopup onpopupshowing="InitLengthUnitMenuPopup(this, 'border-top-width', null, false);">
                 <!-- Kaze -->
@@ -523,8 +523,7 @@
           <textbox id="topBorderColorInput"
                    size="10" 
                    oninput="onColorZoneInput(this, 'border-top-color', 'borderPreview', 'bordertopCW');
-                            IfFourSidesSameStyle('border', 'color', null,
-                                                 'allFourBordersSame', 'borderPreview', this);"/>
+                            IfFourSidesSameStyle('border', 'color', null, 'allFourBordersSame', 'borderPreview', this);"/>
           <button id="topBorderColorButton"
                   class="color-button"
                   oncommand="GetColorAndUpdate('bordertopCW');">
@@ -1252,7 +1251,7 @@
           <scrollbar style="min-width: 15em;"
               id="volumeScrollbar"
               align="horizontal"
-	            orient="horizontal"
+              orient="horizontal"
               curpos="500"
               maxpos="1000"
               increment="10"
@@ -1358,7 +1357,7 @@
           <!-- from eddialogoverlay.Xul
           <toolbarbutton class="filePicker" tooltiptext="&chooseFileButton.label;" -->
           <button label="&chooseFileButton.label;" class="filePicker"
-				  oncommand="chooseFile('sound', 'cueBeforeInput')"/>
+          oncommand="chooseFile('sound', 'cueBeforeInput')"/>
         </row>
         <row align="center">
           <label value="&cueAfter.label;"/>
@@ -1368,7 +1367,7 @@
           <!-- from eddialogoverlay.Xul
           <toolbarbutton class="filePicker" tooltiptext="&chooseFileButton.label;" -->
           <button label="&chooseFileButton.label;" class="filePicker"
-		          oncommand = "chooseFile('sound', 'cueAfterInput')"/>
+                  oncommand="chooseFile('sound', 'cueAfterInput')"/>
         </row>
       </rows>
     </grid>

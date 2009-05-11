@@ -51,11 +51,11 @@
   <!-- Tools menu item + keyboard shortcut -->
   <menupopup id="taskPopup">
     <menuitem id="menu_CaScadeS"
-              label="&cascadesMenuItem.label;" key="stylekb"
-              accesskey="&cascadesMenuItem.accesskey;"
-              observes="cmd_cssEditor"
-              class="menuitem-iconic"
-              insertafter="menu_validate"/>
+              label       = "&cascadesMenuItem.label;" key = "stylekb"
+              accesskey   = "&cascadesMenuItem.accesskey;"
+              observes    = "cmd_cssEditor"
+              class       = "menuitem-iconic"
+              insertafter = "menu_validate"/>
   </menupopup>
   <keyset id="editorKeys">
     <key id="stylekb"  keycode="&cascadesMenuItem.keybinding;" observes="cmd_cssEditor"/>
@@ -64,10 +64,10 @@
   <!-- Toolbar button -->
   <toolbarpalette id="NvuToolbarPalette">
     <toolbarbutton id="cssButton"
-      class="toolbarbutton-1" 
-      label="CSS"
-      observes="cmd_cssEditor"
-      tooltiptext="&cascadesMenuItem.label;">
+                   class       = "toolbarbutton-1"
+                   label       = "CSS"
+                   observes    = "cmd_cssEditor"
+                   tooltiptext = "&cascadesMenuItem.label;">
     </toolbarbutton>
   </toolbarpalette>
 

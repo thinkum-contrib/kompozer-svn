@@ -56,14 +56,151 @@ var gPrefsBranch;
 var gFilePickerDirectory;
 
 var gOS = "";
-const gWin = "Win";
+const gWin  = "Win";
 const gUNIX = "UNIX";
-const gMac = "Mac";
+const gMac  = "Mac";
 
-const kWebComposerWindowID = "editorWindow";
+const kWebComposerWindowID  = "editorWindow";
 const kMailComposerWindowID = "msgcomposeWindow";
 
 var gIsHTMLEditor;
+
+// Kaze: gTabEditor is a wrapper for all file IO functions
+// use this to be sure Composer will watch modified files!
+// This can be easily overlaid by extensions to tweak the way Composer saves files.
+var gTabEditor = {
+  // properties
+  urls : new Array(), // URL indexes
+  time : new Array(), // lastModified
+  focus: true,
+
+  // private methods
+  getURL: function() {
+    return unescape(GetDocumentUrl());
+  },
+
+  getIndex: function(url) {
+    var url = url ? url : this.getURL();
+    // look for the current url in the 'urls' array
+    var found = false;
+    for (var i = 0; i < this.urls.length; i++)
+      if (this.urls[i] == url) {
+        found = true;
+        break;
+      }
+    return (found ? i : -1);
+  },
+
+  store: function(url) {
+    url = url ? url : this.getURL();
+    // get "last modified" time for the current url
+    var file = gHelpers.newLocalFile(url);
+    var lastMod = file.lastModifiedTime;
+    // look for the current url in the 'urls' array
+    var found = false;
+    for (var i = 0; i < this.urls.length; i++)
+      if (this.urls[i] == url) {
+        found = true;
+        this.time[i] = lastMod;
+        break;
+      }
+    if (!found) {
+      this.urls.push(url);
+      this.time.push(lastMod);
+    }
+    return lastMod;
+  },
+
+  find: function() {
+    var url = this.getURL();
+    // get last modification date
+    var lastMod = 0;
+    for (var i = 0; i < this.urls.length; i++)
+      if (this.urls[i] == url) {
+        lastMod = this.time[i];
+        break;
+      }
+    return lastMod;
+  },
+
+  // public methods
+  LoadDocument: function(url) {
+    if (!url) url = this.getURL();
+    EditorLoadUrl(url);
+  },
+
+  SaveDocument: function(aSaveAs, aSaveCopy, aMimeType) {
+    this.focus = false;
+    // Save the document (Composer function)
+    var url    = GetDocumentUrl();
+    var result = SaveDocument(aSaveAs, aSaveCopy, aMimeType);
+    if (!result)
+      return;
+    // update URL if saved under a different name/location
+    if (aSaveAs) {
+      var index = this.getIndex(url);
+      url = GetDocumentUrl(); // = new url
+      this.urls[index] = url;
+    }
+    // store modification date
+    this.store(unescape(url));
+    this.focus = true;
+
+    return result;
+  },
+
+  CloseDocument: function(url) {
+    if (!url) url = this.getURL();
+
+    // remove entry
+    for (var i = 0; i < this.urls.length; i++)
+      if (this.urls[i] == url) {
+        this.urls.splice(i, 1);
+        this.time.splice(i, 1);
+        break;
+      }
+    return;
+  },
+
+  CheckModified: function() {
+    var url = this.getURL();
+    if ( IsUrlAboutBlank(url) || (GetScheme(url) != "file") || (!this.focus) )
+      return;
+
+    // test if the file has been modified
+    lastMod = this.find();
+    current = this.store();
+    this.focus = false;
+    if ( (lastMod > 0) && (lastMod != current) ) {
+      // file has been modified, ask whether to accept or reject modifications
+      if (ConfirmWithTitle(null, GetString("ModifiedDocumentWarning"),
+                                 GetString("ModifiedDocumentAccept"),
+                                 GetString("ModifiedDocumentDiscard") )
+      )
+      { // Accept changes
+        CancelHTMLSource();           // useless?
+        this.LoadDocument(url);       // reload document in Composer (= nsRevertCommand.doCommand();)
+      }
+      else { // Discard changes
+        nsSaveCommand.doCommand();    // save Composer's document to discard changes
+      }
+    }
+    this.focus = true;
+
+    // truncate this.files if needed (barbarian's garbage collector)
+    var tabeditor = document.getElementById("tabeditor");
+    var nTabs  = tabeditor.mTabpanels.childNodes.length;
+    var n      = this.urls.length;
+    if (nTabs < n) {
+      this.urls.splice(nTabs, n - nTabs);
+      this.time.splice(nTabs, n - nTabs);
+    }
+    if (n == 0)
+      this.store(unescape(url));
+    return;
+  }
+}
+
 /************* Message dialogs ***************/
 
 function AlertWithTitle(title, message, parentWindow)
@@ -1249,3 +1386,4 @@ function IsCSSDisabledAndStrictDTD()
   var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
   return !IsCSSPrefChecked && IsStrictDTD();
 }
+

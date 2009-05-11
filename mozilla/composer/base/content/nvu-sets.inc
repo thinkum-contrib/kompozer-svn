@@ -90,6 +90,8 @@
       <command id="cmd_DesignMode"       oncommand="goDoCommand('cmd_DesignMode')"     label="&DesignMode.label;"/>
       <command id="cmd_SplitMode"        oncommand="goDoCommand('cmd_SplitMode')"      label="&SplitMode.label;"/>
       <command id="cmd_SourceDockToggle" oncommand="goDoCommand('cmd_SourceDockToggle')"/>
+      <command id="cmd_cssEditor"        oncommand="goDoCommand('cmd_cssEditor')"  />
+      <command id="cmd_extEditor"        oncommand="goDoCommand('cmd_extEditor')"/>
       <!-- /Kaze -->
 
       <!-- only used in context popup menu -->
@@ -125,9 +127,6 @@
       <command id="cmd_checkLinks"      oncommand="goDoCommand('cmd_checkLinks')"/>
       <command id="cmd_pasteQuote"      oncommand="goDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
       <command id="cmd_publishSettings" oncommand="goDoCommand('cmd_publishSettings')" label="&publishSettings.label;" accesskey="&publishSettings.accesskey;"/>
-      <!-- Kaze -->
-      <command id="cmd_cssEditor"       oncommand="goDoCommand('cmd_cssEditor')"  />
-      <!-- /Kaze -->
     </commandset>
 
     <commandset id="composerSaveMenuItems"
@@ -368,6 +367,7 @@
     <key id="key_editPrevSibling"  keycode="VK_UP"    command="cmd_editPrevSibling" modifiers="alt"/>
     <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="alt"/>
     <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="alt"/>
+    <key id="key_extEditorCmd"     keycode="VK_F6"    command="cmd_extEditor"/>
     <key id="key_sourceDockToggle" keycode="VK_F8"/>
 #else
     <!-- alt+arrow is used for word selection on MacOS X, using ctrl+arrow instead -->

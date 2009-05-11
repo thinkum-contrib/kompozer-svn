@@ -193,8 +193,8 @@ pref("extensions.getMoreExtensionsURL",          "http://kompozer.net/xpi/");
 pref("extensions.getMoreThemesURL",              "http://kompozer.net/jar/");
 
 // CSS Editor                              
-pref("extensions.CaScadeS.expertMode",           true);
-pref("extensions.CaScadeS.dropdownLists",        true);
+pref("extensions.cascades.expertMode",           true);
+pref("extensions.cascades.dropdownLists",        true);
 
 // Site Manager                            
 //pref("editor.nvu.sitemanager.treeView",          true); // TODO: rename/delete this pref

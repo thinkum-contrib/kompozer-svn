@@ -436,6 +436,8 @@
       <menupopup id="taskPopup">
         <menuitem      id="menu_cleanup"     observes="cmd_cleanup"/>
         <menuitem      id="menu_validate"    observes="cmd_validate"/>
+        <menuitem      id="menu_extEditor"   observes="cmd_extEditor"
+                       label="&extEditorCmd.label;" accesskey="&extEditorCmd.accesskey;" key="key_extEditorCmd"/>
         <menuseparator id="sep_validate"/>
         <!-- Kaze: add hidden separators for addons overlays -->
         <menuseparator id="sep_addon_menu" hidden="true"/>

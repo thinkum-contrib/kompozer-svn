@@ -913,6 +913,10 @@ function DocumentHasBeenSaved()
 
 function CheckAndSaveDocument(command, allowDontSave)
 {
+  // Kaze: update timestamps
+  if (command == "cmd_close")
+    gTabEditor.CloseDocument();
+
   var document;
   try {
     // if we don't have an editor or an document, bail
@@ -1016,8 +1020,12 @@ function CheckAndSaveDocument(command, allowDontSave)
         contentsMIMEType = kHTMLMimeType;
     else
       contentsMIMEType = kTextMimeType;
+
+		/* Kaze: looks like glazou had something in mind 
+		 * to improve the way Nvu saves documents... :-D
+		 * Never mind, we'll leave that to gTabEditor.
     var success, nvusave;
-    // XX - Nvu Save Extension change
+    // XXX - Nvu Save Extension change
     // If the extension is installed, call our version of Save Document
     try {
       nvusave = saveExtensionOn;
@@ -1029,7 +1037,8 @@ function CheckAndSaveDocument(command, allowDontSave)
       success = NvuSaveDocument(false, false, contentsMIMEType);
     else
       success = SaveDocument(false, false, contentsMIMEType);
-    return success;
+    return success; */
+		return gTabEditor.SaveDocument(false, false, contentsMIMEType);
   }
 
   if (result == 2) // "Don't Save"
@@ -2503,6 +2512,8 @@ function UpdateWindowTitle()
     document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }
+
+  gTabEditor.CheckModified(); // Kaze: check if current file has been modified
 }
 
 function BuildRecentPagesMenu()
@@ -3567,7 +3578,7 @@ function GetNumberOfContiguousSelectedColumns()
 
 function EditorOnFocus()
 {
-  gEditorFocus = true; // Kaze
+  gEditorFocus = true; // Kaze - useless
 
   // Current window already has the InsertCharWindow
   if ("InsertCharWindow" in window && window.InsertCharWindow) return;
@@ -3581,6 +3592,8 @@ function EditorOnFocus()
     if (SwitchInsertCharToThisWindow(windowWithDialog))
       top.document.commandDispatcher.focusedWindow.focus();
   }
+
+  gTabEditor.CheckModified(); // Kaze: check if current file has been modified
 }
 
 function SwitchInsertCharToThisWindow(windowWithDialog)

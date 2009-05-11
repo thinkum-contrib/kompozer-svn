@@ -15,7 +15,7 @@
   <!-- toolbarbutton id="openButton" class="toolbarbutton-1"
                  label="&openToolbarCmd.label;" observes="cmd_openInTab"
                  tooltiptext="&openToolbarCmd.tooltip;"/ -->
-  <!-- Kaze: let's be consistant with the "new" button -->
+  <!-- Kaze: let's be consistant with the "new" button -->
   <toolbarbutton id="openButton" class="toolbarbutton-1"
                  label="&openToolbarCmd.label;" type="menu-button"
                  observes="cmd_openInTab"
@@ -116,6 +116,10 @@
                  label="&redoCmd.label;" observes="cmd_redo"
                  tooltiptext="&redoCmd.label;"/>
 
+  <toolbarbutton id="textEditorButton" class="toolbarbutton-1"
+                 label="&extEditor.label;" observes="cmd_extEditor"
+                 tooltiptext="&extEditor.tooltip;"/>
+
   <toolbaritem id="throbber-box"  align="center" pack="center">
     <button id="navigator-throbber" tooltiptext="&throbber.tooltip;" />
   </toolbaritem> 
@@ -128,6 +132,6 @@
          mode="full"
          context="main-toolbar-context-menu"
          customizable="true"
-         defaultset="newButton,spacer,openButton,saveButton,publishButton,previewButton,spacer,undoButton,redoButton,spacer,namedAnchorButton,linkButton,imageButton,tableButton,formButton,spacer,cssButton,spring,throbber-box,spacer">
+         defaultset="newButton,spacer,openButton,saveButton,publishButton,previewButton,spacer,undoButton,redoButton,spacer,namedAnchorButton,linkButton,imageButton,tableButton,formButton,spacer,textEditorButton,cssButton,spring,throbber-box,spacer">
          <!-- defaultset="newButton,spacer,openButton,saveButton,publishButton,previewButton,spacer,namedAnchorButton,linkButton,imageButton,tableButton,formButton,spacer,spellingButton,spacer,printButton,spring,throbber-box,spacer"> -->
 </toolbar>

@@ -71,16 +71,6 @@
   <script type="application/x-javascript" src="chrome://global/content/dialogOverlay.js" />
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js" />
   
-  <!-- Kaze: prevents to close this window with [Return] -->
-  <script type="application/x-javascript">
-    window.addEventListener("keypress", noReturn, true);
-    function noReturn(event) {
-      if (event.keyCode == KeyEvent.DOM_VK_RETURN) {
-        event.preventDefault();  // required in Gecko 1.8
-        event.stopPropagation();
-      }
-    }
-  </script>
   <keyset id="cascadeKeys">
     <key keycode="VK_F11" oncommand="FlushChanges(); closeWindow(true);"/>
   </keyset>

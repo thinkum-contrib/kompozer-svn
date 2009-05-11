@@ -98,10 +98,9 @@
 <!ENTITY exitCmd.label                       "Quit">
 <!ENTITY fileexit.accesskey                  "q">
 <!ENTITY fileexit.keybinding                 "q">
-<!-- Kaze: added -->
+<!-- KompoZer 0.7 -->
 <!ENTITY filepreview.keybinding              "VK_F5">
 <!ENTITY filerevert.keybinding               "r">
-<!-- /Kaze -->
 
 <!-- Edit menu items -->
 <!ENTITY editMenu.label                      "Edit">
@@ -378,7 +377,6 @@
 <!ENTITY paragraphblockquote.accesskey       "b">
 <!ENTITY genericContainerCmd.label           "Generic container (div)">
 <!ENTITY genericcontainer.accesskey          "d">
-
 
 <!ENTITY applyClassToSelectionCmd.tooltip    "Apply a class to the selection">
 <!ENTITY noClass.label                       "(no class)">
@@ -659,23 +657,7 @@
 <!ENTITY structRemoveTag.accesskey           "r">
 <!ENTITY structChangeTag.label               "Change tag">
 <!ENTITY structChangeTag.accesskey           "c">
-<!-- Kaze: moved to cascadesOverlay.dtd
-<!ENTITY inlineStyles.label                  "Inline styles">
-<!ENTITY inlinestyles.accesskey              "i">
-<!ENTITY textProperties.label                "Text properties">
-<!ENTITY textproperties.accesskey            "t">
-<!ENTITY borderProperties.label              "Border properties">
-<!ENTITY borderproperties.accesskey          "b">
-<!ENTITY backgroundProperties.label          "Background properties">
-<!ENTITY backgroundproperties.accesskey      "g">
-<!ENTITY boxProperties.label                 "Box properties">
-<!ENTITY boxproperties.accesskey             "x">
-<!ENTITY auralProperties.label               "Aural properties">
-<!ENTITY auralproperties.accesskey           "a">
-<!ENTITY makeCSSRule.label                   "Extract and create generic style">
-<!ENTITY makecssrule.accesskey               "e">
--->                                          
-                                             
+
 <!-- TOC manipulation -->                    
 <!ENTITY insertTOC.label                     "Insert">
 <!ENTITY insertTOC.accesskey                 "i">
@@ -685,28 +667,23 @@
 <!ENTITY removeTOC.accesskey                 "r">
 <!ENTITY tocMenu.label                       "Table of Contents…">
 <!ENTITY tocMenu.accesskey                   "b">
-                                             
+
 <!-- Smart Widgets menu -->                  
 <!ENTITY insertSmartWidgetsMenu.label        "Smart Widgets">
 <!ENTITY madeWithNvu.label                   "'Made with &brandShortName;' button">
 <!ENTITY insertCalendarSW.label              "Calendar">
-                                             
+
 <!-- Toolbar customization -->               
 <!ENTITY customizeToolbar.label              "Customize toolbar">
 <!ENTITY customizeToolbar.accesskey          "c">
-                                             
+
 <!-- Templates -->                           
 <!ENTITY templatesMenu.label                 "Templates">
 <!ENTITY insertEditableArea.label            "Insert editable area">
 <!ENTITY removeEditableArea.label            "Remove editable area">
 <!ENTITY makeEditableArea.label              "Make editable">
-                                             
-<!-- Advanced -->                            
-<!-- Kaze: moved to cascadesOverlay.dtd      
-<!ENTITY classSelectMenu.label               "Classes">
-<!ENTITY idSelectMenu.label                  "ID">
--->                                          
-                                             
+
+<!-- RTL -->                           
 <!ENTITY writingDirectionMenu.label          "Writing Direction">
 <!ENTITY writingdirectionmenu.accesskey      "w">
 <!ENTITY defaultDirectionMenu.label          "Unspecified">
@@ -715,14 +692,13 @@
 <!ENTITY ltrdirectionmenu.accesskey          "l">
 <!ENTITY rtlDirectionMenu.label              "Right to left">
 <!ENTITY rtldirectionmenu.accesskey          "r">
-                                             
 <!ENTITY dirLtr.tooltip                      "Left to right">
 <!ENTITY dirRtl.tooltip                      "Right to left">
-                                             
+
 <!-- Help menu -->                           
 <!ENTITY helpMenu.label                      "Help">
 <!ENTITY helpmenu.accesskey                  "H">
-                                             
+
 <!ENTITY nvuComMenu.label                    "&brandShortName;'s web site">
 <!ENTITY nvucommenu.accesskey                "K">
 <!ENTITY faqMenu.label                       "FAQ">
@@ -747,22 +723,27 @@
 <!ENTITY aboutlinspire.accesskey             "L">
 <!ENTITY aboutDI.label                       "About Disruptive Innovations">
 <!ENTITY aboutDI.accesskey                   "I">
-                                             
+
 <!ENTITY leftGlued.tooltip                   "Glue to the left border">
 <!ENTITY rightGlued.tooltip                  "Glue to the right border">
 <!ENTITY centerGlued.tooltip                 "Stay in the center">
 <!ENTITY topGlued.tooltip                    "Glue to the top">
 <!ENTITY bottomGlued.tooltip                 "Glue to the bottom">
 <!ENTITY middleGlued.tooltip                 "Stay in the middle">
-                                             
+
 <!ENTITY spellSuggestions.label              "Spelling Suggestions">
 <!ENTITY spellSuggestions.accesskey          "S">
 <!ENTITY spellAddToDictionary.label          "Add to Dictionary">
 
-<!-- Kaze: viewSource -->
+<!-- KompoZer 0.8: viewSource -->
 <!ENTITY editNode.label                      "Edit HTML">
 <!ENTITY editHead.label                      "Edit &lt;head&gt; content">
 <!ENTITY editBody.label                      "Edit &lt;body&gt; content">
 <!ENTITY confirmNode.label                   "Confirm changes">
 <!ENTITY cancelNode.label                    "Cancel changes">
 
+<!-- KompoZer 0.8: text editor -->
+<!ENTITY extEditor.label                     "HTML">
+<!ENTITY extEditor.tooltip                   "Open the current document in an external text editor">
+<!ENTITY extEditorCmd.label                  "External Text Editor">
+<!ENTITY extEditorCmd.accesskey              "E">

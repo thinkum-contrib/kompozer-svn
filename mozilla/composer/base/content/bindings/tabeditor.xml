@@ -605,7 +605,6 @@
         </body>
       </method>
       
-
       <method name="_checkIfUrlIsAlreadyEdited">
         <parameter name="url" />
         <body>

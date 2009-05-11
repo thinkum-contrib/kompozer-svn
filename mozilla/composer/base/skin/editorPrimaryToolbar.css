@@ -201,6 +201,11 @@ toolbar[mode="icons"] toolbarbutton {
   -moz-image-region: rect(0px 32px 32px 0);
 }
 
+#textEditorButton { /* Kaze */
+  list-style-image: url(chrome://editor/skin/icons/editor.png);
+  -moz-image-region: rect(0px 32px 32px 0);
+}
+
 #undoButton { /* Ragnaar */
   list-style-image: url(chrome://editor/skin/icons/edit-undo.png);
   -moz-image-region: rect(0px 32px 32px 0);
@@ -298,6 +303,10 @@ toolbar[iconsize="small"] #formButton {
 
 toolbar[iconsize="small"] #cssButton { /* Kaze */
 	list-style-image: url(chrome://editor/skin/icons/smallicons/css.png);
+}
+
+toolbar[iconsize="small"] #textEditorButton { /* Kaze */
+	list-style-image: url(chrome://editor/skin/icons/smallicons/editor.png);
 }
 
 toolbar[iconsize="small"] #undoButton { /* Ragnaar */
