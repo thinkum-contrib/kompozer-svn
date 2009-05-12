@@ -1949,6 +1949,7 @@ var gNewStyleRule = "StyleRule";
 
 function kzsStartup() {
   Startup(); // normal CaScadeS startup
+
   // Kaze: prevents to close this window with [Return]
   // disabled, I couldn't make it work properly
   //window.addEventListener("keypress", noReturn, true);
@@ -1999,6 +2000,7 @@ function noReturn(event) {
     // }
   }
 }
+
 function CancelAllChanges() {
   if (gDialog.head) try {
     GetHeadElement().innerHTML = gDialog.head;

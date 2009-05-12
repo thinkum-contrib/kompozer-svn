@@ -239,8 +239,8 @@ function GetPublishData_internal(publishBranch, siteName)
   // (siteData and siteNames for sites with incomplete data 
   //  will get deleted by SavePublishSiteDataToPrefs)
   var publishUrl = GetPublishStringPref(publishBranch, prefPrefix+"url");
-	// Kaze: with KompoZer 0.8 we don't *need* a publish URL any more
-	// but we do need a localPath instead
+  // Kaze: with KompoZer 0.8 we don't *need* a publish URL any more
+  // but we do need a localPath instead
   //if (!publishUrl)
     //return null;
 
@@ -366,7 +366,7 @@ function SavePublishSiteDataToPrefs(siteArray, defaultName)
 //  or add prefs for a new site
 function SavePublishDataToPrefs(publishData)
 {
-	// Kaze: now publishUrl is optional, but localPath is required
+  // Kaze: now publishUrl is optional, but localPath is required
   //if (!publishData || !publishData.publishUrl)
   if (!publishData || !publishData.localPath)
     return false;
