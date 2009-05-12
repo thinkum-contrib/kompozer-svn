@@ -435,7 +435,7 @@ function onCancel()
 
 function SelectSiteDirectory()
 {
- 	var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
+  var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
   try {
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
     fp.init(window, "foobar" /*dialog.bundle.getString("chooseFileDialogTitle")*/, nsIFilePicker.modeGetFolder);

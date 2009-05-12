@@ -296,7 +296,7 @@ function onClassSelectChange(fromSidebar) {             // modified
     classEntry = classEntry.nextSibling;
   }
   // <Kaze>
-  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var elt    = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
   var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
   //~ GetCurrentEditor().setAttribute(elt, "class", resultingClassAttribute);
   if (/^[\s]*$/.test(resultingClassAttribute))
@@ -332,7 +332,7 @@ function onIDSelectChange(fromSidebar) {                // modified
   // <Kaze>
   if (resultingID) {
     var currID = null;
-    var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+    var elt    = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
     var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
     if (elt.hasAttribute("id"))
       currID = elt.getAttribute("id");
@@ -347,7 +347,7 @@ function onIDSelectChange(fromSidebar) {                // modified
       while (currElt = editor.document.getElementById(resultingID))
 	      editor().removeAttribute(currElt, "id");
       // apply new ID on the selected element
-      editor().setAttribute(elt, "id", resultingID);
+      editor.setAttribute(elt, "id", resultingID);
     }
   }
   // refresh the structure toolbar

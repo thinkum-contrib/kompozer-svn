@@ -353,6 +353,10 @@ function Startup()
 }
 
 function onSelectLocalRemote(tabbox) { // Kaze
+  // disabled at the moment
+  tabbox.selectedIndex = 0;
+  return;
+
   // note: (tabbox.selectedIndex > 0) <=> remote view
   // TODO: don't initialize the site tree if the tab hasn't been changed
   SetupTreeView();

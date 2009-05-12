@@ -1958,7 +1958,9 @@ function kzsStartup() {
   gDialog.menuTooltip = gDialog.styleMenu.getAttribute("tooltiptext");
   
   // backup <head> element and load prefs
-  gDialog.head = null;
+  gDialog.head          = null;
+  gDialog.expertMode    = true;
+  gDialog.dropdownLists = true;
   try {
     gDialog.head = GetHeadElement().innerHTML;
     //gDialog.expertMode = true; // Kaze: expert mode is now the only one
