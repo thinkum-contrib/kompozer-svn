@@ -20,6 +20,7 @@
  *
  * Contributor(s):
  *   Daniel Glazman (glazman@disruptive-innovations.com), original author
+ *   Fabien Cazenave (kaze@kompozer.net)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -52,20 +53,11 @@ var gLastDirOpenOrClose = -1;
 var gContextMenu;                   // Kaze
 var gFilterRE;                      // Kaze
 var gHelpers = window.top.gHelpers; // Kaze
-var gUseSystemIcons = false;    // Kaze
-
-// this "iconFinder" part should be obsolete now
-/*
- *var iconFinder;
- *const ATOM_CTRID       = "@mozilla.org/atom-service;1";
- *const ICONFINDER_CTRID = "@disruptive-innovations.com/nvu/iconfinder;1";
- *const nsIAtomService   = Components.interfaces.nsIAtomService;
- *const diIIconFinder    = Components.interfaces.diIIconFinder;
- */
+var gUseSystemIcons = false;        // Kaze
 
 function SetupTreeView()
 {
-  // does the KompoZer window already have an array for tree items?
+  // does the Composer window already have an array for tree items?
   if (!window.top.gSiteManagerItemsArray)
   {
     // nope, let's create one
@@ -81,7 +73,7 @@ function SetupTreeView()
   gFilteredItemsArray = new Array();
 
   gTreeView = {
-    // Kaze: see https://developer.mozilla.org/en/XUL_Tutorial/Custom_Tree_Views
+    // see https://developer.mozilla.org/en/XUL_Tutorial/Custom_Tree_Views
     rowCount : gFilteredItemsArray.length,
 
     getCellText : function(row,column)
@@ -121,10 +113,6 @@ function SetupTreeView()
         return "chrome://editor/skin/icons/directory.ico";
 
       // Kaze: this is a real file, gotta get its icon
-      // iconFinder is disabled, at least for now
-      //var path = "file:///" + gFilteredItemsArray[row].name;
-      //return iconFinder.iconForURL(path);
-
       if (gUseSystemIcons)
         return "moz-icon://file:///" + gFilteredItemsArray[row].name + "?size=16";
       else {
@@ -145,7 +133,7 @@ function SetupTreeView()
       }
     },
 
-    getParentIndex: function( rowIndex )
+    getParentIndex: function(rowIndex)
     {
       var rowLevel = this.getLevel(rowIndex);
       if (!rowLevel) return -1;
@@ -303,11 +291,30 @@ function Startup()
   gDialog.removeFileOrDirButton = document.getElementById("removeFileOrDirButton");
   gDialog.stopButton            = document.getElementById("stopButton");
   gDialog.mainBox               = document.getElementById("mainBox");
-  gDialog.tabBox                = document.getElementById("sitemanagerTabbox");    // Kaze
+  gDialog.tabBox                = document.getElementById("sitemanagerTabbox");                  // Kaze
+  gDialog.cmdLogBody            = document.getElementById("cmdLog").contentWindow.document.body; // Kaze
 
   gDialog.progressmeter         = document.getElementById("progressmeter");
 
   gDialog.bundle                = document.getElementById("siteManagerBundle");
+
+  // FireFTP
+  //gStrbundle = $('strings');
+  gFtp = new ftpMozilla(null);
+  //gFtp = new ftpMozilla(ftpObserver);
+  gFtp.appendLog = ftpAppendLog;
+  gFtp.debug     = gHelpers.trace;
+  gFtp.error     = ftpErrorReport;
+  //gFtp.error     = gHelpers.trace;
+  //gFtp.error     = alert; // this doesn't work if gErrorMode isn't true
+  /*
+   *gFtp.errorConnectStr   = gStrbundle.getString("errorConn");
+   *gFtp.errorXCheckFail   = gStrbundle.getString("errorXCheckFail");
+   *gFtp.passNotShown      = gStrbundle.getString("passNotShown");
+   *gFtp.l10nMonths        = gStrbundle.getString("months").split("|");
+   *gTransferTypes         = new Array(gStrbundle.getString("auto"), gStrbundle.getString("binary"), gStrbundle.getString("ascii"));
+   *gMonths                = gStrbundle.getString("months").split("|");
+   */
 
   // Kaze: gContextMenu is added to handle the sitemanager context menu
   gContextMenu = {
@@ -322,10 +329,8 @@ function Startup()
     createDirItem : document.getElementById("createDirItem")
   }
 
-  // <Kaze> disable iconFinder for now, use the new filters instead
-  //iconFinder = Components.classes[ICONFINDER_CTRID].createInstance(diIIconFinder);
+  // Kaze: setup the file filters
   SetupTreeFilters();
-  // </Kaze>
 
   SetupTreeView();
   if (!window.top.gSiteManagerItemsArray.length) {
@@ -354,8 +359,8 @@ function Startup()
 
 function onSelectLocalRemote(tabbox) { // Kaze
   // disabled at the moment
-  tabbox.selectedIndex = 0;
-  return;
+  //tabbox.selectedIndex = 0;
+  //return;
 
   // note: (tabbox.selectedIndex > 0) <=> remote view
   // TODO: don't initialize the site tree if the tab hasn't been changed
@@ -629,6 +634,7 @@ function stopCallback()
 {
   DropFtpConnection();
   ForgetAboutLastFtpRequest();
+  gFtp.abort(); // Kaze - FireFTP
   StopNavigation();
 }
 
@@ -1206,52 +1212,14 @@ function SetupTreeFilters() {
 
 function IsSelectedByFilter(filter, fileName)
 {
-/*
- *  switch(filter) {
- *    case "all":
- *      return true;
- *
- *    case "html":
- *    case "css":
- *    case "images":
- *    case "media":
- *    case "text":
- *      return gFilterRE[filter].test(fileName);
- *
- *    case default:
- *      return false;
- *  }
- */
-    
   if (filter == "all")
     return true;
-  
+
   var re = gFilterRE[filter];
   if (re)
     return re.test(fileName);
   else
     return false;
-  // Kaze: I needed to add this function for the default icons in the tree view
-  // note: filters added for media, css, scripts
-/*
- *  if (filter == "html")
- *    var re = /\.html?$|\.shtml?$/i ;
- *  else if (filter == "images")
- *    re = /\.gif$|\.png$|\.jpg$|\.jpeg$|\.ico$|\.bmp$/i ;
- *  else if (filter == "media")
- *    re = /\.wav$|\.wma$|\.aiff$|\.mp3$|\.ogg$|\.mpg$|\.mpeg$|\.avi$|\.wmv$|\.ogm$/i ;
- *  else if (filter == "css")
- *    re = /\.css$/i ;
- *  else if (filter == "text")
- *    re = /\.php$|\.php?$|\.asp$|\.jsp$|\.pl$|\.js$/i ;
- *  else if (filter == "all")
- *    return true;
- *  else
- *    return false;
- *    
- *  return re.test(fileName);
- *
- */
 }
 
 function openFile(e) {
@@ -1309,5 +1277,67 @@ function openFile(e) {
     return;
   }
   
+}
+
+function GetItemPublishData(item) {
+  if (!gPublishSiteData) // we should raise an exception here
+    return null;
+
+  // get site item
+  var rowIndex = item.realIndex;
+  //~ while (gFilteredItemsArray[rowIndex].level > 0)
+  while (gItemsArray[rowIndex].level > 0)
+    rowIndex--;
+  //~ var siteItem = gFilteredItemsArray[rowIndex];
+  var siteItem = gItemsArray[rowIndex];
+
+  // get related publish data
+  var count = gPublishSiteData.length;
+  var i = count - 1;
+  while ((i >= 0) && (siteItem.name != gPublishSiteData[i].siteName))
+    i--;
+
+  return i<0 ? null : gPublishSiteData[i];
+}
+
+function uploadFileOrDir() {
+  // cancel if no item is selected
+  var index = GetSelectedItem(gDialog.SiteTree);
+  if (index == -1)
+    return;
+
+  // cancel if this item has no publishData
+  var item = gFilteredItemsArray[index];
+  var publishData = GetItemPublishData(item);
+  if (!publishData)
+    return;
+
+  EnableAllUI(false);                 // disable the UI until the FTP transaction is done
+  gDialog.cmdLogBody.innerHTML = "";  // reset the FTP log window
+  ftpConnect(publishData);            // make sure we're connected to the related host
+
+  var sitePath   = publishData.localPath;
+  var localPath  = gHelpers.newLocalFile(item.url).path.replace("//", "/");
+  var remotePath = localPath.replace(sitePath, "/").replace("\\", "/").replace("//", "/");
+
+  if ((item.level == 0) || item.isContainer) // disable directories for now
+    return;
+
+  var remoteDir  = remotePath.replace(/\/[^\/]*$/, "");
+  if (!remoteDir.length)
+    remoteDir = "/";
+
+
+  // ensure the destination directory exists before uploading the file
+  //gFtp.changeWorkingDirectory(remoteDir, function() { ftpCheckDirectory(remoteDir); });
+  gFtp.changeWorkingDirectory(remoteDir, function() { ftpUploadFile(localPath, remotePath, remoteDir); });
+
+  //gFtp.list(remotePath, ftpListDirectory, true);
+  //gFtp.list(remotePath.replace(/[^\/]$/, ""), ftpListDirectory);
+  //gFtp.upload(localPath, remotePath, false, -1, ftpEndRequest);
+  //new transfer().uploadHelper(localPath, remotePath);
+  //new transfer().start(false, '', localPath, remotePath);
+
+  //setTimeout(ftpCheckQueue, 500);     // will enable the UI as soon as the FTP queue is empty
 }
 

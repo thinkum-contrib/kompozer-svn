@@ -280,3 +280,8 @@ splitter#browser-splitter grippy:hover {
 #menu_CaScadeS {
   list-style-image: url("chrome://editor/skin/icons/style.png");
 }
+
+/* Kaze: wider sidebar (max = 400px by default) */
+#sidebar-box {
+  max-width: 800px ! important;
+}

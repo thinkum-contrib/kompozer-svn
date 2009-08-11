@@ -65,18 +65,22 @@
 }
 
 #PreviewModeButton {
-  list-style-image: url("chrome://editor/skin/icons/editmode-preview.gif"); 
+  list-style-image: url("chrome://editor/skin/icons/editmode-preview.gif");
 }
 
 #DesignModeButton {
-  list-style-image: url("chrome://editor/skin/icons/editmode-design.png"); 
+  list-style-image: url("chrome://editor/skin/icons/editmode-design.png");
 }
 
 #SplitModeButton {
-  list-style-image: url("chrome://editor/skin/icons/editmode-split.png"); 
+  list-style-image: url("chrome://editor/skin/icons/editmode-split.png");
 }
 
 #SourceModeButton {
   list-style-image: url("chrome://editor/skin/icons/editmode-html.png");
 }
+
+/* handy on small screens - might be more relevant in a specific theme */
+#EditModeToolbar tab                  .tab-text { display: none; }
+#EditModeToolbar tab[selected="true"] .tab-text { display: block; }
 

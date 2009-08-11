@@ -1985,9 +1985,7 @@ function SetEditMode(mode)
 
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
-  //var previousMode = gEditorDisplayMode;
   var previousMode = gEditorEditMode;
-  //if (!SetDisplayMode(mode))
   if (!SetEditUI(mode))
     return;
 
@@ -2165,6 +2163,8 @@ function SetEditMode(mode)
           // XXX HACK glazou
           if (title == "\n")
             title = "";
+          // XXX Hack Kaze
+          title = title.replace(/^[\s]*/, '').replace(/[\s]*$/, '');
         }
         if (editor.document.title != title)
           SetDocumentTitle(title);

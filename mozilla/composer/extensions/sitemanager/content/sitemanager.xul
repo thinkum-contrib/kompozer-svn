@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 
-
 <?xml-stylesheet type="text/css" href="chrome://global/skin/"?>
 <?xml-stylesheet type="text/css" href="chrome://editor/skin/sitemanager.css"?>
 
@@ -13,19 +12,23 @@
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/XPCNativeWrapper.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
+
+  <!-- FTP support using a FireFTP codebase -->
+  <script type="application/x-javascript" src="chrome://editor/content/ftpControlSocket.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/ftpDataSocket.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/ftpHelpers.js"/>
+
+  <!-- Site Manager code - should be in /sitemanager/content instead of /editor/content -->
   <script type="application/x-javascript" src="chrome://editor/content/url-loader.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/ftpDirParser.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/localDirParser.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/sitemanager.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/sitemanagerUtils.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/publishprefs.js"/>
-  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
-
-  <script type="application/x-javascript" src="chrome://global/content/XPCNativeWrapper.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
-
-  <script type="application/x-javascript" src="chrome://fireftp/content/local/localFile.js"/>
 
   <stringbundle id="siteManagerBundle" src="chrome://sitemanager/locale/sitemanager.properties"/>
 
@@ -81,6 +84,8 @@
           <menuitem id="renameItem"      label="&renameMenu.label;"        oncommand="Rename()"            disabled="true"/>
           <menuitem id="removeItem"      label="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()"   disabled="true"/>
           <menuseparator />
+          <menuitem id="uploadItem"      label="upload"                    oncommand="uploadFileOrDir()"/>
+          <menuseparator />
           <menuitem id="reloadItem"      label="&reloadButton.tooltip;"    oncommand="RefreshDirView()"/>
           <menuseparator />
           <menuitem id="siteManagerItem" label="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
@@ -97,6 +102,10 @@
       <treechildren id="DirectoryList" flex="1" context="siteManagerContext"
           ondraggesture="nsDragAndDrop.startDrag(event, siteManagerDndObserver)"/>
     </tree>
+    <splitter id="browser-splitter" collapse="after">
+      <grippy />
+    </splitter>
+    <browser id="cmdLog" src="chrome://fireftp/content/blank.html" style="min-height: 3em;" persist="height" />
     <label id="progressmeter" value=" "/>
   </vbox>
 </page>

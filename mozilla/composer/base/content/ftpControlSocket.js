@@ -11,6 +11,8 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
+ * The Original Code is FireFTP.
+ *
  * Contributor(s):
  *   Mime Cuvalo <mimecuvalo@gmail.com>
  *
@@ -1811,3 +1813,4 @@ ftpMozilla.prototype = {
     return result;
   }
 };
+

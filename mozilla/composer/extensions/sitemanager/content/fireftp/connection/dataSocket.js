@@ -1,3 +1,39 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * Contributor(s):
+ *   Mime Cuvalo <mimecuvalo@gmail.com>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+// Notes:
+//  * this 'ftpDataSocketMozilla' class is taken from FireFTP 0.97.3
+//  * this class might be required only to implement the passive mode
+//  * two lines have been modified to use Composer's "gHelpers" class
+//    instead of FireFTP's "localFile" class.
+
 function ftpDataSocketMozilla(security, proxy, host, port) {
   this.transportService  = Components.classes["@mozilla.org/network/socket-transport-service;1"].getService(Components.interfaces.nsISocketTransportService);
   this.proxyService      = Components.classes["@mozilla.org/network/protocol-proxy-service;1"].getService  (Components.interfaces.nsIProtocolProxyService);
@@ -49,7 +85,8 @@ ftpDataSocketMozilla.prototype = {
         var file;
 
         try {
-          file              = localFile.init(localPath);
+          //file              = localFile.init(localPath);
+          file              = gHelpers.newLocalFile(localPath);
           this.fileInstream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance();
           this.fileInstream.QueryInterface(Components.interfaces.nsIFileInputStream);
           this.fileInstream.init(file, 0x01, 0644, 0);
@@ -241,7 +278,8 @@ ftpDataSocketMozilla.prototype = {
         this.timeStart = new Date();
 
         try {
-          this.file          = localFile.init(this.localPath);
+          //this.file          = localFile.init(this.localPath);
+          this.file          = gHelpers.newLocalFile(this.localPath);
           this.fileOutstream = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 
           if (this.bytesPartial) {

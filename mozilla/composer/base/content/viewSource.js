@@ -42,6 +42,9 @@ var gEditedElement = null;
 var gSourceEditor  = null;
 var gSourceEditorModified = false;
     
+// source dock: modal editor (browser+textbox) or classic editor (htmlEditor)?
+const kModalSourceDock = false;
+
 /*****************************************************************************\
  *                                                                           *
  *   DOM navigation                                                          *
@@ -426,6 +429,7 @@ function viewNodeSource(node) {
   getBrowser().webNavigation
               .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(tmpNode.innerHTML),
                        loadFlags, null, null, null);
+
   delete(tmpNode);
 }
 
@@ -595,13 +599,20 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
 \*****************************************************************************/
 
 function onClickSourceDock(e) {
+  // cancel if already in edition mode
+  if (gEditedElement)
+    return;
+
+  dump("click\n");
   if (e.button == 0)
-    editNodeToggle();
+    editNodeStart();
+    //editNodeToggle();
 }
 
-function onInputSourceDock(e) {
+function onKeypressSourceDock(e) {
   if (e.keyCode == KeyEvent.DOM_VK_ESCAPE) {
-    // cancel default [Esc] behavior because it would cause gSourceEditor to blur
+    // cancel default [Esc] behavior because it would cause gSourceEditor to blur...
+    // which would raise a 'blur' event, thus validating the changes.
     e.preventDefault();  // required in Gecko 1.8
     e.stopPropagation();
     // [Esc] has been pressed, cancel edition
@@ -622,52 +633,73 @@ function editNodeStart() {
   if (gViewedElement.tagName.toLowerCase() == "html")
     gViewedElement = gViewedElement.firstChild;
 
-  // create gSourceEditor textbox dynamically:
-  // looks like it's the easiest way to clear its undo history
-  gSourceEditor = document.createElementNS(XUL_NS, "textbox");
-  gSourceEditor.setAttribute("flex",      "1");
-  gSourceEditor.setAttribute("type",      "text");
-  gSourceEditor.setAttribute("multiline", "true");
-  gSourceEditor.setAttribute("context",   "editorSourceContext");
-  gSourceEditor.setAttribute("oninput",   "gSourceEditorModified = true;");
-  gSourceBrowserDeck.appendChild(gSourceEditor);
+  if (kModalSourceDock) { // modal editor
+    // create gSourceEditor textbox dynamically:
+    // looks like it's the easiest way to clear its undo history
+    gSourceEditor = document.createElementNS(XUL_NS, "textbox");
+    gSourceEditor.setAttribute("flex",      "1");
+    gSourceEditor.setAttribute("type",      "text");
+    gSourceEditor.setAttribute("multiline", "true");
+    gSourceEditor.setAttribute("context",   "editorSourceContext");
+    gSourceEditor.setAttribute("oninput",   "gSourceEditorModified = true;");
+    gSourceBrowserDeck.appendChild(gSourceEditor);
 
-  // get HTML markup
-  var tagName = gViewedElement.tagName.toLowerCase();
-  if (tagName == "head" || tagName == "body") {
-    gSourceEditor.value = gViewedElement.innerHTML;
-  }
-  else {
-    // hide NVU_NS nodes
-    MakePhpAndCommentsInvisible(gViewedElement.ownerDocument, gViewedElement);
-    // selected the element and get its HTML code
-    var selection;
-    SelectFocusNodeAncestor(gViewedElement);
-    try {
-      selection = editor.outputToString("text/html", 35); // OutputWrap+OutputFormatted+OutputSelectionOnly
-    } catch (e) {}
-    if (selection)
-      selection = (selection.replace(/<body[^>]*>/,"")).replace(/<\/body>/,"");
-    if (selection)
-      gSourceEditor.value = selection;
-  }
+    // get HTML markup
+    var tagName = gViewedElement.tagName.toLowerCase();
+    if (tagName == "head" || tagName == "body") {
+      gSourceEditor.value = gViewedElement.innerHTML;
+    }
+    else {
+      // hide NVU_NS nodes
+      MakePhpAndCommentsInvisible(gViewedElement.ownerDocument, gViewedElement);
+      // selected the element and get its HTML code
+      var selection;
+      SelectFocusNodeAncestor(gViewedElement);
+      try {
+        selection = editor.outputToString("text/html", 35); // OutputWrap+OutputFormatted+OutputSelectionOnly
+      } catch (e) {}
+      if (selection)
+        selection = (selection.replace(/<body[^>]*>/,"")).replace(/<\/body>/,"");
+      if (selection)
+        gSourceEditor.value = selection;
+    }
 
-  // Set initial focus
-  gSourceEditor.focus();
-  gSourceEditor.setSelectionRange(0,0);
-  gSourceEditorModified = false;
-  gSourceBrowserDeck.selectedIndex = 1;
-  gEditedElement = gViewedElement;
+    // Set initial focus
+    gSourceEditor.focus();
+    gSourceEditor.setSelectionRange(0,0);
+    gSourceBrowserDeck.selectedIndex = 1;
+  }
+  else {                  // classic editor
+    // much less to do, the HTML markup being already loaded :-)
+    gSourceEditor = getBrowser();
+    gSourceEditor.contentWindow.focus();
+  }
 
   // auto-confirm changes when the user clicks outside the source editor
-  gSourceEditor.setAttribute("onblur", "editNodeApply();");
+  gSourceEditor.addEventListener("blur",     editNodeApply,        true);
 
   // cancel default [Esc] behavior because it would cause gSourceEditor to blur
-  gSourceEditor.addEventListener("keypress", onInputSourceDock, true);
+  gSourceEditor.addEventListener("keypress", onKeypressSourceDock, true);
+
+  gEditedElement = gViewedElement;
+  gSourceEditorModified = false;
+  dump("source dock focused\n");
 }
 
 function editNodeApply() {
+
   // cancel if no modifications found
+  if (!kModalSourceDock) {
+    try { // get an nsIEditor instance
+      //var srcEditor = gSourceEditor.getEditor(gSourceEditor.contentWindow);
+      var srcEditor = gSourceEditor.getHTMLEditor(gSourceEditor.contentWindow);
+      // Do QIs now so editor users won't have to figure out which interface to use
+      // Using "instanceof" does the QI for us.
+      srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
+      srcEditor instanceof Components.interfaces.nsIHTMLEditor;
+    } catch (e) { dump (e)+"\n"; }
+    gSourceEditorModified = srcEditor.documentModified;
+  }
   if (!gSourceEditorModified) {
     editNodeCancel();
     return;
@@ -677,8 +709,22 @@ function editNodeApply() {
   var editor = GetCurrentEditor();
   if (!editor || !gEditedElement) return;
 
+  // get the current element's tag name and HTML markup
+  var html = null;
+  var tagName = gViewedElement.tagName.toLowerCase();
+  if (kModalSourceDock) {
+    html = gSourceEditor.value.replace(/\s*$/, '');
+  }
+  else {
+    html = srcEditor.outputToString(kTextMimeType, 1024).replace(/\s*$/, '');
+    if (tagName == "head")
+      html = html.replace(/\s*<head>\s*/, '').replace(/\s*<\/head>\s*/, '');
+    else if (tagName == "body")
+      html = html.replace(/\s*<body>\s*/, '').replace(/\s*<\/body>\s*/, '');
+  }
+
   // flush changes
-  var html = gSourceEditor.value.replace(/\s*$/, '');
+  dump("updating <" + tagName + ">\n");
   if (html) try {
     if (gViewedElement.tagName.toLowerCase() == "head") {
       // <head> element
@@ -716,6 +762,7 @@ function editNodeApply() {
 function editNodeCancel() {
   // this function is triggered when the users presses Esc:
   // it can be called from the source dock or from the source tab
+  dump("source dock cancelled\n");
 
   if (IsInHTMLSourceMode()) {
     // if we're in Source mode, discard changes
@@ -745,12 +792,16 @@ function editNodeLeave() {
   viewNodeSource(gEditedElement);
   gEditedElement = null;
 
-  // destroy the textbox and switch to "view" mode
-  gSourceEditor.removeAttribute("onblur");
-  gSourceEditor.removeEventListener("keypress", onInputSourceDock, true);
-  gSourceBrowserDeck.selectedIndex = 0;
-  gSourceBrowserDeck.removeChild(gSourceEditor);
-  delete(gSourceEditor);
+  // remove OK/Cancel event handlers
+  gSourceEditor.removeEventListener("blur",     editNodeApply,        true);
+  gSourceEditor.removeEventListener("keypress", onKeypressSourceDock, true);
+
+  // when using the modal editor, destroy the textbox and switch to "view" mode
+  if (kModalSourceDock) {
+    gSourceBrowserDeck.selectedIndex = 0;
+    gSourceBrowserDeck.removeChild(gSourceEditor);
+    delete(gSourceEditor);
+  }
 
   // set the focus to the main window
   gContentWindow.focus();
@@ -758,49 +809,49 @@ function editNodeLeave() {
 
 /*****************************************************************************\
  *                                                                           *
- *   Auto-scrolling (taken from Firebug)                                     *
+ *   auto-scrolling (taken from firebug)                                     *
  *                                                                           *
 \*****************************************************************************/
 
-function scrollIntoCenterView(element, notX, notY) {
+function scrollintocenterview(element, notx, noty) {
   if (!element)
     return;
 
-  var scrollBox = getOverflowParent(element);
-  if (!scrollBox)
+  var scrollbox = getoverflowparent(element);
+  if (!scrollbox)
     return;
 
-  var offset = getClientOffset(element);
+  var offset = getclientoffset(element);
 
-  if (!notY) {
-    var topSpace = offset.y - scrollBox.scrollTop;
-    var bottomSpace = (scrollBox.scrollTop + scrollBox.clientHeight) - (offset.y + element.offsetHeight);
+  if (!noty) {
+    var topspace = offset.y - scrollbox.scrolltop;
+    var bottomspace = (scrollbox.scrolltop + scrollbox.clientheight) - (offset.y + element.offsetheight);
 
-    if (topSpace < 0 || bottomSpace < 0) {
-        var centerY = offset.y - (scrollBox.clientHeight/2);
-        scrollBox.scrollTop = centerY;
+    if (topspace < 0 || bottomspace < 0) {
+        var centery = offset.y - (scrollbox.clientheight/2);
+        scrollbox.scrolltop = centery;
     }
   }
 
-  if (!notX) {
-    var leftSpace = offset.x - scrollBox.scrollLeft;
-    var rightSpace = (scrollBox.scrollLeft + scrollBox.clientWidth) - (offset.x + element.clientWidth);
+  if (!notx) {
+    var leftspace = offset.x - scrollbox.scrollleft;
+    var rightspace = (scrollbox.scrollleft + scrollbox.clientwidth) - (offset.x + element.clientwidth);
 
-    if (leftSpace < 0 || rightSpace < 0) {
-        var centerX = offset.x - (scrollBox.clientWidth/2);
-        scrollBox.scrollLeft = centerX;
+    if (leftspace < 0 || rightspace < 0) {
+        var centerx = offset.x - (scrollbox.clientwidth/2);
+        scrollbox.scrollleft = centerx;
     }
   }
 };
 
-function getOverflowParent(element) { // not working yet
+function getoverflowparent(element) { // not working yet
   /*
-   *for (var scrollParent = element.parentNode; scrollParent; scrollParent = scrollParent.offsetParent)
-   *  if (scrollParent.scrollHeight > scrollParent.offsetHeight)
-   *    return scrollParent;
+   *for (var scrollparent = element.parentnode; scrollparent; scrollparent = scrollparent.offsetparent)
+   *  if (scrollparent.scrollheight > scrollparent.offsetheight)
+   *    return scrollparent;
    */
-  // Kaze: since the above code doesn't work, just return the <html> node
-  return GetBodyElement().parentNode;
+  // kaze: since the above code doesn't work, just return the <html> node
+  return getbodyelement().parentnode;
 }
 
 function getClientOffset(elt) {

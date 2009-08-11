@@ -10,8 +10,11 @@ function transfer() {
 
 transfer.prototype = {
   start : function(download, aFile, aLocalParent, aRemoteParent, aListData) {
-    if (!gFtp.isConnected || this.cancel || ( download && !aFile && remoteTree.selection.count == 0 && !aLocalParent)
-                                         || (!download && !aFile && localTree.selection.count  == 0 && !aLocalParent)) {
+    /*
+     *if (!gFtp.isConnected || this.cancel || ( download && !aFile && remoteTree.selection.count == 0 && !aLocalParent)
+     *                                     || (!download && !aFile && localTree.selection.count  == 0 && !aLocalParent)) {
+     */
+    if (!gFtp.isConnected || this.cancel) {
       return;
     }
 
@@ -29,9 +32,9 @@ transfer.prototype = {
     var resume;
     var listData     = aListData ? aListData : gFtp.listData;
 
-    if (gNoPromptMode) {                                     // overwrite dialog is disabled, do overwrites
+    //if (gNoPromptMode) {                                     // overwrite dialog is disabled, do overwrites
       this.prompt = false;
-    }
+    //}
 
     if (aFile) {                                             // populate the files variable with what we're transfering
       files.push(aFile);
@@ -75,20 +78,24 @@ transfer.prototype = {
       }
     }
 
-    if (download && aLocalParent) {
-      localDirTree.addDirtyList(aLocalParent);
-    } else if (!download && aRemoteParent) {
-      remoteDirTree.addDirtyList(aRemoteParent);
-    }
+    /*
+     *if (download && aLocalParent) {
+     *  localDirTree.addDirtyList(aLocalParent);
+     *} else if (!download && aRemoteParent) {
+     *  remoteDirTree.addDirtyList(aRemoteParent);
+     *}
+     */
 
     for (var x = 0; x < files.length; ++x) {
       var fileName = files[x].leafName;
 
-      if ((download && gDownloadCaseMode == 1) || (!download && gUploadCaseMode == 1)) {
-        fileName = fileName.toLowerCase();                   // special request to change filename case
-      } else if ((download && gDownloadCaseMode == 2) || (!download && gUploadCaseMode == 2)) {
-        fileName = fileName.toUpperCase();                   // special request to change filename case
-      }
+      /*
+       *if ((download && gDownloadCaseMode == 1) || (!download && gUploadCaseMode == 1)) {
+       *  fileName = fileName.toLowerCase();                   // special request to change filename case
+       *} else if ((download && gDownloadCaseMode == 2) || (!download && gUploadCaseMode == 2)) {
+       *  fileName = fileName.toUpperCase();                   // special request to change filename case
+       *}
+       */
 
       var remotePath = !download ? gFtp.constructPath     (remoteParent, fileName) : files[x].path;
       var localPath  =  download ? localTree.constructPath(localParent,  fileName) : files[x].path;

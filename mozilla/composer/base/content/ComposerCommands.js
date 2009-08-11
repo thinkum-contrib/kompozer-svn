@@ -850,6 +850,49 @@ var nsPublishCommand =
   }
 }
 
+// Kaze: experimental 'Publish' function, using a real FTP transfer
+nsPublishCommand.doCommand = function(aCommand) {
+    if (GetCurrentEditor())
+    {
+      var docUrl = GetDocumentUrl();
+      var filename = GetFilename(docUrl);
+      var publishData;
+
+      if (filename)
+      {
+        // Try to get publish data from the document url
+        publishData = CreatePublishDataFromUrl(docUrl);
+
+        // If none, use default publishing site? Need a pref for this
+        //if (!publishData)
+        //  publishData = GetPublishDataFromSiteName(GetDefaultPublishSiteName(), filename);
+      }
+
+      if (!publishData)
+      {
+        // Show the publish dialog
+        var publishData = {};
+        window.ok = false;
+        var oldTitle = GetDocumentTitle();
+        window.openDialog("chrome://editor/content/EditorPublish.xul","_blank", 
+                          "chrome,close,titlebar,modal", "", "", publishData);
+        if (GetDocumentTitle() != oldTitle)
+          UpdateWindowTitle();
+
+        window.content.focus();
+        if (!window.ok)
+          return false;
+      }
+
+      if (publishData)
+      {
+        FinishHTMLSource();
+        return Publish(publishData);
+      }
+    }
+    return false;
+}
+
 var nsPublishAsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)

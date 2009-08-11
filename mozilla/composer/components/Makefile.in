@@ -29,5 +29,8 @@ include $(DEPTH)/config/autoconf.mk
 #DIRS    = prefwindow filepicker httpindex build
 DIRS    = prefwindow filepicker
 
+EXTRA_COMPONENTS = phpStreamConverter.js
+#EXTRA_PP_COMPONENTS = phpStreamConverter.js
+
 include $(topsrcdir)/config/rules.mk
 
