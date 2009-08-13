@@ -66,11 +66,10 @@ function phpStreamConverter() {
   this.onStartRequest = function (aRequest, aCtx) {
     var channel = aRequest.QueryInterface(Ci.nsIChannel);
 
-    // Hack the content type under which the document is seen by the composer
+    // Hack the content type under which the document is seen by Composer
+    // XXX is there a way to know its charset right now?
     channel.contentType = "text/html";
-    // XXX do we need to know the charset right now?
-    //channel.contentCharset = "UTF-8";
-    //channel.contentCharset = "ISO-8859-1";
+
     _listener.onStartRequest(channel, aCtx);
   };
 
@@ -80,22 +79,37 @@ function phpStreamConverter() {
   };
   
   this.onStopRequest = function (aRequest, aCtx, aStatusCode) {
-    var channel = aRequest.QueryInterface(Ci.nsIChannel);
+    var charset = "UTF-8";
+    try { // get the default charset (user pref)
+      const nsPrefService = Components.interfaces.nsIPrefService;
+      const nsStringPref = Components.interfaces.nsISupportsString;
+      charset = Components.classes["@mozilla.org/preferences-service;1"]
+                          .getService(nsPrefService)
+                          .getBranch(null)
+                          .getComplexValue("editor.custom_charset", nsStringPref)
+                          .data;
+    } catch(e) {}
 
-    // XXX Do whatever you want with _data!
+    // get the current stream charset
+    // XXX ugly hack, there *has* to be another way!
+    var tmp = _data.match(/charset=([^"\s]*)/i);
+    if (tmp && tmp.length > 1)
+      charset = tmp[1];
+
+    // apply the proper character set
+    var converter = new nsConverter();
+    converter.charset = charset;
+    _data = converter.ConvertToUnicode(_data);
+
+    // Do whatever you want with _data!
+    // this is also where we could get rid of the awful hack in mozilla/content
+    // to display comment/php nodes in the main window
     // e.g.: quick hack to support short tags in PHP files
     _data = _data.replace(/<%/g, "<?php").replace(/%>/g, "?>");
 
-    // this is also where we could get rid of the awful hack in mozilla/content
-    // to display comment/php nodes in the main window
-
-    // Serialise the result back into the composer
-    var converter = new nsConverter();
-    // TODO: default to the user selected charset instead of UTF-8
-    converter.charset = channel.contentCharset || "UTF-8";
-    _data = converter.ConvertToUnicode(_data);
+    // Serialise the result back into Composer
+    var channel = aRequest.QueryInterface(Ci.nsIChannel);
     var stream = converter.convertToInputStream(_data);
-
     _listener.onDataAvailable(channel, aCtx, stream, 0, stream.available());
     _listener.onStopRequest(channel, aCtx, aStatusCode);
   };
@@ -122,10 +136,10 @@ var phpReaderModule = {
 
     // Add the handle types here if needed
     const PHP_TYPES = [
-      [ "application/x-php",        "php"],
-      [ "application/x-httpd-php",  "php"],
-      [ "application/x-httpd-php3", "php3"],
-      [ "application/x-httpd-php4", "php4"],
+      [ "application/x-php",        "php"  ],
+      [ "application/x-httpd-php",  "php"  ],
+      [ "application/x-httpd-php3", "php3" ],
+      [ "application/x-httpd-php4", "php4" ],
     ];
 
     var catman = Cc["@mozilla.org/categorymanager;1"]
