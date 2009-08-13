@@ -122,7 +122,7 @@ function InitIDSelectMenu(menuPopup, fromSidebar) {
   cleanPopup(menuPopup);
   
   //var id = gContextMenuFiringDocumentElement.getAttribute("id");
-  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
   var id = elt.getAttribute("id");
   if (id)
   {
@@ -190,7 +190,7 @@ function InitClassSelectMenu(menuPopup, fromSidebar) {
   cleanPopup(menuPopup);
 
   //var classes = gContextMenuFiringDocumentElement.getAttribute("class");
-  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var elt = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
   var classes = elt.getAttribute("class");
   var classesArray, classesArrayLength;
   if (classes)
@@ -296,8 +296,8 @@ function onClassSelectChange(fromSidebar) {             // modified
     classEntry = classEntry.nextSibling;
   }
   // <Kaze>
-  var elt    = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
-  var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
+  var elt    = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+  var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
   //~ GetCurrentEditor().setAttribute(elt, "class", resultingClassAttribute);
   if (/^[\s]*$/.test(resultingClassAttribute))
     editor.removeAttribute(elt, "class");
@@ -332,8 +332,8 @@ function onIDSelectChange(fromSidebar) {                // modified
   // <Kaze>
   if (resultingID) {
     var currID = null;
-    var elt    = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
-    var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
+    var elt    = fromSidebar ? window.top.gLastFocusNode : gContextMenuFiringDocumentElement;
+    var editor = fromSidebar ? GetCurrentEditorFromSidebar() : GetCurrentEditor();
     if (elt.hasAttribute("id"))
       currID = elt.getAttribute("id");
 

@@ -68,6 +68,9 @@ function phpStreamConverter() {
 
     // Hack the content type under which the document is seen by the composer
     channel.contentType = "text/html";
+    // XXX do we need to know the charset right now?
+    //channel.contentCharset = "UTF-8";
+    //channel.contentCharset = "ISO-8859-1";
     _listener.onStartRequest(channel, aCtx);
   };
 
@@ -80,13 +83,17 @@ function phpStreamConverter() {
     var channel = aRequest.QueryInterface(Ci.nsIChannel);
 
     // XXX Do whatever you want with _data!
-    // this is where we could get rid of the awful hack in mozilla/content
-    // to display comment/php nodes in the main window
+    // e.g.: quick hack to support short tags in PHP files
+    _data = _data.replace(/<%/g, "<?php").replace(/%>/g, "?>");
 
+    // this is also where we could get rid of the awful hack in mozilla/content
+    // to display comment/php nodes in the main window
 
     // Serialise the result back into the composer
     var converter = new nsConverter();
+    // TODO: default to the user selected charset instead of UTF-8
     converter.charset = channel.contentCharset || "UTF-8";
+    _data = converter.ConvertToUnicode(_data);
     var stream = converter.convertToInputStream(_data);
 
     _listener.onDataAvailable(channel, aCtx, stream, 0, stream.available());

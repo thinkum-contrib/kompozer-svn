@@ -30,10 +30,10 @@
 
   <script type="application/x-javascript">
 // Kaze: the tabeditor's "oncommand" event doesn't update the window title
-//       on Ctrl + Tab / PgUpDn, let's use a Timeout for that
+//       on Ctrl + Tab / PgUpDn, let's use a Timeout for that
 window.addEventListener("keypress", onTabSwitching, true);
 function onTabSwitching(event) {
-  if (event.ctrlKey) // XXX does this work on MacOSX?
+  if (event.ctrlKey) // XXX does this work on MacOSX?
     if (event.keyCode == KeyEvent.DOM_VK_TAB || event.keyCode == KeyEvent.DOM_VK_PAGE_UP || event.keyCode == KeyEvent.DOM_VK_PAGE_DOWN)
       setTimeout("UpdateWindowTitle()", 10);
 }

@@ -72,7 +72,7 @@
   <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/pref-helpers.js"/>
 
-  <!-- *** EXTERNAL APPLICATIONS *** -->
+  <!-- *** EXTERNAL APPLICATIONS *** -->
   <groupbox>
     <caption>
       <hbox align="center">
@@ -245,7 +245,7 @@
     </deck>
   </groupbox>
 
-  <!-- *** FILE FILTERS *** -->
+  <!-- *** FILE FILTERS *** -->
   <groupbox>
     <caption label="&fileFilter.label;"/>
     <grid>
@@ -264,7 +264,7 @@
           <button label="&default.label;" oncommand="resetFileFilter(this);"/>
         </row>
 
-        <row> <!-- CSS Stylesheets -->
+        <row> <!-- CSS Stylesheets -->
           <hbox align="center">
             <label flex="1" style="text-align: right;" value="&filterCSS.label;"/>
             <image src="chrome://editor/skin/icons/document-style.png"/>

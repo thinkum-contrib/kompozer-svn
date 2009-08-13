@@ -200,13 +200,13 @@ pref("extensions.cascades.dropdownLists",        true);
 //pref("editor.nvu.sitemanager.treeView",          true); // TODO: rename/delete this pref
 pref("extensions.sitemanager.openInNewTab",      true);
 pref("extensions.sitemanager.useSystemIcons",    false);
-pref("extensions.sitemanager.filter.html",       "htm, html, xhtml");
+pref("extensions.sitemanager.filter.html",       "htm, html, xhtml, php*");
 pref("extensions.sitemanager.filter.css",        "css");
 pref("extensions.sitemanager.filter.images",     "ico, jpg, jpeg, png, gif, bmp");
 pref("extensions.sitemanager.filter.media",      "ogg, ogm, mpeg, mpg, mp3, mp4, mov, wma, wmv, avi");
-pref("extensions.sitemanager.filter.text",       "txt, ht*, js, xml, asp, jsp, php*");
+pref("extensions.sitemanager.filter.text",       "txt, ht*, js, xml, asp, jsp, inc");
 
-// FireFTP
+// FireFTP - most of these prefs should be removed
 pref("extensions.sitemanager.welcomemode",       false);
 pref("extensions.sitemanager.errormode",         true);
 pref("extensions.sitemanager.refreshmode",       true);

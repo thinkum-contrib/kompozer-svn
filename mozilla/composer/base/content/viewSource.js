@@ -687,19 +687,19 @@ function editNodeStart() {
 }
 
 function editNodeApply() {
-
-  // cancel if no modifications found
+  // get an nsIEditor instance on <editor> if needed
   if (!kModalSourceDock) {
-    try { // get an nsIEditor instance
+    try {
       //var srcEditor = gSourceEditor.getEditor(gSourceEditor.contentWindow);
       var srcEditor = gSourceEditor.getHTMLEditor(gSourceEditor.contentWindow);
-      // Do QIs now so editor users won't have to figure out which interface to use
-      // Using "instanceof" does the QI for us.
+      // XXX remove (at least) one line below
       srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
       srcEditor instanceof Components.interfaces.nsIHTMLEditor;
     } catch (e) { dump (e)+"\n"; }
     gSourceEditorModified = srcEditor.documentModified;
   }
+
+  // cancel if no modifications found
   if (!gSourceEditorModified) {
     editNodeCancel();
     return;
@@ -719,7 +719,7 @@ function editNodeApply() {
     html = srcEditor.outputToString(kTextMimeType, 1024).replace(/\s*$/, '');
     if (tagName == "head")
       html = html.replace(/\s*<head>\s*/, '').replace(/\s*<\/head>\s*/, '');
-    else if (tagName == "body")
+    else if (tagName == "body") // XXX ugly *temporary* hack
       html = html.replace(/\s*<body>\s*/, '').replace(/\s*<\/body>\s*/, '');
   }
 
@@ -809,49 +809,49 @@ function editNodeLeave() {
 
 /*****************************************************************************\
  *                                                                           *
- *   auto-scrolling (taken from firebug)                                     *
+ *   Auto-scrolling (taken from Firebug)                                     *
  *                                                                           *
 \*****************************************************************************/
 
-function scrollintocenterview(element, notx, noty) {
+function scrollIntoCenterView(element, notX, notY) {
   if (!element)
     return;
 
-  var scrollbox = getoverflowparent(element);
-  if (!scrollbox)
+  var scrollBox = getOverflowParent(element);
+  if (!scrollBox)
     return;
 
-  var offset = getclientoffset(element);
+  var offset = getClientOffset(element);
 
-  if (!noty) {
-    var topspace = offset.y - scrollbox.scrolltop;
-    var bottomspace = (scrollbox.scrolltop + scrollbox.clientheight) - (offset.y + element.offsetheight);
+  if (!notY) {
+    var topSpace = offset.y - scrollBox.scrollTop;
+    var bottomSpace = (scrollBox.scrollTop + scrollBox.clientHeight) - (offset.y + element.offsetHeight);
 
-    if (topspace < 0 || bottomspace < 0) {
-        var centery = offset.y - (scrollbox.clientheight/2);
-        scrollbox.scrolltop = centery;
+    if (topSpace < 0 || bottomSpace < 0) {
+        var centerY = offset.y - (scrollBox.clientHeight/2);
+        scrollBox.scrollTop = centerY;
     }
   }
 
-  if (!notx) {
-    var leftspace = offset.x - scrollbox.scrollleft;
-    var rightspace = (scrollbox.scrollleft + scrollbox.clientwidth) - (offset.x + element.clientwidth);
+  if (!notX) {
+    var leftSpace = offset.x - scrollBox.scrollLeft;
+    var rightSpace = (scrollBox.scrollLeft + scrollBox.clientWidth) - (offset.x + element.clientWidth);
 
-    if (leftspace < 0 || rightspace < 0) {
-        var centerx = offset.x - (scrollbox.clientwidth/2);
-        scrollbox.scrollleft = centerx;
+    if (leftSpace < 0 || rightSpace < 0) {
+        var centerX = offset.x - (scrollBox.clientWidth/2);
+        scrollBox.scrollLeft = centerX;
     }
   }
 };
 
-function getoverflowparent(element) { // not working yet
+function getOverflowParent(element) { // not working yet
   /*
-   *for (var scrollparent = element.parentnode; scrollparent; scrollparent = scrollparent.offsetparent)
-   *  if (scrollparent.scrollheight > scrollparent.offsetheight)
-   *    return scrollparent;
+   *for (var scrollParent = element.parentNode; scrollParent; scrollParent = scrollParent.offsetParent)
+   *  if (scrollParent.scrollHeight > scrollParent.offsetHeight)
+   *    return scrollParent;
    */
-  // kaze: since the above code doesn't work, just return the <html> node
-  return getbodyelement().parentnode;
+  // Kaze: since the above code doesn't work, just return the <html> node
+  return GetBodyElement().parentNode;
 }
 
 function getClientOffset(elt) {

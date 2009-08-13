@@ -301,18 +301,18 @@ var gHelpers = {
   },
 
   // Special directories - useful with portable apps
-	getSpecialDirectory : function(id) {
+	getSpecialDirectory : function(id) {
 		// see https://developer.mozilla.org/en/Code_snippets/File_I%2f%2fO#Getting_special_files
     return Components.classes['@mozilla.org/file/directory_service;1']
 										 .getService(Components.interfaces.nsIProperties)
 										 .get(id, Components.interfaces.nsIFile);
 	},
 
-	getProfileDirectory : function() {
+	getProfileDirectory : function() {
 		return getSpecialDirectory("ProfD");
 	},
 
-	getInstallationDirectory : function() {
+	getInstallationDirectory : function() {
 		return getSpecialDirectory("CurProcD");
 	},
 

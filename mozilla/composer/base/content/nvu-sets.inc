@@ -360,7 +360,7 @@
     <key id="key_textZoomReset"    key="&textReset.commandkey;"    command="cmd_textZoomReset"   modifiers="accel"/>
     <key id="key_editNodeToggle"   keycode="VK_RETURN"             command="cmd_editNodeToggle"  modifiers="alt"/>
     <key id="key_editNodeCancel"   keycode="VK_ESCAPE"             command="cmd_editNodeCancel"/>
-    <!-- DOM navigation -->
+    <!-- DOM navigation -->
 #ifndef XP_MACOSX
     <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="alt"/>
     <key id="key_editParentNode"   keycode="VK_LEFT"  command="cmd_editParentNode"  modifiers="alt"/>
