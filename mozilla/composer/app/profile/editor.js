@@ -132,6 +132,8 @@ pref("editor.grid.size",                     0);
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
+pref("editor.zoom_factor",                   "1.0");
+
 
 /***********************************************\
  *                                             *

@@ -79,8 +79,27 @@ function phpStreamConverter() {
   };
   
   this.onStopRequest = function (aRequest, aCtx, aStatusCode) {
+
+    // don't open this file with Composer if no <html|head|body> nodes are found
+    if (!(_data.match(/<html/i)) || !(_data.match(/<head/i)) || !(_data.match(/<body/i))) {
+      dump ("no <body> node, exiting\n");
+      //true = false;
+      _data = null;
+    var channel = aRequest.QueryInterface(Ci.nsIChannel);
+    var stream = converter.convertToInputStream(_data);
+    _listener.onDataAvailable(channel, aCtx, stream, 0, stream.available());
+    _listener.onStopRequest(channel, aCtx, aStatusCode);
+      return;
+      throw Components.results.NS_ERROR_INVALID_ARG;
+    }
+
+    // get the current stream charset
+    // XXX ugly hack, there *has* to be another way!
     var charset = "UTF-8";
-    try { // get the default charset (user pref)
+    var tmp = _data.match(/charset=([^"\s]*)/i);
+    if (tmp && tmp.length > 1)
+      charset = tmp[1];
+    else try { // no charset found, get the default one (user pref)
       const nsPrefService = Components.interfaces.nsIPrefService;
       const nsStringPref = Components.interfaces.nsISupportsString;
       charset = Components.classes["@mozilla.org/preferences-service;1"]
@@ -89,12 +108,6 @@ function phpStreamConverter() {
                           .getComplexValue("editor.custom_charset", nsStringPref)
                           .data;
     } catch(e) {}
-
-    // get the current stream charset
-    // XXX ugly hack, there *has* to be another way!
-    var tmp = _data.match(/charset=([^"\s]*)/i);
-    if (tmp && tmp.length > 1)
-      charset = tmp[1];
 
     // apply the proper character set
     var converter = new nsConverter();

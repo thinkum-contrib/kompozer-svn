@@ -102,9 +102,9 @@
         </menupopup>
       </menu>
       <menuseparator id="viewSep1"/>
+      <menuitem id="viewPreviewMode"               type="radio" name="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"/>
       <menuitem id="viewNormalMode" checked="true" type="radio" name="mode" accesskey="&NormalMode.accesskey;"     observes="cmd_NormalMode"/>
       <menuitem id="viewAllTagsMode"               type="radio" name="mode" accesskey="&AllTagsMode.accesskey;"    observes="cmd_AllTagsMode"/>
-      <menuitem id="viewPreviewMode"               type="radio" name="mode" accesskey="&PreviewMode.accesskey;"    observes="cmd_PreviewMode"/>
       <!-- Kaze -->
       <menuseparator/>
       <menuitem id="editDesignMode" checked="true" type="radio" name="edit" accesskey="&DesignMode.accesskey;"     observes="cmd_DesignMode"/>

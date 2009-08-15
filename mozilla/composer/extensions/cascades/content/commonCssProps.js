@@ -934,8 +934,9 @@ function InitBackgroundTabPanel()
     yRadio = "top";
   gDialog.xBackgroundPositionRadiogroup.selectedItem = document.getElementById(xRadio + "XBackgroundPositionRadio");
   gDialog.yBackgroundPositionRadiogroup.selectedItem = document.getElementById(yRadio + "YBackgroundPositionRadio");
-  AddStyleToElement(gDialog.backgroundPreview, "background-position",
-                    xBackgroundPosition + " " + yBackgroundPosition);
+  var backgroundPosition = xBackgroundPosition + " " + yBackgroundPosition;
+  if (backgroundPosition.length > 1)
+    AddStyleToElement(gDialog.backgroundPreview, "background-position", backgroundPosition);
    // </Kaze>
 }
 

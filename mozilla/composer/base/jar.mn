@@ -334,6 +334,11 @@ classic.jar:
     skin/classic/editor/icons/smallicons/spell.png            (skin/icons/smallicons/spell.png)
     skin/classic/editor/icons/smallicons/table.png            (skin/icons/smallicons/table.png)
     skin/classic/editor/EditorDialog.css                      (/themes/classic/editor/EditorDialog.css)
+    skin/classic/editor/icons/img-align-top.gif               (/themes/classic/editor/icons/img-align-top.gif)
+    skin/classic/editor/icons/img-align-middle.gif            (/themes/classic/editor/icons/img-align-middle.gif)
+    skin/classic/editor/icons/img-align-bottom.gif            (/themes/classic/editor/icons/img-align-bottom.gif)
+    skin/classic/editor/icons/img-align-right.gif             (/themes/classic/editor/icons/img-align-right.gif)
+    skin/classic/editor/icons/img-align-left.gif              (/themes/classic/editor/icons/img-align-left.gif)
 #
 %   skin navigator classic/1.0 %skin/classic/navigator/
     skin/classic/navigator/navigator.css                      (/themes/classic/navigator/navigator.css)

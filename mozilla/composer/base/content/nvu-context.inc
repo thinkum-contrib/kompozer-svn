@@ -91,6 +91,9 @@
       <menuseparator/>
       <menuitem label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
       <menuseparator/>
+      <menuitem id="vMenu_wrapLongLines"   type="checkbox" command="cmd_wrapLongLines"   checked="false"
+                label="&menu_wrapLongLines.title;" accesskey="&menu_wrapLongLines.accesskey;"/>
+      <menuseparator/>
       <menuitem label="&confirmNode.label;"  key="key_editNodeToggle"          command="cmd_editNodeToggle"/>
       <menuitem label="&cancelNode.label;"   key="key_editNodeCancel"          command="cmd_editNodeCancel"/>
     </popup>

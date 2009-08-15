@@ -37,6 +37,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+
 /**** NAMESPACES ****/
 const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 const NVU_NS = "http://disruptive-innovations.com/zoo/nvu";
@@ -1042,7 +1043,7 @@ function GetHost(urlspec)
   var host = "";
   try {
     host = IOService.newURI(urlspec, null, null).host;
-   } catch (e) {}
+  } catch (e) {}
 
   return host;
 }

@@ -246,11 +246,6 @@ function newStructToolbarButton(element, tag) {
   var ShowId    = true;
   var ShowClass = true;
   var ShowAttrs = true;
-  /* try {
-    ShowId    = kzsPrefs.getBoolPref("ShowId");
-    ShowClass = kzsPrefs.getBoolPref("ShowClass");
-    ShowAttrs = kzsPrefs.getBoolPref("ShowAttrs");
-  } catch (e) {}; */
 
   // Get element ID and class list to add them in the button label
   //  - other attributes are displayed in the tooltip
@@ -387,7 +382,7 @@ function getBrowser() {
   return document.getElementById("SourceBrowser");
 }
 
-function onViewSourceContextMenu() {
+function onViewSourceContextMenu() { // XXX useless with the non-modal source dock
   var tag = gViewedElement.tagName.toLowerCase();
   var node = (tag != "html" && tag != "head" && tag != "body") ? "false" : "true";
   var head = (tag == "html" || tag == "head") ? "false" : "true";
@@ -418,7 +413,8 @@ function viewNodeSource(node) {
 
   // extract and display the syntax highlighted source
   var doc = node.ownerDocument;
-  tmpNode = doc.createElementNS(NS_XHTML, 'div');
+  tmpNode = doc.createElementNS(NS_XHTML, 'div'); // not working well on xhtml documents?
+  //tmpNode = doc.createElement('div');
   tmpNode.appendChild(node);
 
   // hide NVU_NS nodes

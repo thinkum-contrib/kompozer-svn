@@ -1212,7 +1212,7 @@ function OutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFiles
   try {
     var imeEditor = editor.QueryInterface(Components.interfaces.nsIEditorIMESupport);
     imeEditor.ForceCompositionEnd();
-    } catch (e) {}
+  } catch (e) {}
 
   var isLocalFile = false;
   try {
@@ -1560,8 +1560,8 @@ var gEditorOutputProgressListener =
     {
       dump("\n onProgressChange: gPersistObj.result="+gPersistObj.result+"\n");
       try {
-      var channel = aRequest.QueryInterface(nsIChannel);
-      dump("***** onProgressChange request: " + channel.URI.spec + "\n");
+        var channel = aRequest.QueryInterface(nsIChannel);
+        dump("***** onProgressChange request: " + channel.URI.spec + "\n");
       }
       catch (e) {}
       dump("*****       self:  "+aCurSelfProgress+" / "+aMaxSelfProgress+"\n");

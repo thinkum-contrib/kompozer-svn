@@ -1021,9 +1021,9 @@ function CheckAndSaveDocument(command, allowDontSave)
     else
       contentsMIMEType = kTextMimeType;
 
-		/* Kaze: looks like glazou had something in mind 
-		 * to improve the way Nvu saves documents... :-D
-		 * Never mind, we'll leave that to gTabEditor.
+    /* Kaze: looks like glazou had something in mind 
+     * to improve the way Nvu saves documents... :-D
+     * Never mind, we'll leave that to gTabEditor.
     var success, nvusave;
     // XXX - Nvu Save Extension change
     // If the extension is installed, call our version of Save Document
@@ -1038,7 +1038,7 @@ function CheckAndSaveDocument(command, allowDontSave)
     else
       success = SaveDocument(false, false, contentsMIMEType);
     return success; */
-		return gTabEditor.SaveDocument(false, false, contentsMIMEType);
+    return gTabEditor.SaveDocument(false, false, contentsMIMEType);
   }
 
   if (result == 2) // "Don't Save"
@@ -1456,9 +1456,8 @@ function onHighlightColorChange()
     if (buttonIcon)
     {
       // No color set - get color set on page or other defaults
-      if (!color)
+      if (!color || color == "mixed")
         color = "transparent" ;
-
       buttonIcon.setAttribute("style", "background-color:"+color+" !important");
     }
   }
@@ -1474,7 +1473,7 @@ function onFontColorChange()
     if (button)
     {
       // No color set - get color set on page or other defaults
-      if (!color)
+      if (!color || color == "mixed")
         color = gDefaultTextColor;
       button.setAttribute("style", "background-color:"+color);
     }
@@ -1490,9 +1489,8 @@ function onBackgroundColorChange()
     var button = document.getElementById("BackgroundColorButton");
     if (button)
     {
-      if (!color)
+      if (!color || color == "mixed")
         color = gDefaultBackgroundColor;
-
       button.setAttribute("style", "background-color:"+color);
     }
   }
@@ -4342,7 +4340,9 @@ function InsertColoredSourceView(editor, source)
     var styleElt = sourceDoc.createElement("style");
     styleElt.setAttribute("id", "moz_sourceview_css");
     styleElt.setAttribute("type", "text/css");
-    var sheet = sourceDoc.createTextNode('@import url("resource://gre/res/viewsource.css");ol {margin: 0;margin-left:2em}li{*padding-left: 1em; background-color: white}');
+    var sheet = sourceDoc.createTextNode('@import url("resource://gre/res/viewsource.css");' +
+                                         'ol { margin: 0; margin-left:2em; }' +
+                                         'li { *padding-left: 1em; background-color: white; }');
     styleElt.appendChild(sheet);
     headElement.appendChild(styleElt);
   }

@@ -419,7 +419,7 @@
                            oncommand="onBackGroundPositionSelect();"/>
                   </radiogroup>
                 </vbox>
-                <html:p style="border:1px solid black; height: 10em"
+                <html:p style="border: 1px solid black; height: 10em;"
                         id="backgroundPreview">
                 </html:p>
               </row>

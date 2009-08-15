@@ -944,6 +944,7 @@ pref("privacy.popups.sound_enabled",          true);
 pref("privacy.popups.sound_url",              "");
 pref("privacy.popups.statusbar_icon_enabled", true);
 
-// Uncomment these two lines for 'dump'
-//pref("nglayout.debug.disable_xul_cache", true);
+// Developers: uncomment these two lines to ease the debug
 //pref("browser.dom.window.dump.enabled", true);
+//pref("nglayout.debug.disable_xul_cache", true);
+
