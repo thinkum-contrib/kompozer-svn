@@ -2492,12 +2492,15 @@ nsresult CInstructionToken::Consume(PRUnichar aChar,nsScanner& aScanner,PRInt32 
     //Note, this call does *not* consume the >.
     result=aScanner.ReadUntil(mTextValue,kGreaterThan,PR_FALSE);
     if (NS_SUCCEEDED(result)) {
+#ifdef MOZ_STANDALONE_COMPOSER
+      // see bug #2794172:
+      // https://sf.net/tracker/index.php?func=detail&aid=2794172&group_id=170132&atid=853122
+      if (kQuestionMark==mTextValue.Last()) {
+#else
       //In HTML, PIs end with a '>', in XML, they end with a '?>'. Cover both
       //cases here.
-      //jch - the above comment is not correct for <?php tags
-      //      removed the check for not XML - required a questionmark in all
-      //      cases.  Does not fix php code with quoted ?> in them
-      if (kQuestionMark==mTextValue.Last()) {
+      if (!(aFlag & NS_IPARSER_FLAG_XML) || kQuestionMark==mTextValue.Last()) {
+#endif
         //This really is the end of the PI.
         done=PR_TRUE;
       }
