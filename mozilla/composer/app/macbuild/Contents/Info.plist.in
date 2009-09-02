@@ -44,7 +44,7 @@
   <key>CFBundleShortVersionString</key>
   <string>APP_VERSION</string>
   <key>CFBundleSignature</key>
-  <string>MOZB</string> <!-- everything but MOZB is firefox's signature-->
+  <string>MOZE</string> <!-- MOZB == firefox's signature-->
   <key>CFBundleVersion</key>
   <string>APP_VERSION</string>
 </dict>
