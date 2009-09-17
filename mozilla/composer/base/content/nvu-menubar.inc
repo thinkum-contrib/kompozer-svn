@@ -90,7 +90,7 @@
                     observes="cmd_viewEditModeToolbar" />
           <menuitem id="viewTaskBar"         type="checkbox" label="&taskbarCmd.label;"             accesskey="&taskbarCmd.accesskey;"
                     observes="cmd_viewtaskbar" />
-          <menuseparator />                                  
+          <menuseparator id="viewSepRulers" />                                  
           <menuitem id="viewRulers"          type="checkbox" label="&viewRulersCmd.label;"          accesskey="&viewrulerscmd.accesskey;"
                     observes="cmd_viewRulers"  />
           <!-- Kaze: disabled
@@ -106,19 +106,19 @@
       <menuitem id="viewNormalMode" checked="true" type="radio" name="mode" accesskey="&NormalMode.accesskey;"     observes="cmd_NormalMode"/>
       <menuitem id="viewAllTagsMode"               type="radio" name="mode" accesskey="&AllTagsMode.accesskey;"    observes="cmd_AllTagsMode"/>
       <!-- Kaze -->
-      <menuseparator/>
+      <menuseparator id="viewSep2"/>
       <menuitem id="editDesignMode" checked="true" type="radio" name="edit" accesskey="&DesignMode.accesskey;"     observes="cmd_DesignMode"/>
       <menuitem id="editSplitMode"                 type="radio" name="edit" accesskey="&SplitMode.accesskey;"      observes="cmd_SplitMode"/>
       <menuitem id="editSourceMode"                type="radio" name="edit" accesskey="&HTMLSourceMode.accesskey;" observes="cmd_HTMLSourceMode"/>
       <!-- /Kaze -->
-      <menuseparator />
+      <menuseparator id="viewSep3"/>
       <!-- disabled because Gecko does not allow generated content on BR after Moz1.7
         <menuitem id="viewParagraphMarks" type="checkbox" label="&viewParagraphMarks.label;"
                   accesskey="&viewparagraphmarks.accesskey;" oncommand="EditorToggleStyleSheet('paragraphMarks')"/>
       -->
       <menuitem id="blockOutlines" type="checkbox" label="&blockOutlines.label;"
                 accesskey="&blockoutlines.accesskey;" oncommand="EditorToggleStyleSheet('blockOutlines')"/>
-      <menuseparator  id="viewSep1"/>
+      <menuseparator  id="viewSep4"/>
       <menu id="menu_textZoom"/>  
       <menu id="composerCharsetMenu">
         <menupopup id="composerCharsetMenuPopup"  onpopupshowing="updateCharsetPopupMenu(this)" />

@@ -54,6 +54,7 @@ const nsConverter = Components.Constructor(
 function phpStreamConverter() {
   var _listener = null;
   var _data = "";
+  var _path = "";
 
   this.asyncConvertData = function(aFromType, aToType, aListener, aCtx) {
     _listener = aListener;
@@ -69,6 +70,7 @@ function phpStreamConverter() {
     // Hack the content type under which the document is seen by Composer
     // XXX is there a way to know its charset right now?
     channel.contentType = "text/html";
+    _path = channel.URI.path;
 
     _listener.onStartRequest(channel, aCtx);
   };
@@ -79,19 +81,19 @@ function phpStreamConverter() {
   };
   
   this.onStopRequest = function (aRequest, aCtx, aStatusCode) {
+    var hasBodyNode = _data.match(/<html/i) && _data.match(/<head/i) && _data.match(/<body/i);
 
-    // don't open this file with Composer if no <html|head|body> nodes are found
-    if (!(_data.match(/<html/i)) || !(_data.match(/<head/i)) || !(_data.match(/<body/i))) {
+    /* don't open this file with Composer if no <html|head|body> nodes are found
+    if (!hasBodyNode) {
       dump ("no <body> node, exiting\n");
-      //true = false;
       _data = null;
-    var channel = aRequest.QueryInterface(Ci.nsIChannel);
-    var stream = converter.convertToInputStream(_data);
-    _listener.onDataAvailable(channel, aCtx, stream, 0, stream.available());
-    _listener.onStopRequest(channel, aCtx, aStatusCode);
-      return;
+      var channel = aRequest.QueryInterface(Ci.nsIChannel);
+      var stream = converter.convertToInputStream(_data);
+      _listener.onDataAvailable(channel, aCtx, stream, 0, stream.available());
+      _listener.onStopRequest(channel, aCtx, aStatusCode);
       throw Components.results.NS_ERROR_INVALID_ARG;
-    }
+      return;
+    } */
 
     // get the current stream charset
     // XXX ugly hack, there *has* to be another way!
@@ -117,8 +119,29 @@ function phpStreamConverter() {
     // Do whatever you want with _data!
     // this is also where we could get rid of the awful hack in mozilla/content
     // to display comment/php nodes in the main window
-    // e.g.: quick hack to support short tags in PHP files
-    _data = _data.replace(/<%/g, "<?php").replace(/%>/g, "?>");
+
+    if (hasBodyNode) { // this document should be editable in Composer
+      // quick hack to support short tags in PHP files
+      _data = _data.replace(/<%/g, "<?php").replace(/%>/g, "?>");
+      // TODO: check PHP prologs
+    }
+    else {             // this document is not editable in Composer
+      // experimental, ugly hack: embed '_data' in an HTML document
+      var fileName = _path.substring(_path.lastIndexOf("/") + 1, _path.length);
+      _data = _data.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      // TODO: syntax highlighting
+      _data = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">\n'
+            + '<html xmlns="http://www.w3.org/1999/xhtml">\n'
+            + '<head>\n'
+            + '  <meta http-equiv="content-type" content="text/html; charset="' + charset + '" />\n'
+            + '  <meta id="_moz_text_document" />\n'
+            + '  <title>' + fileName + '</title>\n'
+            + '</head>\n'
+            + '<body>\n'
+            + '  <pre>' + _data + '</pre>\n'
+            + '</body>\n'
+            + '</html>';
+    }
 
     // Serialise the result back into Composer
     var channel = aRequest.QueryInterface(Ci.nsIChannel);

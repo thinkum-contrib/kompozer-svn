@@ -298,24 +298,6 @@ function Startup()
 
   gDialog.bundle                = document.getElementById("siteManagerBundle");
 
-  // FireFTP
-  //gStrbundle = $('strings');
-  gFtp = new ftpMozilla(null);
-  //gFtp = new ftpMozilla(ftpObserver);
-  gFtp.appendLog = ftpAppendLog;
-  gFtp.debug     = gHelpers.trace;
-  gFtp.error     = ftpErrorReport;
-  //gFtp.error     = gHelpers.trace;
-  //gFtp.error     = alert; // this doesn't work if gErrorMode isn't true
-  /*
-   *gFtp.errorConnectStr   = gStrbundle.getString("errorConn");
-   *gFtp.errorXCheckFail   = gStrbundle.getString("errorXCheckFail");
-   *gFtp.passNotShown      = gStrbundle.getString("passNotShown");
-   *gFtp.l10nMonths        = gStrbundle.getString("months").split("|");
-   *gTransferTypes         = new Array(gStrbundle.getString("auto"), gStrbundle.getString("binary"), gStrbundle.getString("ascii"));
-   *gMonths                = gStrbundle.getString("months").split("|");
-   */
-
   // Kaze: gContextMenu is added to handle the sitemanager context menu
   gContextMenu = {
     openItem      : document.getElementById("openItem"),
@@ -1249,7 +1231,6 @@ function openFile(e) {
   // TODO: same thing with media files
 
   // if the item is a local file, open with an external application
-  //if (GetScheme(url) == "file") {
   if (IsFileUrl(url)) {
     var helper = null;
     if (IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url))
@@ -1259,7 +1240,10 @@ function openFile(e) {
 
     if (helper) {
       // open local file with appropriate helper app
-      gHelpers.OpenUrlWith(url, helper);
+      var error = gHelpers.OpenUrlWith(url, helper);
+      if (error)
+        if (helper == "text")
+          EditDocument(url);
       /*
        *try {
        *  gHelpers.OpenUrlWith(url, helper);

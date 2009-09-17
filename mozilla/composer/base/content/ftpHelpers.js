@@ -31,6 +31,24 @@
 // Note: these helpers have been designed to work with FireFTP's codebase.
 // Many thanks to Mime Cuvalo for allowing Composer to use his code!
 
+gFtp = new ftpMozilla(null);
+//gFtp = new ftpMozilla(ftpObserver);
+gFtp.appendLog = ftpAppendLog;
+gFtp.error     = ftpErrorReport;
+gFtp.debug     = dump;
+
+//gFtp.debug     = gHelpers.trace;
+//gFtp.error     = gHelpers.trace;
+//gFtp.error     = dump; // this doesn't work if gErrorMode isn't true
+/*
+ *gFtp.errorConnectStr   = gStrbundle.getString("errorConn");
+ *gFtp.errorXCheckFail   = gStrbundle.getString("errorXCheckFail");
+ *gFtp.passNotShown      = gStrbundle.getString("passNotShown");
+ *gFtp.l10nMonths        = gStrbundle.getString("months").split("|");
+ *gTransferTypes         = new Array(gStrbundle.getString("auto"), gStrbundle.getString("binary"), gStrbundle.getString("ascii"));
+ *gMonths                = gStrbundle.getString("months").split("|");
+ */
+
 function ftpConnect(publishData) {
   gFtp.host     = publishData.publishUrl.replace(/^ftp:\/*/, '').replace(/\/$/, '');
   gFtp.port     = publishData.ftpPort;
@@ -110,3 +128,51 @@ function ftpEndRequest() {
   EnableAllUI(true);
 }
 
+//
+// Overriding functions in ComposerCommands.js
+// see also lines 2074-2292 in ComposerCommands.js
+//
+
+/* experimental 'Publish' function, using a real FTP transfer
+nsPublishCommand.doCommand = function(aCommand) {
+    if (GetCurrentEditor())
+    {
+      var docUrl = GetDocumentUrl();
+      var filename = GetFilename(docUrl);
+      var publishData;
+
+      if (filename)
+      {
+        // Try to get publish data from the document url
+        publishData = CreatePublishDataFromUrl(docUrl);
+
+        // If none, use default publishing site? Need a pref for this
+        //if (!publishData)
+        //  publishData = GetPublishDataFromSiteName(GetDefaultPublishSiteName(), filename);
+      }
+
+      if (!publishData)
+      {
+        // Show the publish dialog
+        var publishData = {};
+        window.ok = false;
+        var oldTitle = GetDocumentTitle();
+        window.openDialog("chrome://editor/content/EditorPublish.xul","_blank", 
+                          "chrome,close,titlebar,modal", "", "", publishData);
+        if (GetDocumentTitle() != oldTitle)
+          UpdateWindowTitle();
+
+        window.content.focus();
+        if (!window.ok)
+          return false;
+      }
+
+      if (publishData)
+      {
+        FinishHTMLSource();
+        return ftpPublish(publishData);
+      }
+    }
+    return false;
+}
+*/

@@ -11,7 +11,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is CaScadeS, a stylesheet editor for Composer.
+ * The Original Code is KompoZer, an enhanced version of Mozilla Composer.
  *
  * The Initial Developer of the Original Code is
  * Fabien Cazenave.

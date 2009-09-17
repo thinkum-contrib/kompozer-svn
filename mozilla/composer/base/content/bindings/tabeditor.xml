@@ -93,7 +93,7 @@
                      crop="end"/>
           </xul:tabs>
         </xul:hbox>
-        <xul:grid flex="1">
+        <xul:grid anonid="EditorGrid" flex="1">
           <xul:columns><xul:column anonid="vRulerColumn"/><xul:column flex="1"/></xul:columns>
           <xul:rows>
             <xul:row anonid="hRulerRow" style="border-top: outset 1px;">
@@ -105,13 +105,21 @@
               <xul:stack id="vRuler" onmousedown="window.InitiateMoveObjectInRuler(event)"
                         style="border-right: outset 1px; width: auto; min-width: 1em; overflow: hidden"/>
               <xul:tabpanels anonid="EditorTabpanels" selectedIndex="0">
-                <xul:editor editortype="html" type="content-primary" id="content-frame"
+                <xul:editor id="content-frame"
+                            type="content-primary"
+                            editortype="html"
                             context="editorContentContext"
                             flex="1" tooltip="aHTMLTooltip"/>
               </xul:tabpanels>
             </xul:row>
           </xul:rows>
         </xul:grid>
+        <!--
+           -<xul:splitter anonid="EditorSplitter"
+           -              resizebefore="closest"
+           -              state="open"
+           -              collapse="before"/>
+           -->
       </xul:tabbox>
     </content>
 
@@ -192,6 +200,22 @@
         <getter>
         <![CDATA[
           return document.getAnonymousElementByAttribute(this, "anonid", "vRulerColumn");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mEditorSplitter">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "EditorSplitter");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mEditorGrid">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "EditorGrid");
         ]]>
         </getter>
       </property>
@@ -292,6 +316,37 @@
         </body>
       </method>
 
+      <!-- Kaze: trying to collapse/expand the main <editor> -->
+      <method name="ShowEditor">
+        <parameter name="show" />
+        <body>
+        <![CDATA[
+          if (show)
+          {
+            // this.mEditorSplitter.setAttribute("state", "open");
+            // this.mEditorSplitter.setAttribute("hidden", "false");
+            // this.mEditorSplitter.previousSibling.setAttribute("collapsed", "false");
+            this.mEditorSplitter.previousSibling.collapsed = false;
+            this.mEditorSplitter.previousSibling.flex = 1;
+          }
+          else
+          {
+            // this.mEditorSplitter.setAttribute("state", "collapsed");
+            // this.mEditorSplitter.setAttribute("hidden", "true");
+            // this.mEditorSplitter.previousSibling.setAttribute("collapsed", "true");
+            this.mEditorSplitter.previousSibling.collapsed = true;
+            this.mEditorSplitter.previousSibling.flex = 0;
+          }
+        ]]>
+        </body>
+      </method>
+
+      <!--
+         -<property name="collapsed"
+         -          onget="return this.getAttribute('editortype');"
+         -          onset="this.setAttribute('editortype', val); return val;"/>
+         -->
+ 
       <method name="showCurrentTabAsModified">
         <parameter name="val" />
         <body>

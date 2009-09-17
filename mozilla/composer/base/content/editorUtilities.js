@@ -132,6 +132,9 @@ var gTabEditor = {
 
   SaveDocument: function(aSaveAs, aSaveCopy, aMimeType) {
     this.focus = false;
+    // always save text documents as text/plain
+    if (this.IsTextDocument())
+      aMimeType = "text/plain";
     // Save the document (Composer function)
     var url    = GetDocumentUrl();
     var result = SaveDocument(aSaveAs, aSaveCopy, aMimeType);
@@ -199,6 +202,11 @@ var gTabEditor = {
     if (n == 0)
       this.store(unescape(url));
     return;
+  },
+
+  IsTextDocument: function() {
+    if (GetCurrentEditor().document.getElementById("_moz_text_document"))
+      return true;
   }
 }
 
@@ -453,7 +461,8 @@ function IsInHTMLSourceMode()
 {
   // Kaze
   //return (gEditorDisplayMode == kDisplayModeSource);
-  return (gEditorEditMode == kEditModeSource);
+  //return (gEditorEditMode == kEditModeSource);
+  return (gTabEditor.IsTextDocument() || (gEditorEditMode == kEditModeSource));
 }
 
 // are we editing HTML (i.e. neither in HTML source mode, nor editing a text file)

@@ -103,6 +103,9 @@ function UpdateRulers(elt)
   if (vRuler)
     CleanObjectChildren(vRuler);
 
+  // Kaze: return if we're editing a text document
+  if (gTabEditor.IsTextDocument()) return;
+
   var editor = GetCurrentEditor();
   var selection = editor.selection;
   if (selection.rangeCount > 1)

@@ -850,49 +850,6 @@ var nsPublishCommand =
   }
 }
 
-// Kaze: experimental 'Publish' function, using a real FTP transfer
-nsPublishCommand.doCommand = function(aCommand) {
-    if (GetCurrentEditor())
-    {
-      var docUrl = GetDocumentUrl();
-      var filename = GetFilename(docUrl);
-      var publishData;
-
-      if (filename)
-      {
-        // Try to get publish data from the document url
-        publishData = CreatePublishDataFromUrl(docUrl);
-
-        // If none, use default publishing site? Need a pref for this
-        //if (!publishData)
-        //  publishData = GetPublishDataFromSiteName(GetDefaultPublishSiteName(), filename);
-      }
-
-      if (!publishData)
-      {
-        // Show the publish dialog
-        var publishData = {};
-        window.ok = false;
-        var oldTitle = GetDocumentTitle();
-        window.openDialog("chrome://editor/content/EditorPublish.xul","_blank", 
-                          "chrome,close,titlebar,modal", "", "", publishData);
-        if (GetDocumentTitle() != oldTitle)
-          UpdateWindowTitle();
-
-        window.content.focus();
-        if (!window.ok)
-          return false;
-      }
-
-      if (publishData)
-      {
-        FinishHTMLSource();
-        return Publish(publishData);
-      }
-    }
-    return false;
-}
-
 var nsPublishAsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -1258,8 +1215,13 @@ function OutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFiles
                             | webPersist.PERSIST_FLAGS_FIXUP_ORIGINAL_DOM;
 
     // HACK: in Nvu, always save as text/html...
+    //persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir, 
+                            //"text/html", outputFlags, wrapColumn);
+    // Kaze: in KompoZer, don't save plain text as text/html...
+    if (aMimeType == "text/xml" || aMimeType == "application/xhtml+xml")
+      aMimeType = "text/html";
     persistObj.saveDocument(editorDoc, aDestinationLocation, aRelatedFilesParentDir, 
-                            "text/html", outputFlags, wrapColumn);
+                            aMimeType, outputFlags, wrapColumn);
     gPersistObj = persistObj;
   }
   catch(e) { dump("caught an error, bail\n"); return false; }
@@ -1913,6 +1875,9 @@ const kSupportedTextMimeTypes =
   "text/rdf",
   "text/xsl",
   "text/javascript",
+  "text/ecmascript",
+  "application/javascript",
+  "application/ecmascript",
   "application/x-javascript",
   "text/xul",
   "application/vnd.mozilla.xul+xml"
@@ -1933,24 +1898,24 @@ function SaveDocument(aSaveAs, aSaveCopy, aMimeType)
 {
   var editor = GetCurrentEditor();
   if (!aMimeType || aMimeType == "" || !editor)
-    throw NS_ERROR_NOT_INITIALIZED;
+    throw Components.results.NS_ERROR_NOT_INITIALIZED;
 
   var editorDoc = editor.document;
   if (!editorDoc)
-    throw NS_ERROR_NOT_INITIALIZED;
+    throw Components.results.NS_ERROR_NOT_INITIALIZED;
 
   // if we don't have the right editor type bail (we handle text and html)
   var editorType = GetCurrentEditorType();
   if (editorType != "text" && editorType != "html" 
       && editorType != "htmlmail" && editorType != "textmail")
-    throw NS_ERROR_NOT_IMPLEMENTED;
+    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
   var saveAsTextFile = IsSupportedTextMimeType(aMimeType);
 
   // check if the file is to be saved is a format we don't understand; if so, bail
   if (aMimeType != "text/html" && !saveAsTextFile &&
       aMimeType != "application/xhtml+xml" && aMimeTYpe != "text/xml")
-    throw NS_ERROR_NOT_IMPLEMENTED;
+    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
   if (saveAsTextFile)
     aMimeType = "text/plain";

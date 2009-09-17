@@ -133,6 +133,26 @@
           <editor type="content" id="content-source" context="editorSourceContext" flex="1"/>
         </vbox>
       </deck>
+      <!-- HTML source browser/editor -->
+      <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="true"
+                resizebefore="farthest"
+                resizeafter="closest"
+                state="collapsed"
+                collapse="after"/>
+      <deck id="SourceBrowserDeck" selectedIndex="0" flex="1"
+            style="min-height: 7em;"
+            collapsed="true">
+        <editor id="SourceBrowser" flex="1" src="about:blank"
+                 type="content"
+                 editortype="html"
+                 onclick="onClickSourceDock(event);"
+                 context="editorSourceContext"/>
+        <!--
+           -<browser id="SourceBrowser" flex="1" disablehistory="true" src="about:blank"
+           -         onclick="onClickSourceDock(event);"
+           -->
+        <!-- a textbox will be dynamically created here when necessary -->
+      </deck>
       <!-- View/Edit mode toolbar -->
       <hbox id="EditModeToolbar" align="center" hidden="false" persist="collapsed">
         <tabs id="DisplayModeTabs" class="tabs-bottom" flex="0">
@@ -159,25 +179,6 @@
                tooltiptext="&HTMLSourceMode.tooltip;" dir="&SourceTabDirection;"/>
         </tabs>
       </hbox>
-      <!-- HTML source browser/editor -->
-      <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="true"
-                resizebefore="farthest"
-                state="collapsed"
-                collapse="after"/>
-      <deck id="SourceBrowserDeck" selectedIndex="0"
-            style="min-height: 7em;"
-            collapsed="true">
-        <editor id="SourceBrowser" flex="1" src="about:blank"
-                 type="content"
-                 editortype="html"
-                 onclick="onClickSourceDock(event);"
-                 context="editorSourceContext"/>
-        <!--
-           -<browser id="SourceBrowser" flex="1" disablehistory="true" src="about:blank"
-           -         onclick="onClickSourceDock(event);"
-           -->
-        <!-- a textbox will be dynamically created here when necessary -->
-      </deck>
     </vbox> <!-- appcontent -->
   </hbox><!-- sidebar-parent -->
 

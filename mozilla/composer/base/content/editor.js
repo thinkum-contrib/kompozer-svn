@@ -528,60 +528,35 @@ var gEditorDocumentObserver =
           // XXX We really should use the "real" plaintext editor for this!
           if (editor.contentsMIMEType == "text/plain")
           {
-            CloseCurrentTab(true);
-            AlertWithTitle("", GetString("CanEditOnlyHTMLDocuments"));
-            
-            /*
-            try {
-              GetCurrentEditorElement().editortype = "text";
-            } catch (e) { dump (e)+"\n"; }
+            // we're here because we're loading a text file.
+            // There are three ways to handle this situation: SeaMonkey, Nvu, KompoZer.
 
-            // Hide or disable UI not used for plaintext editing
-            HideItem("FormatToolbar");
-            HideItem("EditModeToolbar");
-            HideItem("formatMenu");
-            HideItem("tableMenu");
-            HideItem("menu_validate");
-            HideItem("sep_validate");
-            HideItem("previewButton");
-            HideItem("imageButton");
-            HideItem("linkButton");
-            HideItem("namedAnchorButton");
-            HideItem("hlineButton");
-            HideItem("tableButton");
+            // #1 SeaMonkey way: open it in a plaintext editor window
+            //    pretty natural since SeaMonkey Composer doesn't have any tabs
+            //    but unusable with the current <tabeditor> component.
+            //    The code has been moved to a separate function, just in case...
+            // HideUIElementsForPlainTextEditor();
 
-            HideItem("fileExportToText");
-            HideItem("previewInBrowser");
+            // #2 Nvu way: don't open it and warn the user about this
+            //    we could at least open it in a separate app... maybe someday.
+            // CloseCurrentTab(true);
+            // AlertWithTitle("", GetString("CanEditOnlyHTMLDocuments"));
 
-            HideItem("menu_pasteNoFormatting"); 
+            // #3 KompoZer way: try to open it in an HTML editor
+            //    TODO: use the appropriate charset (how?)
+            //    TODO: use a syntax highlighting library
 
-            HideItem("cmd_viewFormatToolbar");
-            HideItem("cmd_viewEditModeToolbar");
+            // use the file name as document title
+            var url = GetDocumentUrl();
+            editor.document.title = url.substring(url.lastIndexOf("/") + 1, url.length);
 
-            HideItem("viewSep1");
-            HideItem("viewNormalMode");
-            HideItem("viewAllTagsMode");
-            HideItem("viewSourceMode");
-            HideItem("viewPreviewMode");
-
-            HideItem("structSpacer");
-
-            // Hide everything in "Insert" except for "Symbols"
-            var menuPopup = document.getElementById("insertMenuPopup");
-            if (menuPopup)
-            {
-              var children = menuPopup.childNodes;
-              for (var i=0; i < children.length; i++) 
-              {
-                var item = children.item(i);
-                if (item.id != "insertChars")
-                  item.hidden = true;
-              }
-            }
-            */
+            // add a bogus meta node to mark the file as a text document
+            var metaNode = editor.document.createElement("meta");
+            metaNode.setAttribute("id", "_moz_text_document");
+            editor.document.getElementsByTagName("head").item(0).appendChild(metaNode);
           }
-    
-          // Set window title
+
+          // Set window title and update UI
           UpdateWindowTitle();
 
           // We must wait until document is created to get proper Url
@@ -592,7 +567,10 @@ var gEditorDocumentObserver =
           SetDisplayMode(kDisplayModeNormal);
 
           // and place the selection in the body to update the rulers
-          editor.selection.collapse(editor.document.body, 0);
+          if (gTabEditor.IsTextDocument())
+            editor.selection.collapse(editor.document.body.firstChild, 0);
+          else
+            editor.selection.collapse(editor.document.body, 0);
 
           // we can't use the controller here
           if (IsStrictDTD())
@@ -652,13 +630,8 @@ function SetFocusOnStartup()
 
 function OnSidebarLoad()
 {
+  dump("sidebar loaded.\n");
   document.getElementById("tipoftheday").launch(null);
-  // Kaze: disable the pinger
-  //~ window.delayedOpenWindow( "chrome://pinger/content/pinger.xul",
-                            //~ "_blank",
-                            //~ "chrome,close=no,titlebar,modal",
-                            //~ "",
-                            //~ 600);
 }
 
 function EditorStartup()
@@ -875,7 +848,7 @@ function EditorResetFontAndColorAttributes()
 
 function EditorShutdown()
 {
-  SetUnicharPref("editor.zoom_factor",getMarkupDocumentViewer().textZoom);
+  SetUnicharPref("editor.zoom_factor", getMarkupDocumentViewer().textZoom);
 
   RemoveToolbarPrefListener();
   gCSSPrefListener.shutdown();
@@ -2107,7 +2080,7 @@ function SetEditMode(mode)
           range.setStartBefore(startSel);
           // <Kaze>
           //range.setEndAfter(endSel);
-          try { // sometimes 'endSel' is out of bonds
+          try { // sometimes 'endSel' is out of bounds
             range.setEndAfter(endSel);
           } catch(e) {
             range.setEndAfter(startSel);
@@ -2510,8 +2483,12 @@ function UpdateWindowTitle()
     document.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }
+ 
+  // check if current file has been modified
+  gTabEditor.CheckModified();
 
-  gTabEditor.CheckModified(); // Kaze: check if current file has been modified
+  // adapt UI if the current document is a text one
+  HideUIElementsForPlainTextMode();
 }
 
 function BuildRecentPagesMenu()
@@ -2794,7 +2771,8 @@ function InitParagraphMenu()
 
   // ..."bodyText" is returned if mixed selection, so remove checkmark
   if (mixedObj.value)
-    menuItem.setAttribute("checked", "false");
+    menuItem.removeAttribute("checked");
+    //menuItem.setAttribute("checked", "false"); // not working with Gecko 1.8.1?
 }
 
 function GetListStateString()
@@ -3246,6 +3224,115 @@ function RemoveInapplicableUIElements()
     HideItem("viewFormatToolbar2");
     HideItem("viewEditModeToolbar");
   }
+}
+
+function HideUIElementsForPlainTextEditor()
+{
+  // this chunk has been taken from 'gEditorDocumentObserver':
+  // it's useless with KompoZer but useful for SeaMonkey Composer...
+
+  try {
+    GetCurrentEditorElement().editortype = "text";
+  } catch (e) { dump (e)+"\n"; }
+
+  // Hide or disable UI not used for plaintext editing
+  HideItem("FormatToolbar");
+  HideItem("EditModeToolbar");
+  HideItem("formatMenu");
+  HideItem("tableMenu");
+  HideItem("menu_validate");
+  HideItem("sep_validate");
+  HideItem("previewButton");
+  HideItem("imageButton");
+  HideItem("linkButton");
+  HideItem("namedAnchorButton");
+  HideItem("hlineButton");
+  HideItem("tableButton");
+
+  HideItem("fileExportToText");
+  HideItem("previewInBrowser");
+
+  /* XXX
+  When paste actually converts formatted rich text to pretty formatted plain text
+  and pasteNoFormatting is fixed to paste the text without formatting (what paste
+  currently does), then this item shouldn't be hidden: */
+  HideItem("menu_pasteNoFormatting"); 
+
+  HideItem("cmd_viewFormatToolbar");
+  HideItem("cmd_viewEditModeToolbar");
+
+  HideItem("viewSep1");
+  HideItem("viewNormalMode");
+  HideItem("viewAllTagsMode");
+  HideItem("viewSourceMode");
+  HideItem("viewPreviewMode");
+
+  HideItem("structSpacer");
+
+  // Hide everything in "Insert" except for "Symbols"
+  var menuPopup = document.getElementById("insertMenuPopup");
+  if (menuPopup)
+  {
+    var children = menuPopup.childNodes;
+    for (var i=0; i < children.length; i++) 
+    {
+      var item = children.item(i);
+      if (item.id != "insertChars")
+        item.hidden = true;
+    }
+  }
+}
+
+function HideUIElementsForPlainTextMode()
+{
+  // similar to HideUIElementsForPlainTextEditor()
+  // but used to display some text in an HTML editor (syntax highlighting...)
+
+  var textMode = gTabEditor.IsTextDocument();
+  //NotifyProcessors(kProcessorsWhenDisplayModeChanges, textMode ? kEditModeSource : kEditModeDesign);
+
+  var textModeElements = [
+    //"FormatToolbar1",         "FormatToolbar2",         "EditModeToolbar",
+    //"cmd_viewFormatToolbar1", "cmd_viewFormatToolbar2", "cmd_viewEditModeToolbar",
+
+    "DisplayModeTabs",  "viewNormalMode",   "viewAllTagsMode", "viewPreviewMode",
+    "EditModeTabs",     "editDesignMode",   "editSplitMode",   "editSourceMode",
+    "SourceBrowserDeck",
+    "browser-splitter",
+
+    "insertMenuPopup",
+
+    "formatMenu",
+    "tableMenu",
+    "menu_validate",
+    "sep_validate",
+    "previewButton",
+    "imageButton",
+    "linkButton",
+    "namedAnchorButton",
+    "hlineButton",
+    "tableButton",
+
+    "fileExportToText",
+    "previewInBrowser",
+
+    "menu_pasteNoFormatting",
+
+    "viewSepRulers", "viewRulers",
+    "hRuler", /* "vRuler", */
+
+    "viewSep1", "viewSep2", "viewSep3",
+    "blockOutlines",
+    "structSpacer"
+  ];
+
+  // Show/hide UI elements
+  for (var i = 0; i < textModeElements.length; i++) try {
+    document.getElementById(textModeElements[i]).hidden = textMode;
+  } catch(e) {
+    dump(textModeElements[i] + "\n");
+  }
+
 }
 
 function HideItem(id)

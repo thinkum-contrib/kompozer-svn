@@ -71,7 +71,7 @@ function domStartup() {
   // CSS tree
   //var head = GetHeadElement();
   //if (!head)
-    //alert("no <head> found");
+    //dump("no <head> found");
   //InitSheetsTree(gDialog.sheetsTree);
   //FillStyleTree(gDialog.sheetsTree);
 }
@@ -111,22 +111,22 @@ function UpdateDomTrees(node) {
   try {
     if (!node || node == gLastSelectedElement)
       return;
-  } catch(e){
+  } catch(e) {
     // for some reason, when DOM explorer is closed and reopen, all global variables are lost for some time
     // so exit in order not to break the kProcessorsWhenSelectionChanges chain
     return;
   }
 
   if (0) try { // XXX
-    // this dialog shows that this function is called too often...
+    // this dump shows that this function is called too often...
     // there's room for improvement here.
-    alert("refresh"
+    dump("refresh"
         + "\n node = " + node.nodeName
         + "\n gLastSelectedElement = " + gLastSelectedElement.nodeName
     );
   } catch(e) {
     // XXX
-    alert(e);
+    dump(e);
   }
 
   gLastSelectedElement = node;
@@ -197,6 +197,10 @@ function FillHtmlTree(element) {
   delete gElementArray;
   gElementArray = new Array();
   CleanXulTree(gDialog.elementList);
+
+  // return if we're on a text document
+  if (window.parent.gTabEditor.IsTextDocument())
+    return;
 
   // fill HTML tree & array
   var treeitem, container, sibling;
@@ -639,7 +643,7 @@ function GetDocumentBaseUrl() {
     if (!docUrl.match(/^about/))
       return docUrl;
   } catch (e) {
-    alert(e);
+    dump(e);
   }
   return "";
 }

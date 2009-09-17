@@ -167,6 +167,7 @@ var gHelpers = {
       } catch(e) {
         if (len) appArgs[len-1] = this.hidePassword(appArgs[len-1]);
         this.trace("failed to run application '" + appPath + "' with " + len + " params: '" + appArgs + "'");
+        return true;
       }
     } 
     
@@ -182,6 +183,7 @@ var gHelpers = {
         this.trace("started application '" + appPath + "' on '" + url + "'");
       } catch(e) {
         this.trace("failed to run application '" + appPath + "' on '" + url + "'");
+        return true;
       }
     }
     
@@ -216,6 +218,7 @@ var gHelpers = {
       this.trace("opened file '" + this.hidePassword(url) + "'");
     } catch(e) {
       this.trace("failed to open file '" + this.hidePassword(url) + "'");
+      return true;
     }
     // this creates bugs in the tabeditor :-(
       //~ window.top.GetCurrentEditorElement().webNavigation.loadURI(url, // uri string
@@ -237,11 +240,11 @@ var gHelpers = {
     // launch editor
     if (usys || !path || !path.length)  {
       // system default editor
-      this.OpenUrl(url);
+      return this.OpenUrl(url);
     } else {
       // user selected editor
       var argArray = (args != "") ? args.split(' ') : null;
-      var result = this.run(url, path, argArray);
+      return this.run(url, path, argArray);
     }
   },
   
