@@ -84,7 +84,7 @@
           <menuitem id="renameItem"      label="&renameMenu.label;"        oncommand="Rename()"            disabled="true"/>
           <menuitem id="removeItem"      label="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()"   disabled="true"/>
           <menuseparator />
-          <menuitem id="uploadItem"      label="upload"                    oncommand="uploadFileOrDir()"/>
+          <menuitem id="uploadItem"      label="&uploadItem.label;"        oncommand="uploadFileOrDir()"/>
           <menuseparator />
           <menuitem id="reloadItem"      label="&reloadButton.tooltip;"    oncommand="RefreshDirView()"/>
           <menuseparator />

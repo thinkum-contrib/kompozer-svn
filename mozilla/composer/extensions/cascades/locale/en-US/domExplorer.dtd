@@ -35,6 +35,15 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-
 <!ENTITY domExplorer.label                      "DOM Explorer">
+
+<!ENTITY html.label                             "HTML">
+<!ENTITY css.label                              "CSS">
+<!ENTITY htmlcss.label                          "HTML+CSS">
+
+<!ENTITY id.label                               "id">
+<!ENTITY class.label                            "class">
+<!ENTITY elements.label                         "Elements">
+<!ENTITY style.label                            "style">
+<!ENTITY styleRules.label                       "Style Rules">
 

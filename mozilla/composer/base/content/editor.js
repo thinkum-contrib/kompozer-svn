@@ -505,6 +505,10 @@ var gEditorDocumentObserver =
         {
           NotifyProcessors(kProcessorsBeforeBackToNormal, editor.document);
 
+          // required if we load an HTML fragment or a text file
+          var metaNode = null;
+          var headNode = editor.document.getElementsByTagName("head").item(0);
+
           if (gIsTemplate) {
             MakeDocumentBecomeATemplate();
             gIsTemplate = false;
@@ -547,13 +551,27 @@ var gEditorDocumentObserver =
             //    TODO: use a syntax highlighting library
 
             // use the file name as document title
-            var url = GetDocumentUrl();
-            editor.document.title = url.substring(url.lastIndexOf("/") + 1, url.length);
+            editor.document.title = '[' + GetFilename(GetDocumentUrl()) + ']';
 
             // add a bogus meta node to mark the file as a text document
-            var metaNode = editor.document.createElement("meta");
+            metaNode = editor.document.createElement("meta");
             metaNode.setAttribute("id", "_moz_text_document");
-            editor.document.getElementsByTagName("head").item(0).appendChild(metaNode);
+            headNode.appendChild(metaNode);
+          }
+
+          // Did we just load an HTML fragment? (experimental)
+          if (!headNode) { // no <head> node: XHTML fragment
+            // Not editable. Too bad. :-(
+            CloseCurrentTab(true);
+            AlertWithTitle("", GetString("CanEditOnlyHTMLDocuments"));
+          }
+          else if (headNode.childNodes.length == 0) { // empty <head> node: HTML fragment
+            // use the file name as document title
+            editor.document.title = '(' + GetFilename(GetDocumentUrl()) + ')';
+            // add a bogus meta node to mark the file as an HTML fragment
+            metaNode = editor.document.createElement("meta");
+            metaNode.setAttribute("id", "_moz_html_fragment");
+            headNode.appendChild(metaNode);
           }
 
           // Set window title and update UI
@@ -567,7 +585,7 @@ var gEditorDocumentObserver =
           SetDisplayMode(kDisplayModeNormal);
 
           // and place the selection in the body to update the rulers
-          if (gTabEditor.IsTextDocument())
+          if (gTabEditor.IsTextDocument() || gTabEditor.IsHtmlFragment())
             editor.selection.collapse(editor.document.body.firstChild, 0);
           else
             editor.selection.collapse(editor.document.body, 0);
@@ -3300,29 +3318,31 @@ function HideUIElementsForPlainTextMode()
     "SourceBrowserDeck",
     "browser-splitter",
 
-    "insertMenuPopup",
-
+    "insertMenu",
     "formatMenu",
     "tableMenu",
+    "menu_cleanup",
     "menu_validate",
-    "sep_validate",
+    "menu_CaScadeS",
+
     "previewButton",
     "imageButton",
     "linkButton",
     "namedAnchorButton",
-    "hlineButton",
+    "hlineButton", 
     "tableButton",
+    "formButton",
+    "cssButton",
 
     "fileExportToText",
     "previewInBrowser",
 
     "menu_pasteNoFormatting",
 
-    "viewSepRulers", "viewRulers",
+    "viewSepRulers", "viewRulers", "viewSep1", "viewSep2", "viewSep3",
     "hRuler", /* "vRuler", */
-
-    "viewSep1", "viewSep2", "viewSep3",
     "blockOutlines",
+
     "structSpacer"
   ];
 
@@ -3331,6 +3351,31 @@ function HideUIElementsForPlainTextMode()
     document.getElementById(textModeElements[i]).hidden = textMode;
   } catch(e) {
     dump(textModeElements[i] + "\n");
+  }
+
+}
+
+function HideUIElementsForFragmentMode()
+{
+  var fragmentMode = gTabEditor.IsTextDocument();
+
+  var fragmentModeElements = [
+    "colorsAndBackground",
+    "pageProperties",
+    "menu_validate",
+    "menu_CaScadeS",
+
+    "previewButton",
+    "cssButton",
+
+    "previewInBrowser",
+  ];
+
+  // Show/hide UI elements
+  for (var i = 0; i < fragmentModeElements.length; i++) try {
+    document.getElementById(fragmentModeElements[i]).hidden = fragmentMode;
+  } catch(e) {
+    dump(fragmentModeElements[i] + "\n");
   }
 
 }

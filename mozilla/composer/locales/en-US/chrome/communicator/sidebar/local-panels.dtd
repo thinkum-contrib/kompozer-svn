@@ -36,3 +36,4 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <!ENTITY sidebar.client-sitemanager.label "Site Manager">
+<!ENTITY sidebar.client-domexplorer.label "DOM Explorer">

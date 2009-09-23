@@ -1230,6 +1230,7 @@ function OutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFiles
 }
 
 // returns output flags based on mimetype, wrapCol and prefs
+// see: mozilla/embedding/components/webbrowserpersit/public/nsIWebBrowserPersist.idl
 function GetOutputFlags(aMimeType, aWrapColumn)
 {
   var outputFlags = 0;
@@ -1265,6 +1266,17 @@ function GetOutputFlags(aMimeType, aWrapColumn)
 
   if (aWrapColumn > 0)
     outputFlags |= webPersist.ENCODE_FLAGS_WRAP;
+
+	// Kaze: if we're editing a fragment, save <body> content
+	if (gTabEditor.IsHtmlFragment()) {
+		// we can't use webPersist.ENCODE_FLAGS_BODY_ONLY, see bug #305711
+		// so we select the document body and output the selection :-/
+		alert("fragment, saving");
+		//GetCurrentEditor().selectAll(); // select <body> content
+		//outputFlags |= webPersist.ENCODE_FLAGS_SELECTION_ONLY;
+		//outputFlags |= 1;   // OutputSelectionOnly
+		outputFlags |= webPersist.ENCODE_FLAGS_BODY_ONLY;
+	}
 
   return outputFlags;
 }

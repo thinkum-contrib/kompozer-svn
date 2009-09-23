@@ -26,17 +26,18 @@
  *  Akkana Peck <akkana@netscape.com>
  */
 
+const nsIFile             = Components.interfaces.nsIFile;
 const nsIFilePicker       = Components.interfaces.nsIFilePicker;
+const nsIFileView         = Components.interfaces.nsIFileView;
+const nsILocalFile        = Components.interfaces.nsILocalFile;
 const nsIProperties       = Components.interfaces.nsIProperties;
+const nsITreeBoxObject    = Components.interfaces.nsITreeBoxObject;
+const nsITreeView         = Components.interfaces.nsITreeView;
+
+const NS_FILEVIEW_CONTRACTID         = "@mozilla.org/filepicker/fileview;1";
 const NS_DIRECTORYSERVICE_CONTRACTID = "@mozilla.org/file/directory_service;1";
-const nsITreeBoxObject = Components.interfaces.nsITreeBoxObject;
-const nsIFileView = Components.interfaces.nsIFileView;
-const NS_FILEVIEW_CONTRACTID = "@mozilla.org/filepicker/fileview;1";
-const nsITreeView = Components.interfaces.nsITreeView;
-const nsILocalFile = Components.interfaces.nsILocalFile;
-const nsIFile = Components.interfaces.nsIFile;
-const NS_LOCALFILE_CONTRACTID = "@mozilla.org/file/local;1";
-const NS_PROMPTSERVICE_CONTRACTID = "@mozilla.org/embedcomp/prompt-service;1";
+const NS_LOCALFILE_CONTRACTID        = "@mozilla.org/file/local;1";
+const NS_PROMPTSERVICE_CONTRACTID    = "@mozilla.org/embedcomp/prompt-service;1";
 
 var sfile = Components.classes[NS_LOCALFILE_CONTRACTID].createInstance(nsILocalFile);
 var retvals;
@@ -68,10 +69,10 @@ function filepickerLoad() {
     if (o.displayDirectory) {
       const directory = o.displayDirectory.path;
     }
-    const initialText = o.defaultString;
+    const initialText  = o.defaultString;
     const filterTitles = o.filters.titles;
-    const filterTypes = o.filters.types;
-    const numFilters = filterTitles.length;
+    const filterTypes  = o.filters.types;
+    const numFilters   = filterTitles.length;
 
     document.title = title;
 

@@ -132,19 +132,26 @@ var gTabEditor = {
 
   SaveDocument: function(aSaveAs, aSaveCopy, aMimeType) {
     this.focus = false;
+    var url    = GetDocumentUrl();
     // always save text documents as text/plain
     if (this.IsTextDocument())
       aMimeType = "text/plain";
-    // Save the document (Composer function)
-    var url    = GetDocumentUrl();
-    var result = SaveDocument(aSaveAs, aSaveCopy, aMimeType);
-    if (!result)
-      return;
+    // XXX ugly hack for HTML fragments
+    if (this.IsHtmlFragment()) {
+			gHelpers.Write(url, GetBodyElement().innerHTML);
+			GetCurrentEditor().resetModificationCount();
+		}
+		else { // Save the document (Composer function)
+			var result = SaveDocument(aSaveAs, aSaveCopy, aMimeType);
+			if (!result)
+				return;
+    }
     // update URL if saved under a different name/location
     if (aSaveAs) {
       var index = this.getIndex(url);
       url = GetDocumentUrl(); // = new url
       this.urls[index] = url;
+			UpdateWindowTitle();
     }
     // store modification date
     this.store(unescape(url));
@@ -206,6 +213,11 @@ var gTabEditor = {
 
   IsTextDocument: function() {
     if (GetCurrentEditor().document.getElementById("_moz_text_document"))
+      return true;
+  },
+
+  IsHtmlFragment: function() {
+    if (GetCurrentEditor().document.getElementById("_moz_html_fragment"))
       return true;
   }
 }

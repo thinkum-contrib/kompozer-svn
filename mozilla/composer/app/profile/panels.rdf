@@ -20,7 +20,7 @@
     <NC:content>chrome://editor/content/sitemanager.xul</NC:content>
   </RDF:Description>
   <RDF:Description about="urn:sidebar:panel:dom-explorer">
-    <NC:title>DOM</NC:title>
+    <NC:title>&sidebar.client-domexplorer.label;</NC:title>
     <NC:content>chrome://cascades/content/domExplorer.xul</NC:content>
   </RDF:Description>
 </RDF:RDF>

@@ -211,17 +211,21 @@ function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/edit
   toolbar.firstChild.removeAttribute("style");
 
   var button;
-  var firstIteration = true; // Kaze
+  var firstIteration = true;                    // Kaze
+	var isFragment = gTabEditor.IsHtmlFragment(); // Kaze
   do {
     tag = element.nodeName.toLowerCase();
+		if (isFragment && (tag == "body"))
+			break;
 
+		// create button
     button = newStructToolbarButton(element, tag);
     toolbar.insertBefore(button, toolbar.firstChild);
-
     if (isFocusNode && oneElementSelected) {
       button.setAttribute("checked", "true");
       isFocusNode = false;
     }
+
     if (firstIteration) {
       // Kaze: the fist button should take all the available space
       //       to ease the use of the mouse wheel
@@ -229,6 +233,7 @@ function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/edit
       button.setAttribute("flex", "1");
       firstIteration = false;
     }
+
     tmp = element;
     element = element.parentNode;
   } while (tag != "html");

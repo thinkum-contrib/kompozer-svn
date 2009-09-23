@@ -206,18 +206,24 @@ function FillHtmlTree(element) {
   var treeitem, container, sibling;
   var selectedItem;
   var firstIteration = true;
+	var isFragment = window.parent.gTabEditor.IsHtmlFragment();
   var tag;
   var tmp;
   do {
-    // create treeitem
     tag = element.tagName.toLowerCase();
+
+		// don't create html/head/body treeitems for HTML fragments
+		if (isFragment && (tag == "body"))
+			break;
+
+    // create treeitem
     treeitem = newHtmlTreeItem(element, tag);
     gElementArray.unshift(element);
 
     if (firstIteration) { // selected node
       firstIteration = false;
       selectedItem = treeitem;
-      // append all child elements
+      // append all children elements
       //if (treeitem.hasAttribute("container")) {
       if (tag != "head" && getNeighborElement(element, NODE_FIRSTCHILD)) {
         container = document.createElementNS(XUL_NS, "treechildren");
@@ -236,8 +242,8 @@ function FillHtmlTree(element) {
       treeitem.setAttribute("open", "true");
     }
     
-    // create container
-    if (tag == "html")
+    // create container if needed (or use gDialog.elementList as main container)
+    if ((tag == "html") || (isFragment && (element.parentNode.tagName.toLowerCase() == "body")))
       container = gDialog.elementList;
     else
       container = document.createElementNS(XUL_NS, "treechildren");
