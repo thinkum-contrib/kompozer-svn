@@ -504,7 +504,9 @@ ftpMozilla.prototype = {
 
   readControl : function(buffer) {
     try {
-      buffer = this.toUTF8.convertStringToUTF8(buffer, this.encoding, 1);
+      //buffer = this.toUTF8.convertStringToUTF8(buffer, this.encoding, 1);
+      var tmp = this.toUTF8.convertStringToUTF8(buffer, this.encoding, 1);
+      buffer = tmp;
     } catch (ex) {
       this.debug(ex); 
     }

@@ -691,12 +691,12 @@ function editNodeApply() {
   // get an nsIEditor instance on <editor> if needed
   if (!kModalSourceDock) {
     try {
-      //var srcEditor = gSourceEditor.getEditor(gSourceEditor.contentWindow);
-      var srcEditor = gSourceEditor.getHTMLEditor(gSourceEditor.contentWindow);
-      // XXX remove (at least) one line below
+      // XXX
+			var srcEditor = gSourceEditor.getEditor(gSourceEditor.contentWindow);
+      //var srcEditor = gSourceEditor.getHTMLEditor(gSourceEditor.contentWindow);
       srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
       srcEditor instanceof Components.interfaces.nsIHTMLEditor;
-    } catch (e) { dump (e)+"\n"; }
+    } catch (e) { dump (e + "\n"); }
     gSourceEditorModified = srcEditor.documentModified;
   }
 

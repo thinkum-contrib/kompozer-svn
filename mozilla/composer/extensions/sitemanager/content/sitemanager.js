@@ -292,7 +292,7 @@ function Startup()
   gDialog.stopButton            = document.getElementById("stopButton");
   gDialog.mainBox               = document.getElementById("mainBox");
   gDialog.tabBox                = document.getElementById("sitemanagerTabbox");                  // Kaze
-  gDialog.cmdLogBody            = document.getElementById("cmdLog").contentWindow.document.body; // Kaze
+  gDialog.ftpConsole            = document.getElementById("cmdLog").contentWindow.document;      // Kaze
 
   gDialog.progressmeter         = document.getElementById("progressmeter");
 
@@ -1296,9 +1296,10 @@ function uploadFileOrDir() {
   if (!publishData)
     return;
 
-  EnableAllUI(false);                 // disable the UI until the FTP transaction is done
-  gDialog.cmdLogBody.innerHTML = "";  // reset the FTP log window
-  ftpConnect(publishData);            // make sure we're connected to the related host
+	alert("FTP connection");
+  EnableAllUI(false);                      // disable the UI until the FTP transaction is done
+  gDialog.ftpConsole.body.innerHTML = "";  // reset the FTP log window
+  ftpConnect(publishData);                 // make sure we're connected to the related host
 
   var sitePath   = publishData.localPath;
   var localPath  = gHelpers.newLocalFile(item.url).path.replace("//", "/");
@@ -1311,9 +1312,9 @@ function uploadFileOrDir() {
   if (!remoteDir.length)
     remoteDir = "/";
 
-
   // ensure the destination directory exists before uploading the file
   //gFtp.changeWorkingDirectory(remoteDir, function() { ftpCheckDirectory(remoteDir); });
+	alert(gFtp.eventQueue.length + "\nFTP upload: \n" + localPath + "\n" + remotePath + "\n" + remoteDir);
   gFtp.changeWorkingDirectory(remoteDir, function() { ftpUploadFile(localPath, remotePath, remoteDir); });
 
   //gFtp.list(remotePath, ftpListDirectory, true);

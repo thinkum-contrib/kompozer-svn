@@ -474,7 +474,8 @@ function IsInHTMLSourceMode()
   // Kaze
   //return (gEditorDisplayMode == kDisplayModeSource);
   //return (gEditorEditMode == kEditModeSource);
-  return (gTabEditor.IsTextDocument() || (gEditorEditMode == kEditModeSource));
+  //return (gTabEditor.IsTextDocument() || (gEditorEditMode == kEditModeSource));
+	return (gEditorEditMode >= kEditModeSource);
 }
 
 // are we editing HTML (i.e. neither in HTML source mode, nor editing a text file)

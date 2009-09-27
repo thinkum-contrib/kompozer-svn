@@ -35,7 +35,8 @@ gFtp = new ftpMozilla(null);
 //gFtp = new ftpMozilla(ftpObserver);
 gFtp.appendLog = ftpAppendLog;
 gFtp.error     = ftpErrorReport;
-gFtp.debug     = dump;
+gFtp.debug     = function(ex) { dump(ex + "\n") };
+//gFtp.debug     = ftpErrorReport;
 
 //gFtp.debug     = gHelpers.trace;
 //gFtp.error     = gHelpers.trace;
@@ -57,8 +58,8 @@ function ftpConnect(publishData) {
 
   // not all FTP servers use utf-8 yet, that's a pity (e.g. OVH still uses latin-1)
   // so we'll have to specify the server encoding in the prefs some day
-  gFtp.setEncoding("UTF-8");
-  //gFtp.setEncoding("ISO-8859-15");
+  //gFtp.setEncoding("UTF-8");
+  gFtp.setEncoding("ISO-8859-15");
 
   var newConnectedHost = gFtp.login + "@" + gFtp.host;
   if (!gFtp.isConnected) {
@@ -110,13 +111,16 @@ function ftpListDirectory() {
 }
 
 function ftpAppendLog(message, css, type) {
-  //const logErrorMode = false;
-  //gDialog.cmdLogBody.innerHTML += "<div type='" + type + "' style='display:"
-                               //+ (type != "error" && logErrorMode ? "none" : "block") + "' " + "class='" + css + "'>"
-  //gDialog.cmdLogBody.innerHTML += "<div type='" + type + "' style='display: block' class='" + css + "'>"
-  gDialog.cmdLogBody.innerHTML += "<div type='" + type + "' class='" + css + "'>"
-                               +     message.replace(/[\r\n]+/g, '<br>')
-                               +  "</div>";
+  // early way out if 'message' is null
+  if (!message || !message.length)
+    return;
+
+  // append message to the <body> node in the FTP console
+  var divNode = gDialog.ftpConsole.createElement("div");
+  divNode.setAttribute("type", type);
+  divNode.setAttribute("class", css);
+  divNode.innerHTML = message.replace(/[\r\n]+/g, '<br>');
+  gDialog.ftpConsole.body.appendChild(divNode);
 }
 
 function ftpErrorReport(msg) {

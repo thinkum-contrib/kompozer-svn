@@ -64,6 +64,7 @@ const kBlockOutlinesStyleSheet  = "chrome://editor/content/EditorBlockOutlines.c
 const kEditModeDesign  = 0;
 const kEditModeSplit   = 1;
 const kEditModeSource  = 2;
+const kEditModeText    = 3; // not used yet
 const kEditModeMenuIDs = ["editDesignMode",   "editSplitMode",   "editSourceMode"];
 const kEditModeTabIDS  = ["DesignModeButton", "SplitModeButton", "SourceModeButton"];
 // </Kaze>
@@ -79,9 +80,10 @@ const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 // Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
 const kColoredSourceView = false;
 
-var gPreviousNonSourceEditMode = 1;
+var gPreviousNonSourceEditMode    = kEditModeDesign;
+//var gPreviousNonSourceDisplayMode = kDisplayModeNormal;
 var gEditorDisplayMode    = -1;
-var gEditorEditMode       = 0;      // Kaze
+var gEditorEditMode       = -1;     // Kaze
 var gEditorFocus          = false;  // Kaze
 var gDocWasModified       = false;  // Check if clean document, if clean then unload when user "Opens"
 var gContentWindow        = 0;
@@ -581,8 +583,11 @@ var gEditorDocumentObserver =
           // (Windows may load with local file paths)
           SetSaveAndPublishUI(GetDocumentUrl());
 
-          // Start in "Normal" edit mode
+          // Start in "Normal" display mode
           SetDisplayMode(kDisplayModeNormal);
+
+          // Start in "Design" edit mode
+          SetEditMode(gTabEditor.IsTextDocument() ? kEditModeText : kEditModeDesign);
 
           // and place the selection in the body to update the rulers
           if (gTabEditor.IsTextDocument() || gTabEditor.IsHtmlFragment())
@@ -1957,6 +1962,76 @@ function GetObjectForProperties()
   return null;
 }
 
+function SetDisplayMode(mode)
+{
+  if (!IsHTMLEditor())
+    return false;
+
+  // Already in requested mode:
+  //  return false to indicate we didn't switch
+  if (mode == gEditorDisplayMode)
+    return false;
+
+  GetCurrentEditorElement().setAttribute("displaymode", mode);
+
+  NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
+
+  var previousMode = gEditorDisplayMode;
+  gEditorDisplayMode = mode;
+
+  // Save the last non-source mode so we can cancel source editing easily
+  gPreviousNonSourceDisplayMode = mode;
+
+  // Load/unload appropriate override style sheet
+  try {
+    var editor = GetCurrentEditor();
+    editor.QueryInterface(nsIEditorStyleSheets);
+    editor instanceof Components.interfaces.nsIHTMLObjectResizer;
+
+    switch (mode)
+    {
+      case kDisplayModePreview:
+        // Disable all extra "edit mode" style sheets 
+        editor.enableStyleSheet(kNormalStyleSheet, false);
+        editor.enableStyleSheet(kAllTagsStyleSheet, false);
+        editor.isImageResizingEnabled = true;
+        break;
+
+      case kDisplayModeNormal:
+        editor.addOverrideStyleSheet(kNormalStyleSheet);
+        // Disable ShowAllTags mode
+        editor.enableStyleSheet(kAllTagsStyleSheet, false);
+        editor.isImageResizingEnabled = true;
+        break;
+
+      case kDisplayModeAllTags:
+        editor.addOverrideStyleSheet(kNormalStyleSheet);
+        editor.addOverrideStyleSheet(kAllTagsStyleSheet);
+        // don't allow resizing in AllTags mode because the visible tags
+        // change the computed size of images and tables...
+        if (editor.resizedObject) {
+          editor.hideResizers();
+        }
+        editor.isImageResizingEnabled = false;
+        break;
+    }
+  } catch(e) {}
+
+  // update commands to disable or re-enable stuff
+  //window.updateCommands("mode_switch");
+
+  // Set the selected tab at bottom of window.
+  // (Note: Setting "selectedItem = mode" won't redraw tabs when menu is used)
+  document.getElementById("DisplayModeTabs").selectedItem = document.getElementById(kDisplayModeTabIDS[mode]);
+
+  // Uncheck previous menuitem and set new check since toolbar may have been used
+  if (previousMode >= 0)
+    document.getElementById(kDisplayModeMenuIDs[previousMode]).setAttribute("checked","false");
+  document.getElementById(kDisplayModeMenuIDs[mode]).setAttribute("checked","true");
+
+  return true;
+}
+
 function SetEditMode(mode)
 {
   if (!IsHTMLEditor())
@@ -2189,113 +2264,107 @@ function SetEditMode(mode)
 
 function SetEditUI(mode)
 { // Kaze: this function has been adapted from the former "SetDisplayMode" one
-  if (!IsHTMLEditor())
-    return false;
+  //if (!IsHTMLEditor())
+    //return false;
 
   // Already in requested mode:
   //  return false to indicate we didn't switch
   if (mode == gEditorEditMode)
     return false;
+  dump("switching to mode " + mode + "\n");
 
-  GetCurrentEditorElement().setAttribute("displaymode", mode);
+  GetCurrentEditorElement().setAttribute("editmode", mode);
 
-  NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
+  // XXX
+  //NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
+  if (mode == kEditModeText)
+    NotifyProcessors(kProcessorsWhenDisplayModeChanges, kEditModeSource);
+  else
+    NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
 
   var previousMode = gEditorEditMode;
   gEditorEditMode = mode;
 
-  // Load/unload appropriate override style sheet
-  try {
-    var editor = GetCurrentEditor();
-    editor.QueryInterface(nsIEditorStyleSheets);
-    editor instanceof Components.interfaces.nsIHTMLObjectResizer;
+  // show|hide display|edit mode selectors
+  document.getElementById("EditModeToolbar").hidden = (mode == kEditModeText);
+  var hiddenElementIDs = [
+    "DisplayModeTabs",
+    "viewNormalMode", "viewAllTagsMode", "viewPreviewMode",
+    "editDesignMode", "editSplitMode", "editSourceMode",
+    "viewSep1", "viewSep2", "viewSep3",
+    "blockOutlines",
+    "structSpacer"
+  ];
+  for (var i = 0; i < hiddenElementIDs.length; i++)
+    document.getElementById(hiddenElementIDs[i]).hidden = (mode >= kEditModeSource);
 
-    // <Kaze> implement "design" and "split" modes
-    var splitter    = document.getElementById("browser-splitter");
-    var displayTabs = document.getElementById("DisplayModeTabs")
+  // show|hide source deck and splitter
+  var splitter = document.getElementById("browser-splitter");
+  if (mode == kEditModeSplit) {
+    gSourceBrowserDeck.removeAttribute("collapsed");
+    splitter.setAttribute("state", "expand");
+    splitter.setAttribute("hidden", "false");
+    // display the current node's source
+    viewNodeSource(gLastFocusNode);
+  }
+  else {
+    gSourceBrowserDeck.setAttribute("collapsed", "true");
+    splitter.setAttribute("state", "collapsed");
+    splitter.setAttribute("hidden", "true");
+  }
 
-    switch (mode) {
-      case kEditModeDesign:
-      case kEditModeSource:
-        displayTabs.hidden = (mode == kEditModeSource);
-        gSourceBrowserDeck.setAttribute("collapsed", "true");
-        splitter.setAttribute("state", "collapsed");
-        splitter.setAttribute("hidden", "true");
-        break;
-
-      case kEditModeSplit:
-        displayTabs.hidden = false;
-        gSourceBrowserDeck.removeAttribute("collapsed");
-        splitter.setAttribute("state", "expand");
-        splitter.setAttribute("hidden", "false");
-        // display the current node's source
-        viewNodeSource(gLastFocusNode);
-        break;
-    }
-    // </Kaze>
-  } catch(e) {}
+  // show|hide rulers
+  document.getElementById("hRuler").hidden        = (mode == kEditModeText);
+  document.getElementById("vRuler").collapsed     = (mode == kEditModeText);
+  document.getElementById("viewRulers").hidden    = (mode == kEditModeText);
+  document.getElementById("viewSepRulers").hidden = (mode == kEditModeText);
 
   ResetStructToolbar();
-  if (mode == kEditModeSource)
-  {
+
+  // enable|disable inline spell checking and format toolbars
+  if (mode >= kEditModeSource) {
     // we need to disable inline spell checking
     gWasInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
     gPrefs.setBoolPref("spellchecker.enablerealtimespell", false);  
-
-    // Switch to the sourceWindow (second in the deck)
-    gContentWindowDeck.selectedIndex = 1;
-
-    // Hide the formatting toolbar if not already hidden
-    gFormatToolbarHidden1      = gFormatToolbar1.hidden;
-    gFormatToolbarHidden2      = gFormatToolbar2.hidden;
-    gFormatToolbar1.disabled   = true;
-    gFormatToolbar2.disabled   = true;
-    gViewFormatToolbar1.hidden = true;
-    gViewFormatToolbar2.hidden = true;
-
-    gSourceContentWindow.contentWindow.focus();
   }
-  else
-  {
-    // do we need to re-enable inline spell checking ?
-    if (previousMode == kEditModeSource)
-    {
+  else {
+    if (previousMode >= kEditModeSource) {
+      // re-enable inline spell checking
       var showDisableSpellCheckWarning = gPrefs.getBoolPref("editor.showDisableSpellCheckWarning");
-      if (showDisableSpellCheckWarning)
-      {
+      if (showDisableSpellCheckWarning) {
         var isSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
         if (gWasInlineSpellCheckerEnabled || isSpellCheckerEnabled)
           window.openDialog("chrome://editor/content/confirmInlineSpellChecking.xul", "_blank", "chrome,close=no,titlebar,modal", "");
-      }
-      else
+      } else
         gPrefs.setBoolPref("spellchecker.enablerealtimespell", gWasInlineSpellCheckerEnabled)
     }
 
     // Save the last non-source mode so we can cancel source editing easily
     gPreviousNonSourceEditMode = mode;
+  }
 
-    // Switch to the normal editor (first in the deck)
+  // toggle from/to sourceWindow
+  if (mode == kEditModeSource) {      // Switch to the sourceWindow (second in the deck)
+    gContentWindowDeck.selectedIndex = 1;
+    gSourceContentWindow.contentWindow.focus();
+  } else {                            // Switch to the normal editor (first in the deck)
     gContentWindowDeck.selectedIndex = 0;
-
-    // Restore menus and toolbars
-    gViewFormatToolbar1.hidden = false;
-    gViewFormatToolbar2.hidden = false;
-
     gContentWindow.focus();
   }
 
   // update commands to disable or re-enable stuff
   window.updateCommands("mode_switch");
 
-  // Set the selected tab at bottom of window:
-  // (Note: Setting "selectedIndex = mode" won't redraw tabs when menu is used.)
-  document.getElementById("EditModeTabs").selectedItem = document.getElementById(kEditModeTabIDS[mode]);
-
-  // Uncheck previous menuitem and set new check since toolbar may have been used
-  if (previousMode >= 0)
-    document.getElementById(kEditModeMenuIDs[previousMode]).setAttribute("checked","false");
-  document.getElementById(kEditModeMenuIDs[mode]).setAttribute("checked","true");
-  
+  // update mode selector widgets
+  if (mode != kEditModeText) {
+    // Set the selected tab at bottom of window.
+    // (Note: Setting "selectedItem = mode" won't redraw tabs when menu is used)
+    document.getElementById("EditModeTabs").selectedItem = document.getElementById(kEditModeTabIDS[mode]);
+    // Uncheck previous menuitem and set new check since toolbar may have been used
+    if ((previousMode >= 0) && (previousMode != kEditModeText))
+      document.getElementById(kEditModeMenuIDs[previousMode]).setAttribute("checked","false");
+    document.getElementById(kEditModeMenuIDs[mode]).setAttribute("checked","true");
+  }
 
   return true;
 }
@@ -2320,10 +2389,7 @@ function FinishHTMLSource()
       if (beginHead == -1)
       {
         AlertWithTitle(GetString("Alert"), GetString("NoHeadTag"));
-        //cheat to force back to Source Mode
-        // Kaze
-        //gEditorDisplayMode = kDisplayModePreview;
-        //SetDisplayMode(kEditModeSource);
+        // cheat to force back to Source Mode
         gEditorEditMode = kEditModeDesign;
         SetEditMode(kEditModeSource);
         throw Components.results.NS_ERROR_FAILURE;
@@ -2333,10 +2399,7 @@ function FinishHTMLSource()
       if (beginBody == -1)
       {
         AlertWithTitle(GetString("Alert"), GetString("NoBodyTag"));
-        //cheat to force back to Source Mode
-        // Kaze
-        //gEditorDisplayMode = kDisplayModePreview;
-        //SetDisplayMode(kEditModeSource);
+        // cheat to force back to Source Mode
         gEditorEditMode = kEditModeDesign;
         SetEditMode(kEditModeSource);
         throw Components.results.NS_ERROR_FAILURE;
@@ -2346,76 +2409,6 @@ function FinishHTMLSource()
 
   // Switch edit modes -- converts source back into DOM document
   SetEditMode(gPreviousNonSourceEditMode);
-}
-
-function SetDisplayMode(mode)
-{
-  if (!IsHTMLEditor())
-    return false;
-
-  // Already in requested mode:
-  //  return false to indicate we didn't switch
-  if (mode == gEditorDisplayMode)
-    return false;
-
-  GetCurrentEditorElement().setAttribute("displaymode", mode);
-
-  NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
-
-  var previousMode = gEditorDisplayMode;
-  gEditorDisplayMode = mode;
-
-  // Save the last non-source mode so we can cancel source editing easily
-  gPreviousNonSourceDisplayMode = mode;
-
-  // Load/unload appropriate override style sheet
-  try {
-    var editor = GetCurrentEditor();
-    editor.QueryInterface(nsIEditorStyleSheets);
-    editor instanceof Components.interfaces.nsIHTMLObjectResizer;
-
-    switch (mode)
-    {
-      case kDisplayModePreview:
-        // Disable all extra "edit mode" style sheets 
-        editor.enableStyleSheet(kNormalStyleSheet, false);
-        editor.enableStyleSheet(kAllTagsStyleSheet, false);
-        editor.isImageResizingEnabled = true;
-        break;
-
-      case kDisplayModeNormal:
-        editor.addOverrideStyleSheet(kNormalStyleSheet);
-        // Disable ShowAllTags mode
-        editor.enableStyleSheet(kAllTagsStyleSheet, false);
-        editor.isImageResizingEnabled = true;
-        break;
-
-      case kDisplayModeAllTags:
-        editor.addOverrideStyleSheet(kNormalStyleSheet);
-        editor.addOverrideStyleSheet(kAllTagsStyleSheet);
-        // don't allow resizing in AllTags mode because the visible tags
-        // change the computed size of images and tables...
-        if (editor.resizedObject) {
-          editor.hideResizers();
-        }
-        editor.isImageResizingEnabled = false;
-        break;
-    }
-  } catch(e) {}
-
-  // update commands to disable or re-enable stuff
-  //window.updateCommands("mode_switch");
-
-  // Set the selected tab at bottom of window:
-  // (Note: Setting "selectedIndex = mode" won't redraw tabs when menu is used.)
-  document.getElementById("DisplayModeTabs").selectedItem = document.getElementById(kDisplayModeTabIDS[mode]);
-
-  // Uncheck previous menuitem and set new check since toolbar may have been used
-  if (previousMode >= 0)
-    document.getElementById(kDisplayModeMenuIDs[previousMode]).setAttribute("checked","false");
-  document.getElementById(kDisplayModeMenuIDs[mode]).setAttribute("checked","true");
-
-  return true;
 }
 
 function EditorToggleStyleSheet(ref)
@@ -2505,8 +2498,15 @@ function UpdateWindowTitle()
   // check if current file has been modified
   gTabEditor.CheckModified();
 
+  // XXX
+  if (gTabEditor.IsTextDocument())
+    SetEditMode(kEditModeText);
+
   // adapt UI if the current document is a text one
-  HideUIElementsForPlainTextMode();
+  //HideUIElementsForPlainTextMode();
+  //if (gTabEditor.IsTextDocument()) {
+    //document.getElementById("EditModeToolbar").hidden = textMode;
+  //}
 }
 
 function BuildRecentPagesMenu()
@@ -3251,7 +3251,7 @@ function HideUIElementsForPlainTextEditor()
 
   try {
     GetCurrentEditorElement().editortype = "text";
-  } catch (e) { dump (e)+"\n"; }
+  } catch (e) { dump(e+"\n"); }
 
   // Hide or disable UI not used for plaintext editing
   HideItem("FormatToolbar");
@@ -3315,8 +3315,8 @@ function HideUIElementsForPlainTextMode()
 
     "DisplayModeTabs",  "viewNormalMode",   "viewAllTagsMode", "viewPreviewMode",
     "EditModeTabs",     "editDesignMode",   "editSplitMode",   "editSourceMode",
-    "SourceBrowserDeck",
-    "browser-splitter",
+    //"SourceBrowserDeck",
+    //"browser-splitter",
 
     "insertMenu",
     "formatMenu",
@@ -3352,6 +3352,9 @@ function HideUIElementsForPlainTextMode()
   } catch(e) {
     dump(textModeElements[i] + "\n");
   }
+  var tmpMode = gEditorEditMode;
+  SetEditUI(textMode ? kEditModeDesign : gEditorEditMode);
+  gEditorEditMode = tmpMode;
 
 }
 
@@ -4436,7 +4439,7 @@ function _UpdateRulerRequestListener()
 
   // Kaze: this looks like it's not enough, see editorRulers.js line 75
   if (document.getElementById("tabeditor").getAttribute("collapserulers") == "true" ||
-      gEditorEditMode == kEditModeSource)
+      gEditorEditMode >= kEditModeSource)
     return; // early way out if the rulers are hidden...
 
   var editor = GetCurrentEditor();

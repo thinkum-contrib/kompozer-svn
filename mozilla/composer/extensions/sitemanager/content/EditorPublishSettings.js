@@ -145,7 +145,7 @@ function SetPublishItemStyle(item)
 }
 
 function AddNewSite()
-{
+{ /* Old behaviour (Composer / Nvu)
   // Save any pending changes locally first
   if (!ApplyChanges())
     return;
@@ -155,6 +155,40 @@ function AddNewSite()
   gAddNewSite = true;
 
   SetTextboxFocus(gDialog.SiteNameInput);
+  */
+
+  // New behaviour (KompoZer):
+  // ask for a directory before creating a new site
+
+  // Directory picker
+  var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
+  try {
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    fp.init(window, GetString("SelectSiteDirectory"), nsIFilePicker.modeGetFolder);
+  }
+  catch(ex) {}
+
+  // Update settings if a valid directory has been chosen
+  if (fp.show() == nsIFilePicker.returnOK && fp.file.path && fp.file.path.length > 0) {
+    // Save any pending changes locally first
+    if (!ApplyChanges())
+      return;
+
+    // Initialize Setting widgets to none of the selected sites
+    InitSiteSettings(-1);
+    gAddNewSite = true;
+
+    // Add the site name and patch
+    gDialog.LocalPathInput.value = fp.file.path;
+    gDialog.SiteNameInput.value  = fp.file.leafName;
+    SetTextboxFocus(gDialog.SiteNameInput);
+
+    // Update site list
+    UpdateSettings();
+
+    // Kaze: required with Gecko 1.8.1
+    gSettingsChanged = true;
+  }
 }
 
 function RemoveSite()
@@ -258,7 +292,7 @@ function InitSiteSettings(selectedSiteIndex)
   gDialog.PasvModeInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].passiveMode  : false;
   gDialog.ipv6ModeInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].IPv6         : false;
   gDialog.SecurityInput.selectedIndex = haveData ? gPublishSiteData[gCurrentSiteIndex].security     : 0;
-  gDialog.ftpPortInput.value          = haveData ? gPublishSiteData[gCurrentSiteIndex].ftpPort      : "";
+  gDialog.ftpPortInput.value          = haveData ? gPublishSiteData[gCurrentSiteIndex].ftpPort      : "21";
   gDialog.TreeSyncInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].treeSync     : false;
 
   var savePassord = haveData && gPasswordManagerOn;
@@ -438,17 +472,12 @@ function SelectSiteDirectory()
   var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
   try {
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    fp.init(window, "foobar" /*dialog.bundle.getString("chooseFileDialogTitle")*/, nsIFilePicker.modeGetFolder);
+    fp.init(window, GetString("SelectSiteDirectory"), nsIFilePicker.modeGetFolder);
 
-    /* Kaze: this button is now used to select the local site directory path
-     *if (fp.show() == nsIFilePicker.returnOK && fp.fileURL.spec && fp.fileURL.spec.length > 0)
-     *  gDialog.PublishUrlInput.value = fp.fileURL.spec;
-     */
     if (fp.show() == nsIFilePicker.returnOK && fp.file.path && fp.file.path.length > 0)
       gDialog.LocalPathInput.value = fp.file.path;
   }
-  catch(ex) {
-  }
+  catch(ex) {}
 
   // Kaze: required with Gecko 1.8.1
   gSettingsChanged = true;

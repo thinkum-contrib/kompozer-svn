@@ -39,6 +39,7 @@
       <menupopup id="SiteList" onpopupshowing="CheckIfSiteListUpdated()"/>
     </menulist>
     <hbox align="center">
+      <spacer flex="1"/>
       <label value="&filterControl.label;"/>
       <menulist id="FilterDropDown" oncommand="SelectsFilter(this)">
         <menupopup id="sitemanagerFilter">
@@ -62,7 +63,7 @@
       <toolbarseparator/>
     </hbox>
 
-    <tabbox id="sitemanagerTabbox" oncommand="onSelectLocalRemote(this);">
+    <tabbox id="sitemanagerTabbox" oncommand="onSelectLocalRemote(this);" hidden="true">
       <tabs>
         <tab id="localTab"   label="&localTab.label;"  selected="true"/>
         <tab id="remoteTab"  label="&remoteTab.label;"/>
@@ -105,7 +106,10 @@
     <splitter id="browser-splitter" collapse="after">
       <grippy />
     </splitter>
-    <browser id="cmdLog" src="chrome://fireftp/content/blank.html" style="min-height: 3em;" persist="height" />
-    <label id="progressmeter" value=" "/>
+    <vbox persist="height">
+      <label id="cmdLabel" value="&ftpConsole.label;"/>
+      <browser id="cmdLog" src="chrome://fireftp/content/blank.html" style="min-height: 3em;" flex="1" />
+      <label id="progressmeter" value=" "/>
+    </vbox>
   </vbox>
 </page>
