@@ -1296,7 +1296,6 @@ function uploadFileOrDir() {
   if (!publishData)
     return;
 
-	alert("FTP connection");
   EnableAllUI(false);                      // disable the UI until the FTP transaction is done
   gDialog.ftpConsole.body.innerHTML = "";  // reset the FTP log window
   ftpConnect(publishData);                 // make sure we're connected to the related host
@@ -1314,7 +1313,6 @@ function uploadFileOrDir() {
 
   // ensure the destination directory exists before uploading the file
   //gFtp.changeWorkingDirectory(remoteDir, function() { ftpCheckDirectory(remoteDir); });
-	alert(gFtp.eventQueue.length + "\nFTP upload: \n" + localPath + "\n" + remotePath + "\n" + remoteDir);
   gFtp.changeWorkingDirectory(remoteDir, function() { ftpUploadFile(localPath, remotePath, remoteDir); });
 
   //gFtp.list(remotePath, ftpListDirectory, true);

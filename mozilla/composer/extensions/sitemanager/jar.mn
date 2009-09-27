@@ -61,11 +61,13 @@ comm.jar:
 
 classic.jar:
 % skin fireftp classic/1.0 %skin/classic/fireftp/
+    skin/classic/editor/icons/upload.png                     (content/images/upload.png)
     skin/classic/editor/icons/reload.png                     (content/images/reload.png)
     skin/classic/editor/icons/rename.png                     (content/images/rename.png)
     skin/classic/editor/icons/createdir.png                  (content/images/createdir.png)
     skin/classic/editor/icons/remove.png                     (content/images/remove.png)
     skin/classic/editor/icons/smallStop.png                  (content/images/smallStop.png)
+    skin/classic/editor/icons/upload-disabled.png            (content/images/upload-disabled.png)
     skin/classic/editor/icons/reload-disabled.png            (content/images/reload-disabled.png)
     skin/classic/editor/icons/rename-disabled.png            (content/images/rename-disabled.png)
     skin/classic/editor/icons/createdir-disabled.png         (content/images/createdir-disabled.png)

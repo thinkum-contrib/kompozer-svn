@@ -101,6 +101,15 @@
   list-style-image: url("chrome://editor/skin/icons/sitemanager.png");
 }
 
+#uploadButton {
+  list-style-image: url("chrome://editor/skin/icons/upload.png");
+}
+
+#uploadButton[disabled="true"] {
+  list-style-image: url("chrome://editor/skin/icons/upload-disabled.png") ! important;
+}
+
+
 #localTab { /* Kaze */
   list-style-image: url("chrome://editor/skin/icons/folder-local.png");
 }
