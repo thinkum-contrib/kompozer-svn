@@ -1,24 +1,40 @@
-/*
- * The contents of this file are subject to the Netscape Public
- * License Version 1.1 (the "License"); you may not use this file
- * except in compliance with the License. You may obtain a copy of
- * the License at http://www.mozilla.org/NPL/
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
- * Software distributed under the License is distributed on an "AS
- * IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
- * implied. See the License for the specific language governing
- * rights and limitations under the License.
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
  *
  * The Original Code is Mozilla Communicator client code, released
  * March 31, 1998.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation. Portions created by Netscape are
- * Copyright (C) 2001 Netscape Communications Corporation. All
- * Rights Reserved.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 2001
+ * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- */
+ *   Fabien Cazenave <kaze@kompozer.net>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either of the GNU General Public License Version 2 or later (the "GPL"),
+ * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 var gPublishSiteData;
 var gPublishDataChanged = false;
@@ -47,19 +63,26 @@ function Startup()
     retValue = window.arguments[0];
   }
 
-  gDialog.SiteList            = document.getElementById("SiteList");
-  gDialog.SiteNameInput       = document.getElementById("SiteNameInput");
-  gDialog.PublishUrlInput     = document.getElementById("PublishUrlInput");
-  gDialog.BrowseUrlInput      = document.getElementById("BrowseUrlInput");
-  gDialog.UsernameInput       = document.getElementById("UsernameInput");
-  gDialog.PasswordInput       = document.getElementById("PasswordInput");
-  gDialog.SavePassword        = document.getElementById("SavePassword");
-  gDialog.SetDefaultButton    = document.getElementById("SetDefaultButton");
-  gDialog.RemoveSiteButton    = document.getElementById("RemoveSiteButton");
-  gDialog.OkButton            = document.documentElement.getButton("accept");
+  gDialog.SiteList          = document.getElementById("SiteList");
+  gDialog.SiteNameInput     = document.getElementById("SiteNameInput");
+  gDialog.LocalPathInput    = document.getElementById("LocalPathInput");    // Kaze
+  gDialog.PublishUrlInput   = document.getElementById("PublishUrlInput");
+  gDialog.BrowseUrlInput    = document.getElementById("BrowseUrlInput");
+  gDialog.BrowsePrefixInput = document.getElementById("BrowsePrefixInput"); // Kaze
+  gDialog.UsernameInput     = document.getElementById("UsernameInput");
+  gDialog.PasswordInput     = document.getElementById("PasswordInput");
+  gDialog.PasvModeInput     = document.getElementById("PasvModeInput");     // Kaze
+  gDialog.ipv6ModeInput     = document.getElementById("ipv6ModeInput");     // Kaze
+  gDialog.SecurityInput     = document.getElementById("SecurityInput");     // Kaze
+  gDialog.ftpPortInput      = document.getElementById("ftpPortInput");      // Kaze
+  gDialog.TreeSyncInput     = document.getElementById("TreeSyncInput");     // Kaze
+  gDialog.SavePassword      = document.getElementById("SavePassword");
+  gDialog.SetDefaultButton  = document.getElementById("SetDefaultButton");
+  gDialog.RemoveSiteButton  = document.getElementById("RemoveSiteButton");
+  gDialog.OkButton          = document.documentElement.getButton("accept");
 
-  gPublishSiteData = GetPublishSiteData();
-  gDefaultSiteName = GetDefaultPublishSiteName();
+  gPublishSiteData     = GetPublishSiteData();
+  gDefaultSiteName     = GetDefaultPublishSiteName();
   gPreviousDefaultSite = gDefaultSiteName;
 
   gPasswordManagerOn = GetBoolPref("signon.rememberSignons");
@@ -83,7 +106,7 @@ function InitDialog()
 
     // uncomment next code line if you want preselection of the default
     // publishing site
-    //InitSiteSettings(gDefaultSiteIndex);
+    InitSiteSettings(gDefaultSiteIndex);
 
     SetTextboxFocus(gDialog.SiteNameInput);
   }
@@ -122,7 +145,7 @@ function SetPublishItemStyle(item)
 }
 
 function AddNewSite()
-{
+{ /* Old behaviour (Composer / Nvu)
   // Save any pending changes locally first
   if (!ApplyChanges())
     return;
@@ -132,6 +155,40 @@ function AddNewSite()
   gAddNewSite = true;
 
   SetTextboxFocus(gDialog.SiteNameInput);
+  */
+
+  // New behaviour (KompoZer):
+  // ask for a directory before creating a new site
+
+  // Directory picker
+  var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
+  try {
+    var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
+    fp.init(window, GetString("SelectSiteDirectory"), nsIFilePicker.modeGetFolder);
+  }
+  catch(ex) {}
+
+  // Update settings if a valid directory has been chosen
+  if (fp.show() == nsIFilePicker.returnOK && fp.file.path && fp.file.path.length > 0) {
+    // Save any pending changes locally first
+    if (!ApplyChanges())
+      return;
+
+    // Initialize Setting widgets to none of the selected sites
+    InitSiteSettings(-1);
+    gAddNewSite = true;
+
+    // Add the site name and patch
+    gDialog.LocalPathInput.value = fp.file.path;
+    gDialog.SiteNameInput.value  = fp.file.leafName;
+    SetTextboxFocus(gDialog.SiteNameInput);
+
+    // Update site list
+    UpdateSettings();
+
+    // Kaze: required with Gecko 1.8.1
+    gSettingsChanged = true;
+  }
 }
 
 function RemoveSite()
@@ -225,13 +282,21 @@ function InitSiteSettings(selectedSiteIndex)
   SetSelectedSiteIndex(selectedSiteIndex);
   var haveData = (gPublishSiteData && selectedSiteIndex != -1);
 
-  gDialog.SiteNameInput.value = haveData ? gPublishSiteData[selectedSiteIndex].siteName : "";
-  gDialog.PublishUrlInput.value = haveData ? gPublishSiteData[selectedSiteIndex].publishUrl : "";
-  gDialog.BrowseUrlInput.value = haveData ? gPublishSiteData[selectedSiteIndex].browseUrl : "";
-  gDialog.UsernameInput.value = haveData ? gPublishSiteData[selectedSiteIndex].username : "";
+  gDialog.SiteNameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].siteName   : "";
+  gDialog.PublishUrlInput.value   = haveData ? gPublishSiteData[selectedSiteIndex].publishUrl : "";
+  gDialog.BrowseUrlInput.value    = haveData ? gPublishSiteData[selectedSiteIndex].browseUrl  : "";
+  gDialog.UsernameInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].username   : "";
+  // Kaze: new prefs
+  gDialog.LocalPathInput.value        = haveData ? gPublishSiteData[selectedSiteIndex].localPath    : "";
+  gDialog.BrowsePrefixInput.value     = haveData ? gPublishSiteData[selectedSiteIndex].browsePrefix : "";
+  gDialog.PasvModeInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].passiveMode  : false;
+  gDialog.ipv6ModeInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].IPv6         : false;
+  gDialog.SecurityInput.selectedIndex = haveData ? gPublishSiteData[gCurrentSiteIndex].security     : 0;
+  gDialog.ftpPortInput.value          = haveData ? gPublishSiteData[gCurrentSiteIndex].ftpPort      : "21";
+  gDialog.TreeSyncInput.checked       = haveData ? gPublishSiteData[gCurrentSiteIndex].treeSync     : false;
 
   var savePassord = haveData && gPasswordManagerOn;
-  gDialog.PasswordInput.value = savePassord ? gPublishSiteData[selectedSiteIndex].password : "";
+  gDialog.PasswordInput.value  = savePassord ? gPublishSiteData[selectedSiteIndex].password : "";
   gDialog.SavePassword.checked = savePassord ? gPublishSiteData[selectedSiteIndex].savePassword : false;
 
   gDialog.SetDefaultButton.disabled = !haveData;
@@ -274,12 +339,15 @@ function UpdateSettings()
   }
 
   var newUrl = FormatUrlForPublishing(gDialog.PublishUrlInput.value);
-  if (!newUrl)
-  {
-    ShowInputErrorMessage(GetString("MissingPublishUrlError"), gDialog.PublishUrlInput);
-    return false;
-  }
-  if (!GetScheme(newUrl))
+  /* Kaze: a site is now allowed to have to publish URL
+   *if (!newUrl)
+   *{
+   *  ShowInputErrorMessage(GetString("MissingPublishUrlError"), gDialog.PublishUrlInput);
+   *  return false;
+   *}
+   */
+  //if (!GetScheme(newUrl))
+  if (newUrl && newUrl.length && !GetScheme(newUrl))
   {
     newUrl = "ftp://" + newUrl; 
     gDialog.PublishUrlInput.value = newUrl;
@@ -321,12 +389,20 @@ function UpdateSettings()
     gPublishSiteData[gCurrentSiteIndex].previousSiteName = newName;
   }
 
-  gPublishSiteData[gCurrentSiteIndex].siteName = newName;
-  gPublishSiteData[gCurrentSiteIndex].publishUrl = newUrl;
-  gPublishSiteData[gCurrentSiteIndex].browseUrl = FormatUrlForPublishing(gDialog.BrowseUrlInput.value);
-  gPublishSiteData[gCurrentSiteIndex].username = TrimString(gDialog.UsernameInput.value);
-  gPublishSiteData[gCurrentSiteIndex].password= gDialog.PasswordInput.value;
+  gPublishSiteData[gCurrentSiteIndex].siteName     = newName;
+  gPublishSiteData[gCurrentSiteIndex].publishUrl   = newUrl;
+  gPublishSiteData[gCurrentSiteIndex].browseUrl    = FormatUrlForPublishing(gDialog.BrowseUrlInput.value);
+  gPublishSiteData[gCurrentSiteIndex].username     = TrimString(gDialog.UsernameInput.value);
+  gPublishSiteData[gCurrentSiteIndex].password     = gDialog.PasswordInput.value;
   gPublishSiteData[gCurrentSiteIndex].savePassword = gDialog.SavePassword.checked;
+  // Kaze: new prefs
+  gPublishSiteData[gCurrentSiteIndex].localPath    = gDialog.LocalPathInput.value;
+  gPublishSiteData[gCurrentSiteIndex].browsePrefix = gDialog.BrowsePrefixInput.value;
+  gPublishSiteData[gCurrentSiteIndex].passiveMode  = gDialog.PasvModeInput.checked;
+  gPublishSiteData[gCurrentSiteIndex].IPv6         = gDialog.ipv6ModeInput.checked;
+  gPublishSiteData[gCurrentSiteIndex].security     = gDialog.SecurityInput.selectedIndex;
+  gPublishSiteData[gCurrentSiteIndex].ftpPort      = gDialog.ftpPortInput.value;
+  gPublishSiteData[gCurrentSiteIndex].treeSync     = gDialog.TreeSyncInput.checked;
 
   if (gCurrentSiteIndex == gDefaultSiteIndex)
     gDefaultSiteName = newName;
@@ -356,7 +432,8 @@ function UpdateSettings()
 
 function doHelpButton()
 {
-  openHelp('comp-doc-publish-settings','chrome://help/locale/nvu.rdf');
+  //openHelp("comp-doc-publish-site-settings");
+  openHelp("comp-doc-publish-settings-publish-settings"); // Kaze: this might have changed with Nvu/KompoZer?
 }
 
 function onAccept()
@@ -392,13 +469,30 @@ function onCancel()
 
 function SelectSiteDirectory()
 {
+  var nsIFilePicker = Components.interfaces.nsIFilePicker; // Kaze
   try {
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-    fp.init(window, "foobar" /*dialog.bundle.getString("chooseFileDialogTitle")*/, nsIFilePicker.modeGetFolder);
+    fp.init(window, GetString("SelectSiteDirectory"), nsIFilePicker.modeGetFolder);
 
-    if (fp.show() == nsIFilePicker.returnOK && fp.fileURL.spec && fp.fileURL.spec.length > 0)
-      gDialog.PublishUrlInput.value = fp.fileURL.spec;
+    if (fp.show() == nsIFilePicker.returnOK && fp.file.path && fp.file.path.length > 0)
+      gDialog.LocalPathInput.value = fp.file.path;
   }
-  catch(ex) {
-  }
+  catch(ex) {}
+
+  // Kaze: required with Gecko 1.8.1
+  gSettingsChanged = true;
 }
+
+// Courtesy of Mime Cuvalo (FireFTP)
+
+function onSecurityChange(menulist) {
+  gDialog.ftpPortInput.value = (menulist.value == "ssl") ? 990 : 21;
+}
+
+function doPortCheck(textbox) {
+  var port = parseInt(textbox.value);
+  if (!port || port < 1 || port > 65535)
+    port = (gDialog.SecurityInput.value == "ssl") ? 990 : 21;
+  textbox.value = port;
+}
+

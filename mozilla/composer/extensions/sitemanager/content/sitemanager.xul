@@ -76,6 +76,7 @@
         <popup id="siteManagerContext" onpopupshowing="initSiteManagerContextMenu(this)">
           <menuitem id="createDirItem"   label="&createDirButton.tooltip;" oncommand="NewSubDir()"         disabled="true"/>
           <menuseparator />
+          <menuitem id="editItem"        label="&editItem.label;"          oncommand="editItem()"/>
           <menuitem id="openItem"        label="&openItem.label;"          oncommand="OpenItem()"/>
           <menuitem id="openAsText"      label="&openAsText.label;"        oncommand="OpenItem('text')"    hidden="true"/>
           <menuitem id="openRemote"      label="&openRemote.label;"        oncommand="OpenRemote()"        hidden="true"/>
@@ -109,7 +110,7 @@
     </splitter>
     <vbox persist="height">
       <label id="cmdLabel" value="&ftpConsole.label;"/>
-      <browser id="cmdLog" src="chrome://fireftp/content/blank.html" style="min-height: 3em;" flex="1" />
+      <browser id="cmdLog" src="chrome://editor/content/ftpConsole.html" style="min-height: 3em;" flex="1" />
       <label id="progressmeter" value=" "/>
     </vbox>
   </vbox>

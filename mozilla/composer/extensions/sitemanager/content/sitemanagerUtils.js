@@ -134,38 +134,58 @@ function initSiteManagerContextMenu(popup) {
   var index = gDialog.SiteTree.view.selection.currentIndex;
   var item  = gFilteredItemsArray[index];
 
-  gContextMenu.openRemote.hidden  = true;
+  gContextMenu.editItem.hidden    = true;
+  gContextMenu.openItem.hidden    = true;
   gContextMenu.openAsText.hidden  = true;
+  gContextMenu.openRemote.hidden  = true;
   gContextMenu.insertImage.hidden = true;
   gContextMenu.previewItem.hidden = true;
   gContextMenu.previewSep.hidden  = true;
 
+  gContextMenu.editItem.removeAttribute("style");
   gContextMenu.openItem.removeAttribute("style");
   gContextMenu.insertImage.removeAttribute("style");
 
   if (item) {
-    var disabled = (item.level == 0) ? "true" : "false";
-    gContextMenu.renameItem.setAttribute("disabled", disabled);
-    gContextMenu.removeItem.setAttribute("disabled", disabled);
-    gContextMenu.createDirItem.setAttribute("disabled", "false");
 
+    // folder
     if (item.isContainer) {
       gContextMenu.openRemote.hidden = false;
-      gContextMenu.openItem.removeAttribute("style");
+      // disable create|rename|remove for web sites
+      var disabled = (item.level == 0) ? "true" : "false";
+      gContextMenu.renameItem.setAttribute("disabled", disabled);
+      gContextMenu.removeItem.setAttribute("disabled", disabled);
+      gContextMenu.createDirItem.setAttribute("disabled", "false");
     }
-    else {
-      if (IsSelectedByFilter("images", item.url)) {
-        gContextMenu.insertImage.setAttribute("style", "font-weight: bold");
-        gContextMenu.insertImage.hidden = false;
-      } else {
-        gContextMenu.openItem.setAttribute("style", "font-weight: bold");
-      }
 
+    // image file
+    else if (IsSelectedByFilter("images", item.url)) {
+      gContextMenu.insertImage.setAttribute("style", "font-weight: bold");
+      gContextMenu.insertImage.hidden = false;
+      gContextMenu.openItem.hidden    = false;
+    }
+
+    // text file: html|css|txt
+    else if (IsSelectedByFilter("html", item.url)
+          || IsSelectedByFilter("css",  item.url)
+          || IsSelectedByFilter("text", item.url)) {
+
+      // edit in Composer or open in a text editor
+      gContextMenu.openAsText.hidden  = false;
+      gContextMenu.editItem.hidden    = false;
+      gContextMenu.editItem.setAttribute("style", "font-weight: bold");
+
+      // HTML files can be previewed in a browser
       if (IsSelectedByFilter("html", item.url)) {
-        gContextMenu.openAsText.hidden  = false;
         gContextMenu.previewSep.hidden  = false;
         gContextMenu.previewItem.hidden = false;
       }
+    }
+
+    // other file (media or unsupported)
+    else {
+      gContextMenu.openItem.hidden = false;
+      gContextMenu.openItem.setAttribute("style", "font-weight: bold");
     }
   }
 }
@@ -176,7 +196,7 @@ function OpenItem(helper) {
   var url   = item.url;
 
   if (!helper) {
-    if (IsSelectedByFilter("html", url)) {
+    if (IsSelectedByFilter("html", url) || (IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url))) {
       EditDocument(url);
       return;
     }
@@ -267,11 +287,11 @@ function GetItemProperties(url, recursive) {
     var index = gDialog.SiteTree.view.selection.currentIndex;
     url = gFilteredItemsArray[index].url;
   }
-	//localFile.showProperties(gHelpers.newLocalFile(url));
-	var file = gHelpers.newLocalFile(url);
-	var gSlash = "/";
+  //localFile.showProperties(gHelpers.newLocalFile(url));
+  var file = gHelpers.newLocalFile(url);
+  var gSlash = "/";
 
-	// taken from FireFTP
+  // taken from FireFTP
     try {
       var date = new Date(file.lastModifiedTime);
       //date     = gMonths[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear() + ' ' + date.toLocaleTimeString();
@@ -334,6 +354,6 @@ function GetItemProperties(url, recursive) {
 }
 
 function debug(ex) {
-	return gHelpers.trace(ex);
+  return gHelpers.trace(ex);
 }
 

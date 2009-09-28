@@ -300,6 +300,7 @@ function Startup()
 
   // Kaze: gContextMenu is added to handle the sitemanager context menu
   gContextMenu = {
+    editItem      : document.getElementById("editItem"),
     openItem      : document.getElementById("openItem"),
     openRemote    : document.getElementById("openRemote"),
     openAsText    : document.getElementById("openAsText"),
@@ -1216,8 +1217,8 @@ function openFile(e) {
     return;
   }
 
-  // if the item is a HTML file, open in a new Composer
-  if (IsSelectedByFilter("html", url)) {
+  // if the item is an HTML or text file, open in a new Composer
+  if (IsSelectedByFilter("html", url) || IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url)) {
     EditDocument(url);
     return;
   }
@@ -1232,33 +1233,10 @@ function openFile(e) {
 
   // if the item is a local file, open with an external application
   if (IsFileUrl(url)) {
-    var helper = null;
-    if (IsSelectedByFilter("text", url) || IsSelectedByFilter("css", url))
-      helper = "text";
-    else if (IsSelectedByFilter("media", url))
-      helper = "media";
-
-    if (helper) {
-      // open local file with appropriate helper app
-      var error = gHelpers.OpenUrlWith(url, helper);
-      if (error)
-        if (helper == "text")
-          EditDocument(url);
-      /*
-       *try {
-       *  gHelpers.OpenUrlWith(url, helper);
-       *} catch (e) {
-       *  EnableAllUI(false);
-       *  window.top.document.getElementById("tabeditor").endNavigationCallback = EndNavigation;
-       *  window.top.document.open(url, window.top, true, true);
-       *}
-       */
-    }
-    else {
-      // open local file with system default
-      gHelpers.OpenUrl(url);
-    }
-    return;
+    if (IsSelectedByFilter("media", url))
+      gHelpers.OpenUrlWith(url, "media");  // open with a media player
+    else
+      gHelpers.OpenUrl(url);               // open local file with system default
   }
   
 }

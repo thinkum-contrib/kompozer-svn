@@ -299,7 +299,7 @@ classic.jar:
     skin/classic/editor/icons/strong-hover.gif                (skin/icons/strong-hover.gif)
     skin/classic/editor/icons/strong.gif                      (skin/icons/strong.gif)
     skin/classic/editor/icons/table.png                       (skin/icons/table.png)
-    skin/classic/editor/icons/throbber.png                    (skin/icons/throbber.png)
++   skin/classic/editor/icons/throbber.png                    (skin/icons/throbber.png)
     skin/classic/editor/icons/topGlued-active.gif             (skin/icons/topGlued-active.gif)
     skin/classic/editor/icons/topGlued-disabled.gif           (skin/icons/topGlued-disabled.gif)
     skin/classic/editor/icons/topGlued-hover.gif              (skin/icons/topGlued-hover.gif)
