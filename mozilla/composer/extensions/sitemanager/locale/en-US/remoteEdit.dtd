@@ -1,9 +1,0 @@
-<!ENTITY title          "Remote Edit">
-
-<!ENTITY file.label     "Editing: ">
-<!ENTITY upload.label   "Upload">
-<!ENTITY exit.label     "Exit">
-<!ENTITY note.label     "Warning: FireFTP doesn't lock files so it is unsafe to save the file while uploading.">
-
-<!ENTITY upload.access  "U">
-<!ENTITY exit.access    "E">
