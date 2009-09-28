@@ -51,6 +51,7 @@ gFtp.debug     = function(ex) { dump(ex + "\n") };
  */
 
 function ftpConnect(publishData) {
+  var reconnected = false;
   gFtp.host     = publishData.publishUrl.replace(/^ftp:\/*/, '').replace(/\/$/, '');
   gFtp.port     = publishData.ftpPort;
   gFtp.login    = publishData.username;
@@ -81,14 +82,23 @@ function ftpCheckQueue() {
     EnableAllUI(true);
 }
 
-function ftpCheckDirectory(path) {
-  if (path != gFtp.currentWorkingDir) // the directory doesn't exist, we have to create it
-    gFtp.makeDirectory(path);
+function ftpCheckDirectory(remoteDir) {
+  // ensure remoteDir exists
+  if ( remoteDir.length
+   && (remoteDir != "/")
+   && (remoteDir != gFtp.currentWorkingDir)
+   && (remoteDir != gFtp.currentWorkingDir + "/")
+  ) // the directory doesn't exist, we have to create it
+    gFtp.makeDirectory(remoteDir);
 }
 
 function ftpUploadFile(localPath, remotePath, remoteDir) {
-  if (remoteDir != gFtp.currentWorkingDir) {
-    // the directory doesn't exist, we have to create it
+  // ensure remoteDir exists
+  if ( remoteDir.length
+   && (remoteDir != "/")
+   && (remoteDir != gFtp.currentWorkingDir)
+   && (remoteDir != gFtp.currentWorkingDir + "/")
+  ) { // the directory doesn't exist, we have to create it
     var dirs = remoteDir.split("/");
     var dir  = "";
     for (var i = 1; i < dirs.length; i++) {
@@ -97,6 +107,7 @@ function ftpUploadFile(localPath, remotePath, remoteDir) {
       //gFtp.changeWorkingDirectory(dir, function() { ftpCheckDirectory(dir); });
     }
   }
+
   // now we're sure the remote dir exists, we can upload the file
   gFtp.upload(localPath, remotePath, false, -1, ftpEndRequest);
 }

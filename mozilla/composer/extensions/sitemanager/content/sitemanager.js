@@ -1296,31 +1296,35 @@ function uploadFileOrDir() {
   if (!publishData)
     return;
 
-  EnableAllUI(false);                      // disable the UI until the FTP transaction is done
-  gDialog.ftpConsole.body.innerHTML = "";  // reset the FTP log window
-  ftpConnect(publishData);                 // make sure we're connected to the related host
+  // disable directories for now
+  if ((item.level == 0) || item.isContainer)
+    return;
 
+  // UI
+  EnableAllUI(false);                        // disable the UI until the FTP transaction is done
+  gDialog.ftpConsole.body.innerHTML = "";    // reset the FTP log window
+
+  // local/remote paths
   var sitePath   = publishData.localPath;
   var localPath  = gHelpers.newLocalFile(item.url).path.replace("//", "/");
   var remotePath = localPath.replace(sitePath, "/").replace("\\", "/").replace("//", "/");
-
-  if ((item.level == 0) || item.isContainer) // disable directories for now
-    return;
-
   var remoteDir  = remotePath.replace(/\/[^\/]*$/, "");
   if (!remoteDir.length)
     remoteDir = "/";
 
-  // ensure the destination directory exists before uploading the file
-  //gFtp.changeWorkingDirectory(remoteDir, function() { ftpCheckDirectory(remoteDir); });
-  gFtp.changeWorkingDirectory(remoteDir, function() { ftpUploadFile(localPath, remotePath, remoteDir); });
+  // upload file
+  ftpConnect(publishData);                   // make sure we're connected to the related host
+  if (remoteDir == "/")
+    ftpUploadFile(localPath, remotePath, remoteDir);
+  else                                       // ensure the destination directory exists before uploading the file
+    gFtp.changeWorkingDirectory(remoteDir, function() { ftpUploadFile(localPath, remotePath, remoteDir); });
 
+  //gFtp.changeWorkingDirectory(remoteDir, function() { ftpCheckDirectory(remoteDir); });
   //gFtp.list(remotePath, ftpListDirectory, true);
   //gFtp.list(remotePath.replace(/[^\/]$/, ""), ftpListDirectory);
   //gFtp.upload(localPath, remotePath, false, -1, ftpEndRequest);
   //new transfer().uploadHelper(localPath, remotePath);
   //new transfer().start(false, '', localPath, remotePath);
-
   //setTimeout(ftpCheckQueue, 500);     // will enable the UI as soon as the FTP queue is empty
 }
 
