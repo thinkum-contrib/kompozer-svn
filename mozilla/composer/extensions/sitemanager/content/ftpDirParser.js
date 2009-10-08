@@ -35,6 +35,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+//
+// XXX WARNING: this is specific to Nvu.
+// NOT WORKING with KompoZer 0.8 or Seamonkey Composer
+//
+
 const DI_CTRID              = "@mozilla.org/dirIndex;1";
 const cnsIDirIndex          = Components.interfaces.nsIDirIndex;
 

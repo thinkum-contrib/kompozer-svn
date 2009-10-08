@@ -53,14 +53,16 @@
       </menulist>
     </hbox>
     <hbox align="center">
-      <toolbarbutton id="siteManagerButton"     tooltiptext="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
-      <toolbarbutton id="uploadButton"          tooltiptext="&uploadItem.label;"        oncommand="uploadFileOrDir()"/>
-      <toolbarseparator flex="1"/>
       <toolbarbutton id="reloadButton"          tooltiptext="&reloadButton.tooltip;"    oncommand="RefreshDirView()" />
       <toolbarbutton id="createDirButton"       tooltiptext="&createDirButton.tooltip;" oncommand="NewSubDir()"       disabled="true"/>
       <toolbarbutton id="renameButton"          tooltiptext="&renameButton.tooltip;"    oncommand="Rename()"          disabled="true"/>
       <toolbarbutton id="removeFileOrDirButton" tooltiptext="&removeButton.tooltip;"    oncommand="RemoveFileOrDir()" disabled="true"/>
-      <toolbarbutton id="stopButton"            tooltiptext="&stopButton.tooltip;"      oncommand="stopCallback()"    disabled="true"/>
+      <toolbarseparator flex="1"/>
+      <toolbarbutton id="siteManagerButton"     tooltiptext="&editSitesList.label;"     oncommand="TweakSiteSettings()"/>
+      <deck id="stopUploadDeck">
+        <toolbarbutton id="stopButton"          tooltiptext="&stopButton.tooltip;"      oncommand="stopCallback()"   />
+        <toolbarbutton id="uploadButton"        tooltiptext="&uploadItem.label;"        oncommand="uploadFileOrDir()"/>
+      </deck>
       <toolbarseparator/>
     </hbox>
 

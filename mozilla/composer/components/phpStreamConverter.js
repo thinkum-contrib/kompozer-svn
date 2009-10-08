@@ -49,6 +49,13 @@ const nsConverter = Components.Constructor(
  * This component could also be used for text/html files to get rid of the awful
  * hack that is applied to mozilla/content in order to display PHP and comment
  * nodes in the main edition window.
+ *
+ * Besides, we could use this to edit text/plain files with pseudo syntax highlighting
+ * directly in an HTML editor tab.
+ * Adding ["text/plain", "*"] to the MIME table works on some Linux distros:
+ * e.g. it works on Ubuntu Jaunty but not on Ubuntu Hardy.
+ * Last but not least, I'm not sure it would work on Windows and MacOS X.
+ * To be tested.
  */
 
 function phpStreamConverter() {

@@ -36,11 +36,6 @@ gFtp = new ftpMozilla(null);
 gFtp.appendLog = ftpAppendLog;
 gFtp.error     = ftpErrorReport;
 gFtp.debug     = function(ex) { dump(ex + "\n") };
-//gFtp.debug     = ftpErrorReport;
-
-//gFtp.debug     = gHelpers.trace;
-//gFtp.error     = gHelpers.trace;
-//gFtp.error     = dump; // this doesn't work if gErrorMode isn't true
 /*
  *gFtp.errorConnectStr   = gStrbundle.getString("errorConn");
  *gFtp.errorXCheckFail   = gStrbundle.getString("errorXCheckFail");

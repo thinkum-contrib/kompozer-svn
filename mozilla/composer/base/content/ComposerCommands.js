@@ -1271,11 +1271,8 @@ function GetOutputFlags(aMimeType, aWrapColumn)
 	if (gTabEditor.IsHtmlFragment()) {
 		// we can't use webPersist.ENCODE_FLAGS_BODY_ONLY, see bug #305711
 		// so we select the document body and output the selection :-/
-		alert("fragment, saving");
-		//GetCurrentEditor().selectAll(); // select <body> content
-		//outputFlags |= webPersist.ENCODE_FLAGS_SELECTION_ONLY;
-		//outputFlags |= 1;   // OutputSelectionOnly
-		outputFlags |= webPersist.ENCODE_FLAGS_BODY_ONLY;
+		//outputFlags |= webPersist.ENCODE_FLAGS_BODY_ONLY;
+		outputFlags |= webPersist.ENCODE_FLAGS_SELECTION_ONLY;
 	}
 
   return outputFlags;
@@ -4785,4 +4782,67 @@ var nsCssEditorCommand =
 
   }
 };
+
+// Kaze: redifined 'Publish' command
+function Publish_New(publishData)
+{
+  if (!publishData)
+    return false;
+
+  // Set data in global for username password requests
+  //  and to do "post saving" actions after monitoring nsIWebProgressListener messages
+  //  and we are sure file transfer was successful
+  gPublishData = publishData;
+
+  gPublishData.docURI = CreateURIFromPublishData(publishData, true);
+  if (!gPublishData.docURI)
+  {
+    AlertWithTitle(GetString("Publish"), GetString("PublishFailed"));
+    return false;
+  }
+
+  if (gShowDebugOutputStateChange)
+  {
+    dump("\n *** publishData: PublishUrl="+publishData.publishUrl+", BrowseUrl="+publishData.browseUrl+
+      ", Username="+publishData.username+", Dir="+publishData.docDir+
+      ", Filename="+publishData.filename+"\n");
+    dump(" * gPublishData.docURI.spec w/o pass="+StripPassword(gPublishData.docURI.spec)+", PublishOtherFiles="+gPublishData.publishOtherFiles+"\n");
+  }
+
+  // XXX Missing username will make FTP fail 
+  // and it won't call us for prompt dialog (bug 132320)
+  // (It does prompt if just password is missing)
+  // So we should do the prompt ourselves before trying to publish
+  if (GetScheme(publishData.publishUrl) == "ftp" && !publishData.username)
+  {
+    var message = GetString("PromptFTPUsernamePassword").replace(/%host%/, GetHost(publishData.publishUrl));
+    var savePWobj = {value:publishData.savePassword};
+    var userObj = {value:publishData.username};
+    var pwObj = {value:publishData.password};
+    if (!PromptUsernameAndPassword(GetString("Prompt"), message, savePWobj, userObj, pwObj))
+      return false; // User canceled out of dialog
+
+    // Reset data in URI objects
+    gPublishData.docURI.username = publishData.username;
+    gPublishData.docURI.password = publishData.password;
+  }
+
+  try {
+    // We launch dialog as a dependent 
+    // Don't allow editing document!
+    SetDocumentEditable(false);
+
+    // Start progress monitoring
+    gProgressDialog =
+      window.openDialog("chrome://editor/content/EditorPublishProgress.xul", "_blank",
+                        "chrome,dependent,titlebar", gPublishData, gPersistObj);
+
+  } catch (e) {}
+
+  // Network transfer is often too quick for the progress dialog to be initialized
+  //  and we can completely miss messages for quickly-terminated bad URLs,
+  //  so we can't call OutputFileWithPersistAPI right away.
+  // StartPublishing() is called at the end of the dialog's onload method
+  return true;
+}
 

@@ -289,7 +289,7 @@ function Startup()
   gDialog.renameButton          = document.getElementById("renameButton");
   gDialog.createDirButton       = document.getElementById("createDirButton");
   gDialog.removeFileOrDirButton = document.getElementById("removeFileOrDirButton");
-  gDialog.stopButton            = document.getElementById("stopButton");
+  gDialog.stopUploadDeck        = document.getElementById("stopUploadDeck");
   gDialog.mainBox               = document.getElementById("mainBox");
   gDialog.tabBox                = document.getElementById("sitemanagerTabbox");                  // Kaze
   gDialog.ftpConsole            = document.getElementById("cmdLog").contentWindow.document;      // Kaze
@@ -297,6 +297,9 @@ function Startup()
   gDialog.progressmeter         = document.getElementById("progressmeter");
 
   gDialog.bundle                = document.getElementById("siteManagerBundle");
+
+  // Kaze: make sure the UI is enabled properly
+  EnableAllUI(true);
 
   // Kaze: gContextMenu is added to handle the sitemanager context menu
   gContextMenu = {
@@ -315,6 +318,7 @@ function Startup()
   // Kaze: setup the file filters
   SetupTreeFilters();
 
+  // display tree
   SetupTreeView();
   if (!window.top.gSiteManagerItemsArray.length) {
     // if the global items array is empty, we assume the site manager was
@@ -331,6 +335,23 @@ function Startup()
 
   // finish the setup
   SetupTree();
+
+  // FTP support
+  //if (!gFtp) {
+    //gFtp = new ftpMozilla(ftpObserver);
+    gFtp = new ftpMozilla(null);
+    gFtp.appendLog = ftpAppendLog;
+    gFtp.error     = ftpErrorReport;
+    gFtp.debug     = function(ex) { dump(ex + "\n") };
+    /*
+     *gFtp.errorConnectStr   = gStrbundle.getString("errorConn");
+     *gFtp.errorXCheckFail   = gStrbundle.getString("errorXCheckFail");
+     *gFtp.passNotShown      = gStrbundle.getString("passNotShown");
+     *gFtp.l10nMonths        = gStrbundle.getString("months").split("|");
+     *gTransferTypes         = new Array(gStrbundle.getString("auto"), gStrbundle.getString("binary"), gStrbundle.getString("ascii"));
+     *gMonths                = gStrbundle.getString("months").split("|");
+     */
+  //}
 
   if (SiteManagerNotificationHandler)
     window.top.gSiteManagerNotificationHandler = SiteManagerNotificationHandler;
@@ -454,7 +475,7 @@ function EnableAllUI(enabled)
     gDialog.createDirButton.removeAttribute("disabled");
     gDialog.removeFileOrDirButton.removeAttribute("disabled");
 
-    gDialog.stopButton.setAttribute("disabled", "true");
+    gDialog.stopUploadDeck.selectedIndex = 1;
 
     window.setCursor("auto");
     //gDialog.mainBox.style.removeProperty("cursor");
@@ -472,7 +493,7 @@ function EnableAllUI(enabled)
     gDialog.createDirButton.setAttribute("disabled", "true");
     gDialog.removeFileOrDirButton.setAttribute("disabled", "true");
 
-    gDialog.stopButton.removeAttribute("disabled");
+    gDialog.stopUploadDeck.selectedIndex = 0;
 
     window.setCursor("wait");
     //gDialog.mainBox.style.setProperty("cursor", "wait", "");

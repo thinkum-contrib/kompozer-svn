@@ -29,7 +29,6 @@ classic.jar:
     skin/classic/editor/icons/createdir-disabled.png         (content/images/createdir-disabled.png)
     skin/classic/editor/icons/remove-disabled.png            (content/images/remove-disabled.png)
     skin/classic/editor/icons/smallStop-disabled.png         (content/images/smallStop-disabled.png)
-    skin/classic/editor/icons/directory.gif                  (content/images/directory.gif)
     skin/classic/editor/icons/directory.ico                  (content/images/directory.ico)
     skin/classic/editor/icons/directory-open.ico             (content/images/directory-open.ico)
     skin/classic/editor/icons/link.gif                       (content/images/link.gif)
