@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC
+"-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"[
+<!ENTITY % brandDTD SYSTEM "chrome://global/locale/brand.dtd" >
+%brandDTD; ] >
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>&brandFullName; Credits</title>
+
+    <style type="text/css">
+      html {
+        background: url("chrome://editor/content/about-logo.png") no-repeat fixed;
+        background-position: bottom right;
+      }
+
+      * {
+        cursor: default;
+        -moz-user-select: none;
+      }
+
+      #titleBox {
+        position: fixed;
+        background-color:#1F1F1F;
+        color:white;
+        left: 0px;
+        top: 0px;
+        right: 0px;
+        height:4em;
+        z-index: 999;
+        height:4em;
+        text-align:center;
+
+      }
+
+      #titleBox h3 , #titleBox h2 {
+        margin:0;
+      }
+
+
+      #creditsBox {
+        position: absolute;
+        left: 0px;
+        top:4em;
+        z-index: 1;
+        width: 260px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-family: Arial, sans-serif;
+        font-size: small;
+        background-color:white;
+        -moz-opacity:0.8;
+      }
+
+      #creditsBox h3 {
+        font-weight: bold;
+        font-size: small;
+        text-align: center;
+        margin: 15px 0px 5px 0px;
+      }
+
+      #creditsBox h4 {
+        margin: 15px 0px 5px 0px;
+      }
+
+      .creditsGroup {
+        margin-bottom: 1px;
+        text-align: center;
+      }
+
+      .footnote {
+        font-size: x-small;
+        text-align: justify;
+        line-height: 110%;
+      }
+
+      h2.title {
+        text-align: center;
+        margin:0.5em auto;
+      }
+
+      .links {
+        font-weight: normal;
+        font-size: small;
+        font-style: italic;
+        text-align: center;
+        margin: 0px 0px 100px 0px;
+      }
+
+      h3.motto {
+        margin-top: 2px;
+        font-style: italic;
+        font-size: small;
+        font-weight: normal;
+        padding-left: 2em;
+      }
+
+      #gecko {
+        margin-top:    100px;
+        margin-bottom: 100px;
+        font-size: medium;
+      }
+
+      a {
+        color: blue;
+        text-decoration: underline;
+      }
+
+      ul {
+        margin-top: 0px;
+        margin-left: 0px;
+        padding-left: 0px;
+      }
+
+      li {
+        list-style-type: none;
+      }
+
+      .center {
+        text-align: center;
+      }
+    </style>
+
+<!-- JS commented out because Javascript is disabled for menus in KompoZer 0.8
+
+    <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"></script>
+    <script type="application/x-javascript">
+    /* <![CDATA[ */
+
+      var gCreditsInterval = -1;
+
+      function uninit()
+      {
+        if (gCreditsInterval > -1)
+          clearInterval(gCreditsInterval);
+      }
+
+      function init()
+      {
+        var cb = document.getElementById("creditsBox");
+        cb.scrollTop = 0;
+        setTimeout("runCredits()", 300);
+      }
+
+      function runCredits()
+      {
+        gCreditsInterval = setInterval("creditsCallback()", 1);
+      }
+
+      function creditsCallback()
+      {
+        var cb = document.getElementById("creditsBox");
+        var newtop = cb.scrollTop + 1;
+        cb.scrollTop = newtop;
+        if (cb.scrollTop != newtop) {
+          // we're at the bottom
+          clearInterval(gCreditsInterval);
+          setTimeout(function() { cb.scrollTop = 0 }, 300);
+        }
+      }
+
+    /* ]]> */
+    </script>
+-->
+  </head>
+  <body onload="init();" onunload="uninit();">
+     <div id="titleBox">
+          <h2>&brandFullName;</h2>
+          <h3>Easy web authoring!</h3>
+    </div>
+
+    <div id="creditsBox">
+
+        <div class="creditsGroup">
+          <h3>Engineering Lead</h3>
+          <div class="credit">Fabien Cazenave</div>
+
+          <h3>Debug</h3>
+          <div class="credit">
+            Fabien Cazenave <em>(Kaz&eacute;)</em><br/>
+            Rudy Kuntz<br/>
+            Yves Mairesse<br/>
+            Alain Lorieux<br/>
+            Geckozone.org
+          </div>
+
+          <h3>Debianization</h3>
+          <div class="credit">
+            Fabien Cazenave<br/>
+            Anthony Yarusso
+          </div>
+
+          <h3>Special Thanks To</h3>
+          <div class="credit">
+            Neil Marshall<br/>
+            Andrew Fedoniouk<br/>
+            Neil Rashbrook<br/>
+            Darin Fisher<br/>
+            Doug Turner<br/>
+            Philippe Goetz<br/>
+            Boris Zbarsky<br/>
+            Robert Accettura<br/>
+            Ludovic Hirlimann<br/>
+            Neil Deakin and the Mozdev Group<br/>
+            Benjamin Smedberg<br/>
+            R.J. Keller<br/>
+            Kamal Deep Singh Sahambi<br/>
+            Michael Pyne<br/>
+            <em>Idefix</em> in Nvu forums<br/>
+            Robert Cheramy
+          </div>
+        </div>
+
+        <div class="creditsGroup">
+          <h3>Localizations</h3>
+
+          <div class="credit">
+            <h4>ca</h4>
+            Gerard Farràs i Ballabriga<br/>
+            Softcatala
+          </div>
+          <div class="credit">
+            <h4>cs</h4>
+            Pavel Petric<br/>
+            Pavel Cvrcek<br/>
+            Adam Hauner
+          </div>
+          <div class="credit">
+            <h4>da</h4>
+            Kim Ludvigsen<br/>
+            Det danske Mozilla-team
+          </div>
+          <div class="credit">
+            <h4>de</h4>
+            Thorsten Fritz<br/>
+            Marcel Herda<br/>
+            Peter Weilbacher
+          </div>
+          <div class="credit">
+            <h4>es-ES</h4>
+            The NAVE Project
+          </div>
+          <div class="credit">
+            <h4>fi</h4>
+            Jussi Bergström<br/>
+            The Finnish Mozilla l10n Team
+          </div>
+          <div class="credit">
+            <h4>fr</h4>
+            Sébastien Desvignes<br/>
+            Cédric Corazza<br/>
+            Flore Allemandou<br/>
+            the Frenchmozilla team
+          </div>
+          <div class="credit">
+            <h4>hu</h4>
+            Tímár András<br/>
+            Gazdag András
+          </div>
+
+          <div class="credit">
+            <h4>it</h4>
+            Andrea Sanavia<br/>
+            Marco Ratini<br/>
+            Carlo Gandolfi<br/>
+            Ricardo Fusaroli<br/>
+            Claudia Mongini<br/>
+            MozillaItalia.org team
+          </div>
+          <div class="credit">
+            <h4>ja-JP</h4>
+            &#12418;&#12392;&#12402;&#12371;
+          </div>
+          <div class="credit">
+            <h4>nl</h4>
+            Gert-Paul van der Beek<br/>
+            Marcel Herda<br/>
+            Martijn Ras<br/>
+            Martijn Weisbeek
+          </div>
+          <div class="credit">
+            <h4>pl</h4>
+            Stanis&#322;aw&#160;Ma&#322;olepszy<br/>
+            Zbigniew Braniecki<br/>
+            Marek St&#281;pie&#324;<br/>
+            Piotr Pielach<br/>
+            Piotr Komoda<br/>
+            Irek Chmielowiec<br/>
+            Pawe&#322; Chmielewski<br/>
+            Wadim Dziedzic<br/>
+            Piotr Chyli&#324;ski
+          </div>
+          <div class="credit">
+            <h4>ru</h4>
+            Alexey Gubanov<br/>
+            Alexander Slovesnik<br/>
+            Yury Merkulov<br/>
+            Vlad Merzhevich<br/>
+            Miroslav Skaldov
+          </div>
+          <div class="credit">
+            <h4>zh-TW</h4>
+            Hung-Te Lin<br/>
+            Po-Chiang Chao
+          </div>
+        </div>
+
+        <div class="creditsGroup">
+          <h3>Quality Assurance</h3>
+          <div class="credit">
+          Georgi Damyanov<br/>
+          Mark Sepeda
+          </div>
+
+        </div>
+
+        <p align="center">Based on Gecko 1.8.1</p>
+        <p align="center">Powered by Gecko&trade;</p>
+
+
+        <p class="footnote">
+          Mozilla is Copyright &copy;1998-2004 by its contributors,
+          according to terms set out in the Mozilla Public License and Netscape
+          Public License. All Rights Reserved. For full Mozilla credits, type
+          "about:credits" into Mozilla's Location bar.</p>
+
+        <p class="footnote">
+          Portions of this software are Copyright &copy;1994 The Regents of the
+          University of California. All Rights Reserved.</p>
+
+        <p class="footnote">
+          This software may contain portions that are Copyright &copy;1998-2004
+          SupportSoft, Inc. All Rights Reserved.</p>
+
+        <p class="footnote">
+          <small>U.S. GOVERNMENT END USERS. The Software is a "commercial item,"
+          as that term is defined in 48 C.F.R. 2.101 (Oct. 1995), consisting of
+          "commercial computer software" and "commercial computer software
+          documentation," as such terms are used in 48 C.F.R. 12.212 (Sept. 1995).
+          Consistent with 48 C.F.R. 12.212 and 48 C.F.R. 227.7202-1 through
+          227.7202-4 (June 1995), all U.S. Government End Users acquire the
+          Software with only those rights set forth herein.</small></p>
+
+    </div>
+
+<!--
+    <div id="footerBox">
+      <img src="chrome://editor/content/about-footer.png"/>
+    </div>
+-->
+
+  </body>
+</html>
+

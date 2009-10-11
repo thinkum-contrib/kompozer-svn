@@ -46,7 +46,7 @@
 +   locale/@AB_CD@/editor/MarkupCleaner.dtd                                     (@AB_CD@/chrome/editor/MarkupCleaner.dtd)
 +   locale/@AB_CD@/editor/Validator.dtd                                         (@AB_CD@/chrome/editor/Validator.dtd)
 *+  locale/@AB_CD@/editor/aboutDialog.dtd                                       (@AB_CD@/chrome/editor/aboutDialog.dtd)
-*+  locale/@AB_CD@/editor/credits.html                                          (@AB_CD@/chrome/editor/credits.html)
+*+  locale/@AB_CD@/editor/credits.xhtml                                          (@AB_CD@/chrome/editor/credits.xhtml)
 +   locale/@AB_CD@/editor/confirmInlineSpellChecking.dtd                        (@AB_CD@/chrome/editor/confirmInlineSpellChecking.dtd)
 +   locale/@AB_CD@/editor/confirmInlineSpellChecking.properties                 (@AB_CD@/chrome/editor/confirmInlineSpellChecking.properties)
 +   locale/@AB_CD@/editor/editableArea.dtd                                      (@AB_CD@/chrome/editor/editableArea.dtd)

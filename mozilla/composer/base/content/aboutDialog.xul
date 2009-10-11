@@ -91,7 +91,7 @@
 
           var iframe = document.getElementById("creditsIframe");
           if (gSelectedPage == 0) { 
-            iframe.setAttribute("src", "chrome://editor/locale/credits.html");
+            iframe.setAttribute("src", "chrome://editor/locale/credits.xhtml");
             button.setAttribute("label", document.documentElement.getAttribute("aboutlabel"));
             gSelectedPage = 1;
           }
@@ -121,7 +121,7 @@
       </vbox>
 
       <vbox flex="1" id="creditsBox">
-        <html:iframe style="border: 0px;" id="creditsIframe" src="chrome://editor/locale/credits.html" flex="1"/>
+        <html:iframe style="border: 0px;" id="creditsIframe" src="chrome://editor/locale/credits.xhtml" flex="1"/>
       </vbox> 
     </deck>   
   
