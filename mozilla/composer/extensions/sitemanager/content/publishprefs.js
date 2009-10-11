@@ -144,20 +144,20 @@ function CreatePublishDataFromUrl(docUrl)
   var siteName = CreateSiteNameFromUrl(pubUrl, pubSiteData);
 
   publishData = { 
-    siteName : siteName,
-    previousSiteName : siteName,
-    filename : GetFilename(docUrl),
-    username : userObj.value,
-    password : passObj.value,
-    savePassword : false,
-    publishUrl : pubUrl,
-    browseUrl  : pubUrl,
-    docDir     : "",
-    otherDir   : "",
+    siteName          : siteName,
+    previousSiteName  : siteName,
+    filename          : GetFilename(docUrl),
+    username          : userObj.value,
+    password          : passObj.value,
+    savePassword      : false,
+    publishUrl        : pubUrl,
+    browseUrl         : pubUrl,
+    docDir            : "",
+    otherDir          : "",
     publishOtherFiles : true,
-    dirList    : [""],
-    saveDirs   : false,
-    notInSiteData : true
+    dirList           : [""],
+    saveDirs          : false,
+    notInSiteData     : true
   }
 
   return publishData;

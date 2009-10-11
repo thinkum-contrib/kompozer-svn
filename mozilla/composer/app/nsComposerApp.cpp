@@ -53,7 +53,7 @@ static const nsXREAppData kAppData = {
   "KompoZer",
   NS_STRINGIFY(APP_VERSION),
   NS_STRINGIFY(BUILD_ID),
-  "{136c295a-4a5a-41cf-bf24-5cee526720d5}",
+  "{20aa4150-b5f4-11de-8a39-0800200c9a66}",
   "Copyright (c) 2006-2009 contributors",
   NS_XRE_ENABLE_EXTENSION_MANAGER
 };

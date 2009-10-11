@@ -52,6 +52,7 @@ var gLastDirOpenOrClose = -1;
 
 var gContextMenu;                   // Kaze
 var gFilterRE;                      // Kaze
+var gFtp     = window.top.gFtp;     // Kaze
 var gHelpers = window.top.gHelpers; // Kaze
 var gUseSystemIcons = false;        // Kaze
 
@@ -338,8 +339,10 @@ function Startup()
 
   // FTP support
   //if (!gFtp) {
+  if (true) {
+    gFtp = window.top.gFtp;
     //gFtp = new ftpMozilla(ftpObserver);
-    gFtp = new ftpMozilla(null);
+    //gFtp = new ftpMozilla(null);
     gFtp.appendLog = ftpAppendLog;
     gFtp.error     = ftpErrorReport;
     gFtp.debug     = function(ex) { dump(ex + "\n") };
@@ -351,7 +354,10 @@ function Startup()
      *gTransferTypes         = new Array(gStrbundle.getString("auto"), gStrbundle.getString("binary"), gStrbundle.getString("ascii"));
      *gMonths                = gStrbundle.getString("months").split("|");
      */
-  //}
+  }
+
+  if (SiteManagerUploadHandler)
+    window.top.gSiteManagerUploadHandler = SiteManagerUploadHandler;
 
   if (SiteManagerNotificationHandler)
     window.top.gSiteManagerNotificationHandler = SiteManagerNotificationHandler;
@@ -1263,8 +1269,12 @@ function openFile(e) {
 }
 
 function GetItemPublishData(item) {
-  if (!gPublishSiteData) // we should raise an exception here
-    return null;
+  if (!gPublishSiteData) { // we should raise an exception here
+    // XXX sometimes, the site manager 'forgets' gPublishSiteData...
+    gPublishSiteData = window.top.GetPublishSiteData();
+    if (!gPublishSiteData)
+      return null;
+  }
 
   // get site item
   var rowIndex = item.realIndex;
@@ -1286,11 +1296,12 @@ function GetItemPublishData(item) {
 function uploadFileOrDir() {
   // cancel if no item is selected
   var index = GetSelectedItem(gDialog.SiteTree);
-  if (index == -1)
-    return;
+  if (index >= 0)
+    uploadItem(gFilteredItemsArray[index]);
+}
 
+function uploadItem(item) {
   // cancel if this item has no publishData
-  var item = gFilteredItemsArray[index];
   var publishData = GetItemPublishData(item);
   if (!publishData)
     return;
@@ -1325,5 +1336,120 @@ function uploadFileOrDir() {
   //new transfer().uploadHelper(localPath, remotePath);
   //new transfer().start(false, '', localPath, remotePath);
   //setTimeout(ftpCheckQueue, 500);     // will enable the UI as soon as the FTP queue is empty
+}
+
+// FTP helpers
+
+function ftpConnect(publishData) {
+  var reconnected = false;
+  gFtp.host     = publishData.publishUrl.replace(/^ftp:\/*/, '').replace(/\/$/, '');
+  gFtp.port     = publishData.ftpPort;
+  gFtp.login    = publishData.username;
+  gFtp.password = window.top.GetSavedPassword(publishData);
+
+  // not all FTP servers use utf-8 yet, that's a pity (e.g. OVH still uses latin-1)
+  // so we'll have to specify the server encoding in the prefs some day
+  //gFtp.setEncoding("UTF-8");
+  gFtp.setEncoding("ISO-8859-15");
+
+  var newConnectedHost = gFtp.login + "@" + gFtp.host;
+  if (!gFtp.isConnected) {
+    gFtp.connect();
+  }
+  else if (newConnectedHost != gFtp.connectedHost) {
+    // switching to a different host or different login
+    //gFtp.disconnect();
+    gFtp.connect();
+  }
+  gFtp.connectedHost = newConnectedHost;
+}
+
+function ftpCheckQueue() {
+  // quick and ugly hack
+  if (gFtp.eventQueue.length)
+    setTimeout(ftpCheckQueue, 500);
+  else
+    EnableAllUI(true);
+}
+
+function ftpCheckDirectory(remoteDir) {
+  // ensure remoteDir exists
+  if ( remoteDir.length
+   && (remoteDir != "/")
+   && (remoteDir != gFtp.currentWorkingDir)
+   && (remoteDir != gFtp.currentWorkingDir + "/")
+  ) // the directory doesn't exist, we have to create it
+    gFtp.makeDirectory(remoteDir);
+}
+
+function ftpUploadFile(localPath, remotePath, remoteDir) {
+  // ensure remoteDir exists
+  if ( remoteDir.length
+   && (remoteDir != "/")
+   && (remoteDir != gFtp.currentWorkingDir)
+   && (remoteDir != gFtp.currentWorkingDir + "/")
+  ) { // the directory doesn't exist, we have to create it
+    var dirs = remoteDir.split("/");
+    var dir  = "";
+    for (var i = 1; i < dirs.length; i++) {
+      dir += "/" + dirs[i];
+      gFtp.makeDirectory(dir); // this will generate some error reports... nevermind
+      //gFtp.changeWorkingDirectory(dir, function() { ftpCheckDirectory(dir); });
+    }
+  }
+
+  // now we're sure the remote dir exists, we can upload the file
+  gFtp.upload(localPath, remotePath, false, -1, ftpEndRequest);
+}
+
+function ftpListDirectory() {
+  var l = gFtp.listData.length;
+  var list = gFtp.currentWorkingDir;
+  for (var i = 0; i < l; i++)
+    list += "\n" + gFtp.listData[i].leafName;
+  //gHelpers.trace(list);
+}
+
+function ftpAppendLog(message, css, type) {
+  // early way out if 'message' is null
+  if (!message || !message.length)
+    return;
+
+  // append message to the <body> node in the FTP console
+  var divNode = gDialog.ftpConsole.createElement("div");
+  divNode.setAttribute("type", type);
+  divNode.setAttribute("class", css);
+  divNode.innerHTML = message.replace(/[\r\n]+/g, '<br>');
+  gDialog.ftpConsole.body.appendChild(divNode);
+}
+
+function ftpErrorReport(msg) {
+  ftpAppendLog(msg, "error", "error");
+}
+
+function ftpEndRequest() {
+  gFtp.cleanup();
+  EnableAllUI(true);
+}
+
+function SiteManagerUploadHandler(docUrl) {
+  if (!gPublishSiteData) {
+    // XXX sometimes, the site manager 'forgets' gPublishSiteData...
+    gPublishSiteData = window.top.GetPublishSiteData();
+    if (!gPublishSiteData)
+      return null;
+  }
+
+  var item = null;
+  for (var i = 0; i < gItemsArray.length; i++) {
+    if (gItemsArray[i].url == docUrl) {
+      item = gItemsArray[i];
+      break;
+    }
+  }
+  if (item) {
+    uploadItem(item);
+  }
+
 }
 
