@@ -1,0 +1,22 @@
+Remove non free image
+--- a/mozilla/themes/classic/jar.mn
++++ b/mozilla/themes/classic/jar.mn
+@@ -51,10 +51,6 @@ classic.jar:
+   skin/classic/communicator/sidebar/sidebar.css                         (communicator/sidebar/sidebar.css)
+   skin/classic/communicator/sidebar/sidebarListView.css                 (communicator/sidebar/sidebarListView.css)
+   skin/classic/communicator/xpinstall/xpinstall.css                     (communicator/xpinstall/xpinstall.css)
+-  skin/classic/communicator/brand/throbber-single.gif                   (communicator/brand/throbber-single.gif)
+-  skin/classic/communicator/brand/throbber-anim.gif                     (communicator/brand/throbber-anim.gif)
+-  skin/classic/communicator/brand/throbber16-single.gif                 (communicator/brand/throbber16-single.gif)
+-  skin/classic/communicator/brand/throbber16-anim.gif                   (communicator/brand/throbber16-anim.gif)
+   skin/classic/communicator/icons/autoscroll.png                        (communicator/icons/autoscroll.png)
+   skin/classic/communicator/icons/offline.gif                           (communicator/icons/offline.gif)
+   skin/classic/communicator/icons/online.gif                            (communicator/icons/online.gif)
+@@ -65,7 +61,6 @@ classic.jar:
+   skin/classic/communicator/icons/lock-broken.gif                       (communicator/icons/lock-broken.gif)
+   skin/classic/communicator/icons/lock-insecure.gif                     (communicator/icons/lock-insecure.gif)
+   skin/classic/communicator/icons/loading.gif                           (communicator/icons/loading.gif)
+-  skin/classic/communicator/icons/turbo-systray.gif                     (communicator/icons/turbo-systray.gif)
+   skin/classic/communicator/icons/btn1.gif                              (communicator/icons/btn1.gif)
+   skin/classic/communicator/icons/smileys/smile_n.gif                   (communicator/icons/smileys/smile_n.gif)
+   skin/classic/communicator/icons/smileys/frown_n.gif                   (communicator/icons/smileys/frown_n.gif)

@@ -1,0 +1,24 @@
+--- mozilla/xpfe/components/sidebar/resources/sidebarOverlay.js.orig	2006-01-06 21:46:28.000000000 +0100
++++ mozilla/xpfe/components/sidebar/resources/sidebarOverlay.js	2008-12-08 02:28:03.000000000 +0100
+@@ -902,13 +902,20 @@
+       locator_service = locator_service.QueryInterface(Components.interfaces.nsIProperties);
+     // Use the fileLocator to look in the profile directory to find
+     // 'panels.rdf', which is the database of the user's currently
+     // selected panels.
+     // If <profile>/panels.rdf doesn't exist, GetFileLocation() will copy
+     // bin/defaults/profile/panels.rdf to <profile>/panels.rdf
+-    var sidebar_file = locator_service.get(PANELS_RDF_FILE, Components.interfaces.nsIFile);
++    //
++    // <Kaze>  looks like PANELS_RDF_FILE (='UPnls') doesn't work any more (standalone composer + Gecko 1.8.x)
++    //         so let's use 'ProfD' and 'panels.rdf' to get the profile's panels
++    //var sidebar_file = locator_service.get(PANELS_RDF_FILE, Components.interfaces.nsIFile);
++    var sidebar_file = locator_service.get('ProfD', Components.interfaces.nsIFile);
++    sidebar_file.append('panels.rdf');
++    // </Kaze>
++    //
+     if (!sidebar_file.exists()) {
+       // This should not happen, as GetFileLocation() should copy
+       // defaults/panels.rdf to the users profile directory
+       debug("Sidebar panels file does not exist");
+       throw("Panels file does not exist");
+     }

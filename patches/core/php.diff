@@ -1,0 +1,425 @@
+--- mozilla.orig/content/html/document/src/nsHTMLDocument.cpp	2007-12-21 23:08:47.000000000 +0100
++++ mozilla/content/html/document/src/nsHTMLDocument.cpp	2009-01-02 16:49:04.000000000 +0100
+@@ -1371,20 +1371,24 @@
+ 
+ NS_IMETHODIMP
+ nsHTMLDocument::CreateProcessingInstruction(const nsAString& aTarget,
+                                             const nsAString& aData,
+                                             nsIDOMProcessingInstruction** aReturn)
+ {
++#ifdef MOZ_STANDALONE_COMPOSER
++  return nsDocument::CreateProcessingInstruction(aTarget, aData, aReturn);
++#else
+   if (IsXHTML()) {
+     return nsDocument::CreateProcessingInstruction(aTarget, aData, aReturn);
+   }
+ 
+   // There are no PIs for HTML
+   *aReturn = nsnull;
+ 
+   return NS_ERROR_DOM_NOT_SUPPORTED_ERR;
++#endif
+ }
+ 
+ NS_IMETHODIMP
+ nsHTMLDocument::CreateCDATASection(const nsAString& aData,
+                                    nsIDOMCDATASection** aReturn)
+ {
+--- mozilla.orig/content/html/document/src/nsHTMLContentSink.cpp	2008-03-08 14:21:25.000000000 +0100
++++ mozilla/content/html/document/src/nsHTMLContentSink.cpp	2009-01-02 17:39:10.000000000 +0100
+@@ -64,12 +64,15 @@
+ 
+ #include "nsGenericHTMLElement.h"
+ #include "nsITextContent.h"
+ 
+ #include "nsIDOMText.h"
+ #include "nsIDOMComment.h"
++#ifdef MOZ_STANDALONE_COMPOSER
++#include "nsIDOMProcessingInstruction.h"
++#endif
+ #include "nsIDOMDocument.h"
+ #include "nsIDOMNSDocument.h"
+ #include "nsIDOMDOMImplementation.h"
+ #include "nsIDOMDocumentType.h"
+ #include "nsIDOMHTMLScriptElement.h"
+ #include "nsIScriptElement.h"
+@@ -706,12 +709,15 @@
+                  PRUint32 aNumFlushed, PRInt32 aInsertionPoint);
+   nsresult OpenContainer(const nsIParserNode& aNode);
+   nsresult CloseContainer(const nsHTMLTag aTag);
+   nsresult AddLeaf(const nsIParserNode& aNode);
+   nsresult AddLeaf(nsGenericHTMLElement* aContent);
+   nsresult AddComment(const nsIParserNode& aNode);
++#ifdef MOZ_STANDALONE_COMPOSER
++  nsresult AddProcessingInstruction(const nsIParserNode& aNode);
++#endif
+   nsresult End();
+ 
+   nsresult GrowStack();
+   nsresult AddText(const nsAString& aText);
+   nsresult FlushText(PRBool* aDidFlush = nsnull,
+                      PRBool aReleaseLast = PR_FALSE);
+@@ -1543,12 +1549,104 @@
+   }
+ #endif
+ 
+   return rv;
+ }
+ 
++#ifdef MOZ_STANDALONE_COMPOSER
++nsresult
++SinkContext::AddProcessingInstruction(const nsIParserNode& aNode)
++{
++  SINK_TRACE_NODE(SINK_TRACE_CALLS,
++                  "SinkContext::AddLeaf", 
++                  nsHTMLTag(aNode.GetNodeType()), 
++                  mStackPos, mSink);
++  FlushTextAndRelease();
++
++  if (!mSink) {
++    return NS_ERROR_UNEXPECTED;
++  }
++
++  nsAutoString piText(aNode.GetText());
++  PRInt32 tokenType = aNode.GetTokenType();
++
++  // is the string long enough to contain <?php?> ?
++  if (piText.Length() >= 7) {
++    // retrieve the target of the processing instruction
++    nsString::const_iterator start, end;
++    piText.BeginReading(start);
++    start.advance(2);
++    end = start;
++    end.advance(3);
++
++    // check if it's a PHP processing instruction
++    NS_NAMED_LITERAL_STRING(phpString, "php");
++    if (Substring(start, end).Equals(phpString,
++                                     nsCaseInsensitiveStringComparator()))
++    {
++      // skip leading whitespaces in PI's data
++      start = end;
++      while (*start == ' '  ||
++             *start == '\n' ||
++             *start == '\r' ||
++             *start == '\t')
++        ++start;
++
++      // get PI's data
++      piText.EndReading(end);
++      end.advance(-2);
++      nsAutoString data(Substring(start, end));
++
++      // create PI node
++      nsCOMPtr<nsIContent> node;
++      nsresult rv = NS_NewXMLProcessingInstruction(getter_AddRefs(node),
++                                                   mSink->mNodeInfoManager,
++                                                   phpString, 
++                                                   data);
++      NS_ENSURE_SUCCESS(rv, rv);
++
++      nsCOMPtr<nsIDOMProcessingInstruction> domPI(do_QueryInterface(node));
++      NS_ENSURE_TRUE(domPI, NS_ERROR_UNEXPECTED);
++
++      NS_ASSERTION(mStackPos > 0, "stack out of bounds");
++      if (mStackPos <= 0) {
++        return NS_ERROR_FAILURE;
++      }
++
++      nsGenericHTMLElement* parent;
++      if (!mSink->mBody && !mSink->mFrameset && mSink->mHead) {
++        parent = mSink->mHead;
++      } else {
++        parent = mStack[mStackPos - 1].mContent;
++      }
++
++      // If the parent has an insertion point, insert rather than append.
++      if (mStack[mStackPos - 1].mInsertionPoint != -1) {
++        parent->InsertChildAt(node,
++                              mStack[mStackPos - 1].mInsertionPoint++,
++                              PR_FALSE);
++      } else {
++        parent->AppendChildTo(node, PR_FALSE);
++      }
++
++      DidAddContent(node, PR_FALSE);
++
++#ifdef DEBUG
++      if (mPreAppend &&
++          SINK_LOG_TEST(gSinkLogModuleInfo, SINK_ALWAYS_REFLOW)) {
++        mSink->ForceReflow();
++      }
++#endif /* DEBUG */
++      return rv;
++    }
++  }
++  NS_WARNING("only PHP processing instructions are preserved in HTML documents");
++  return NS_OK;
++}
++#endif /* MOZ_STANDALONE_COMPOSER */
++
+ nsresult
+ SinkContext::End()
+ {
+   for (PRInt32 i = 0; i < mStackPos; i++) {
+     NS_RELEASE(mStack[i].mContent);
+   }
+@@ -3129,24 +3227,28 @@
+ 
+   return rv;
+ }
+ 
+ /**
+  * This gets called by the parsing system when we find a PI
+  * @update  gess11/9/98
+  * @param   aNode contains a comment token
+  * @return  error code
+  */
+ nsresult
+ HTMLContentSink::AddProcessingInstruction(const nsIParserNode& aNode)
+ {
+   nsresult result = NS_OK;
+ 
+   MOZ_TIMER_START(mWatch);
+   // Implementation of AddProcessingInstruction() should start here
+ 
++#ifdef MOZ_STANDALONE_COMPOSER
++  nsresult rv = mCurrentContext->AddProcessingInstruction(aNode);
++#endif
++
+   MOZ_TIMER_STOP(mWatch);
+ 
+   return result;
+ }
+ 
+ /**
+--- mozilla.orig/content/html/document/src/nsHTMLFragmentContentSink.cpp	2007-01-10 20:55:47.000000000 +0100
++++ mozilla/content/html/document/src/nsHTMLFragmentContentSink.cpp	2009-01-02 17:56:20.000000000 +0100
+@@ -62,12 +62,17 @@
+ #include "nsNodeInfoManager.h"
+ #include "nsContentCreatorFunctions.h"
+ #include "nsIScriptSecurityManager.h"
+ #include "nsContentSink.h"
+ #include "nsTHashtable.h"
+ #include "nsNetUtil.h"
++
++#ifdef MOZ_STANDALONE_COMPOSER
++#include "nsIDOMProcessingInstruction.h"
++#endif
++
+ //
+ // XXX THIS IS TEMPORARY CODE
+ // There's a considerable amount of copied code from the
+ // regular nsHTMLContentSink. All of it will be factored
+ // at some pointe really soon!
+ //
+@@ -674,12 +679,65 @@
+   return NS_OK;
+ }
+ 
+ NS_IMETHODIMP
+ nsHTMLFragmentContentSink::AddProcessingInstruction(const nsIParserNode& aNode)
+ {
++#ifdef MOZ_STANDALONE_COMPOSER
++  FlushText();
++
++  nsAutoString piText(aNode.GetText());
++
++  // is the string long enough to contain <?php?> ?
++  if (piText.Length() >= 7) {
++    // retrieve the target of the processing instruction
++    nsString::const_iterator start, end;
++    piText.BeginReading(start);
++    start.advance(2);
++    end = start;
++    end.advance(3);
++
++    // check if it's a PHP processing instruction
++    NS_NAMED_LITERAL_STRING(phpString, "php");
++    if (Substring(start, end).Equals(phpString,
++                                     nsCaseInsensitiveStringComparator()))
++    {
++      // skip leading whitespaces in PI's data
++      start = end;
++      while (*start == ' '  ||
++             *start == '\n' ||
++             *start == '\r' ||
++             *start == '\t')
++        ++start;
++
++      // get PI's data
++      piText.EndReading(end);
++      end.advance(-2);
++      nsAutoString data(Substring(start, end));
++
++      // create PI node
++      nsCOMPtr<nsIContent> node;
++      nsresult rv = NS_NewXMLProcessingInstruction(getter_AddRefs(node),
++                                                   mNodeInfoManager,
++                                                   phpString, 
++                                                   data);
++      NS_ENSURE_SUCCESS(rv, rv);
++
++      nsCOMPtr<nsIDOMProcessingInstruction> domPI(do_QueryInterface(node));
++      NS_ENSURE_TRUE(domPI, NS_ERROR_UNEXPECTED);
++
++      nsIContent *parent = GetCurrentContent();
++
++      if (nsnull == parent) {
++        parent = mRoot;
++      }
++      
++      parent->AppendChildTo(node, PR_FALSE);
++    }
++  }
++#endif /* MOZ_STANDALONE_COMPOSER */
+   return NS_OK;
+ }
+ 
+ /**
+  *  This gets called by the parser when it encounters
+  *  a DOCTYPE declaration in the HTML document.
+--- mozilla.orig/content/base/src/nsDocumentEncoder.cpp	2006-06-22 21:13:01.000000000 +0200
++++ mozilla/content/base/src/nsDocumentEncoder.cpp	2009-01-04 22:52:08.000000000 +0100
+@@ -71,12 +71,16 @@
+ #include "nsIScriptGlobalObject.h"
+ #include "nsIScriptSecurityManager.h"
+ #include "nsContentUtils.h"
+ #include "nsUnicharUtils.h"
+ #include "nsReadableUtils.h"
+ 
++#ifdef MOZ_STANDALONE_COMPOSER
++#define NVU_NS NS_LITERAL_STRING("http://disruptive-innovations.com/zoo/nvu")
++#endif
++
+ nsresult NS_NewDomSelection(nsISelection **aDomSelection);
+ 
+ enum nsRangeIterationDirection {
+   kDirectionOut = -1,
+   kDirectionIn = 1
+ };
+@@ -293,16 +297,53 @@
+     {
+       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+       // Because FixupNode() may have done a shallow copy of aNode
+       // we need to tell the serializer if the original had children.
+       // Some serializers (notably XML) need this information 
+       // in order to handle empty tags properly.
++
++#ifdef MOZ_STANDALONE_COMPOSER
++      // don't serialize NVU_NS elements
++      PRBool isInNvuTag = PR_FALSE;
++      //if (type == nsIDOMNode::ELEMENT_NODE && !(mFlags & nsIDocumentEncoder::PreserveNvuElements))
++      if (true)
++      {
++        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
++        nsAutoString namespaceURI;
++        nsresult rv = element->GetNamespaceURI(namespaceURI);
++        if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
++          isInNvuTag = PR_TRUE;
++        else
++        {
++          nsCOMPtr<nsIDOMNode> parentNode;
++          nsresult rv = aNode->GetParentNode(getter_AddRefs(parentNode));
++          if (NS_SUCCEEDED(rv) && parentNode)
++          {
++            element = do_QueryInterface(parentNode);
++            if (element)
++            {
++              nsresult rv = element->GetNamespaceURI(namespaceURI);
++              if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
++                isInNvuTag = PR_TRUE;
++            }
++          }
++        }
++      }
++      if (!isInNvuTag)
++      {
++        PRBool hasChildren;
++        mSerializer->AppendElementStart(element, 
++                                        NS_SUCCEEDED(aNode->HasChildNodes(&hasChildren)) && hasChildren,
++                                        aStr);
++      }
++#else
+       PRBool hasChildren;
+       mSerializer->AppendElementStart(element, 
+                                       NS_SUCCEEDED(aNode->HasChildNodes(&hasChildren)) && hasChildren,
+                                       aStr);
++#endif
+       break;
+     }
+     case nsIDOMNode::TEXT_NODE:
+     {
+       nsCOMPtr<nsIDOMText> text = do_QueryInterface(node);
+       mSerializer->AppendText(text, aStartOffset, aEndOffset, aStr);
+@@ -345,14 +386,48 @@
+   PRUint16 type;
+ 
+   aNode->GetNodeType(&type);
+   switch (type) {
+     case nsIDOMNode::ELEMENT_NODE:
+     {
++#ifdef MOZ_STANDALONE_COMPOSER
++      // don't serialize NVU_NS elements
++      PRBool isInNvuTag = PR_FALSE;
++      //if (type == nsIDOMNode::ELEMENT_NODE && !(mFlags & nsIDocumentEncoder::PreserveNvuElements))
++      if (true)
++      {
++        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
++        nsAutoString namespaceURI;
++        nsresult rv = element->GetNamespaceURI(namespaceURI);
++        if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
++          isInNvuTag = PR_TRUE;
++        else
++        {
++          nsCOMPtr<nsIDOMNode> parentNode;
++          nsresult rv = aNode->GetParentNode(getter_AddRefs(parentNode));
++          if (NS_SUCCEEDED(rv) && parentNode)
++          {
++            element = do_QueryInterface(parentNode);
++            if (element)
++            {
++              nsresult rv = element->GetNamespaceURI(namespaceURI);
++              if (NS_SUCCEEDED(rv) && namespaceURI.Equals(NVU_NS))
++                isInNvuTag = PR_TRUE;
++            }
++          }
++        }
++      }
++      if (!isInNvuTag)
++      {
++        nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
++        mSerializer->AppendElementEnd(element, aStr);
++      }
++#else
+       nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
+       mSerializer->AppendElementEnd(element, aStr);
++#endif
+       break;
+     }
+   }
+ 
+   return NS_OK;
+ }
+@@ -1083,14 +1158,20 @@
+   mIsTextWidget = PR_FALSE;
+   Initialize();
+ 
+   mIsCopying = PR_TRUE;
+   mDocument = aDocument;
+ 
+-
++#ifdef MOZ_STANDALONE_COMPOSER
++  if (!aMimetype.IsEmpty())
++    mMimeType = aMimetype;
++  else
++    mMimeType.AssignLiteral("text/html");
++#else
+   mMimeType.AssignLiteral("text/html");
++#endif
+   
+   // Make all links absolute when copying
+   // (see related bugs #57296, #41924, #58646, #32768)
+   mFlags = aFlags | OutputAbsoluteLinks;
+ 
+   if (!mDocument->IsScriptEnabled())

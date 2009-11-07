@@ -1,0 +1,11 @@
+add -lfontconfig to Makefile
+--- a/mozilla/gfx/src/gtk/Makefile.in
++++ b/mozilla/gfx/src/gtk/Makefile.in
+@@ -200,6 +200,7 @@ EXTRA_DSO_LDOPTS += \
+ 		$(MOZ_JS_LIBS) \
+ 		$(MOZ_UNICHARUTIL_LIBS) \
+ 		$(MOZ_COMPONENT_LIBS) \
++		-lfontconfig \
+ 		$(NULL)
+ endif
+ 

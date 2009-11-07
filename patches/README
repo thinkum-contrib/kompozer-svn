@@ -1,0 +1,63 @@
+These patches are already applied to the Mozilla 1.8.1.20 core:
+ * core
+     = all the core patches that are required to build KompoZer
+ * debian
+     = some Debian security fixes that are considered helpful upstream
+
+#=============================================================================#
+#  
+#   core patches applied to Mozilla 1.8.1.20
+#  
+#=============================================================================#
+
+branding.diff
+    define KompoZer's name and icon
+    -
+    mozilla/configure
+    mozilla/configure.in
+    mozilla/widget/src/gtk2/default.xpm                                # new file (maybe useless)
+
+xhtml.diff
+    implements the 4 common doctypes: html/xhtml, strict/loose
+    -
+    mozilla/editor/composer/src/nsEditingSession.cpp
+    mozilla/editor/composer/src/nsEditorService.cpp                    # dropped
+    mozilla/netwerk/protocol/about/src/Makefile.in
+    mozilla/netwerk/protocol/about/src/nsAboutBlank.cpp
+    mozilla/netwerk/protocol/about/src/nsAboutStrictBlank.cpp          # new file
+    mozilla/netwerk/protocol/about/src/nsAboutStrictBlank.h            # new file
+    mozilla/netwerk/protocol/about/src/nsAboutXBlank.cpp               # new file
+    mozilla/netwerk/protocol/about/src/nsAboutXBlank.h                 # new file
+    mozilla/netwerk/protocol/about/src/nsAboutXStrictBlank.cpp         # new file
+    mozilla/netwerk/protocol/about/src/nsAboutXStrictBlank.h           # new file
+    mozilla/netwerk/build/nsNetModule.cpp
+
+sidebar.diff
+    UPnls is not defined for some reason, here's a quick workaround
+    -
+    mozilla/xpfe/components/sidebar/resources/sidebarOverlay.js
+
+spinbuttons.diff
+    This patch is probably not necessary, but it's used by CaScadeS
+    The CSS editor will have to be adapted in order to work on Firefox
+    -
+    mozilla/toolkit/content/xul.css
+    mozilla/toolkit/content/widgets/spinbuttons.xml
+
+rulers.diff
+    implements the 4 required properties for the rulers:
+    realXPosition, realYPosition, realWidth, realHeight
+    -
+    mozilla/dom/public/idl/html/nsIDOMNSHTMLElement.idl
+    mozilla/content/html/content/src/nsGenericHTMLElement.h
+    mozilla/content/html/content/src/nsGenericHTMLElement.cpp
+
+php.diff
+    allow insertion of processing instructions in non-XHTML documents
+    and remove NVU_NS elements when serializing documents
+    -
+    mozilla/content/html/document/src/nsHTMLDocument.cpp
+    mozilla/content/html/document/src/nsHTMLContentSink.cpp
+    mozilla/content/html/document/src/nsHTMLFragmentContentSink.cpp
+    mozilla/content/base/src/nsDocumentEncoder.cpp
+

@@ -1,0 +1,547 @@
+--- mozilla/editor/composer/src/nsEditingSession.cpp.orig	2008-11-19 13:17:56.000000000 +0100
++++ mozilla/editor/composer/src/nsEditingSession.cpp	2008-11-19 16:23:41.000000000 +0100
+@@ -319,7 +319,8 @@
+         mEditorType.AssignLiteral("text");
+         mimeCType = "text/plain";
+       }
+-      else if (!mimeCType.EqualsLiteral("text/html"))
++      else if (!mimeCType.EqualsLiteral("text/html") &&
++               !mimeCType.EqualsLiteral("application/xhtml+xml"))
+       {
+         // Neither an acceptable text or html type.
+         mEditorStatus = eEditorErrorCantEditMimeType;
+--- mozilla/netwerk/protocol/about/src/Makefile.in.orig	2005-04-05 19:40:24.000000000 +0200
++++ mozilla/netwerk/protocol/about/src/Makefile.in	2008-11-13 20:40:59.000000000 +0100
+@@ -56,9 +56,12 @@
+ 
+ CPPSRCS		= \
+ 		nsAboutProtocolHandler.cpp \
+-		nsAboutBlank.cpp \
+-		nsAboutBloat.cpp \
+-		nsAboutCache.cpp \
++		nsAboutBlank.cpp  \
++		nsAboutXBlank.cpp \
++		nsAboutStrictBlank.cpp  \
++		nsAboutXStrictBlank.cpp \
++		nsAboutBloat.cpp  \
++		nsAboutCache.cpp  \
+ 		nsAboutCacheEntry.cpp \
+ 		nsAboutRedirector.cpp \
+ 		$(NULL)
+--- mozilla/netwerk/protocol/about/src/nsAboutBlank.cpp.orig	2008-11-19 16:38:29.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutBlank.cpp	2008-11-13 20:57:33.000000000 +0100
+@@ -43,7 +43,8 @@
+ 
+ NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
+ 
+-static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
++static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" "
++"\"http://www.w3.org/TR/html4/loose.dtd\">"
+ "<html><head><title></title></head><body></body></html>";
+ 
+ NS_IMETHODIMP
+--- /dev/null	2008-11-19 16:36:18.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutStrictBlank.cpp	2008-11-13 20:58:04.000000000 +0100
+@@ -0,0 +1,81 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
++/* ***** BEGIN LICENSE BLOCK *****
++ * Version: NPL 1.1/GPL 2.0/LGPL 2.1
++ *
++ * The contents of this file are subject to the Netscape Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/NPL/
++ *
++ * Software distributed under the License is distributed on an "AS IS" basis,
++ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
++ * for the specific language governing rights and limitations under the
++ * License.
++ *
++ * The Original Code is mozilla.org code.
++ *
++ * The Initial Developer of the Original Code is 
++ * Netscape Communications Corporation.
++ * Portions created by the Initial Developer are Copyright (C) 1998
++ * the Initial Developer. All Rights Reserved.
++ *
++ * Contributor(s):
++ *
++ * Alternatively, the contents of this file may be used under the terms of
++ * either the GNU General Public License Version 2 or later (the "GPL"), or 
++ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
++ * in which case the provisions of the GPL or the LGPL are applicable instead
++ * of those above. If you wish to allow use of your version of this file only
++ * under the terms of either the GPL or the LGPL, and not to allow others to
++ * use your version of this file under the terms of the NPL, indicate your
++ * decision by deleting the provisions above and replace them with the notice
++ * and other provisions required by the GPL or the LGPL. If you do not delete
++ * the provisions above, a recipient may use your version of this file under
++ * the terms of any one of the NPL, the GPL or the LGPL.
++ *
++ * ***** END LICENSE BLOCK ***** */
++
++#include "nsAboutStrictBlank.h"
++#include "nsIIOService.h"
++#include "nsIServiceManager.h"
++#include "nsIStringStream.h"
++#include "nsNetUtil.h"
++
++NS_IMPL_ISUPPORTS1(nsAboutStrictBlank, nsIAboutModule)
++
++static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" "
++"\"http://www.w3.org/TR/html4/strict.dtd\">"
++"<html><head><title></title></head><body></body></html>";
++
++NS_IMETHODIMP
++nsAboutStrictBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
++{
++    nsresult rv;
++    nsIChannel* channel;
++
++    nsCOMPtr<nsIInputStream> in;
++    rv = NS_NewCStringInputStream(getter_AddRefs(in), nsDependentCString(kBlankPage));
++    if (NS_FAILED(rv)) return rv;
++
++    rv = NS_NewInputStreamChannel(&channel, aURI, in,
++                                  NS_LITERAL_CSTRING("text/html"), 
++                                  EmptyCString());
++    if (NS_FAILED(rv)) return rv;
++
++    *result = channel;
++    return rv;
++}
++
++NS_METHOD
++nsAboutStrictBlank::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
++{
++    nsAboutStrictBlank* about = new nsAboutStrictBlank();
++    if (about == nsnull)
++        return NS_ERROR_OUT_OF_MEMORY;
++    NS_ADDREF(about);
++    nsresult rv = about->QueryInterface(aIID, aResult);
++    NS_RELEASE(about);
++    return rv;
++}
++
++////////////////////////////////////////////////////////////////////////////////
+--- /dev/null	2008-11-19 16:36:22.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutStrictBlank.h	2008-11-13 20:42:06.000000000 +0100
+@@ -0,0 +1,67 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
++/* ***** BEGIN LICENSE BLOCK *****
++ * Version: NPL 1.1/GPL 2.0/LGPL 2.1
++ *
++ * The contents of this file are subject to the Netscape Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/NPL/
++ *
++ * Software distributed under the License is distributed on an "AS IS" basis,
++ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
++ * for the specific language governing rights and limitations under the
++ * License.
++ *
++ * The Original Code is mozilla.org code.
++ *
++ * The Initial Developer of the Original Code is 
++ * Netscape Communications Corporation.
++ * Portions created by the Initial Developer are Copyright (C) 1998
++ * the Initial Developer. All Rights Reserved.
++ *
++ * Contributor(s):
++ *
++ * Alternatively, the contents of this file may be used under the terms of
++ * either the GNU General Public License Version 2 or later (the "GPL"), or 
++ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
++ * in which case the provisions of the GPL or the LGPL are applicable instead
++ * of those above. If you wish to allow use of your version of this file only
++ * under the terms of either the GPL or the LGPL, and not to allow others to
++ * use your version of this file under the terms of the NPL, indicate your
++ * decision by deleting the provisions above and replace them with the notice
++ * and other provisions required by the GPL or the LGPL. If you do not delete
++ * the provisions above, a recipient may use your version of this file under
++ * the terms of any one of the NPL, the GPL or the LGPL.
++ *
++ * ***** END LICENSE BLOCK ***** */
++
++#ifndef nsAboutStrictBlank_h__
++#define nsAboutStrictBlank_h__
++
++#include "nsIAboutModule.h"
++
++class nsAboutStrictBlank : public nsIAboutModule 
++{
++public:
++    NS_DECL_ISUPPORTS
++
++    NS_DECL_NSIABOUTMODULE
++
++    nsAboutStrictBlank() {}
++    virtual ~nsAboutStrictBlank() {}
++
++    static NS_METHOD
++    Create(nsISupports *aOuter, REFNSIID aIID, void **aResult);
++
++protected:
++};
++
++#define NS_ABOUT_STRICTBLANK_MODULE_CID                    \
++{ /* 749fcfff-2be7-4c93-a9b9-ab096ef040dd */         \
++    0x749fcfff,                                      \
++    0x2be7,                                          \
++    0x4c93,                                          \
++    {0xa9, 0xb9, 0xab, 0x09, 0x6e, 0xf0, 0x40, 0xdd} \
++}
++
++#endif // nsAboutStrictBlank_h__
+--- /dev/null	2008-11-19 16:35:36.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutXBlank.cpp	2008-11-13 20:42:06.000000000 +0100
+@@ -0,0 +1,79 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
++/* ***** BEGIN LICENSE BLOCK *****
++ * Version: NPL 1.1/GPL 2.0/LGPL 2.1
++ *
++ * The contents of this file are subject to the Netscape Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/NPL/
++ *
++ * Software distributed under the License is distributed on an "AS IS" basis,
++ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
++ * for the specific language governing rights and limitations under the
++ * License.
++ *
++ * The Original Code is mozilla.org code.
++ *
++ * The Initial Developer of the Original Code is 
++ * Netscape Communications Corporation.
++ * Portions created by the Initial Developer are Copyright (C) 1998
++ * the Initial Developer. All Rights Reserved.
++ *
++ * Contributor(s):
++ *
++ * Alternatively, the contents of this file may be used under the terms of
++ * either the GNU General Public License Version 2 or later (the "GPL"), or 
++ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
++ * in which case the provisions of the GPL or the LGPL are applicable instead
++ * of those above. If you wish to allow use of your version of this file only
++ * under the terms of either the GPL or the LGPL, and not to allow others to
++ * use your version of this file under the terms of the NPL, indicate your
++ * decision by deleting the provisions above and replace them with the notice
++ * and other provisions required by the GPL or the LGPL. If you do not delete
++ * the provisions above, a recipient may use your version of this file under
++ * the terms of any one of the NPL, the GPL or the LGPL.
++ *
++ * ***** END LICENSE BLOCK ***** */
++
++#include "nsAboutXBlank.h"
++#include "nsIIOService.h"
++#include "nsIServiceManager.h"
++#include "nsIStringStream.h"
++#include "nsNetUtil.h"
++
++NS_IMPL_ISUPPORTS1(nsAboutXBlank, nsIAboutModule)
++
++static const char kXBlankPage[] = "<?xml version=\"1.0\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n  <title/>\n</head>\n<body/>\n</html>";
++
++NS_IMETHODIMP
++nsAboutXBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
++{
++    nsresult rv;
++    nsIChannel* channel;
++
++    nsCOMPtr<nsIInputStream> in;
++    rv = NS_NewCStringInputStream(getter_AddRefs(in), nsDependentCString(kXBlankPage));
++    if (NS_FAILED(rv)) return rv;
++
++    rv = NS_NewInputStreamChannel(&channel, aURI, in,
++                                  NS_LITERAL_CSTRING("application/xhtml+xml"), 
++                                  EmptyCString());
++    if (NS_FAILED(rv)) return rv;
++
++    *result = channel;
++    return rv;
++}
++
++NS_METHOD
++nsAboutXBlank::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
++{
++    nsAboutXBlank* about = new nsAboutXBlank();
++    if (about == nsnull)
++        return NS_ERROR_OUT_OF_MEMORY;
++    NS_ADDREF(about);
++    nsresult rv = about->QueryInterface(aIID, aResult);
++    NS_RELEASE(about);
++    return rv;
++}
++
++////////////////////////////////////////////////////////////////////////////////
+--- /dev/null	2008-11-19 16:35:42.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutXBlank.h	2008-11-13 20:42:06.000000000 +0100
+@@ -0,0 +1,67 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
++/* ***** BEGIN LICENSE BLOCK *****
++ * Version: NPL 1.1/GPL 2.0/LGPL 2.1
++ *
++ * The contents of this file are subject to the Netscape Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/NPL/
++ *
++ * Software distributed under the License is distributed on an "AS IS" basis,
++ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
++ * for the specific language governing rights and limitations under the
++ * License.
++ *
++ * The Original Code is mozilla.org code.
++ *
++ * The Initial Developer of the Original Code is 
++ * Netscape Communications Corporation.
++ * Portions created by the Initial Developer are Copyright (C) 1998
++ * the Initial Developer. All Rights Reserved.
++ *
++ * Contributor(s):
++ *
++ * Alternatively, the contents of this file may be used under the terms of
++ * either the GNU General Public License Version 2 or later (the "GPL"), or 
++ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
++ * in which case the provisions of the GPL or the LGPL are applicable instead
++ * of those above. If you wish to allow use of your version of this file only
++ * under the terms of either the GPL or the LGPL, and not to allow others to
++ * use your version of this file under the terms of the NPL, indicate your
++ * decision by deleting the provisions above and replace them with the notice
++ * and other provisions required by the GPL or the LGPL. If you do not delete
++ * the provisions above, a recipient may use your version of this file under
++ * the terms of any one of the NPL, the GPL or the LGPL.
++ *
++ * ***** END LICENSE BLOCK ***** */
++
++#ifndef nsAboutXBlank_h__
++#define nsAboutXBlank_h__
++
++#include "nsIAboutModule.h"
++
++class nsAboutXBlank : public nsIAboutModule 
++{
++public:
++    NS_DECL_ISUPPORTS
++
++    NS_DECL_NSIABOUTMODULE
++
++    nsAboutXBlank() {}
++    virtual ~nsAboutXBlank() {}
++
++    static NS_METHOD
++    Create(nsISupports *aOuter, REFNSIID aIID, void **aResult);
++
++protected:
++};
++
++#define NS_ABOUT_XBLANK_MODULE_CID                    \
++{ /* a317af2d-2fff-4dae-83a3-a20e48b21be1 */         \
++    0xa317af2d,                                      \
++    0x2fff,                                          \
++    0x4dae,                                          \
++    {0x83, 0xa3, 0xa2, 0x0e, 0x48, 0xb2, 0x1b, 0xe1} \
++}
++
++#endif // nsAboutXBlank_h__
+--- /dev/null	2008-11-19 16:35:54.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutXStrictBlank.cpp	2008-11-13 20:42:06.000000000 +0100
+@@ -0,0 +1,79 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
++/* ***** BEGIN LICENSE BLOCK *****
++ * Version: NPL 1.1/GPL 2.0/LGPL 2.1
++ *
++ * The contents of this file are subject to the Netscape Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/NPL/
++ *
++ * Software distributed under the License is distributed on an "AS IS" basis,
++ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
++ * for the specific language governing rights and limitations under the
++ * License.
++ *
++ * The Original Code is mozilla.org code.
++ *
++ * The Initial Developer of the Original Code is 
++ * Netscape Communications Corporation.
++ * Portions created by the Initial Developer are Copyright (C) 1998
++ * the Initial Developer. All Rights Reserved.
++ *
++ * Contributor(s):
++ *
++ * Alternatively, the contents of this file may be used under the terms of
++ * either the GNU General Public License Version 2 or later (the "GPL"), or 
++ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
++ * in which case the provisions of the GPL or the LGPL are applicable instead
++ * of those above. If you wish to allow use of your version of this file only
++ * under the terms of either the GPL or the LGPL, and not to allow others to
++ * use your version of this file under the terms of the NPL, indicate your
++ * decision by deleting the provisions above and replace them with the notice
++ * and other provisions required by the GPL or the LGPL. If you do not delete
++ * the provisions above, a recipient may use your version of this file under
++ * the terms of any one of the NPL, the GPL or the LGPL.
++ *
++ * ***** END LICENSE BLOCK ***** */
++
++#include "nsAboutXStrictBlank.h"
++#include "nsIIOService.h"
++#include "nsIServiceManager.h"
++#include "nsIStringStream.h"
++#include "nsNetUtil.h"
++
++NS_IMPL_ISUPPORTS1(nsAboutXStrictBlank, nsIAboutModule)
++
++static const char kXBlankPage[] = "<?xml version=\"1.0\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n  <title/>\n</head>\n<body/>\n</html>";
++
++NS_IMETHODIMP
++nsAboutXStrictBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
++{
++    nsresult rv;
++    nsIChannel* channel;
++
++    nsCOMPtr<nsIInputStream> in;
++    rv = NS_NewCStringInputStream(getter_AddRefs(in), nsDependentCString(kXBlankPage));
++    if (NS_FAILED(rv)) return rv;
++
++    rv = NS_NewInputStreamChannel(&channel, aURI, in,
++                                  NS_LITERAL_CSTRING("application/xhtml+xml"), 
++                                  EmptyCString());
++    if (NS_FAILED(rv)) return rv;
++
++    *result = channel;
++    return rv;
++}
++
++NS_METHOD
++nsAboutXStrictBlank::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
++{
++    nsAboutXStrictBlank* about = new nsAboutXStrictBlank();
++    if (about == nsnull)
++        return NS_ERROR_OUT_OF_MEMORY;
++    NS_ADDREF(about);
++    nsresult rv = about->QueryInterface(aIID, aResult);
++    NS_RELEASE(about);
++    return rv;
++}
++
++////////////////////////////////////////////////////////////////////////////////
+--- /dev/null	2008-11-19 16:35:58.000000000 +0100
++++ mozilla/netwerk/protocol/about/src/nsAboutXStrictBlank.h	2008-11-13 20:42:06.000000000 +0100
+@@ -0,0 +1,67 @@
++/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
++/* ***** BEGIN LICENSE BLOCK *****
++ * Version: NPL 1.1/GPL 2.0/LGPL 2.1
++ *
++ * The contents of this file are subject to the Netscape Public License
++ * Version 1.1 (the "License"); you may not use this file except in
++ * compliance with the License. You may obtain a copy of the License at
++ * http://www.mozilla.org/NPL/
++ *
++ * Software distributed under the License is distributed on an "AS IS" basis,
++ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
++ * for the specific language governing rights and limitations under the
++ * License.
++ *
++ * The Original Code is mozilla.org code.
++ *
++ * The Initial Developer of the Original Code is 
++ * Netscape Communications Corporation.
++ * Portions created by the Initial Developer are Copyright (C) 1998
++ * the Initial Developer. All Rights Reserved.
++ *
++ * Contributor(s):
++ *
++ * Alternatively, the contents of this file may be used under the terms of
++ * either the GNU General Public License Version 2 or later (the "GPL"), or 
++ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
++ * in which case the provisions of the GPL or the LGPL are applicable instead
++ * of those above. If you wish to allow use of your version of this file only
++ * under the terms of either the GPL or the LGPL, and not to allow others to
++ * use your version of this file under the terms of the NPL, indicate your
++ * decision by deleting the provisions above and replace them with the notice
++ * and other provisions required by the GPL or the LGPL. If you do not delete
++ * the provisions above, a recipient may use your version of this file under
++ * the terms of any one of the NPL, the GPL or the LGPL.
++ *
++ * ***** END LICENSE BLOCK ***** */
++
++#ifndef nsAboutXStrictBlank_h__
++#define nsAboutXStrictBlank_h__
++
++#include "nsIAboutModule.h"
++
++class nsAboutXStrictBlank: public nsIAboutModule 
++{
++public:
++    NS_DECL_ISUPPORTS
++
++    NS_DECL_NSIABOUTMODULE
++
++    nsAboutXStrictBlank() {}
++    virtual ~nsAboutXStrictBlank() {}
++
++    static NS_METHOD
++    Create(nsISupports *aOuter, REFNSIID aIID, void **aResult);
++
++protected:
++};
++
++#define NS_ABOUT_XSTRICTBLANK_MODULE_CID                    \
++{ /* 802c3b91-02dd-446f-9ae8-a19a8dfadad7 */         \
++    0x802c3b91,                                      \
++    0x02dd,                                          \
++    0x446f,                                          \
++    {0x9a, 0xe8, 0xa1, 0x9a, 0x8d, 0xfa, 0xda, 0xd7} \
++}
++
++#endif // nsAboutXStrictBlank_h__
+--- mozilla/netwerk/build/nsNetModule.cpp.orig	2006-05-15 16:46:40.000000000 +0200
++++ mozilla/netwerk/build/nsNetModule.cpp	2008-11-13 20:40:59.000000000 +0100
+@@ -165,12 +165,15 @@
+ // protocols
+ ///////////////////////////////////////////////////////////////////////////////
+ 
+ // about:blank is mandatory
+ #include "nsAboutProtocolHandler.h"
+ #include "nsAboutBlank.h"
++#include "nsAboutXBlank.h"
++#include "nsAboutStrictBlank.h"
++#include "nsAboutXStrictBlank.h"
+ 
+ #ifdef NECKO_PROTOCOL_about
+ // about
+ #include "nsAboutBloat.h"
+ #include "nsAboutCache.h"
+ #include "nsAboutRedirector.h"
+@@ -994,12 +997,27 @@
+     },
+     { "about:blank", 
+       NS_ABOUT_BLANK_MODULE_CID,
+       NS_ABOUT_MODULE_CONTRACTID_PREFIX "blank", 
+       nsAboutBlank::Create
+     },
++    { "about:xblank", 
++      NS_ABOUT_XBLANK_MODULE_CID,
++      NS_ABOUT_MODULE_CONTRACTID_PREFIX "xblank", 
++      nsAboutXBlank::Create
++    },
++    { "about:strictblank", 
++      NS_ABOUT_STRICTBLANK_MODULE_CID,
++      NS_ABOUT_MODULE_CONTRACTID_PREFIX "strictblank", 
++      nsAboutStrictBlank::Create
++    },
++    { "about:xstrictblank", 
++      NS_ABOUT_XSTRICTBLANK_MODULE_CID,
++      NS_ABOUT_MODULE_CONTRACTID_PREFIX "xstrictblank", 
++      nsAboutXStrictBlank::Create
++    },
+ #ifdef NECKO_PROTOCOL_about
+     { "about:bloat", 
+       NS_ABOUT_BLOAT_MODULE_CID,
+       NS_ABOUT_MODULE_CONTRACTID_PREFIX "bloat", 
+       nsAboutBloat::Create
+     },
+

@@ -1,0 +1,181 @@
+--- mozilla/toolkit/content/xul.css.orig	2007-01-29 20:12:06.000000000 +0100
++++ mozilla/toolkit/content/xul.css	2008-11-13 20:40:59.000000000 +0100
+@@ -956,12 +956,20 @@
+ /********** spinbuttons ***********/
+ 
+ spinbuttons {
+   -moz-binding: url("chrome://global/content/bindings/spinbuttons.xml#spinbuttons");
+ }
+ 
++spinbuttons image.up {
++  -moz-binding: url("chrome://global/content/bindings/spinbuttons.xml#upbutton");
++}
++
++spinbuttons image.down {
++  -moz-binding: url("chrome://global/content/bindings/spinbuttons.xml#downbutton");
++}
++
+ /********** stringbundle **********/
+ 
+ stringbundleset {
+   -moz-binding: url("chrome://global/content/bindings/stringbundle.xml#stringbundleset");
+   visibility: collapse;
+ }
+--- mozilla/toolkit/content/widgets/spinbuttons.xml.orig	2004-12-05 19:18:16.000000000 +0100
++++ mozilla/toolkit/content/widgets/spinbuttons.xml	2008-11-15 19:54:47.000000000 +0100
+@@ -19,12 +19,13 @@
+    - Håkan Waara. Portions created by Håkan Waara are Copyright (C), Håkan Waara.  All Rights Reserved.
+    - Portions created by the Initial Developer are Copyright (C) 2001
+    - the Initial Developer. All Rights Reserved.
+    -
+    - Contributor(s):
+    -   Håkan Waara (Original Author)
++   -   Daniel Glazman (daniel@glazman.org)
+    -
+    - Alternatively, the contents of this file may be used under the terms of
+    - either of the GNU General Public License Version 2 or later (the "GPL"),
+    - or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+    - in which case the provisions of the GPL or the LGPL are applicable instead
+    - of those above. If you wish to allow use of your version of this file only
+@@ -40,22 +41,138 @@
+ <bindings id="spinbuttonsBindings"
+    xmlns="http://www.mozilla.org/xbl"
+    xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:xbl="http://www.mozilla.org/xbl">
+ 
+   <binding id="spinbuttons"
+-     extends="chrome://global/content/bindings/spinbuttons.xml#spinbuttons-baseline">
++           extends="chrome://global/content/bindings/spinbuttons.xml#spinbuttons-baseline">
+     <resources>
+       <stylesheet src="chrome://global/skin/spinbuttons.css"/>
+     </resources>
+   </binding>
+ 
+   <binding id="spinbuttons-baseline">
+     <content>
+       <xul:vbox flex="1" align="center">
+-        <xul:image xbl:inherits="onclick=onup" id="upButton" class="up"/>
+-        <xul:image xbl:inherits="onclick=ondown" id="downButton" class="down"/>
++        <xul:image xbl:inherits="timeout" class="up"/>
++        <xul:image xbl:inherits="timeout" class="down"/>
+       </xul:vbox>
+     </content>
++    <implementation>
++      <method name="up">
++        <body>
++          <![CDATA[
++            var action = this.getAttribute("onup");
++            eval(action);
++          ]]>
++        </body>
++      </method>
++      <method name="down">
++        <body>
++          <![CDATA[
++            var action = this.getAttribute("ondown");
++            eval(action);
++          ]]>
++        </body>
++      </method>
++    </implementation>
++  </binding>
++
++  <binding id="spinbuttons-button">
++    <implementation>
++      <field name="mTimer">null</field>
++      <field name="mRepeated">false</field>
++      <field name="mTimeoutDuration">null</field>
++
++      <constructor>
++        <![CDATA[
++          this.mTimeoutDuration = this.getAttribute("timeout");
++        ]]>
++      </constructor>
++
++    </implementation>
++    <handlers>
++      <handler event="click">
++        <![CDATA[
++          if (!this.mRepeated)
++            this.doAction(this, false);
++        ]]>
++      </handler>
++      <handler event="mousedown">
++        <![CDATA[
++          if (this.mTimeoutDuration)
++          {
++            this.mRepeated = false;
++            if (this.mTimer)
++              return;
++            this.mTimer = window.setTimeout(this.doAction, this.mTimeoutDuration, this, true);
++          }
++        ]]>
++      </handler>
++      <handler event="mouseup">
++        <![CDATA[
++          if (this.mTimeoutDuration)
++          {
++            if (this.mTimer)
++              window.clearTimeout(this.mTimer);
++            this.mTimer = null;
++          }
++        ]]>
++      </handler>
++      <handler event="mouseout">
++        <![CDATA[
++          if (this.mTimeoutDuration)
++          {
++            if (this.mTimer)
++              window.clearTimeout(this.mTimer);
++            this.mTimer = null;
++          }
++        ]]>
++      </handler>
++    </handlers>
++  </binding>
++
++  <binding id="upbutton"
++           extends="chrome://global/content/bindings/spinbuttons.xml#spinbuttons-button">
++    <implementation>
++      <method name="doAction">
++        <parameter name="element"/>
++        <parameter name="repeatable"/>
++        <body>
++          <![CDATA[
++            element.parentNode.parentNode.up();
++
++            if (repeatable)
++            {
++              this.mRepeated = true;
++              window.clearTimeout(element.mTimer);
++              element.mTimer = window.setTimeout(element.doAction, this.mTimeoutDuration, element, true);
++            }
++          ]]>
++        </body>
++      </method>
++    </implementation>
++  </binding>
++
++  <binding id="downbutton"
++           extends="chrome://global/content/bindings/spinbuttons.xml#spinbuttons-button">
++    <implementation>
++      <method name="doAction">
++        <parameter name="element"/>
++        <parameter name="repeatable"/>
++        <body>
++          <![CDATA[
++            element.parentNode.parentNode.down();
++
++            if (repeatable)
++            {
++              this.mRepeated = true;
++              window.clearTimeout(element.mTimer);
++              element.mTimer = window.setTimeout(element.doAction, this.mTimeoutDuration, element, true);
++            }
++          ]]>
++        </body>
++      </method>
++    </implementation>
+   </binding>
+ 
+ </bindings>

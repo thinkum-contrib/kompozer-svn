@@ -1,0 +1,99 @@
+Properly get cairo lib dependencies and don't rely on GTK bringing them, which just don't happen anymore
+Patch from bz#344818.
+--- a/mozilla/config/autoconf.mk.in
++++ b/mozilla/config/autoconf.mk.in
+@@ -207,6 +207,8 @@ MOZ_SVG_RENDERER_CAIRO = @MOZ_SVG_RENDER
+ MOZ_LIBART_CFLAGS = @MOZ_LIBART_CFLAGS@
+ MOZ_ENABLE_CANVAS = @MOZ_ENABLE_CANVAS@
+ MOZ_CAIRO_CFLAGS = @MOZ_CAIRO_CFLAGS@
++MOZ_CAIRO_XLIB_CFLAGS = @MOZ_CAIRO_XLIB_CFLAGS@
++MOZ_CAIRO_XRENDER_CFLAGS = @MOZ_CAIRO_XRENDER_CFLAGS@
+ TX_EXE = @TX_EXE@
+ 
+ # Mac's don't like / in a #include, so we include the libart
+@@ -218,6 +220,8 @@ endif
+ endif
+ MOZ_LIBART_LIBS = @MOZ_LIBART_LIBS@
+ MOZ_CAIRO_LIBS = @MOZ_CAIRO_LIBS@
++MOZ_CAIRO_XLIB_LIBS = @MOZ_CAIRO_XLIB_LIBS@
++MOZ_CAIRO_XRENDER_LIBS = @MOZ_CAIRO_XRENDER_LIBS@
+ 
+ MOZ_ENABLE_GNOMEUI = @MOZ_ENABLE_GNOMEUI@
+ MOZ_GNOMEUI_CFLAGS = @MOZ_GNOMEUI_CFLAGS@
+--- a/mozilla/configure.in
++++ b/mozilla/configure.in
+@@ -6804,12 +6804,29 @@ if test "$MOZ_SVG_RENDERER_CAIRO" -o "$M
+       PKG_CHECK_MODULES(CAIRO, cairo >= $CAIRO_VERSION)
+       MOZ_CAIRO_CFLAGS=$CAIRO_CFLAGS
+       MOZ_CAIRO_LIBS=$CAIRO_LIBS
++
++      if test "$MOZ_X11"; then
++          if test "$MOZ_SVG_RENDERER_CAIRO"; then
++              PKG_CHECK_MODULES(CAIRO_XLIB, cairo-xlib >= $CAIRO_VERSION,,:)
++              MOZ_CAIRO_XLIB_CFLAGS=$CAIRO_XLIB_CFLAGS
++              MOZ_CAIRO_XLIB_LIBS="$XLDFLAGS $CAIRO_XLIB_LIBS"
++          fi
++          if test "$MOZ_ENABLE_CANVAS"; then
++              PKG_CHECK_MODULES(CAIRO_XRENDER, cairo-xlib-xrender >= $CAIRO_VERSION,,:)
++              MOZ_CAIRO_XRENDER_CFLAGS=$CAIRO_XRENDER_CFLAGS
++              MOZ_CAIRO_XRENDER_LIBS="$XLDFLAGS $CAIRO_XRENDER_LIBS"
++          fi
++      fi
+    fi
+ fi
+ 
+ AC_SUBST(MOZ_TREE_CAIRO)
+ AC_SUBST(MOZ_CAIRO_CFLAGS)
+ AC_SUBST(MOZ_CAIRO_LIBS)
++AC_SUBST(MOZ_CAIRO_XLIB_CFLAGS)
++AC_SUBST(MOZ_CAIRO_XLIB_LIBS)
++AC_SUBST(MOZ_CAIRO_XRENDER_CFLAGS)
++AC_SUBST(MOZ_CAIRO_XRENDER_LIBS)
+ 
+ dnl ========================================================
+ dnl disable xul
+--- a/mozilla/content/canvas/src/Makefile.in
++++ b/mozilla/content/canvas/src/Makefile.in
+@@ -94,7 +94,7 @@ FORCE_STATIC_LIB = 1
+ 
+ include $(topsrcdir)/config/rules.mk
+ 
+-CXXFLAGS	+= $(MOZ_CAIRO_CFLAGS) $(TK_CFLAGS)
++CXXFLAGS	+= $(MOZ_CAIRO_CFLAGS) $(MOZ_CAIRO_XRENDER_CFLAGS) $(TK_CFLAGS)
+ 
+ ifneq (,$(filter mac cocoa,$(MOZ_GFX_TOOLKIT)))
+ # needed for nsDrawingSurfaceMac.h
+--- a/mozilla/layout/build/Makefile.in
++++ b/mozilla/layout/build/Makefile.in
+@@ -234,6 +234,17 @@ EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_LIBS) \
+ 		    $(NULL)
+ endif
+ 
++ifdef MOZ_X11
++ifdef MOZ_SVG_RENDERER_CAIRO
++EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_XLIB_LIBS) \
++		    $(NULL)
++endif
++ifdef MOZ_ENABLE_CANVAS
++EXTRA_DSO_LDOPTS += $(MOZ_CAIRO_XRENDER_LIBS) \
++		    $(NULL)
++endif
++endif
++
+ ifneq (,$(filter mac cocoa gtk,$(MOZ_WIDGET_TOOLKIT)))
+ EXTRA_DSO_LDOPTS += \
+ 	$(TK_LIBS) \
+--- a/mozilla/layout/svg/renderer/src/cairo/Makefile.in
++++ b/mozilla/layout/svg/renderer/src/cairo/Makefile.in
+@@ -95,6 +95,11 @@ LOCAL_INCLUDES  = \
+                 -I$(topsrcdir)/gfx/src \
+                 $(NULL)
+ 
++ifdef MOZ_X11
++CFLAGS		+= $(MOZ_CAIRO_XLIB_CFLAGS)
++CXXFLAGS	+= $(MOZ_CAIRO_XLIB_CFLAGS)
++endif
++
+ ifdef MOZ_ENABLE_GTK
+ LOCAL_INCLUDES +=  -I$(topsrcdir)/gfx/src/gtk
+ CFLAGS         += $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
