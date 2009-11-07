@@ -80,6 +80,9 @@ const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 // Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
 const kColoredSourceView = false;
 
+// Kaze: stealing some code from Thunderbird for the inline spellchecker
+//const mozISpellCheckingEngine = Components.interfaces.mozISpellCheckingEngine;
+
 var gPreviousNonSourceEditMode    = kEditModeDesign;
 //var gPreviousNonSourceDisplayMode = kDisplayModeNormal;
 var gEditorDisplayMode    = -1;
@@ -452,12 +455,15 @@ var gEditorDocumentObserver =
         if (!params)
           return;
 
-        // Kaze: the spell checker might be disabled for some reason
+        /* Gecko 1.7 + Nvu patch
         try {
           RealTimeSpell.Init(editor, true);
         } catch(e) {
-            dump("\n The spell checker could not start. \n\n");
-        }
+          dump("\n The spell checker could not start. \n\n");
+        } */
+        // Gecko 1.8
+        InlineSpellCheckerUI.init(editor);
+        InlineSpellCheckerUI.enabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
 
         try {
           commandManager.getCommandState(aTopic, gContentWindow, params);

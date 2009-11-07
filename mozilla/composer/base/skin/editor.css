@@ -132,10 +132,6 @@
   -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
 }
 
-.blabla {
-  list-style-image: url("chrome://editor/content/images/modified.gif");
-}
-
 tabeditor {
   -moz-binding: url("chrome://editor/content/bindings/tabeditor.xml#tabeditor");
 }

@@ -1,8 +1,0 @@
-currently applied:
-
-amd64 : patch submitted by aj@indaco.de for build nvu on amd64
-autoconf.mk.in : no hardcoded version
-all.js : provide default x-www-browser
-version.txt : remove hardcoded path
-makefile.in : solve compile issue with libfreetype6
-mozilla_unused : provide support for arm/hppa arch

@@ -49,7 +49,7 @@
 
 <popupset id="editorContentContextSet">
   <popup id="editorContentContext"   
-   onpopupshowing="EditorFillContextMenu(event, this); RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"> 
+         onpopupshowing="EditorFillContextMenu(event, this); RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"> 
     <menu id="spellSuggestionsMenu" label="&spellSuggestions.label;"
                                     accesskey="&spellSuggestions.accesskey;">
       <menupopup id="spellSuggestionsMenuPopup"
