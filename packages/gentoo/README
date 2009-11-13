@@ -1,0 +1,8 @@
+kompozer-*.ebuild file made by Dabrouch: http://www.gentoo.fr/forum/viewtopic.php?pid=4603#p4603
+ * tested on x86 and amd64
+ * to be put into the 'apps-editor' category of the ebuild tree
+ * installs the appropriate language packs and dictionaries
+ * does not add any entry to the desktop menu yet
+
+See also: http://bugs.gentoo.org/show_bug.cgi?id=146761
+

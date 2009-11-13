@@ -1,0 +1,8 @@
+kompozer.spec file, made by Ismael Olea: http://olea.org/
+ * tested on x86 and x86_64
+ * should be usable for all RPM-based distros
+
+See also:
+ * RedHat   : https://bugzilla.redhat.com/show_bug.cgi?id=519521
+ * Mandriva : https://qa.mandriva.com/show_bug.cgi?id=55557
+
