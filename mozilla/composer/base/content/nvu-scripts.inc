@@ -12,8 +12,6 @@
   <script type="application/x-javascript" src="chrome://communicator/content/printing.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <!-- script type="application/x-javascript" src="chrome://communicator/content/RealTimeSpell.js"/ -->
-
   <script type="application/x-javascript" src="chrome://global/content/XPCNativeWrapper.js"/>
 
   <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>

@@ -5,9 +5,6 @@
 #   build-essential + libgtk2.0-dev, libxt-dev, libidl-dev, autoconf2.13      
 #
 
-# build in a separate directory (optional)
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/../obj-@CONFIG_GUESS@
-
 # Build the standalone composer, obviously
 ac_add_options --enable-application=composer
 

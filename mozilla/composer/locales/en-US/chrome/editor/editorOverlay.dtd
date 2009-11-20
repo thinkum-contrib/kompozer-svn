@@ -699,6 +699,7 @@
 <!ENTITY helpMenu.label                      "Help">
 <!ENTITY helpmenu.accesskey                  "H">
 
+<!-- KompoZer 0.7 -->
 <!ENTITY nvuComMenu.label                    "&brandShortName;'s web site">
 <!ENTITY nvucommenu.accesskey                "K">
 <!ENTITY faqMenu.label                       "FAQ">
@@ -724,6 +725,7 @@
 <!ENTITY aboutDI.label                       "About Disruptive Innovations">
 <!ENTITY aboutDI.accesskey                   "I">
 
+<!-- KompoZer 0.7: absolute positioning -->
 <!ENTITY leftGlued.tooltip                   "Glue to the left border">
 <!ENTITY rightGlued.tooltip                  "Glue to the right border">
 <!ENTITY centerGlued.tooltip                 "Stay in the center">
@@ -731,9 +733,16 @@
 <!ENTITY bottomGlued.tooltip                 "Glue to the bottom">
 <!ENTITY middleGlued.tooltip                 "Stay in the middle">
 
+<!-- KompoZer 0.7: SpellCheck -->
 <!ENTITY spellSuggestions.label              "Spelling Suggestions">
 <!ENTITY spellSuggestions.accesskey          "S">
-<!ENTITY spellAddToDictionary.label          "Add to Dictionary">
+
+<!-- KompoZer 0.8: SpellCheck -->
+<!ENTITY spellCheckNoSuggestions.label       "(No Suggestions Found)">
+<!ENTITY spellCheckIgnoreWord.label          "Ignore Word">
+<!ENTITY spellCheckIgnoreWord.accesskey      "I">
+<!ENTITY spellCheckAddToDictionary.label     "Add to Dictionary">
+<!ENTITY spellCheckAddToDictionary.accesskey "n">
 
 <!-- KompoZer 0.8: viewSource -->
 <!ENTITY editNode.label                      "Edit HTML">
@@ -747,3 +756,4 @@
 <!ENTITY extEditor.tooltip                   "Open the current document in an external text editor">
 <!ENTITY extEditorCmd.label                  "External Text Editor">
 <!ENTITY extEditorCmd.accesskey              "E">
+

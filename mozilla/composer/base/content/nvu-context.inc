@@ -1,39 +1,40 @@
-    <popup id="editorContentContext"   
-      onpopupshowing="EditorFillContextMenu(event, this); RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"> 
+    <popup id="editorContentContext"   onpopupshowing="EditorFillContextMenu(event, this);"> 
        <menu id="spellSuggestionsMenu" label="&spellSuggestions.label;"
                                        accesskey="&spellSuggestions.accesskey;">
-         <menupopup id="spellSuggestionsMenuPopup"
-                    onpopupshowing="RealTimeSpell.updateSuggestionsMenu(this,'spellAddToDictionary','spellAddSep',null);"
-                    oncommand="RealTimeSpell.selectSuggestion(event.target.value,null,null);">
-           <menuitem id="spellAddToDictionary" label="&spellAddToDictionary.label;"
-                     oncommand="RealTimeSpell.addToDictionary(null,null);"/>
-           <menuseparator id="spellAddSep"/>
+         <menupopup id="spellSuggestionsMenuPopup">
+           <menuitem id="spellCheckNoSuggestions"   label="spellCheckNoSuggestions.label;" disabled="true"/>
+           <menuseparator id="spellCheckAddSep"/>
+           <menuitem id="spellCheckAddToDictionary" label="&spellCheckAddToDictionary.label;" accesskey="&spellCheckAddToDictionary.accesskey;"
+                     oncommand="InlineSpellCheckerUI.addToDictionary();"/>  
+           <menuitem id="spellCheckIgnoreWord"      label="&spellCheckIgnoreWord.label;"      accesskey="&spellCheckIgnoreWord.accesskey;"
+                     oncommand="InlineSpellCheckerUI.mInlineSpellChecker.ignoreWord(InlineSpellCheckerUI.mMisspelling);"/>  
          </menupopup>
        </menu>
        <menuseparator id="spellSuggestionsMenuSeparator"/>
 
-       <menuitem id="menu_undo_cm"   label="&undoCmd.label;" accesskey="&undo.accesskey;" command="cmd_undo"/>
-       <menuitem id="menu_redo_cm"   label="&redoCmd.label;" accesskey="&redo.accesskey;" command="cmd_redo"/>
+       <menuitem id="menu_undo_cm"   label="&undoCmd.label;"   accesskey="&undo.accesskey;"   command="cmd_undo"/>
+       <menuitem id="menu_redo_cm"   label="&redoCmd.label;"   accesskey="&redo.accesskey;"   command="cmd_redo"/>
        <menuseparator id="undoredo-separator"/>
-       
-       <menuitem id="menu_cut_cm"    label="&cutCmd.label;"    accesskey="&cut.accesskey;"   command="cmd_cut"/>
-       <menuitem id="menu_copy_cm"   label="&copyCmd.label;"   accesskey="&copy.accesskey;"  command="cmd_copy"/>
-       <menuitem id="menu_paste_cm"  label="&pasteCmd.label;"  accesskey="&paste.accesskey;" command="cmd_paste"/>
+
+       <menuitem id="menu_cut_cm"    label="&cutCmd.label;"    accesskey="&cut.accesskey;"    command="cmd_cut"/>
+       <menuitem id="menu_copy_cm"   label="&copyCmd.label;"   accesskey="&copy.accesskey;"   command="cmd_copy"/>
+       <menuitem id="menu_paste_cm"  label="&pasteCmd.label;"  accesskey="&paste.accesskey;"  command="cmd_paste"/>
        <menuitem id="menu_pasteNoFormatting_cm" command="cmd_pasteNoFormatting"/>
        <menuitem id="menu_delete_cm" label="&deleteCmd.label;" accesskey="&delete.accesskey;" command="cmd_delete"/>
        <menuseparator id="edit-separator"/>
+
        <menuitem id="menu_selectAll_cm" label="&selectAllCmd.label;" accesskey="&selectall.accesskey;" command="cmd_selectAll"/>
        <menuseparator id="selectAll-separator"/>
        
        <!-- label and accesskey set at runtime from strings -->
        <menuitem id="removeStylesMenuitem_cm"
-             observes="cmd_removeStyles"/>
+                 observes="cmd_removeStyles"/>
        <menuitem id="createLink_cm" label="&createLinkCmd.label;" accesskey="&createlink.accesskey;" command="cmd_link"/>
        <!-- label and accesskey set at runtime from strings -->
        <menuitem id="removeLinksMenuitem_cm" observes="cmd_removeLinks"/>
        <menuitem id="removeNamedAnchorsMenuitem_cm"  label="&formatRemoveNamedAnchors.label;"   
-             accesskey="&formatRemoveNamedAnchors.accesskey;"
-             observes="cmd_removeNamedAnchors"/>
+                 accesskey="&formatRemoveNamedAnchors.accesskey;"
+                 observes="cmd_removeNamedAnchors"/>
        <menuseparator id="styles-separator"/>
 
        <!-- label and accesskey are set in InitObjectProperties -->
@@ -74,6 +75,7 @@
            <menuitem id="menu_DeleteCellContents"  label="&tableCellContents.label;" accesskey="&tablecellcontents.accesskey;"   observes="cmd_DeleteCellContents"/>
          </menupopup>
        </menu>
+
        <!-- menu label is set in InitTableMenu -->
        <menuitem id="joinTableCells_cm"   label="&tableJoinCells.label;" accesskey="&tablejoincells.accesskey;" observes="cmd_JoinTableCells"/>
        <menuitem id="splitTableCell_cm"   label="&tableSplitCell.label;" accesskey="&tablesplitcell.accesskey;" observes="cmd_SplitTableCell"/>
