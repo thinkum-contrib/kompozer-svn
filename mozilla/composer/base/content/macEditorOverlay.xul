@@ -26,7 +26,7 @@
 
 # All DTD information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
-#include nvu-doctype.inc
+#include composer-doctype.inc
 
 <overlay id="hidden-overlay"
         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -34,14 +34,14 @@
 
 # All JS files that browser.xul wishes to include *must* go into the browser-scripts.inc file
 # so that they can be shared by hiddenWindow.xul.
-#include nvu-scripts.inc
+#include composer-scripts.inc
 
 <window id="main-window">
 
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the 
 # browser-sets.inc file for sharing with hiddenWindow.xul.
   <popupset id="editorContentContextSet">
-#include nvu-sets.inc
+#include composer-sets.inc
   </popupset>
 
 # The hacky hidden tree used by the Go menu to build items.
@@ -50,7 +50,7 @@
 # The entire main menubar is placed into browser-menubar.inc, so that it can be shared by 
 # hiddenWindow.xul.
   <toolbox id="EditorToolbox" class="toolbox-top" mode="full">
-#include nvu-menubar.inc
+#include composer-menubar.inc
   </toolbox>
 
 </window>

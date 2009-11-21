@@ -450,49 +450,34 @@
     <!--menu id="windowMenu"/-->
 
     <!-- help menu filled from globalOverlay -->
-    <menu label="&helpMenu.label;" accesskey="&helpmenu.accesskey;" id="helpMenu">
-      <!-- Kaze: disable most items for now
+    <!--<menu label="&helpMenu.label;" accesskey="&helpmenu.accesskey;" id="helpMenu">-->
+#ifdef XP_WIN
+    <menu id="helpMenu" label="&helpMenuWin.label;" accesskey="&helpMenuWin.accesskey;">
+#else
+    <menu id="helpMenu" label="&helpMenu.label;" accesskey="&helpmenu.accesskey;">
+#endif
       <menupopup id="menu_HelpPopup">
-        <menuitem accesskey="&nvucommenu.accesskey;" label="&nvuComMenu.label;" id="nvuComMenu"
-                  oncommand="loadExternalURLPref('editor.site.url');"/>
-        <menuitem accesskey="&userguidemenu.accesskey;" label="&userGuideMenu.label;" id="userGuideMenu"
-                  oncommand="loadExternalURLPref('editor.CCuserGuide.url');"/>
+        <!--
         <menuitem accesskey="&faqmenu.accesskey;" label="&faqMenu.label;"
                   oncommand="loadExternalURLPref('editor.faq.url');"/>
-        <menuitem accesskey="&bugreportsmenu.accesskey;" label="&bugReportsMenu.label;"
-                  oncommand="loadExternalURLPref('editor.bugReports.url');"/>
+        -->
+        <menuitem accesskey="&userguidemenu.accesskey;" label="&userGuideMenu.label;" id="userGuideMenu"
+                  oncommand="loadExternalURLPref('editor.CCuserGuide.url');"/>
+        <menuitem accesskey="&nvuforumsmenu.accesskey;" label="&nvuForumsMenu.label;"
+                  oncommand="loadExternalURLPref('editor.forums.url');"/>
+        <menuseparator/>
+        <menuitem accesskey="&tipofthedaymenu.accesskey;" label="&tipofthedayMenu.label;"
+                  oncommand="document.getElementById('tipoftheday').open(true);"/>
         <menuseparator/>
         <menuitem accesskey="&nvudevorgmenu.accesskey;" label="&nvudevOrgMenu.label;"
                   oncommand="loadExternalURLPref('editor.devorg.url');"/>
-
         <menuitem accesskey="&localizingnvu.accesskey;" label="&localizingNvu.label;"
                   oncommand="loadExternalURLPref('editor.L10N.url');"/>
-
-        <menuitem accesskey="&nvuforumsmenu.accesskey;" label="&nvuForumsMenu.label;"
-                  oncommand="loadExternalURLPref('editor.forums.url');"/>
-        <menuseparator/>
-        <menuitem accesskey="&tipofthedaymenu.accesskey;" label="&tipofthedayMenu.label;"
-                  oncommand="document.getElementById('tipoftheday').open(true);"/>
-        <menuseparator id="menu_HelpAboutSeparator"/>
-        <menuitem accesskey="&aboutlinspire.accesskey;" label="&aboutLinspire.label;"
-                  oncommand="loadExternalURLPref('editor.aboutLinspire.url');"/>
-        <menuitem accesskey="&aboutDI.accesskey;" label="&aboutDI.label;"
-                  oncommand="loadExternalURLPref('editor.aboutDI.url');"/>
-        <menuitem id="aboutName" accesskey="&aboutmenu.accesskey;"
-                  label="&aboutMenu.label;"
-                  oncommand="window.openDialog('chrome://editor/content/aboutDialog.xul', 'About', 'modal,centerscreen,chrome,resizable=no');"/>
-      </menupopup>
-      -->
-      <menupopup id="menu_HelpPopup">
-        <menuitem accesskey="&nvuforumsmenu.accesskey;" label="&nvuForumsMenu.label;"
-                  oncommand="loadExternalURLPref('editor.forums.url');"/>
         <menuitem accesskey="&bugreportsmenu.accesskey;" label="&bugReportsMenu.label;"
                   oncommand="loadExternalURLPref('editor.bugReports.url');"/>
+        <menuseparator/>
         <menuitem accesskey="&supportKompoZer.accesskey;" label="&supportKompoZer.label;"
                   oncommand="loadExternalURLPref('editor.support.url');"/>
-        <menuseparator/>
-        <menuitem accesskey="&tipofthedaymenu.accesskey;" label="&tipofthedayMenu.label;"
-                  oncommand="document.getElementById('tipoftheday').open(true);"/>
         <menuseparator id="menu_HelpAboutSeparator"/>
         <menuitem accesskey="&nvucommenu.accesskey;" label="&nvuComMenu.label;" id="nvuComMenu"
                   oncommand="loadExternalURLPref('editor.site.url');"/>

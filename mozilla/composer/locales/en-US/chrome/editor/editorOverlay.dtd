@@ -528,7 +528,7 @@
 
 <!-- Debug menu items -->
 <!ENTITY debugMenu.label                     "Debug">
-<!ENTITY newEditorTestPage.label             "Composer with Test Page">
+<!ENTITY newEditorTestPage.label             "KompoZer with Test Page">
 <!ENTITY textEditorCmd.label                 "Plaintext Editor">
 <!ENTITY outputTextCmd.label                 "Output Text">
 <!ENTITY outputHTMLCmd.label                 "Output HTML">
@@ -698,6 +698,10 @@
 <!-- Help menu -->                           
 <!ENTITY helpMenu.label                      "Help">
 <!ENTITY helpmenu.accesskey                  "H">
+<!-- LOCALIZATION NOTE some localizations of Windows use "?"
+                       for the help button in the menubar but Gnome does not.   -->
+<!ENTITY helpMenuWin.label                   "Help"> 
+<!ENTITY helpMenuWin.accesskey               "H">
 
 <!-- KompoZer 0.7 -->
 <!ENTITY nvuComMenu.label                    "&brandShortName;'s web site">
@@ -720,10 +724,6 @@
 <!ENTITY localizingNvu.label                 "Localizing &brandShortName;">
 <!ENTITY userGuideMenu.label                 "User Guide">
 <!ENTITY userguidemenu.accesskey             "U">
-<!ENTITY aboutLinspire.label                 "About Linspire Inc.">
-<!ENTITY aboutlinspire.accesskey             "L">
-<!ENTITY aboutDI.label                       "About Disruptive Innovations">
-<!ENTITY aboutDI.accesskey                   "I">
 
 <!-- KompoZer 0.7: absolute positioning -->
 <!ENTITY leftGlued.tooltip                   "Glue to the left border">

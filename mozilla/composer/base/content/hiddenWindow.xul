@@ -65,7 +65,7 @@
 
 # All DTD information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
-#include nvu-doctype.inc
+#include composer-doctype.inc
 
 <window id="editorWindow"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -78,21 +78,21 @@
         screenX="10" screenY="10"
         persist="screenX screenY width height sizemode">
 
-# All JS files that browser.xul wishes to include *must* go into the nvu-scripts.inc file
+# All JS files that browser.xul wishes to include *must* go into the composer-scripts.inc file
 # so that they can be shared by hiddenWindow.xul.
-#include nvu-scripts.inc
+#include composer-scripts.inc
 
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the 
-# nvu-sets.inc file for sharing with hiddenWindow.xul.
-#include nvu-sets.inc
+# composer-sets.inc file for sharing with hiddenWindow.xul.
+#include composer-sets.inc
 
   <popupset id="editorContentContextSet">
 
-#include nvu-context.inc
+#include composer-context.inc
 
   </popupset>
   <toolbox class="toolbox-top" id="EditorToolbox" mode="full">
-#include nvu-menubar.inc
+#include composer-menubar.inc
   </toolbox>
 
 </window>

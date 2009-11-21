@@ -30,7 +30,7 @@
 <!ENTITY viewToolbarsMenu.label           "Show/Hide"> 
 <!ENTITY viewToolbarsMenu.accesskey       "w"> 
 
-<!ENTITY newBlankPageCmd.label            "Composer Page">
+<!ENTITY newBlankPageCmd.label            "KompoZer Page">
 <!ENTITY newBlankPageCmd.accesskey        "P" >
 <!ENTITY newBlankPageCmd.key              "n" >
 <!ENTITY newPageFromTemplateCmd.label     "Page Using Template">

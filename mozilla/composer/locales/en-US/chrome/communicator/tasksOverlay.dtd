@@ -4,7 +4,7 @@
 <!ENTITY navigatorCmd.accesskey          "n">
 <!ENTITY navigatorCmd.commandkey         "1">
 <!-- LOCALIZATION NOTE (editorCmd.label): DONT_TRANSLATE -->
-<!ENTITY editorCmd.label                 "Composer">
+<!ENTITY editorCmd.label                 "KompoZer">
 <!ENTITY editorCmd.accesskey             "c">
 <!ENTITY editorCmd.commandkey            "4">
 
@@ -21,7 +21,7 @@
 <!ENTITY privacyMenu.accesskey           "p">
 
 <!ENTITY taskNavigator.tooltip           "Navigator">
-<!ENTITY taskComposer.tooltip            "Composer">
+<!ENTITY taskComposer.tooltip            "KompoZer">
 <!ENTITY taskBar.tooltip                 "Status Bar">
 
 <!ENTITY webDevelopment.label            "Web Development">

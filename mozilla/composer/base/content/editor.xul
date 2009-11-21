@@ -68,7 +68,7 @@
 <!-- ?xul-overlay href="chrome://editor/content/editorOverlay.xul"? -->
 
 # All DTD information is stored in a separate file so that it can be shared by hiddenWindow.xul.
-#include nvu-doctype.inc
+#include composer-doctype.inc
 
 <window id="editorWindow"
         xmlns               = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -86,13 +86,13 @@
         persist="screenX screenY width height sizemode">
 
 # #ifndef XP_MACOSX
-# All JS files that browser.xul wishes to include *must* go into the nvu-scripts.inc file
+# All JS files that browser.xul wishes to include *must* go into the composer-scripts.inc file
 # so that they can be shared by hiddenWindow.xul.
-#include nvu-scripts.inc
+#include composer-scripts.inc
 
 # All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the 
-# nvu-sets.inc file for sharing with hiddenWindow.xul.
-#include nvu-sets.inc
+# composer-sets.inc file for sharing with hiddenWindow.xul.
+#include composer-sets.inc
 # #endif
 
   <tipoftheday id="tipoftheday" src="chrome://tipoftheday/locale/tipoftheday.rdf" item="random"/>
@@ -104,20 +104,20 @@
     <popup id="format-toolbar-context-menu">
       <menuitem oncommand="CustomizeToolbar('FormatToolbox');" id="CustomizeFormatToolbar" label="&customizeToolbar.label;" accesskey="&customizeToolbar.accesskey;"/>
     </popup>
-#include nvu-context.inc
+#include composer-context.inc
   </popupset>
   <!-- popup id="sidebarPopup"/ -->
 
   <tooltip id="aHTMLTooltip" onpopupshowing="return FillInHTMLTooltip(this);"/>
   
   <toolbox class="toolbox-top" id="EditorToolbox" mode="full">
-#include nvu-menubar.inc
-#include nvu-maintoolbar.inc
+#include composer-menubar.inc
+#include composer-mainToolbar.inc
     <!--toolbarset id="customToolbars" context="toolbar-context-menu"/-->
   </toolbox>
 
   <toolbox id="FormatToolbox" mode="full" canchangemode="false">
-#include nvu-formattoolbar.inc
+#include composer-formatToolbar.inc
   </toolbox>
  
   <!-- sidebar/toolbar/content/status -->
