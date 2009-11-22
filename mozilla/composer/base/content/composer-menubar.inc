@@ -72,6 +72,9 @@
         <menuitem id="menu_detachTemplate"
                   label="&detachFromTemplate.label;" oncommand="DetachFromTemplate()"/>
         <!-- Note: other Edit items (menu_validate, menu_publishSettings) are inserted from composerOverlay.xul -->
+#ifdef XP_UNIX
+        <menuitem id="menu_preferences" observes="cmd_preferences"/>
+#endif
       </menupopup>
     </menu>
 
@@ -442,8 +445,9 @@
         <!-- Kaze: add hidden separators for addons overlays -->
         <menuseparator id="sep_addon_menu" hidden="true"/>
         <menuseparator id="sep_addon_list" hidden="true"/>
-        <!--<menuseparator id="sep_preferences"/>-->
+#ifdef XP_WIN
         <menuitem      id="menu_preferences" observes="cmd_preferences"/>
+#endif
       </menupopup>
     </menu>
 

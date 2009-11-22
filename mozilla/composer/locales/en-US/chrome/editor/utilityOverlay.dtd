@@ -19,9 +19,13 @@
 <!ENTITY selectAllCmd.label               "Select All">  
 <!ENTITY selectAllCmd.key                 "A">  
 <!ENTITY selectAllCmd.accesskey           "a">
+
 <!ENTITY preferencesCmd.label             "Options…">
 <!ENTITY preferencesCmd.key               "O">  
 <!ENTITY preferencesCmd.accesskey         "o"> 
+<!ENTITY preferencesCmdUnix.label         "Preferences…">
+<!ENTITY preferencesCmdUnix.accesskey     "n"> 
+
 <!ENTITY findTypeTextCmd.label            "Find Text As You Type">
 <!ENTITY findTypeTextCmd.accesskey        "x">
 <!ENTITY findTypeLinksCmd.label           "Find Links As You Type">

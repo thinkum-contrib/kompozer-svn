@@ -45,20 +45,23 @@
 <!-- Menu items:  the . means that the menu item isn't implemented yet -->
 
 <!-- View menu items -->
-<!ENTITY viewMenu.label           "View">
-<!ENTITY viewmenu.accesskey       "v">
+<!ENTITY viewMenu.label                "View">
+<!ENTITY viewmenu.accesskey            "v">
+                                       
+<!-- Format menu items -->             
+<!ENTITY formatMenu.label              "Format">
+<!ENTITY formatmenu.accesskey          "o">
+                                       
+<!ENTITY helpMenu.label                "Help">
+<!ENTITY aboutCmd.label                ".About">
+                                       
+<!-- Display Mode Toolbar -->          
+<!ENTITY editMode.label                "Edit Mode:">
+                                       
+<!ENTITY statusText.label              "Done loading page">
+                                       
+<!ENTITY preferencesCmd.label          "Options-win…">
+<!ENTITY preferencesCmd.accesskey      "O"> 
+<!ENTITY preferencesCmdUnix.label      "Preferences…">
+<!ENTITY preferencesCmdUnix.accesskey  "n"> 
 
-<!-- Format menu items -->
-<!ENTITY formatMenu.label         "Format">
-<!ENTITY formatmenu.accesskey     "o">
-
-<!ENTITY helpMenu.label           "Help">
-<!ENTITY aboutCmd.label           ".About">
-
-<!-- Display Mode Toolbar -->
-<!ENTITY editMode.label           "Edit Mode:">
-
-<!ENTITY statusText.label         "Done loading page">
-
-<!ENTITY preferencesCmd.label     "Options…">
-<!ENTITY preferencesCmd.accesskey "O"> 

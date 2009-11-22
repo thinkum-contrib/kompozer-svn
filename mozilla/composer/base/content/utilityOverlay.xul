@@ -149,10 +149,17 @@
   <!-- Not needed yet, window will need this: -->
   <!-- broadcaster id="cmd_preferences"/ -->
 
+#ifdef XP_WIN
   <menuitem id="menu_preferences"
             label="&preferencesCmd.label;"
             key="key_preferences"
             accesskey="&preferencesCmd.accesskey;"/>
+#else
+  <menuitem id="menu_preferences"
+            label="&preferencesCmdUnix.label;"
+            key="key_preferences"
+            accesskey="&preferencesCmdUnix.accesskey;"/>
+#endif
 
   <menu id="menu_Toolbars"
         label="&viewToolbarsMenu.label;"
