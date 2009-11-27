@@ -133,7 +133,7 @@
           <editor type="content" id="content-source" context="editorSourceContext" flex="1"/>
         </vbox>
       </deck>
-      <!-- HTML source browser/editor -->
+      <!-- HTML source browser/editor
       <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="true"
                 resizebefore="farthest"
                 resizeafter="closest"
@@ -143,16 +143,16 @@
             style="min-height: 7em;"
             collapsed="true">
         <editor id="SourceBrowser" flex="1" src="about:blank"
-                 type="content"
-                 editortype="html"
-                 onclick="onClickSourceDock(event);"
-                 context="editorSourceContext"/>
+                type="content"
+                editortype="html"
+                onclick="onClickSourceDock(event);"
+                context="editorSourceContext"/> -->
         <!--
            -<browser id="SourceBrowser" flex="1" disablehistory="true" src="about:blank"
            -         onclick="onClickSourceDock(event);"
            -->
         <!-- a textbox will be dynamically created here when necessary -->
-      </deck>
+      <!--</deck>-->
       <!-- View/Edit mode toolbar -->
       <hbox id="EditModeToolbar" align="center" hidden="false" persist="collapsed">
         <tabs id="EditModeTabs" flex="0">
@@ -167,19 +167,6 @@
                tooltiptext="&HTMLSourceMode.tooltip;" dir="&SourceTabDirection;"/>
         </tabs>
         <spacer flex="1"/>
-        <!--
-           -<tabs id="DisplayModeTabs" class="tabs-bottom" flex="0">
-           -  <tab id="PreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0"
-           -       label="&PreviewMode.label;"    oncommand="goDoCommand('cmd_PreviewMode');"
-           -       tooltiptext="&PreviewMode.tooltip;"/>
-           -  <tab id="NormalModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="1"
-           -       label="&NormalModeTab.label;"  oncommand="goDoCommand('cmd_NormalMode');"
-           -       tooltiptext="&NormalMode.tooltip;"/>
-           -  <tab id="TagModeButton"      class="tab-bottom edit-mode _plain" type="text" selected="0"
-           -       label="&AllTagsMode.label;"    oncommand="goDoCommand('cmd_AllTagsMode');"
-           -       tooltiptext="&AllTagsMode.tooltip;"/>
-           -</tabs>
-           -->
         <menulist id="DisplayModeTabs" class="tabs-bottom" flex="0">
           <menupopup>
             <menuitem id="PreviewModeButton"  class="tab-bottom edit-mode _plain" type="text" selected="0"

@@ -138,20 +138,20 @@ var gTabEditor = {
       aMimeType = "text/plain";
     // XXX ugly hack for HTML fragments
     if (this.IsHtmlFragment()) {
-			gHelpers.Write(url, GetBodyElement().innerHTML);
-			GetCurrentEditor().resetModificationCount();
-		}
-		else { // Save the document (Composer function)
-			var result = SaveDocument(aSaveAs, aSaveCopy, aMimeType);
-			if (!result)
-				return;
+      gHelpers.Write(url, GetBodyElement().innerHTML);
+      GetCurrentEditor().resetModificationCount();
+    }
+    else { // Save the document (Composer function)
+      var result = SaveDocument(aSaveAs, aSaveCopy, aMimeType);
+      if (!result)
+        return;
     }
     // update URL if saved under a different name/location
     if (aSaveAs) {
       var index = this.getIndex(url);
       url = GetDocumentUrl(); // = new url
       this.urls[index] = url;
-			UpdateWindowTitle();
+      UpdateWindowTitle();
     }
     // store modification date
     this.store(unescape(url));
@@ -475,7 +475,7 @@ function IsInHTMLSourceMode()
   //return (gEditorDisplayMode == kDisplayModeSource);
   //return (gEditorEditMode == kEditModeSource);
   //return (gTabEditor.IsTextDocument() || (gEditorEditMode == kEditModeSource));
-	return (gEditorEditMode >= kEditModeSource);
+  return (gEditorEditMode >= kEditModeSource);
 }
 
 // are we editing HTML (i.e. neither in HTML source mode, nor editing a text file)
@@ -515,6 +515,10 @@ function IsDocumentModified()
 
 function IsHTMLSourceChanged()
 {
+  if (gSourceTextEditor.documentModified)
+    dump("HTML source has been modified.\n");
+  else
+    dump("HTML source has NOT been modified.\n");
   return gSourceTextEditor.documentModified;
 }
 
@@ -829,8 +833,11 @@ function TextIsURI(selectedText)
 
 function IsUrlAboutBlank(urlString)
 {
-  return (urlString == "about:blank" || urlString == "about:xblank" ||
-          urlString == "about:strictblank" || urlString == "about:xstrictblank");
+  /*
+   *return (urlString == "about:blank" || urlString == "about:xblank" ||
+   *        urlString == "about:strictblank" || urlString == "about:xstrictblank");
+   */
+  return /^about:|^chrome:\/\//.test(urlString);
 }
 
 //~ function MakeRelativeUrl(url)

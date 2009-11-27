@@ -1,5 +1,9 @@
 comm.jar:
 %   content editor %content/editor/
+    content/editor/blanks/strict.html                         (content/blanks/strict.html)
+    content/editor/blanks/strict.xhtml                        (content/blanks/strict.xhtml)
+    content/editor/blanks/transitional.html                   (content/blanks/transitional.html)
+    content/editor/blanks/transitional.xhtml                  (content/blanks/transitional.xhtml)
 +   content/editor/ComposerCommands.js                        (content/ComposerCommands.js)
 +   content/editor/EdColorPicker.js                           (content/colourPicker.js)
 +   content/editor/EdColorPicker.xul                          (content/colourPicker.xul)

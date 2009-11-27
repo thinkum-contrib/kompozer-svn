@@ -148,11 +148,19 @@ function onAccept()
                                                                        dialog.dtdStrictnessCheckbox.checked);
       }
       else
-        window.opener.delayedOpenWindow("chrome://editor/content", "chrome,all,dialog=no",
-                                        dialog.xhtmlCheckbox.checked ? ( dialog.dtdStrictnessCheckbox.checked ? "about:xstrictblank"
-                                                                                                              : "about:xblank" )
-                                                                     : ( dialog.dtdStrictnessCheckbox.checked ? "about:strictblank"
-                                                                                                              : "about:blank" ));
+      {
+        /*
+         *window.opener.delayedOpenWindow("chrome://editor/content", "chrome,all,dialog=no",
+         *                                dialog.xhtmlCheckbox.checked ? ( dialog.dtdStrictnessCheckbox.checked ? "about:xstrictblank"
+         *                                                                                                      : "about:xblank" )
+         *                                                             : ( dialog.dtdStrictnessCheckbox.checked ? "about:strictblank"
+         *                                                                                                      : "about:blank" ));
+         */
+        var url = "chrome://editor/content/blanks/"
+                + (dialog.dtdStrictnessCheckbox.checked ? "strict." : "transitional.")
+                + dialog.xhtmlCheckbox.checked ? "xhtml" : "html";
+        window.opener.delayedOpenWindow("chrome://editor/content", "chrome,all,dialog=no", url);
+      }
       break;
     case "blankTemplate":
       if (openAppList == "newTab")

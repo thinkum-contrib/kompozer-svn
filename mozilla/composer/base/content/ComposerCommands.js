@@ -1267,13 +1267,13 @@ function GetOutputFlags(aMimeType, aWrapColumn)
   if (aWrapColumn > 0)
     outputFlags |= webPersist.ENCODE_FLAGS_WRAP;
 
-	// Kaze: if we're editing a fragment, save <body> content
-	if (gTabEditor.IsHtmlFragment()) {
-		// we can't use webPersist.ENCODE_FLAGS_BODY_ONLY, see bug #305711
-		// so we select the document body and output the selection :-/
-		//outputFlags |= webPersist.ENCODE_FLAGS_BODY_ONLY;
-		outputFlags |= webPersist.ENCODE_FLAGS_SELECTION_ONLY;
-	}
+  // Kaze: if we're editing a fragment, save <body> content
+  if (gTabEditor.IsHtmlFragment()) {
+    // we can't use webPersist.ENCODE_FLAGS_BODY_ONLY, see bug #305711
+    // so we select the document body and output the selection :-/
+    //outputFlags |= webPersist.ENCODE_FLAGS_BODY_ONLY;
+    outputFlags |= webPersist.ENCODE_FLAGS_SELECTION_ONLY;
+  }
 
   return outputFlags;
 }

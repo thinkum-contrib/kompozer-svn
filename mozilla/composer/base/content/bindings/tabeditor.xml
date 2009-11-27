@@ -57,7 +57,7 @@
     <content>
       <xul:stringbundle src="chrome://editor/locale/tabeditor.properties"/>
       <xul:tabbox anonid="EditorTabbox" flex="1" onselect="this.parentNode.setFocus();">
-        <xul:hbox class="tabbrowser-strip chromeclass-toolbar" context="_child">
+        <xul:hbox class="tabbrowser-strip chromeclass-toolbar" minheight="30" context="_child">
 
           <xul:menupopup>
             <xul:menuitem label="&newTab.label;" accesskey="&newTab.accesskey;" command="cmd_newEditorTab"/>
@@ -107,6 +107,7 @@
               <xul:tabpanels anonid="EditorTabpanels" selectedIndex="0">
                 <xul:editor id="content-frame"
                             type="content-primary"
+                            style="min-height: 5em;"
                             editortype="html"
                             context="editorContentContext"
                             flex="1" tooltip="aHTMLTooltip"/>
@@ -114,12 +115,33 @@
             </xul:row>
           </xul:rows>
         </xul:grid>
-        <!--
-           -<xul:splitter anonid="EditorSplitter"
-           -              resizebefore="closest"
-           -              state="open"
-           -              collapse="before"/>
-           -->
+
+        <!-- SourceDeck (KompoZer 0.8+) -->
+        <xul:splitter anonid="EditorSplitter"
+                      resizebefore="closest"
+                      state="open"
+                      collapse="before"/>
+        <xul:deck anonid="SourceDeck"
+                  flex="1"
+                  selectedIndex="0"
+                  style="max-height: 0;">
+          <xul:editor anonid="SourceEditor"
+                      flex="1"
+                      src="about:blank"
+                      type="content"
+                      editortype="html"
+                      onclick="onClickSourceDock(event);"
+                      context="editorSourceContext"/>
+          <xul:browser anonid="SourceBrowser"
+                       flex="1"
+                       disablehistory="true"
+                       src="about:blank"
+                       onclick="onClickSourceDock(event);"
+                       context="editorSourceContext"/>
+          <!-- Modal mode: a textbox will be created here dynamically -->
+        </xul:deck>
+        <!-- /SourceDeck -->
+
       </xul:tabbox>
     </content>
 
@@ -128,6 +150,7 @@
         <![CDATA[
           ShowRulers(!(this.getAttribute("collapserulers") == "true"));
           document.addEventListener("keypress", this._keyEventHandler, false);
+          this.setEditMode(1); // XXX Kaze: ugly hack to init mSourceEditor
         ]]>
       </constructor>
 
@@ -204,6 +227,23 @@
         </getter>
       </property>
 
+      <!-- SourceDeck -->
+      <property name="mSourceDeck">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "SourceDeck");
+        ]]>
+        </getter>
+      </property>
+
+      <property name="mSourceEditor">
+        <getter>
+        <![CDATA[
+          return document.getAnonymousElementByAttribute(this, "anonid", "SourceEditor");
+        ]]>
+        </getter>
+      </property>
+
       <property name="mEditorSplitter">
         <getter>
         <![CDATA[
@@ -211,6 +251,7 @@
         ]]>
         </getter>
       </property>
+      <!-- /SourceDeck -->
 
       <property name="mEditorGrid">
         <getter>
@@ -317,36 +358,39 @@
       </method>
 
       <!-- Kaze: trying to collapse/expand the main <editor> -->
-      <method name="ShowEditor">
-        <parameter name="show" />
+      <method name="setEditMode">
+        <parameter name="mode" />
         <body>
         <![CDATA[
-          if (show)
-          {
-            // this.mEditorSplitter.setAttribute("state", "open");
-            // this.mEditorSplitter.setAttribute("hidden", "false");
-            // this.mEditorSplitter.previousSibling.setAttribute("collapsed", "false");
-            this.mEditorSplitter.previousSibling.collapsed = false;
-            this.mEditorSplitter.previousSibling.flex = 1;
-          }
-          else
-          {
-            // this.mEditorSplitter.setAttribute("state", "collapsed");
-            // this.mEditorSplitter.setAttribute("hidden", "true");
-            // this.mEditorSplitter.previousSibling.setAttribute("collapsed", "true");
-            this.mEditorSplitter.previousSibling.collapsed = true;
-            this.mEditorSplitter.previousSibling.flex = 0;
+          // if we hide mSourceDeck, the <editor> component isn't initialized
+          // so we use this ugly "max-height: 0;" instead...
+          switch(mode) {
+            case 0: // design mode
+              this.mEditorSplitter.setAttribute("state", "expand");
+              this.mEditorSplitter.hidden = true;
+              this.mEditorGrid.collapsed = false;
+              // this.mSourceDeck.hidden = true;
+              this.mSourceDeck.setAttribute("style", "max-height: 0;");
+              break;
+            case 1: // split mode
+              this.mEditorSplitter.setAttribute("state", "expand");
+              this.mEditorSplitter.hidden = false;
+              this.mEditorGrid.collapsed = false;
+              // this.mSourceDeck.hidden = false;
+              this.mSourceDeck.setAttribute("style", "min-height: 5em;");
+              break;
+            case 2: // source mode
+              this.mEditorSplitter.setAttribute("state", "collapsed");
+              this.mEditorSplitter.hidden = true;
+              this.mEditorGrid.collapsed = true;
+              // this.mSourceDeck.hidden = false;
+              this.mSourceDeck.setAttribute("style", "border: 1px solid grey;");
+              break;
           }
         ]]>
         </body>
       </method>
 
-      <!--
-         -<property name="collapsed"
-         -          onget="return this.getAttribute('editortype');"
-         -          onset="this.setAttribute('editortype', val); return val;"/>
-         -->
- 
       <method name="showCurrentTabAsModified">
         <parameter name="val" />
         <body>
@@ -781,12 +825,16 @@
         <parameter name="strictness" />
         <body>
           <![CDATA[
+            /* Kaze: using chrome-registered templates instead of about:whatever
             if (type == "xhtml")
               return this.editURL(strictness ? "about:xstrictblank" : "about:xblank",
                                   true, false, false);
 
             return this.editURL(strictness ? "about:strictblank" : "about:blank",
                                 true, false, false);
+            */
+            var url = "chrome://editor/content/blanks/" + (strictness ? "strict." : "transitional.") + type;
+            return this.editURL(url, true, false, false);
           ]]>
         </body>
       </method>

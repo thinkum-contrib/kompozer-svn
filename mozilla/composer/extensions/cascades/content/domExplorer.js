@@ -206,15 +206,15 @@ function FillHtmlTree(element) {
   var treeitem, container, sibling;
   var selectedItem;
   var firstIteration = true;
-	var isFragment = window.parent.gTabEditor.IsHtmlFragment();
+  var isFragment = window.parent.gTabEditor.IsHtmlFragment();
   var tag;
   var tmp;
   do {
     tag = element.tagName.toLowerCase();
 
-		// don't create html/head/body treeitems for HTML fragments
-		if (isFragment && (tag == "body"))
-			break;
+    // don't create html/head/body treeitems for HTML fragments
+    if (isFragment && (tag == "body"))
+      break;
 
     // create treeitem
     treeitem = newHtmlTreeItem(element, tag);

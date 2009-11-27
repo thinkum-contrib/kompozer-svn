@@ -358,6 +358,7 @@
     <key id="key_textZoomEnlarge2" key="&textEnlarge.commandkey2;" command="cmd_textZoomEnlarge" modifiers="accel"/>
     <key id="key_textZoomReduce"   key="&textReduce.commandkey;"   command="cmd_textZoomReduce"  modifiers="accel"/>
     <key id="key_textZoomReset"    key="&textReset.commandkey;"    command="cmd_textZoomReset"   modifiers="accel"/>
+    <key id="key_editDocumentSrc"  keycode="VK_RETURN"             command="cmd_HTMLSourceMode"  modifiers="alt, shift"/>
     <key id="key_editNodeToggle"   keycode="VK_RETURN"             command="cmd_editNodeToggle"  modifiers="alt"/>
     <key id="key_editNodeCancel"   keycode="VK_ESCAPE"             command="cmd_editNodeCancel"/>
     <!-- DOM navigation -->
@@ -368,7 +369,7 @@
     <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="alt"/>
     <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="alt"/>
     <key id="key_extEditorCmd"     keycode="VK_F6"    command="cmd_extEditor"/>
-    <key id="key_sourceDockToggle" keycode="VK_F8"/>
+    <!--<key id="key_sourceDockToggle" keycode="VK_F8"/>-->
 #else
     <!-- alt+arrow is used for word selection on MacOS X, using ctrl+arrow instead -->
     <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="control"/>
