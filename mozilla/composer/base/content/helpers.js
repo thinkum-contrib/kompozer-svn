@@ -239,10 +239,10 @@ var gHelpers = {
     
     // launch editor
     if (usys || !path || !path.length)  {
-      // system default editor
+      // system default browser
       return this.OpenUrl(url);
     } else {
-      // user selected editor
+      // user selected app
       var argArray = (args != "") ? args.split(' ') : null;
       return this.run(url, path, argArray);
     }

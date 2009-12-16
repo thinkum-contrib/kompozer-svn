@@ -670,6 +670,7 @@
           }
 
           editorElement.addEventListener("DOMTitleChanged", this.changeTabTitle, false);
+          editorElement.addEventListener("DOMContentLoaded", onEditorContentLoaded, false); // Kaze: added for KompoZer 0.8
 
           var docShell = editorElement.boxObject.QueryInterface(Components.interfaces.nsIEditorBoxObject).docShell;
           var progress = docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebProgress);

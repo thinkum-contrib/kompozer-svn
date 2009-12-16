@@ -515,10 +515,13 @@ function IsDocumentModified()
 
 function IsHTMLSourceChanged()
 {
-  if (gSourceTextEditor.documentModified)
-    dump("HTML source has been modified.\n");
-  else
-    dump("HTML source has NOT been modified.\n");
+/*
+ *  if (gSourceTextEditor.documentModified)
+ *    dump("HTML source has been modified.\n");
+ *  else
+ *    dump("HTML source has NOT been modified.\n");
+ *
+ */
   return gSourceTextEditor.documentModified;
 }
 

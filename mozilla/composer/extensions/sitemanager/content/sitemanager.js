@@ -653,6 +653,7 @@ function StopNavigation()
   window.top.document.getElementById("tabeditor").stopWebNavigation(false);
   EndNavigation();
 }
+
 function EndNavigation()
 {
   window.document.documentElement.removeAttribute("style");
@@ -1314,16 +1315,19 @@ function uploadItem(item) {
   EnableAllUI(false);                        // disable the UI until the FTP transaction is done
   gDialog.ftpConsole.body.innerHTML = "";    // reset the FTP log window
 
+  // make sure we're connected to the related host
+  ftpConnect(publishData);
+
   // local/remote paths
   var sitePath   = publishData.localPath;
-  var localPath  = gHelpers.newLocalFile(item.url).path.replace("//", "/");
-  var remotePath = localPath.replace(sitePath, "/").replace("\\", "/").replace("//", "/");
+  var localPath  = gHelpers.newLocalFile(item.url).path;
+  var remotePath = gFtp.initialPath + "/" + localPath.replace(sitePath, "/").replace(/\\/g, "/");
+  remotePath = remotePath.replace(/\/\//g, "/");
   var remoteDir  = remotePath.replace(/\/[^\/]*$/, "");
   if (!remoteDir.length)
     remoteDir = "/";
 
   // upload file
-  ftpConnect(publishData);                   // make sure we're connected to the related host
   if (remoteDir == "/")
     ftpUploadFile(localPath, remotePath, remoteDir);
   else                                       // ensure the destination directory exists before uploading the file
@@ -1342,15 +1346,22 @@ function uploadItem(item) {
 
 function ftpConnect(publishData) {
   var reconnected = false;
-  gFtp.host     = publishData.publishUrl.replace(/^ftp:\/*/, '').replace(/\/$/, '');
-  gFtp.port     = publishData.ftpPort;
-  gFtp.login    = publishData.username;
-  gFtp.password = window.top.GetSavedPassword(publishData);
+  // XXX the site manager lacks an "FTP remote directory" item.
+  //     We'll suppose the root part of the URL is the FTP host,
+  //     and the rest of the URL should be the initial remote directory...
+  //var url = publishData.publishUrl.replace(/^ftp:\/*/, '').replace(/\/$/, '');
+  var url = publishData.publishUrl.replace(/^ftp:\/*/, '');
+  var index = url.indexOf('/');
+  gFtp.host        = url.substr(0, index);
+  gFtp.initialPath = url.substr(index).replace(/\/\//g, "/");
+  gFtp.port        = publishData.ftpPort;
+  gFtp.login       = publishData.username;
+  gFtp.password    = window.top.GetSavedPassword(publishData);
 
   // not all FTP servers use utf-8 yet, that's a pity (e.g. OVH still uses latin-1)
   // so we'll have to specify the server encoding in the prefs some day
-  //gFtp.setEncoding("UTF-8");
-  gFtp.setEncoding("ISO-8859-15");
+  gFtp.setEncoding("UTF-8");
+  //gFtp.setEncoding("ISO-8859-15");
 
   var newConnectedHost = gFtp.login + "@" + gFtp.host;
   if (!gFtp.isConnected) {
@@ -1362,24 +1373,6 @@ function ftpConnect(publishData) {
     gFtp.connect();
   }
   gFtp.connectedHost = newConnectedHost;
-}
-
-function ftpCheckQueue() {
-  // quick and ugly hack
-  if (gFtp.eventQueue.length)
-    setTimeout(ftpCheckQueue, 500);
-  else
-    EnableAllUI(true);
-}
-
-function ftpCheckDirectory(remoteDir) {
-  // ensure remoteDir exists
-  if ( remoteDir.length
-   && (remoteDir != "/")
-   && (remoteDir != gFtp.currentWorkingDir)
-   && (remoteDir != gFtp.currentWorkingDir + "/")
-  ) // the directory doesn't exist, we have to create it
-    gFtp.makeDirectory(remoteDir);
 }
 
 function ftpUploadFile(localPath, remotePath, remoteDir) {
@@ -1402,13 +1395,35 @@ function ftpUploadFile(localPath, remotePath, remoteDir) {
   gFtp.upload(localPath, remotePath, false, -1, ftpEndRequest);
 }
 
-function ftpListDirectory() {
-  var l = gFtp.listData.length;
-  var list = gFtp.currentWorkingDir;
-  for (var i = 0; i < l; i++)
-    list += "\n" + gFtp.listData[i].leafName;
-  //gHelpers.trace(list);
-}
+/*
+ * unused, disabled
+ *
+ *function ftpCheckDirectory(remoteDir) {
+ *  // ensure remoteDir exists
+ *  if ( remoteDir.length
+ *   && (remoteDir != "/")
+ *   && (remoteDir != gFtp.currentWorkingDir)
+ *   && (remoteDir != gFtp.currentWorkingDir + "/")
+ *  ) // the directory doesn't exist, we have to create it
+ *    gFtp.makeDirectory(remoteDir);
+ *}
+ *
+ *function ftpListDirectory() {
+ *  var l = gFtp.listData.length;
+ *  var list = gFtp.currentWorkingDir;
+ *  for (var i = 0; i < l; i++)
+ *    list += "\n" + gFtp.listData[i].leafName;
+ *  //gHelpers.trace(list);
+ *}
+ *
+ *function ftpCheckQueue() {
+ *  // quick and ugly hack
+ *  if (gFtp.eventQueue.length)
+ *    setTimeout(ftpCheckQueue, 500);
+ *  else
+ *    EnableAllUI(true);
+ *}
+ */
 
 function ftpAppendLog(message, css, type) {
   // early way out if 'message' is null

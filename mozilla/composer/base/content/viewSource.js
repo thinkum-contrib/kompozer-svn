@@ -579,7 +579,7 @@ function viewNodeSource(node) {
   //if (!node || gSourceBrowserDeck.collapsed)
   //if (!node || tabeditor.mSourceDeck.hidden)
   //if (!node || tabeditor.mSourceEditor.hidden)
-  if (!node)
+  if (!node || (gEditorEditMode == kEditModeDesign))
     return;
 
   highlightNode(null);
@@ -821,6 +821,16 @@ function FinishHTMLSource() { // overrides that in 'comm.jar/editor/content/edit
   }
 }
 
+function RebuildNodeFromSource(node, source) {
+  // extract innerHTML and attributes from 'source'
+  var innerHTML = source.replace(/^[^>]*>/, '').replace(/<[^<]+$/, '');
+  dump(innerHTML + "\n");
+  node.innerHTML = innerHTML;
+  var allAttrs = source.replace(/^<[^\s]/, '').replace(/>.*/, '');
+  dump(allAttrs + "\n");
+
+}
+
 function RebuildDocumentFromSource() {
   dump("rebuilding document from source\n");
   // Only rebuild document if a change was made in source window
@@ -902,7 +912,7 @@ function newSourceTextEditor() {
   //delete(gSourceTextEditor);
   var srcEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
   srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
-  return srcEditor;
+  return srcEditor; // XXX
 
   //srcEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
   srcEditor.enableUndo(false);
@@ -1011,7 +1021,7 @@ function editNodeApply() {
   // flush changes
   dump("updating <" + tagName + ">\n");
   if (html) try {
-    if (gViewedElement.tagName.toLowerCase() == "head") {
+    if (tagName == "head") {
       // <head> element
       editor.beginTransaction();
       editor.incrementModificationCount(1);
@@ -1033,13 +1043,19 @@ function editNodeApply() {
         SetDocumentTitle(title);
       editor.endTransaction();
     }
+    else if (tagName == "thead" || tagName == "tbody" || tagName == "td" || tagName == "th" || tagName == "tr") {
+      RebuildNodeFromSource(gEditedElement, html);
+    }
     else {
       SelectFocusNodeAncestor(gEditedElement);
+      // XXX doesn't work with <tr|th|td>
       editor.insertHTML(html);
       // show NVU_NS nodes
       MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
     }
-  } catch (e) {}
+  } catch (e) {
+    dump(e + "\n");
+  }
   editNodeLeave();
   GetCurrentEditor().selection.collapseToStart();
 }

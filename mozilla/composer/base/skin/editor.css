@@ -95,7 +95,12 @@
 }
 
 .struct-button {
-  padding: 2px;
+  -moz-appearance: none !important; /* kaze */
+  /*padding: 2px;*/
+}
+
+.struct-button:hover { /* kaze */
+  color: navy;
 }
 
 .struct-button[checked="true"] {

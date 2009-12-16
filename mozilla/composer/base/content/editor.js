@@ -398,6 +398,13 @@ function TextEditorOnLoad()
     EditorStartup();
 }
 
+function onEditorContentLoaded()
+{
+  // Kaze: this function has been created for KompoZer 0.8.
+  //       To be overlaid by extension developers when needed...
+  dump("editor content loaded.\n");
+}
+
 // This should be called by all editor users when they close their window
 //  or other similar "done with editor" actions, like recycling a Mail Composer window.
 function EditorCleanup()
@@ -687,6 +694,9 @@ function EditorStartup()
   // set up a title listener
   GetCurrentEditorElement().addEventListener("DOMTitleChanged",
                        document.getElementById("tabeditor").changeTabTitle, false);
+
+  // Kaze: set up an "onLoad" listener (added for KompoZer 0.8)
+  GetCurrentEditorElement().addEventListener("DOMContentLoaded", onEditorContentLoaded, false);
 
   // Startup also used by other editor users, such as Message Composer
   EditorSharedStartup();
