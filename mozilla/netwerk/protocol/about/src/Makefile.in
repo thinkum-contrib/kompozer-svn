@@ -56,12 +56,9 @@ REQUIRES	= xpcom \
 
 CPPSRCS		= \
 		nsAboutProtocolHandler.cpp \
-		nsAboutBlank.cpp  \
-		nsAboutXBlank.cpp \
-		nsAboutStrictBlank.cpp  \
-		nsAboutXStrictBlank.cpp \
-		nsAboutBloat.cpp  \
-		nsAboutCache.cpp  \
+		nsAboutBlank.cpp \
+		nsAboutBloat.cpp \
+		nsAboutCache.cpp \
 		nsAboutCacheEntry.cpp \
 		nsAboutRedirector.cpp \
 		$(NULL)

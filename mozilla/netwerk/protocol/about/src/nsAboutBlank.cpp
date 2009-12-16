@@ -43,8 +43,7 @@
 
 NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
 
-static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" "
-"\"http://www.w3.org/TR/html4/loose.dtd\">"
+static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
 "<html><head><title></title></head><body></body></html>";
 
 NS_IMETHODIMP
