@@ -168,9 +168,6 @@ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsCookieService, nsCookieService::GetSi
 // about:blank is mandatory
 #include "nsAboutProtocolHandler.h"
 #include "nsAboutBlank.h"
-#include "nsAboutXBlank.h"
-#include "nsAboutStrictBlank.h"
-#include "nsAboutXStrictBlank.h"
 
 #ifdef NECKO_PROTOCOL_about
 // about
@@ -999,21 +996,6 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       NS_ABOUT_BLANK_MODULE_CID,
       NS_ABOUT_MODULE_CONTRACTID_PREFIX "blank", 
       nsAboutBlank::Create
-    },
-    { "about:xblank", 
-      NS_ABOUT_XBLANK_MODULE_CID,
-      NS_ABOUT_MODULE_CONTRACTID_PREFIX "xblank", 
-      nsAboutXBlank::Create
-    },
-    { "about:strictblank", 
-      NS_ABOUT_STRICTBLANK_MODULE_CID,
-      NS_ABOUT_MODULE_CONTRACTID_PREFIX "strictblank", 
-      nsAboutStrictBlank::Create
-    },
-    { "about:xstrictblank", 
-      NS_ABOUT_XSTRICTBLANK_MODULE_CID,
-      NS_ABOUT_MODULE_CONTRACTID_PREFIX "xstrictblank", 
-      nsAboutXStrictBlank::Create
     },
 #ifdef NECKO_PROTOCOL_about
     { "about:bloat", 
