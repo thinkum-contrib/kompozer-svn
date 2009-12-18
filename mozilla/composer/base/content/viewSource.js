@@ -313,25 +313,33 @@ function newCommandListener(button, element) {
 
 function newMouseOverListener(element) {
   return function() {
-    if (!gEditorFocus || gEditedElement) // window not focused or edition in progress
-      return;
+    //if (!gEditorFocus || gEditedElement) // window not focused or edition in progress
+    /*
+     *if (gEditedElement) // edition in progress
+     *  return;
+     */
     highlightNode(element);
   };
 }
 
 function newMouseOutListener(element) {
   return function() {
-    if (!gEditorFocus || gEditedElement) // window not focused or edition in progress
-      return;
+    //if (!gEditorFocus || gEditedElement) // window not focused or edition in progress
+    /*
+     *if (gEditedElement) // edition in progress
+     *  return;
+     */
     highlightNode(null);
-    gContentWindow.focus();
+    //gContentWindow.focus(); // XXX disabled. Why did we add this???
   };
 }
 
 function newMouseClickListener(element) {
   return function(event) {
-    if (gEditedElement)      // edition in progress
-      return;
+    /*
+     *if (gEditedElement)      // edition in progress
+     *  return;
+     */
     if (event.button == 1) { // middle-click: select first child element
       highlightNode(null);
       gLastFocusNode = element;
@@ -344,8 +352,10 @@ function newMouseClickListener(element) {
 
 function newMouseScrollListener(button, element) {
   return function(event) {
-    if (gEditedElement) // edition in progress
-      return;
+    /*
+     *if (gEditedElement) // edition in progress
+     *  return;
+     */
     var dir = (event.detail > 0) ? NODE_NEXTSIBLING : NODE_PREVSIBLING;
     var tmp = getNeighborElement(element, dir);
     if (!tmp)
@@ -819,6 +829,7 @@ function FinishHTMLSource() { // overrides that in 'comm.jar/editor/content/edit
     // XXX needs some code cleaning
     editNodeApply();
   }
+  gEditedElement = null;
 }
 
 function RebuildNodeFromSource(node, source) {
@@ -920,7 +931,7 @@ function newSourceTextEditor() {
   srcEditor.rootElement.style.whiteSpace = "pre";
   srcEditor.rootElement.style.margin = 0;
   if (kColoredSourceView) {
-    srcEditor.rootElement.style.backgroundColor = "#f0f0f0";
+    srcEditor.rootElement.style.backgroundColor = "#fff0f0";
     srcEditor.rootElement.setAttribute("_moz_sourceview", "true");
   }
   return srcEditor;

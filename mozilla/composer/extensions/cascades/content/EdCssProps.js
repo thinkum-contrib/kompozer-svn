@@ -20,6 +20,7 @@
  * Contributor(s):
  *   Daniel Glazman <daniel@glazman.org>
  *   Fabien Cazenave <kaze@kompozer.net>
+ *   Miha Vitorovic <mike5@eunet.si>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -296,7 +297,9 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
       else if (ownerTag == "link") {
         // external stylesheet, let's present its URL to user
         //~ treecell.setAttribute("label", StripUsernamePassword(ownerNode.href));
-        treecell.setAttribute("label", MakeRelativeUrl(StripUsernamePassword(ownerNode.href))); // Kaze
+        //treecell.setAttribute("label", MakeRelativeUrl(StripUsernamePassword(ownerNode.href))); // Kaze
+        var href = ownerNode.href.replace(reForceReload, ''); // remove 'forceReload=nnnn' if necessary
+        treecell.setAttribute("label", MakeRelativeUrl(StripUsernamePassword(href))); // Kaze
         external = true;
         if ( /(\w*):.*/.test(ownerNode.href) ) {
           if (RegExp.$1 == "file") {
@@ -1963,7 +1966,9 @@ function kzsStartup() {
   gDialog.expertMode    = true;
   gDialog.dropdownLists = true;
   try {
-    gDialog.head = GetHeadElement().innerHTML;
+    // Gecko 1.8: we can't use innerHTML any more with XHTML documents
+    //gDialog.head = GetHeadElement().innerHTML;
+    gDialog.head = GetHeadElement().cloneNode(true);
     //gDialog.expertMode = true; // Kaze: expert mode is now the only one
     //gDialog.expertMode    = window.opener.kzsPrefs.getBoolPref("expertMode");
     gDialog.expertMode    = kzsPrefs.getBoolPref("expertMode");
@@ -2003,8 +2008,14 @@ function noReturn(event) {
 
 function CancelAllChanges() {
   if (gDialog.head) try {
-    GetHeadElement().innerHTML = gDialog.head;
+    // Gecko 1.8: we can't use innerHTML any more with XHTML documents
+    //GetHeadElement().innerHTML = gDialog.head;
+    var headElt = GetHeadElement();
+    headElt.parentNode.replaceChild(gDialog.head, headElt);
   } catch (e) {}
+  // XXX hack, removes "*|" from the CSS selectors but creates a bunch of other bugs.
+  // Disabled at the moment.
+  //ReloadStylesheets();
 }
 
 function MoveRuleUp(rule, index) {  // extracted from the original "MoveObjectUp"
@@ -2233,6 +2244,40 @@ function SetModifiedFlagOnTreeItem(index, force) {
 }
 
 // Kaze: added
+const reForceReload = /[&\?]forceReload=[0-9]+/;
+
+function ReloadStylesheets() {
+  // see http://www.danielandrade.net/2007/02/25/css-refresh/
+  var links = GetCurrentEditor().document.getElementsByTagName('link');
+  for (var i = 0; i < links.length; i++) {
+    var link = links[i];
+    if (link.rel.toLowerCase().indexOf('stylesheet') >= 0 && link.href) {
+      //var href = link.href.replace(/[&\?]forceReload=[0-9]+/, '');
+      var href = link.href.replace(reForceReload, '');
+      link.href = href + (href.indexOf('?') >= 0 ? '&' : '?')
+                       + 'forceReload=' + (new Date().valueOf());
+    }
+  }
+  // XXX disabled, see ResetStylesheets() below *sigh*
+  //setTimeout(window.opener.ResetStylesheets, 100);
+  //window.opener.setTimeout("ResetStylesheets()", 2000);
+  //ResetStylesheets();
+}
+
+function ResetStylesheets() {
+  // XXX unused, not working
+  // ReloadStylesheets() adds a 'forceReload=[nnnn]' string to the <link> refs.
+  // This code will remove these dummy 'forceReload' strings but will cause
+  // KompoZer to add those fucking "*|" in the CSS selectors.
+  var links = GetCurrentEditor().document.getElementsByTagName('link');
+  for (var i = 0; i < links.length; i++) {
+    var link = links[i];
+    if (link.rel.toLowerCase().indexOf('stylesheet') >= 0 && link.href) {
+      link.href = link.href.replace(reForceReload, '');
+    }
+  }
+}
+
 function onDoubleClickCSSTreeItem() {
   if (gDialog.selectedType != STYLE_RULE) return;
   if (gDialog.selectedIndex <= 0) return;
