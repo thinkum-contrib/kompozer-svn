@@ -238,13 +238,14 @@ function FlushChanges()
     // let's make sure the editor is going to require save on exit
     getCurrentEditor().incrementModificationCount(1);
   }
+
   // Validate all user data and set attributes and possibly insert new element here
   // If there's an error the user must correct, return false to keep dialog open.
   var sheet;
   for (var i = 0; i < objectsArray.length; i++) {
     if (objectsArray[i].modified && !objectsArray[i].external &&
         objectsArray[i].type == SHEET) {
-      /* let's serialize this stylesheet ! */
+      // let's serialize this stylesheet!
       sheet = objectsArray[i].cssElt;
       if (sheet.ownerNode.nodeName.toLowerCase() == "link")
         SerializeExternalSheet(sheet, null);
@@ -252,6 +253,10 @@ function FlushChanges()
         SerializeEmbeddedSheet(sheet);
     }
   }
+
+  if (gDialog.head)
+    delete(gDialog.head);
+
   SaveWindowLocation();
   return true; // do close the window
 }
@@ -297,9 +302,7 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
       else if (ownerTag == "link") {
         // external stylesheet, let's present its URL to user
         //~ treecell.setAttribute("label", StripUsernamePassword(ownerNode.href));
-        //treecell.setAttribute("label", MakeRelativeUrl(StripUsernamePassword(ownerNode.href))); // Kaze
-        var href = ownerNode.href.replace(reForceReload, ''); // remove 'forceReload=nnnn' if necessary
-        treecell.setAttribute("label", MakeRelativeUrl(StripUsernamePassword(href))); // Kaze
+        treecell.setAttribute("label", MakeRelativeUrl(StripUsernamePassword(ownerNode.href))); // Kaze
         external = true;
         if ( /(\w*):.*/.test(ownerNode.href) ) {
           if (RegExp.$1 == "file") {
@@ -310,7 +313,7 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
           external = false;
       }
       // add a new entry to the tree
-      var o = newObject( treeitem, external, SHEET, ownerNode.sheet, false, 0 );
+      var o = newObject(treeitem, external, SHEET, ownerNode.sheet, false, 0);
       PushInObjectsArray(o);
       treerow.appendChild(treecell);
       treeitem.appendChild(treerow);
@@ -346,19 +349,18 @@ function PushInObjectsArray(o)
 }
 
 // * populates the tree in the dialog with entries
-//   corresponding to all stylesheets and css rules attached to
-//   document
+//   corresponding to all stylesheets and CSS rules attached to the document
 //   param XULElement sheetsTree
 function InitSheetsTree(sheetsTree)
 {
   // remove all entries in the tree
   CleanSheetsTree(sheetsTree);
   // Look for the stylesheets attached to the current document
-  // Get them from the STYLE and LINK elements because of async sheet loading :
+  // Get them from the STYLE and LINK elements because of async sheet loading:
   // the LINK element is always here while the corresponding sheet might be
   // delayed by network
   var headNode = GetHeadElement();
-  if ( headNode && headNode.hasChildNodes() ) {
+  if (headNode && headNode.hasChildNodes()) {
     var ssn = headNode.childNodes.length;
     objectsArray = new Array();
     if (ssn) {
@@ -373,22 +375,23 @@ function InitSheetsTree(sheetsTree)
 }
 
 // * create a new "object" corresponding to an entry in the tree
-//   unfortunately, it's still impossible to attach a JS object to
-//   a treecell :-(
+//   unfortunately, it's still impossible to attach a JS object to a treecell :-(
 //   param XULElement xulElt
 //   param boolean external
 //   param integer type
 //   param (DOMNode|DOMCSSStyleSheet|DOMCSSRule) cssElt
 //   param boolean modified
 //   param integer depth
-function newObject( xulElt, external, type, cssElt, modified, depth)
+function newObject(xulElt, external, type, cssElt, modified, depth)
 {
-  return {xulElt:xulElt,
-          external:external,
-          type:type,
-          cssElt:cssElt,
-          modified:modified,
-          depth:depth};
+  return {
+    xulElt   : xulElt,
+    external : external,
+    type     : type,
+    cssElt   : cssElt,
+    modified : modified,
+    depth    : depth
+  };
 }
 
 function AddStyleRuleToTreeChildren(rule, external, depth)
@@ -398,7 +401,7 @@ function AddStyleRuleToTreeChildren(rule, external, depth)
   var subtreecell  = document.createElementNS(XUL_NS, "treecell");
   // show the selector attached to the rule
   subtreecell.setAttribute("label", rule.selectorText);
-  var o = newObject( subtreeitem, external, STYLE_RULE, rule, false, depth );
+  var o = newObject(subtreeitem, external, STYLE_RULE, rule, false, depth);
   PushInObjectsArray(o);
   if (external) {
     subtreecell.setAttribute("properties", "external");
@@ -416,7 +419,7 @@ function AddPageRuleToTreeChildren(rule, external, depth)
   var subtreecell  = document.createElementNS(XUL_NS, "treecell");
   // show the selector attached to the rule
   subtreecell.setAttribute("label", "@page " + rule.selectorText);
-  var o = newObject( subtreeitem, external, PAGE_RULE, rule, false, depth );
+  var o = newObject(subtreeitem, external, PAGE_RULE, rule, false, depth);
   PushInObjectsArray(o);
   if (external) {
     subtreecell.setAttribute("properties", "external");
@@ -434,7 +437,7 @@ function AddImportRuleToTreeChildren(rule, external, depth)
   var subtreecell  = document.createElementNS(XUL_NS, "treecell");
   // show "@import" and the URL
   subtreecell.setAttribute("label", "@import "+rule.href, external);
-  var o = newObject( subtreeitem, external, IMPORT_RULE, rule, false, depth );
+  var o = newObject(subtreeitem, external, IMPORT_RULE, rule, false, depth);
   PushInObjectsArray(o);
   if (external) {
     subtreecell.setAttribute("properties", "external");
@@ -491,7 +494,7 @@ function AddRulesToTreechildren(treeItem, rules, external, depth)
           subtreecell  = document.createElementNS(XUL_NS, "treecell");
           // show "@media" and media list
           subtreecell.setAttribute("label", "@media "+rules[j].media.mediaText, external);
-          o = newObject( subtreeitem, external, MEDIA_RULE, rules[j], false, depth );
+          o = newObject(subtreeitem, external, MEDIA_RULE, rules[j], false, depth);
           PushInObjectsArray(o);
           if (external) {
             subtreecell.setAttribute("properties", "external");
@@ -511,7 +514,7 @@ function AddRulesToTreechildren(treeItem, rules, external, depth)
           subtreecell  = document.createElementNS(XUL_NS, "treecell");
           // show "@charset" and the encoding
           subtreecell.setAttribute("label", "@charset "+rules[j].encoding, external);
-          o = newObject( subtreeitem, external, CHARSET_RULE, rules[j], false, depth );
+          o = newObject(subtreeitem, external, CHARSET_RULE, rules[j], false, depth);
           PushInObjectsArray(o);
 
 
@@ -1624,7 +1627,7 @@ function onConfirmCreateNewObject()
         //if (!newSheetOwnerNode.sheet) {
         if (!newSheetOwnerNode.sheet || !cssRules) {
           /* hack due to asynchronous load of external stylesheet */        
-          var o = newObject( subtreeitem, external, OWNER_NODE, newSheetOwnerNode, false, 0 );
+          var o = newObject(subtreeitem, external, OWNER_NODE, newSheetOwnerNode, false, 0);
           PushInObjectsArray(o)
           if (gAsyncLoadingTimerID)
             clearTimeout(gAsyncLoadingTimerID);
@@ -1633,7 +1636,7 @@ function onConfirmCreateNewObject()
           gAsyncLoadingTimerID = setTimeout("sheetLoadedTimeoutCallback(" + sheetIndex + ")", kAsyncTimeout);
         }
         else {
-          o = newObject( subtreeitem, external, SHEET, newSheetOwnerNode.sheet, false, 0 );
+          o = newObject(subtreeitem, external, SHEET, newSheetOwnerNode.sheet, false, 0);
           PushInObjectsArray(o);
           //AddRulesToTreechildren(subtreeitem, newSheetOwnerNode.sheet.cssRules, external, 1);
           AddRulesToTreechildren(subtreeitem, cssRules, external, 1); // Kaze
@@ -1962,15 +1965,10 @@ function kzsStartup() {
   gDialog.menuTooltip = gDialog.styleMenu.getAttribute("tooltiptext");
   
   // backup <head> element and load prefs
-  gDialog.head          = null;
+  gDialog.head          = GetHeadElement().cloneNode(true);
   gDialog.expertMode    = true;
   gDialog.dropdownLists = true;
   try {
-    // Gecko 1.8: we can't use innerHTML any more with XHTML documents
-    //gDialog.head = GetHeadElement().innerHTML;
-    gDialog.head = GetHeadElement().cloneNode(true);
-    //gDialog.expertMode = true; // Kaze: expert mode is now the only one
-    //gDialog.expertMode    = window.opener.kzsPrefs.getBoolPref("expertMode");
     gDialog.expertMode    = kzsPrefs.getBoolPref("expertMode");
     gDialog.dropdownLists = kzsPrefs.getBoolPref("dropdownLists");
   } catch(e) {}
@@ -2007,15 +2005,23 @@ function noReturn(event) {
 }
 
 function CancelAllChanges() {
+  // To cancel all changes, we replace the current <head> node with the one we cloned at startup time.
+
+  // Unfortunately, starting with Gecko 1.8, this adds "*|" strings in all
+  // selectors for all external stylesheets.
+  // Workaround: modify each stylesheet before resetting the <head> node.
+  for (var i = 0; i < objectsArray.length; i++) {
+    if (objectsArray[i].type == SHEET) try {
+      objectsArray[i].cssElt.deleteRule(0);
+    } catch(e) {}
+  }
+
+  // Now reset the <head> node to revert all changes
   if (gDialog.head) try {
-    // Gecko 1.8: we can't use innerHTML any more with XHTML documents
-    //GetHeadElement().innerHTML = gDialog.head;
     var headElt = GetHeadElement();
     headElt.parentNode.replaceChild(gDialog.head, headElt);
+    delete(gDialog.head);
   } catch (e) {}
-  // XXX hack, removes "*|" from the CSS selectors but creates a bunch of other bugs.
-  // Disabled at the moment.
-  //ReloadStylesheets();
 }
 
 function MoveRuleUp(rule, index) {  // extracted from the original "MoveObjectUp"
@@ -2244,36 +2250,16 @@ function SetModifiedFlagOnTreeItem(index, force) {
 }
 
 // Kaze: added
-const reForceReload = /[&\?]forceReload=[0-9]+/;
-
 function ReloadStylesheets() {
   // see http://www.danielandrade.net/2007/02/25/css-refresh/
+  // (unused at the moment)
   var links = GetCurrentEditor().document.getElementsByTagName('link');
   for (var i = 0; i < links.length; i++) {
     var link = links[i];
     if (link.rel.toLowerCase().indexOf('stylesheet') >= 0 && link.href) {
-      //var href = link.href.replace(/[&\?]forceReload=[0-9]+/, '');
-      var href = link.href.replace(reForceReload, '');
+      var href = link.href.replace(/[&\?]forceReload=[0-9]+/, '');
       link.href = href + (href.indexOf('?') >= 0 ? '&' : '?')
                        + 'forceReload=' + (new Date().valueOf());
-    }
-  }
-  // XXX disabled, see ResetStylesheets() below *sigh*
-  //setTimeout(window.opener.ResetStylesheets, 100);
-  //window.opener.setTimeout("ResetStylesheets()", 2000);
-  //ResetStylesheets();
-}
-
-function ResetStylesheets() {
-  // XXX unused, not working
-  // ReloadStylesheets() adds a 'forceReload=[nnnn]' string to the <link> refs.
-  // This code will remove these dummy 'forceReload' strings but will cause
-  // KompoZer to add those fucking "*|" in the CSS selectors.
-  var links = GetCurrentEditor().document.getElementsByTagName('link');
-  for (var i = 0; i < links.length; i++) {
-    var link = links[i];
-    if (link.rel.toLowerCase().indexOf('stylesheet') >= 0 && link.href) {
-      link.href = link.href.replace(reForceReload, '');
     }
   }
 }
@@ -2303,9 +2289,7 @@ function ChangeSelector() {
   if (ruleIndex != -1) {    
     var cssText  = gDialog.selectedObject.cssText;
     var selector = gDialog.selectedObject.selectorText;
-    //~ var selector = cssText.replace(/{.*}/, "");
 
-    //~ var promptService = GetPromptService();
     var promptService;
     try {
       promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService();

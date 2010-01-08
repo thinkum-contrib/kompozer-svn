@@ -47,12 +47,12 @@ function kzsCheckTitle() {                   // created
     return SaveDocument(true, false, "text/html");
   
   // CaScadeS won't work if the <title> is missing 
-  var editor = GetCurrentEditor();
-  var docNode = editor.document;
-  var headNode = null;
+  var editor    = GetCurrentEditor();
+  var docNode   = editor.document;
+  var headNode  = null;
   var titleNode = null;
   try {
-    headNode = docNode.getElementsByTagName("head").item(0);
+    headNode  = docNode.getElementsByTagName("head").item(0);
     titleNode = docNode.getElementsByTagName("title").item(0);
   } catch(e) {}
   if (!headNode) {

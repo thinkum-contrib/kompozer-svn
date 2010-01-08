@@ -11,15 +11,16 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is CaScadeS, a stylesheet editor for Composer.
+ * The Original Code is KompoZer.
  *
  * The Initial Developer of the Original Code is
  * Fabien Cazenave.
- * Portions created by the Initial Developer are Copyright (C) 2002
+ * Portions created by the Initial Developer are Copyright (C) 2008
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *   Original author: Fabien Cazenave <kaze@kompozer.net>
+ *   Fabien 'kasparov' Rocu <ohsammynator@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -47,15 +48,14 @@ window.top.AddProcessorNotifier(UpdateDomTrees, kProcessorsWhenSelectionChanges)
 //window.top.AddProcessorNotifier(UpdateHtmlTree, kProcessorsWhenSelectionChanges);
 
 function domStartup() {
-  gDialog.htmlTree     = document.getElementById("htmlTree");
-  gDialog.elementList  = document.getElementById("elementList");
-  gDialog.cssTree      = document.getElementById("cssTree");
-  gDialog.styleList    = document.getElementById("styleList");
-  //gDialog.sheetsTree   = document.getElementById("stylesheetsTree");
-  gDialog.treeDeck     = document.getElementById("domTreeDeck");
-  gDialog.domPanel     = document.getElementById("domPanel");
-  gDialog.domPanelText = document.getElementById("domPanel-text");
+  gDialog.htmlTree = document.getElementById("htmlTree");
+  gDialog.htmlList = document.getElementById("htmlList");
+  gDialog.attrTree = document.getElementById("attrTree"); // kasparov
+  gDialog.attrList = document.getElementById("attrList"); // kasparov
+  gDialog.cssTree  = document.getElementById("cssTree");
+  gDialog.cssList  = document.getElementById("cssList");
   gDialog.htmlTreeDisabled = false;
+
   gLastSelectedElement = null;
   gLastSelectedStyle   = null;
   gLastHoveredCell     = null;
@@ -69,7 +69,7 @@ function domStartup() {
   UpdateDomTrees(element);
 
   // CSS tree
-  //var head = GetHeadElement();
+  //var head = window.top.GetHeadElement();
   //if (!head)
     //dump("no <head> found");
   //InitSheetsTree(gDialog.sheetsTree);
@@ -138,6 +138,7 @@ function UpdateDomTrees(node) {
   //if ((element == gLastFocusNode) && (oneElementSelected == gLastFocusNodeWasSelected))
 
   var selectedItem = FillHtmlTree(node);
+  FillAttributeTree(node); // kasparov
   FillCssTree(node);
   
   // show the selected node in the HTML tree
@@ -196,7 +197,7 @@ function FillHtmlTree(element) {
   // reset HTML array & tree
   delete gElementArray;
   gElementArray = new Array();
-  CleanXulTree(gDialog.elementList);
+  CleanXulTree(gDialog.htmlList);
 
   // return if we're on a text document
   if (window.parent.gTabEditor.IsTextDocument())
@@ -242,9 +243,9 @@ function FillHtmlTree(element) {
       treeitem.setAttribute("open", "true");
     }
     
-    // create container if needed (or use gDialog.elementList as main container)
+    // create container if needed (or use gDialog.htmlList as main container)
     if ((tag == "html") || (isFragment && (element.parentNode.tagName.toLowerCase() == "body")))
-      container = gDialog.elementList;
+      container = gDialog.htmlList;
     else
       container = document.createElementNS(XUL_NS, "treechildren");
     container.appendChild(treeitem);
@@ -315,9 +316,6 @@ function onSelectHtmlItem(e) {
   var selectedElement = GetSelectedElement();
   window.top.highlightNode(null);
   window.top.SelectFocusNodeAncestor(selectedElement, true);
-
-  // XXX sandbox
-  //StyleRuleView(selectedElement);
 }
 
 function onMouseOverHtmlItem(e) {
@@ -357,9 +355,8 @@ function onMouseOutHtmlItem() {
   window.top.scrollIntoCenterView(GetSelectedElement());
 }
 
-function onOpenHtmlItem(e) {
-  var selectedElement = GetSelectedElement();
-  window.top.doAdvancedProperties(selectedElement);
+function onEditHtmlItem(e) {
+  window.top.doAdvancedProperties(GetSelectedElement());
 }
 
 function GetSelectedElement() {
@@ -373,12 +370,53 @@ function GetSelectedElement() {
   if (selectedItem.hasAttribute("open"))
     selectedItem.setAttribute("open", "true");
 
-  // debug
-  //document.getElementById("domLabel").setAttribute("value", gElementArray[index].tagName);
-
   return gElementArray[index];
 }
 
+/*****************************************************************************\
+ *                                                                           *
+ *   Attribute tree                                                          *
+ *                                                                           *
+\*****************************************************************************/
+
+// kasparov
+function FillAttributeTree(node) {
+  CleanXulTree(gDialog.attrList);
+  
+  allAttributes = node.attributes;
+  
+  for (var i = 0; i < allAttributes.length; i++ ) {
+    if (!allAttributes[i].nodeName.match(/^_moz_.*/) ) {
+      var treeitem = addNewAttributeItem(allAttributes[i].nodeName, allAttributes[i].nodeValue);
+      gDialog.attrList.appendChild(treeitem);
+    }
+  }
+}
+
+// kasparov
+function addNewAttributeItem(name, value) {
+  var treeitem  = document.createElementNS(XUL_NS, "treeitem");
+  var treerow   = document.createElementNS(XUL_NS, "treerow");
+  var attrName  = document.createElementNS(XUL_NS, "treecell");
+  var attrValue = document.createElementNS(XUL_NS, "treecell");
+
+  attrName.setAttribute("label", name);
+  attrName.setAttribute("value", name);
+  treeitem.setAttribute("value", name);
+  
+  attrValue.setAttribute("label", value);
+  attrValue.setAttribute("value", value);
+
+  treerow.appendChild(attrName);
+  treerow.appendChild(attrValue);
+  treeitem.appendChild(treerow);
+
+  return treeitem;
+}
+
+function onEditAttrItem(e) {
+  window.top.doAdvancedProperties(GetSelectedElement());
+}
 
 /*****************************************************************************\
  *                                                                           *
@@ -401,21 +439,18 @@ function FillCssTextBox(element) {
     var line = DOMUtils.getRuleLine(rule);
     var href = rule.parentStyleSheet.href;
     if (!href.match(/^chrome/) && !href.match(/^resource/)) {
-      //tmp += MakeRelativeUrl(href, baseUrl) + ", line " + line + "\n";
-      tmp += MakeRelativeUrl(href, baseUrl) + "\n";
+      //tmp += window.top.MakeRelativeUrl(href, baseUrl) + ", line " + line + "\n";
+      tmp += window.top.MakeRelativeUrl(href, baseUrl) + "\n";
       tmp += PrettyPrintCSS(rule.cssText, baseUrl, true) + "\n";
     }
   }
 
   if (element.hasAttribute("style"))
     tmp += element.getAttribute("style");
-
-  //document.getElementById("domLabel").setAttribute("value", tmp);
-  gDialog.domPanelText.value = tmp;
 }
 
 function FillCssTree(element) {
-  CleanXulTree(gDialog.styleList);
+  CleanXulTree(gDialog.cssList);
 
   // display all style rules that apply to the selected element
   // reference: mozilla/layout/inspector/public/inIDOMUtils.idl
@@ -429,7 +464,7 @@ function FillCssTree(element) {
   var prevStylesheetUrl = null;
   for (var i = 0; i < count; i++) {
     var rule = rules.GetElementAt(i);
-    var line = DOMUtils.getRuleLine(rule);
+    var line = DOMUtils.getRuleLine(rule); // unused at the moment
     var href = rule.parentStyleSheet.href;
     if (!href.match(/^chrome/) && !href.match(/^resource/) && !href.match(/^about/)) {
 
@@ -439,22 +474,27 @@ function FillCssTree(element) {
         var ruleChildren   = document.createElementNS(XUL_NS, "treechildren");
         var treerow        = document.createElementNS(XUL_NS, "treerow");
         var treecell       = document.createElementNS(XUL_NS, "treecell");
-        treecell.setAttribute("label", MakeRelativeUrl(href, baseUrl));
+        treecell.setAttribute("label", window.top.MakeRelativeUrl(href, baseUrl));
         treerow.appendChild(treecell);
         stylesheetItem.appendChild(treerow);
         stylesheetItem.setAttribute("container", "true");
         stylesheetItem.setAttribute("open", "true");
         stylesheetItem.appendChild(ruleChildren);
-        gDialog.styleList.appendChild(stylesheetItem);
+        gDialog.cssList.appendChild(stylesheetItem);
         prevStylesheetUrl = href;
       }
 
       // append this style rule
-      var ruleItem     = document.createElementNS(XUL_NS, "treeitem");
-      treerow          = document.createElementNS(XUL_NS, "treerow");
-      treecell         = document.createElementNS(XUL_NS, "treecell");
+      var ruleItem = document.createElementNS(XUL_NS, "treeitem");
+      treerow      = document.createElementNS(XUL_NS, "treerow");
+      treecell     = document.createElementNS(XUL_NS, "treecell");
       treecell.setAttribute("label", rule.selectorText);
       treerow.appendChild(treecell);
+      /* kasparov: adding the line number (disabled at the moment)
+      var lineNumber = document.createElementNS(XUL_NS, "treecell");
+      lineNumber.setAttribute("label", line);
+      treerow.appendChild(lineNumber);
+      */
       ruleItem.appendChild(treerow);
       ruleItem.setAttribute("container", "true");
       ruleItem.setAttribute("open", "true");
@@ -468,16 +508,16 @@ function FillCssTree(element) {
   // append inline styles, if any
   if (element.hasAttribute("style")) {
     var style = element.getAttribute("style");
-    var treeitem     = document.createElementNS(XUL_NS, "treeitem");
-    treerow          = document.createElementNS(XUL_NS, "treerow");
-    treecell         = document.createElementNS(XUL_NS, "treecell");
+    var treeitem = document.createElementNS(XUL_NS, "treeitem");
+    treerow      = document.createElementNS(XUL_NS, "treerow");
+    treecell     = document.createElementNS(XUL_NS, "treecell");
     treecell.setAttribute("label", "inline style");
     treerow.appendChild(treecell);
     treeitem.appendChild(treerow);
     treeitem.setAttribute("container", "true");
     treeitem.setAttribute("open", "true");
     treeitem.appendChild(newCssPropertyChildren(style, baseUrl));
-    gDialog.styleList.appendChild(treeitem);
+    gDialog.cssList.appendChild(treeitem);
   }
 }
 
@@ -486,305 +526,25 @@ function newCssPropertyChildren(cssText, baseUrl) {
   var propChildren = document.createElementNS(XUL_NS, "treechildren");
   for (var j = 0; j < properties.length; j++) {
     var propItem = document.createElementNS(XUL_NS, "treeitem");
-    treerow      = document.createElementNS(XUL_NS, "treerow");
-    treecell     = document.createElementNS(XUL_NS, "treecell");
-    treecell.setAttribute("label", properties[j]);
-    treerow.appendChild(treecell);
+    var treerow  = document.createElementNS(XUL_NS, "treerow");
+    var attr     = document.createElementNS(XUL_NS, "treecell");
+    var value    = document.createElementNS(XUL_NS, "treecell");                 // kasparov
+    var properties_split = properties[j].split(": ");                            // kasparov
+    attr.setAttribute("label", properties_split[0]);                             // kasparov   
+    value.setAttribute("label", properties_split[1].replace(/;[\s\r\n]*$/, "")); // kasparov
+    treerow.appendChild(attr);
+    treerow.appendChild(value);                                                  // kasparov
     propItem.appendChild(treerow);
     propChildren.appendChild(propItem);
   }
   return propChildren;
 }
 
-/* CSS sandbox
-  *function FillCssTree(sheetsTree) {
-  *  // remove all entries in the tree
-  *  //CleanSheetsTree(sheetsTree);
-  *
-  *  // Look for the stylesheets attached to the current document
-  *  // Get them from the STYLE and LINK elements because of async sheet loading :
-  *  // the LINK element is always here while the corresponding sheet might be
-  *  // delayed by network
-  *  var headNode = GetHeadElement();
-  *  if ( headNode && headNode.hasChildNodes() ) {
-  *    var ssn = headNode.childNodes.length;
-  *    objectsArray = new Array();
-  *    if (ssn) {
-  *      var i;
-  *      gInsertIndex = -1;
-  *      for (i=0; i<ssn; i++) {
-  *        var ownerNode = headNode.childNodes[i];
-  *        AddSheetEntryToTree(sheetsTree, ownerNode); 
-  *      }
-  *    }
-  *  }
-  *}
-  *
-  *function onSelectCssItem(e) {
-  *  // get the selected tree item (if any)
-  *  //var selectedItem = getSelectedItem(gDialog.sheetsTree);
-  *  var selectedItem = getSelectedItem(gDialog.cssTree);
-  *
-  *  if (!objectsArray)
-  *    return;
-  *  // look for the object in objectsArray corresponding to the
-  *  // selectedItem
-  *  var i, l = objectsArray.length;
-  *  var cssElt = null;
-  *  var type   = null;
-  *  if (selectedItem) {
-  *    for (i=0; i<l; i++) {
-  *      if (objectsArray[i].xulElt == selectedItem) {
-  *        type   = objectsArray[i].type;
-  *        cssElt = objectsArray[i].cssElt;
-  *        break;
-  *      }
-  *    }
-  *  }
-  *
-  *  if (!cssElt) return;
-  *  if (type != STYLE_RULE) return;
-  *
-  *  if (gLastSelectedStyle) {
-  *    var tmp = gLastSelectedStyle.getElementsByTagName("treechildren").item(0);
-  *    gLastSelectedStyle.removeChild(tmp);
-  *    gLastSelectedStyle.removeAttribute("container");
-  *    gLastSelectedStyle.removeAttribute("open");
-  *  }
-  *  gLastSelectedStyle = selectedItem;
-  *
-  *  var properties = PrettyPrintCSS(cssElt.cssText, null, true);
-  *  var treechildren = document.createElementNS(XUL_NS, "treechildren");
-  *  var rules = PrettyPrintCSS(cssElt.cssText).split("\n");
-  *  for (i=0; i<rules.length; i++) {
-  *    var treeitem = document.createElementNS(XUL_NS, "treeitem");
-  *    var treerow  = document.createElementNS(XUL_NS, "treerow");
-  *    var treecell = document.createElementNS(XUL_NS, "treecell");
-  *    treecell.setAttribute("label", rules[i]);
-  *    treerow.appendChild(treecell);
-  *    treeitem.appendChild(treerow);
-  *    treechildren.appendChild(treeitem);
-  *  }
-  *  selectedItem.setAttribute("container", "true");
-  *  selectedItem.setAttribute("open", "true");
-  *  selectedItem.appendChild(treechildren);
-  *}
-  *
-  *function onMouseOverCssItem(e) {
-  *  // get hovered item index
-  *  var row = {};
-  *  var col = {};
-  *  var obj = {};
-  *  // see: mozilla/browser/components/bookmarks/content/bookmarksTree.xml
-  *  gDialog.cssTree.treeBoxObject.getCellAt(e.clientX, e.clientY, row, col, obj);
-  *  var index = row.value;
-  *  if (index < 0)
-  *    return;
-  *
-  *  // get hovered CSS rule
-  *  var selectedItem = gDialog.cssTree.contentView.getItemAtIndex(index);
-  *  var cssElt = null;
-  *  if (selectedItem) {
-  *    var i, l = objectsArray.length;
-  *    for (i=0; i<l; i++) {
-  *      if (objectsArray[i].xulElt == selectedItem) {
-  *        cssElt = objectsArray[i].cssElt;
-  *        break;
-  *      }
-  *    }
-  *  }
-  *
-  *  // debug
-  *  if (!cssElt) return;
-  *  var properties = PrettyPrintCSS(cssElt.cssText, null, true);
-  *  var selector   = cssElt.selectorText;
-  *  gDialog.domPanelText.value = properties;
-  *  document.getElementById("domLabel").setAttribute("value", selector);
-  *
-  *  //panel.openPopup(); // Gecko 1.9 only :-(
-  *  return;
-  *
-  *  gDialog.domPanelText.value = cssElt.cssText;
-  *  gDialog.domPanel.openPopup();
-  *}
-  *
-  *function onMouseOutCssItem(e) {
-  *  return;
-  *  gDialog.domPanel.hidePopup();
-  *}
-  */
-
-// These functions are already defined in editorUtilities.js
-// but they don't work here
-// TODO: find out why and remove this piece of shit
-
-function GetHeadElement() {
-  var editor = GetCurrentEditorFromSidebar();
-  try {
-    var headList = editor.document.getElementsByTagName("head");
-    return headList.item(0);
-  } catch (e) {}
-
-  return null;
+function onEditCssItem(e) {
+  window.top.openCascadesDialog();
 }
 
-function GetDocumentBaseUrl() {
-  var editorDoc = GetCurrentEditorFromSidebar().document;
-  try {
-    var docUrl;
-
-    // if document supplies a <base> tag, use that URL instead 
-    var baseList = editorDoc.getElementsByTagName("base");
-    if (baseList) {
-      var base = baseList.item(0);
-      if (base)
-        docUrl = base.getAttribute("href");
-    }
-    if (!docUrl) {
-      //docUrl = GetDocumentUrl();
-      docUrl = editorDoc.QueryInterface(Components.interfaces.nsIDOMHTMLDocument).URL;
-    }
-
-    //if (!window.top.IsUrlAboutBlank(docUrl))
-    if (!docUrl.match(/^about/))
-      return docUrl;
-  } catch (e) {
-    dump(e);
-  }
-  return "";
-}
-
-function MakeRelativeUrl(url, base) { // modified
-// Added: optional "base" param (default = document URL)
-
-  var inputUrl = TrimString(url);
-  if (!inputUrl)
-    return inputUrl;
-
-  // Get the filespec relative to current document's location
-  // NOTE: Can't do this if file isn't saved yet!
-  var docUrl = base ? base : GetDocumentBaseUrl(); // Kaze
-  var docScheme = GetScheme(docUrl);
-
-  // Can't relativize if no doc scheme (page hasn't been saved)
-  if (!docScheme)
-    return inputUrl;
-
-  var urlScheme = GetScheme(inputUrl);
-
-  // Do nothing if not the same scheme or url is already relativized
-  if (docScheme != urlScheme)
-    return inputUrl;
-
-  var IOService = GetIOService();
-  if (!IOService)
-    return inputUrl;
-
-  // Host must be the same
-  var docHost = GetHost(docUrl);
-  var urlHost = GetHost(inputUrl);
-  if (docHost != urlHost)
-    return inputUrl;
-
-
-  // Get just the file path part of the urls
-  //// XXX Should we use GetCurrentEditor().documentCharacterSet for 2nd param ?
-  //var docPath = IOService.newURI(docUrl,   GetCurrentEditor().documentCharacterSet, null).path;
-  //var urlPath = IOService.newURI(inputUrl, GetCurrentEditor().documentCharacterSet, null).path;
-  // XXX Should we use GetCurrentEditor().documentCharacterSet for 2nd param ?
-  var docPath = IOService.newURI(docUrl,   GetCurrentEditorFromSidebar().documentCharacterSet, null).path;
-  var urlPath = IOService.newURI(inputUrl, GetCurrentEditorFromSidebar().documentCharacterSet, null).path;
-
-  // We only return "urlPath", so we can convert
-  //  the entire docPath for case-insensitive comparisons
-  var os = GetOS();
-  var doCaseInsensitive = (docScheme == "file" && os == gWin);
-  if (doCaseInsensitive)
-    docPath = docPath.toLowerCase();
-
-  // Get document filename before we start chopping up the docPath
-  var docFilename = GetFilename(docPath);
-
-  // Both url and doc paths now begin with "/"
-  // Look for shared dirs starting after that
-  urlPath = urlPath.slice(1);
-  docPath = docPath.slice(1);
-
-  var firstDirTest = true;
-  var nextDocSlash = 0;
-  var done = false;
-
-  // Remove all matching subdirs common to both doc and input urls
-  do {
-    nextDocSlash = docPath.indexOf("\/");
-    var nextUrlSlash = urlPath.indexOf("\/");
-
-    if (nextUrlSlash == -1)
-    {
-      // We're done matching and all dirs in url
-      // what's left is the filename
-      done = true;
-
-      // Remove filename for named anchors in the same file
-      if (nextDocSlash == -1 && docFilename)
-      {
-        var anchorIndex = urlPath.indexOf("#");
-        if (anchorIndex > 0)
-        {
-          var urlFilename = doCaseInsensitive ? urlPath.toLowerCase() : urlPath;
-
-          if (urlFilename.indexOf(docFilename) == 0)
-            urlPath = urlPath.slice(anchorIndex);
-        }
-      }
-    }
-    else if (nextDocSlash >= 0)
-    {
-      // Test for matching subdir
-      var docDir = docPath.slice(0, nextDocSlash);
-      var urlDir = urlPath.slice(0, nextUrlSlash);
-      if (doCaseInsensitive)
-        urlDir = urlDir.toLowerCase();
-
-      if (urlDir == docDir)
-      {
-
-        // Remove matching dir+"/" from each path
-        //  and continue to next dir
-        docPath = docPath.slice(nextDocSlash+1);
-        urlPath = urlPath.slice(nextUrlSlash+1);
-      }
-      else
-      {
-        // No match, we're done
-        done = true;
-
-        // Be sure we are on the same local drive or volume
-        //   (the first "dir" in the path) because we can't
-        //   relativize to different drives/volumes.
-        // UNIX doesn't have volumes, so we must not do this else
-        //  the first directory will be misinterpreted as a volume name
-        if (firstDirTest && docScheme == "file" && os != gUNIX)
-          return inputUrl;
-      }
-    }
-    else  // No more doc dirs left, we're done
-      done = true;
-
-    firstDirTest = false;
-  }
-  while (!done);
-
-  // Add "../" for each dir left in docPath
-  while (nextDocSlash > 0)
-  {
-    urlPath = "../" + urlPath;
-    nextDocSlash = docPath.indexOf("\/", nextDocSlash+1);
-  }
-  return urlPath;
-}
-
-// already defined but same problem
+// XXX we have to redefine this function here... at least for now.
 function PrettyPrintCSS(cssText, base, fullDeclaration) {
   var i, tmp;
   if (!cssText || !cssText.length) return ""; // Kaze
@@ -801,7 +561,7 @@ function PrettyPrintCSS(cssText, base, fullDeclaration) {
   var fileNodes = cssText.match(/"file:\/\/[^"]+|url\(file:\/\/[^\)]+/g);
   if (fileNodes) for (var i = 0; i < fileNodes.length; i++) {
     fileNodes[i] = fileNodes[i].replace(/^"|^url\(/, '');
-    tmp = MakeRelativeUrl(fileNodes[i], base);
+    tmp = window.top.MakeRelativeUrl(fileNodes[i], base); // calling from the sidebar...
     if (tmp != fileNodes[i])
       cssText = cssText.replace(fileNodes[i], tmp);
   }

@@ -51,16 +51,16 @@
   list-style-image: none;
 } */
 
-#domToolbar, #domLabel, #domPanel-splitter, #domPanel-text {
-  display: none;
-}
-
 #htmlTree treechildren::-moz-tree-cell-text(hover) {
   text-decoration: underline !important;
 }
 
-#domTreeDeck.html #cssTree, #domTreeDeck.html #domTreeSplitter,
-#domTreeDeck.css #htmlTree, #domTreeDeck.css #domTreeSplitter {
+#domBox tabpanels {
+  border: none;
+}
+
+/* the toolbar doesn't work yet, hide it */
+#domToolbar {
   display: none;
 }
 
