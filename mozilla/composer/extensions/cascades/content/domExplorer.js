@@ -442,7 +442,10 @@ function FillCssTree(element) {
         var ruleChildren   = document.createElementNS(XUL_NS, "treechildren");
         var treerow        = document.createElementNS(XUL_NS, "treerow");
         var treecell       = document.createElementNS(XUL_NS, "treecell");
-        treecell.setAttribute("label", window.top.MakeRelativeUrl(href, baseUrl));
+        var docUrl = window.top.MakeRelativeUrl(href, baseUrl);
+        if (docUrl.length == 0)
+          docUrl = href; // not perfect, but better than an empty string
+        treecell.setAttribute("label", docUrl);
         treerow.appendChild(treecell);
         stylesheetItem.appendChild(treerow);
         stylesheetItem.setAttribute("container", "true");
