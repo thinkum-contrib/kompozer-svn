@@ -76,12 +76,6 @@ function domStartup() {
   //FillStyleTree(gDialog.sheetsTree);
 }
 
-function onSelectDomTree(tabbox) {
-  //gDialog.treeDeck.selectedIndex = tabbox.selectedIndex;
-  const classList = ["html", "css", "split"];
-  gDialog.treeDeck.setAttribute("class", classList[tabbox.selectedIndex]);
-}
-
 function keyNavigation(event) {
   var keycode = event.keyCode;
   if (event.altKey)
@@ -356,6 +350,7 @@ function onMouseOutHtmlItem() {
 }
 
 function onEditHtmlItem(e) {
+  // TODO: use nsObjectPropertiesCommand instead
   window.top.doAdvancedProperties(GetSelectedElement());
 }
 
@@ -382,9 +377,7 @@ function GetSelectedElement() {
 // kasparov
 function FillAttributeTree(node) {
   CleanXulTree(gDialog.attrList);
-  
   allAttributes = node.attributes;
-  
   for (var i = 0; i < allAttributes.length; i++ ) {
     if (!allAttributes[i].nodeName.match(/^_moz_.*/) ) {
       var treeitem = addNewAttributeItem(allAttributes[i].nodeName, allAttributes[i].nodeValue);
@@ -423,31 +416,6 @@ function onEditAttrItem(e) {
  *   CSS tree                                                                *
  *                                                                           *
 \*****************************************************************************/
-
-function FillCssTextBox(element) {
-  // display all style rules that apply to the selected element
-  // reference: mozilla/layout/inspector/public/inIDOMUtils.idl
-  var DOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"]
-                           .getService(Components.interfaces["inIDOMUtils"]);
-  var rules = DOMUtils.getCSSStyleRules(element);
-  var count = rules.Count();
-
-  var baseUrl;
-  var tmp = "";
-  for (var i = 0; i < count; i++) {
-    var rule = rules.GetElementAt(i);
-    var line = DOMUtils.getRuleLine(rule);
-    var href = rule.parentStyleSheet.href;
-    if (!href.match(/^chrome/) && !href.match(/^resource/)) {
-      //tmp += window.top.MakeRelativeUrl(href, baseUrl) + ", line " + line + "\n";
-      tmp += window.top.MakeRelativeUrl(href, baseUrl) + "\n";
-      tmp += PrettyPrintCSS(rule.cssText, baseUrl, true) + "\n";
-    }
-  }
-
-  if (element.hasAttribute("style"))
-    tmp += element.getAttribute("style");
-}
 
 function FillCssTree(element) {
   CleanXulTree(gDialog.cssList);
@@ -541,7 +509,37 @@ function newCssPropertyChildren(cssText, baseUrl) {
 }
 
 function onEditCssItem(e) {
-  window.top.openCascadesDialog();
+  // Get the property level in the tree:
+  //  * stylesheet properties are on the third level
+  //  * inline style properties are on the second level
+  var level = 0;
+  var view  = gDialog.cssTree.view;
+  var sel   = view.selection.currentIndex; // returns -1 if not focused
+  if (view.selection.count) {
+    var item  = view.getItemAtIndex(sel);
+    var tmp   = item;
+    while (tmp.parentNode.parentNode.tagName.toLowerCase() == "treeitem") {
+      tmp = tmp.parentNode.parentNode;
+      level++;
+    }
+    tmp = item;
+    while (tmp.getElementsByTagName("treechildren").length > 0) {
+      tmp = tmp.getElementsByTagName("treechildren").item(0).firstChild; 
+      level++;
+    }
+  }
+
+  // Open CSS editor
+  if (level >= 2) {
+    // stylesheet editor
+    window.top.openCascadesDialog();
+  }
+  else {
+    // inline style editor
+    window.top.gContextMenuFiringDocumentElement = GetSelectedElement();
+    window.top.openDialog("chrome://cascades/content/allProps.xul", 
+      "_blank", "chrome,close,titlebar,modal", "all", "Inline Styles", false);
+  }
 }
 
 // XXX we have to redefine this function here... at least for now.

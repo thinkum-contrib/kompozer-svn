@@ -47,6 +47,8 @@
   %domExplorerDTD;
 <!ENTITY % cascadesDTD      SYSTEM "chrome://cascades/locale/EdCssProps.dtd">
   %cascadesDTD;
+<!ENTITY % advancedEditDTD  SYSTEM "chrome://editor/locale/EdAdvancedEdit.dtd">
+  %advancedEditDTD;
 <!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd">
   %editorOverlayDTD;
 ]>
@@ -164,9 +166,9 @@
                 disableKeyNavigation = "true"
                 enableColumnDrag     = "false">
             <treecols>
-              <treecol id="attrNameCol"  flex="1" label="Attribute"/>
+              <treecol id="attrNameCol"  flex="1" label="&tree.attributeHeader.label;"/>
               <splitter class="tree-splitter"/>
-              <treecol id="attrValueCol" flex="2" label="Value"/>
+              <treecol id="attrValueCol" flex="2" label="&tree.valueHeader.label;"/>
             </treecols>
             <treechildren id="attrList" class="gridlines" flex="1"/>
           </tree>
@@ -183,9 +185,9 @@
                 disableKeyNavigation = "true"
                 enableColumnDrag     = "false">
             <treecols>
-              <treecol id="propNameCol"  flex="1" label="&styleRules.label;" persist="width ordinal hidden" primary="true"/>
+              <treecol id="propNameCol"  flex="1" label="&tree.propertyHeader.label;" persist="width ordinal hidden" primary="true"/>
               <splitter class="tree-splitter"/>
-              <treecol id="propValueCol" flex="1" label="Value"/>
+              <treecol id="propValueCol" flex="1" label="&tree.valueHeader.label;"/>
             </treecols>
             <treechildren id="cssList" flex="1"/>
           </tree>
