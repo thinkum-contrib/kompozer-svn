@@ -42,9 +42,9 @@ var gMarkupCleaner = {
   cleanupDocument: function() {
     var theDocument = GetCurrentEditor().document;
     var treeWalker = theDocument.createTreeWalker(theDocument.documentElement,
-          NodeFilter.SHOW_ELEMENT,
-          this.acceptNode,
-          true);
+                                                  NodeFilter.SHOW_ELEMENT,
+                                                  this.acceptNode,
+                                                  true);
     if (treeWalker) {
       var theNode = treeWalker.nextNode(), tmpNode;
       var editor = GetCurrentEditor();
@@ -60,18 +60,19 @@ var gMarkupCleaner = {
           tmpNode = treeWalker.nextNode();
           if (liNode) {
             editor.deleteNode(theNode);
-            editor.insertNodeAfter(theNode, liNode, null);
+            //editor.insertNodeAfter(theNode, liNode, null);              // Gecko 1.7
+            editor.insertNode(theNode, liNode, liNode.childNodes.length); // Gecko 1.8
             this.IncreaseReport(gMarkupCleanerData.nestedListsReport);
           }
           theNode = tmpNode;
         }
         else if (tagName == "br") {
           tmpNode = treeWalker.nextNode();
-          var parentTagName = theNode.parentNode.nodeName.toLowerCase();
-          if (parentTagName != "td" && parentTagName != "th") {
+          //var parentTagName = theNode.parentNode.nodeName.toLowerCase();
+          //if (parentTagName != "td" && parentTagName != "th") {
             editor.deleteNode(theNode)
             this.IncreaseReport(gMarkupCleanerData.trailinBRReport);
-          }
+          //}
           theNode = tmpNode;
         }
         else if (tagName == "td" || tagName == "th") {

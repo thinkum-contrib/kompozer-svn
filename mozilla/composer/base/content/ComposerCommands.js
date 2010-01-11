@@ -3295,6 +3295,7 @@ var nsImageCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
+		dump("image enabled?\n");
     return (IsDocumentEditable() && IsEditingRenderedHTML());
   },
 

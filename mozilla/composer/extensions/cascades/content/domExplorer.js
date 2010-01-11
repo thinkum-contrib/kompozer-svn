@@ -45,7 +45,6 @@ var gLastHoveredCell;
 // Event listeners
 window.addEventListener("keypress", keyNavigation, true);
 window.top.AddProcessorNotifier(UpdateDomTrees, kProcessorsWhenSelectionChanges);
-//window.top.AddProcessorNotifier(UpdateHtmlTree, kProcessorsWhenSelectionChanges);
 
 function domStartup() {
   gDialog.htmlTree = document.getElementById("htmlTree");
@@ -61,38 +60,35 @@ function domStartup() {
   gLastHoveredCell     = null;
   gLastHoveredIndex    = -1;
 
-  // HTML tree
+  // update the trees for the current element
   var element = window.top.gLastFocusNode;
   if (!element) try {
     element = GetCurrentEditorFromSidebar().rootElement; // <body>
   } catch(e) {}
   UpdateDomTrees(element);
-
-  // CSS tree
-  //var head = window.top.GetHeadElement();
-  //if (!head)
-    //dump("no <head> found");
-  //InitSheetsTree(gDialog.sheetsTree);
-  //FillStyleTree(gDialog.sheetsTree);
 }
 
 function keyNavigation(event) {
-  var keycode = event.keyCode;
+  // early way out if we're not in htmlTree
+  if (event.target != gDialog.htmlTree)
+    return;
+
+  // Alt+Arrow shortcuts are handled by the main editor window
   if (event.altKey)
     return;
 
-  switch(keycode) {
+  switch(event.keyCode) {
     case KeyEvent.DOM_VK_LEFT:
-      selectNeighborElement(NODE_PARENT);
+      window.top.selectNeighborElement(NODE_PARENT);
       break;
     case KeyEvent.DOM_VK_UP:
-      selectNeighborElement(NODE_PREVSIBLING);
+      window.top.selectNeighborElement(NODE_PREVSIBLING);
       break;
     case KeyEvent.DOM_VK_DOWN:
-      selectNeighborElement(NODE_NEXTSIBLING);
+      window.top.selectNeighborElement(NODE_NEXTSIBLING);
       break;
     case KeyEvent.DOM_VK_RIGHT:
-      selectNeighborElement(NODE_FIRSTCHILD);
+      window.top.selectNeighborElement(NODE_FIRSTCHILD);
       break;
     default:
       return;
@@ -100,7 +96,6 @@ function keyNavigation(event) {
   event.stopPropagation();
 }
 
-//function UpdateHtmlTree(node) {
 function UpdateDomTrees(node) {
   try {
     if (!node || node == gLastSelectedElement)
@@ -171,14 +166,6 @@ const NODE_FIRSTCHILD  = 4;
 
 function getNeighborElement(node, dir) {
   return window.top.getNeighborElement(node, dir);
-}
-
-function selectNeighborElement(dir) {
-  return window.top.selectNeighborElement(dir);
-}
-
-function SelectFocusNodeAncestor(element, scroll) {
-  return window.top.SelectFocusNodeAncestor(element, scroll);
 }
 
 /*****************************************************************************\
@@ -289,7 +276,6 @@ function newHtmlTreeItem(element, tag) {
   if (!tag) tag = element.nodeName.toLowerCase();
   treecell.setAttribute("label", tag + tagId);
   treecell.setAttribute("value", tag);
-  treeitem.setAttribute("value", tag);
   //if (element.hasAttribute("style"))
     //treecell.setAttribute("properties", "inlineStyle");
 
@@ -350,8 +336,13 @@ function onMouseOutHtmlItem() {
 }
 
 function onEditHtmlItem(e) {
-  // TODO: use nsObjectPropertiesCommand instead
-  window.top.doAdvancedProperties(GetSelectedElement());
+  window.top.content.focus(); // required
+  window.top.goDoCommand("cmd_objectProperties");
+
+  // refresh DOM trees
+  gLastSelectedElement = null;
+  // TODO: this should be called in every property dialog box, not here
+  window.top.ResetStructToolbar();
 }
 
 function GetSelectedElement() {
@@ -377,10 +368,12 @@ function GetSelectedElement() {
 // kasparov
 function FillAttributeTree(node) {
   CleanXulTree(gDialog.attrList);
-  allAttributes = node.attributes;
-  for (var i = 0; i < allAttributes.length; i++ ) {
-    if (!allAttributes[i].nodeName.match(/^_moz_.*/) ) {
-      var treeitem = addNewAttributeItem(allAttributes[i].nodeName, allAttributes[i].nodeValue);
+
+  for (var i = 0; i < node.attributes.length; i++) {
+    var nodeName = node.attributes[i].nodeName;
+    if ( (node.namespaceURI != NVU_NS) && /* ignore php/comment nodes */
+         !nodeName.match(/^_moz_.*/) ) {  /* ignore _moz_* attributes */
+      var treeitem = addNewAttributeItem(nodeName, node.attributes[i].nodeValue);
       gDialog.attrList.appendChild(treeitem);
     }
   }
@@ -408,6 +401,7 @@ function addNewAttributeItem(name, value) {
 }
 
 function onEditAttrItem(e) {
+  gLastSelectedElement = null; // force reload after validating the dialog
   window.top.doAdvancedProperties(GetSelectedElement());
 }
 
@@ -533,6 +527,7 @@ function onEditCssItem(e) {
   }
 
   // Open CSS editor
+  gLastSelectedElement = null; // force reload after validating the dialog
   if (level >= 2) {
     // stylesheet editor
     window.top.openCascadesDialog();

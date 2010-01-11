@@ -146,6 +146,8 @@ var   gHoveredElement      = null;
 function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/editor/content/editor.js'
                                              // optional 'node' parameter
   var editor = GetCurrentEditor();
+  if (!editor)
+		editor = window.top.GetCurrentEditor();
   if (!editor) return;
 
   // Kaze: use the optional 'node' parameter if provided
@@ -290,9 +292,9 @@ function newStructToolbarButton(element, tag) {
 
   if (tag != "html" && tag != "head") {
     button.addEventListener("contextmenu",  newContextmenuListener(button, element), false);
-    button.addEventListener("click",        newMouseClickListener(element), false);
     button.addEventListener("mouseover",    newMouseOverListener (element), false);
     button.addEventListener("mouseout",     newMouseOutListener  (element), false);
+    button.addEventListener("click",        newMouseClickListener(element), false);
 
     button.setAttribute("context", "structToolbarContext");
   }
@@ -300,6 +302,15 @@ function newStructToolbarButton(element, tag) {
   //button.setAttribute("type", "menu-button");
   //button.appendChild(popup);
   return button;
+}
+
+function openObjectProperties() {
+	window.content.focus();
+  goDoCommand("cmd_objectProperties");
+
+  // refresh DOM trees
+  // TODO: this should be called in every property dialog box, not here
+  ResetStructToolbar();
 }
 
 function newCommandListener(button, element) {
@@ -347,7 +358,15 @@ function newMouseClickListener(element) {
       //highlightNode(null);
       //viewNodeSource(element);
     }
-  }
+		else if (event.detail == 2) { // double-click: open the property dialog
+			highlightNode(null);
+			window.content.focus();
+			goDoCommand("cmd_objectProperties");
+			// refresh DOM trees (XXX the DOM Explorer sidebar isn't refreshed)
+			// TODO: this should be called in every property dialog box, not here
+			ResetStructToolbar();
+		}
+	}
 }
 
 function newMouseScrollListener(button, element) {

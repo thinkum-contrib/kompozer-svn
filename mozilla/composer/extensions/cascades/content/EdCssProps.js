@@ -258,6 +258,10 @@ function FlushChanges()
     delete(gDialog.head);
 
   SaveWindowLocation();
+
+	// KompoZer 0.8
+	window.opener.ResetStructToolbar();
+
   return true; // do close the window
 }
 

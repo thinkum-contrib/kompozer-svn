@@ -81,18 +81,6 @@
 
   <vbox flex="1" id="domBox">
 
-    <!-- key navigation in the DOM tree (this is defined somewhere else, but I don't know where...)
-    <command id="cmd_viewParentNode"   oncommand="selectNeighborElement(NODE_PARENT);"/>
-    <command id="cmd_viewPrevSibling"  oncommand="selectNeighborElement(NODE_PREVSIBLING);"/>
-    <command id="cmd_viewNextSibling"  oncommand="selectNeighborElement(NODE_NEXTSIBLING);"/>
-    <command id="cmd_viewFirstChild"   oncommand="selectNeighborElement(NODE_FIRSTCHILD);"/>
-    <keyset id="domNavKeys">
-      <key id="key_editParentNode"     keycode="VK_LEFT"     command="cmd_viewParentNode"  />
-      <key id="key_editPrevSibling"    keycode="VK_UP"       command="cmd_viewPrevSibling" />
-      <key id="key_editNextSibling"    keycode="VK_DOWN"     command="cmd_viewNextSibling" />
-      <key id="key_editFirstChild"     keycode="VK_RIGHT"    command="cmd_viewFirstChild"  />
-    </keyset> -->
-
     <!-- Toolbar (not working yet) -->
     <hbox id="domToolbar">
       <toolbarbutton id="refreshButton" tooltiptext="&refreshButton.label;" oncommand="Refresh();"/>
