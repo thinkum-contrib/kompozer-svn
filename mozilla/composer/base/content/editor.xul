@@ -113,7 +113,7 @@
   <toolbox class="toolbox-top" id="EditorToolbox" mode="full">
 #include composer-menubar.inc
 #include composer-mainToolbar.inc
-    <!--toolbarset id="customToolbars" context="toolbar-context-menu"/-->
+    <toolbarset id="customToolbars" context="toolbar-context-menu"/>
   </toolbox>
 
   <toolbox id="FormatToolbox" mode="full" canchangemode="false">

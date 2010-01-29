@@ -21,8 +21,8 @@
   <RDF:Description RDF:about="chrome://tipoftheday/content/tipoftheday.xul">
     <NC:persist RDF:resource="chrome://tipoftheday/content/tipoftheday.xul#location"/>
   </RDF:Description>
-  <RDF:Description RDF:about="chrome://editor/content/editor.xul#EditorToolbox"
-                   iconsize="small" />
+  <!--<RDF:Description RDF:about="chrome://editor/content/editor.xul#EditorToolbox"-->
+                   <!--iconsize="small" />-->
   <RDF:Description RDF:about="chrome://editor/content/editor.xul#sidebar-splitter"
                    hidden="false" />
   <RDF:Description RDF:about="chrome://editor/content/sitemanager.xul#dirCol"
@@ -41,7 +41,7 @@
     <NC:persist RDF:resource="chrome://editor/content/editor.xul#sidebar-splitter"/>
     <NC:persist RDF:resource="chrome://editor/content/editor.xul#sidebar-title-box"/>
     <NC:persist RDF:resource="chrome://editor/content/editor.xul#sidebar-panels"/>
-    <NC:persist RDF:resource="chrome://editor/content/editor.xul#EditorToolbox"/>
+    <!--<NC:persist RDF:resource="chrome://editor/content/editor.xul#EditorToolbox"/>-->
   </RDF:Description>
   <RDF:Description RDF:about="chrome://editor/content/hiddenWindow.xul">
     <NC:persist RDF:resource="chrome://editor/content/hiddenWindow.xul#editorWindow"/>

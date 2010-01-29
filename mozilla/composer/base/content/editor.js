@@ -71,9 +71,10 @@ const kEditModeTabIDS  = ["DesignModeButton", "SplitModeButton", "SourceModeButt
 
 const kBlockOutlinesAttr = "blockoutlines";
 
-const kTextMimeType = "text/plain";
-const kHTMLMimeType = "text/html";
-const kXMLMimeType  = "text/xml";
+const kTextMimeType  = "text/plain";
+const kHTMLMimeType  = "text/html";
+const kXMLMimeType   = "text/xml";
+const kXHTMLMimeType = "application/xhtml+xml"; // XXX not used yet, see comm-1.9.1
 
 const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 
@@ -118,6 +119,8 @@ var gColorObj = {
 var gDefaultTextColor = "";
 var gDefaultBackgroundColor = "";
 var gCSSPrefListener;
+var gEditorToolbarPrefListener;     // Kaze
+var gReturnInParagraphPrefListener; // Kaze
 var gPrefs;
 var gLocalFonts = null;
 var gFontMenuOk = {};
@@ -145,6 +148,9 @@ var gFontSizeNames = ["xx-small","x-small","small","medium","large","x-large","x
 const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
 const kEditorToolbarPrefs = "editor.toolbars.showbutton.";
+const kUseCssPref         = "editor.use_css";              // Kaze (taken from SM-1.1)
+const kCRInParagraphsPref = "editor.CR_creates_new_p";     // Kaze (taken from SM-1.1)
+
 
 function ShowHideToolbarSeparators(toolbar) {
   dump("===> ShowHideToolbarSeparators\n");
@@ -182,7 +188,85 @@ function ShowHideToolbarButtons()
   ShowHideToolbarSeparators(document.getElementById("FormatToolbar1"));
   ShowHideToolbarSeparators(document.getElementById("FormatToolbar2"));
 }
-  
+
+// <Kaze> replacing old pref listeners by SeaMonkey's stuff
+function nsPrefListener(prefName)
+{
+  this.startup(prefName);
+}
+
+// implements nsIObserver
+nsPrefListener.prototype =
+{
+  domain: "",
+  startup: function(prefName)
+  {
+    this.domain = prefName;
+    try {
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
+      pbi.addObserver(this.domain, this, false);
+    } catch(ex) {
+      dump("Failed to observe prefs: " + ex + "\n");
+    }
+  },
+  shutdown: function()
+  {
+    try {
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
+      pbi.removeObserver(this.domain, this);
+    } catch(ex) {
+      dump("Failed to remove pref observers: " + ex + "\n");
+    }
+  },
+  observe: function(subject, topic, prefName)
+  {
+    if (!IsHTMLEditor())
+      return;
+    // verify that we're changing a button pref
+    if (topic != "nsPref:changed") return;
+    
+    if (prefName.substr(0, kUseCssPref.length) == kUseCssPref)
+    {
+      var cmd = document.getElementById("cmd_highlight");
+      if (cmd) {
+        var prefs = GetPrefs();
+        var useCSS = prefs.getBoolPref(prefName);
+        var editor = GetCurrentEditor();
+        if (useCSS && editor) {
+          var mixedObj = {};
+          var state = editor.getHighlightColorState(mixedObj);
+          cmd.setAttribute("state", state);
+          cmd.collapsed = false;
+        }      
+        else {
+          cmd.setAttribute("state", "transparent");
+          cmd.collapsed = true;
+        }
+
+        if (editor)
+          editor.isCSSEnabled = useCSS;
+      }
+     }
+     else if (prefName.substr(0, kEditorToolbarPrefs.length) == kEditorToolbarPrefs)
+     {
+       var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
+       var button = document.getElementById(id);
+       if (button) {
+         button.hidden = !gPrefs.getBoolPref(prefName);
+         ShowHideToolbarSeparators(button.parentNode);
+       }
+     }
+    else if (prefName.substr(0, kCRInParagraphsPref.length) == kCRInParagraphsPref)
+    {
+      var crInParagraphCreatesParagraph = gPrefs.getBoolPref(prefName);
+      var editor = GetCurrentEditor();
+      if (editor)
+        editor.returnInParagraphCreatesNewParagraph = crInParagraphCreatesParagraph;
+    }   
+  }
+}
+
+/*
 function AddToolbarPrefListener()
 {
   try {
@@ -280,6 +364,7 @@ nsButtonPrefListener.prototype =
     }
   }
 }
+*/
 
 function AfterHighlightColorChange()
 {
@@ -707,13 +792,15 @@ function EditorStartup()
   SetupComposerWindowCommands();
 
   // ShowHideToolbarButtons();
-  AddToolbarPrefListener();
+  //AddToolbarPrefListener();
+  //gCSSPrefListener = new nsButtonPrefListener();
+  gEditorToolbarPrefListener     = new nsPrefListener(kEditorToolbarPrefs);
+  gCSSPrefListener               = new nsPrefListener(kUseCssPref);
+  gReturnInParagraphPrefListener = new nsPrefListener(kCRInParagraphsPref);
 
   // Customizable toolbars
   document.getElementById("EditorToolbox").customizeDone = ToolboxCustomizeDone;
   document.getElementById("FormatToolbox").customizeDone = ToolboxCustomizeDone;
-
-  gCSSPrefListener = new nsButtonPrefListener();
 
   // hide Highlight button if we are in an HTML editor with CSS mode off
   var cmd = document.getElementById("cmd_highlight");
@@ -901,8 +988,11 @@ function EditorShutdown()
 {
   SetUnicharPref("editor.zoom_factor", getMarkupDocumentViewer().textZoom);
 
-  RemoveToolbarPrefListener();
+  //RemoveToolbarPrefListener();
+  gEditorToolbarPrefListener.shutdown();
   gCSSPrefListener.shutdown();
+  gReturnInParagraphPrefListener.shutdown(); // kaze
+
 
   try {
     var commandManager = GetCurrentCommandManager();

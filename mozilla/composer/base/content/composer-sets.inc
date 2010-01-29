@@ -12,6 +12,10 @@
     <command id="cmd_textZoomEnlarge"  oncommand="ZoomManager.prototype.getInstance().enlarge();"/>
     <command id="cmd_textZoomReset"    oncommand="ZoomManager.prototype.getInstance().reset();"/>
     <!-- DOM navigation -->
+    <command id="cmd_putBreakAfter"    oncommand="putCaretWithBR(NODE_NEXTSIBLING);"/>
+    <command id="cmd_putBreakBefore"   oncommand="putCaretWithBR(NODE_PREVSIBLING);"/>
+    <command id="cmd_putCaretAfter"    oncommand="putCaretWithoutBR(NODE_NEXTSIBLING);"/>
+    <command id="cmd_putCaretBefore"   oncommand="putCaretWithoutBR(NODE_PREVSIBLING);"/>
     <command id="cmd_editNodeToggle"   oncommand="editNodeToggle();"/>
     <command id="cmd_editNodeCancel"   oncommand="editNodeCancel();"/>
     <command id="cmd_editCurrentNode"  oncommand="selectNeighborElement(NODE_SELF);"/> 
@@ -19,7 +23,6 @@
     <command id="cmd_editPrevSibling"  oncommand="selectNeighborElement(NODE_PREVSIBLING);"/>
     <command id="cmd_editNextSibling"  oncommand="selectNeighborElement(NODE_NEXTSIBLING);"/>
     <command id="cmd_editFirstChild"   oncommand="selectNeighborElement(NODE_FIRSTCHILD);"/>
-
   </commandset>
 
   <commandset id="tasksCommands">
@@ -353,6 +356,10 @@
   </keyset>
 
   <keyset id="viewSourceKeys">
+    <key id="key_putBreakAfter"    keycode="VK_RETURN"             command="cmd_putBreakAfter"   modifiers="control"/>
+    <key id="key_putBreakBefore"   keycode="VK_RETURN"             command="cmd_putBreakBefore"  modifiers="control, shift"/>
+    <key id="key_putCaretAfter"    keycode="VK_DOWN"               command="cmd_putCaretAfter"   modifiers="control"/>
+    <key id="key_putCaretBefore"   keycode="VK_UP"                 command="cmd_putCaretBefore"  modifiers="control"/>
     <!-- viewSource -->
     <key id="key_textZoomEnlarge"  key="&textEnlarge.commandkey;"  command="cmd_textZoomEnlarge" modifiers="accel"/>
     <key id="key_textZoomEnlarge2" key="&textEnlarge.commandkey2;" command="cmd_textZoomEnlarge" modifiers="accel"/>

@@ -104,6 +104,7 @@ pref("editor.publish.",                      "");
 pref("editor.lastFileLocation.image",        "");
 pref("editor.lastFileLocation.html",         "");
 pref("editor.use_css",                       true);
+pref("editor.CR_creates_new_p",              true);  // Kaze
 pref("editor.css.default_length_unit",       "px");
 pref("editor.save_associated_files",         false); // Kaze
 pref("editor.always_show_publish_dialog",    false);
@@ -132,6 +133,7 @@ pref("editor.grid.size",                     0);
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
 
+pref("editor.CR_creates_new_p",              true);
 pref("editor.zoom_factor",                   "1.0");
 
 
@@ -165,7 +167,6 @@ pref("editor.table.default_valign",              "");
 pref("editor.table.default_wrapping",            "");
 pref("editor.table.default_cellspacing",         2);
 pref("editor.table.default_cellpadding",         2);
-pref("editor.CR_creates_new_p",                  true);
 
 // Default Doctype                            
 pref("editor.default.doctype",                   "html");

@@ -57,6 +57,62 @@ const NODE_PREVSIBLING = 2;
 const NODE_NEXTSIBLING = 3;
 const NODE_FIRSTCHILD  = 4;
 
+function putCaretWithBR(dir) {
+  // get the first block container of the current node
+  var block = gLastFocusNode;
+  var blockArr = [ "body", "div", "table", "ol", "ul", "dl", "object" ];
+  while (blockArr.indexOf(block.nodeName.toLowerCase()) < 0)
+    block = block.parentNode;
+  if (block.nodeName.toLowerCase() == "body")
+    return;
+
+  // get the position of the current block in its parent
+  var blockSiblings = block.parentNode.childNodes;
+  var offset = blockSiblings.length -1;
+  while ((offset >= 0) && (blockSiblings[offset] != block))
+    offset--;
+  if (offset < 0)                   // should never happen...
+    return;
+  if (dir == NODE_NEXTSIBLING)      // insert after current block
+    offset++;
+  else if (dir != NODE_PREVSIBLING) // wrong 'dir' param, exit
+    return;
+
+  // insert a <br> next to the current block and put the caret there
+  var editor = GetCurrentEditor();
+  var br = editor.document.createElement("br");
+  editor.beginTransaction();
+  editor.insertNode(br, block.parentNode, offset);
+  editor.selectElement(br);
+  editor.selection.collapseToStart();
+  editor.endTransaction();
+
+  // ensure the caret is visible
+  scrollIntoCenterView(br);
+}
+
+function putCaretWithoutBR(dir) {
+  // get the first block container of the current node
+  var block = gLastFocusNode;
+  var blockArr = [ "body", "div", "table", "ol", "ul", "dl", "object" ];
+  while (blockArr.indexOf(block.nodeName.toLowerCase()) < 0)
+    block = block.parentNode;
+  if (block.nodeName.toLowerCase() == "body")
+    return;
+
+  // select the current block and collapse the selection
+  var editor = GetCurrentEditor();
+  editor.selectElement(block);
+  switch(dir) {
+    case NODE_NEXTSIBLING:
+      editor.selection.collapseToEnd();
+      break;
+    case NODE_PREVSIBLING:
+      editor.selection.collapseToStart();
+      break;
+  }
+}
+
 function getNeighborElement(node, dir) {
   function notAnElement(node) {
     if (!node)
@@ -147,7 +203,7 @@ function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/edit
                                              // optional 'node' parameter
   var editor = GetCurrentEditor();
   if (!editor)
-		editor = window.top.GetCurrentEditor();
+    editor = window.top.GetCurrentEditor();
   if (!editor) return;
 
   // Kaze: use the optional 'node' parameter if provided
@@ -305,7 +361,7 @@ function newStructToolbarButton(element, tag) {
 }
 
 function openObjectProperties() {
-	window.content.focus();
+  window.content.focus();
   goDoCommand("cmd_objectProperties");
 
   // refresh DOM trees
@@ -358,15 +414,15 @@ function newMouseClickListener(element) {
       //highlightNode(null);
       //viewNodeSource(element);
     }
-		else if (event.detail == 2) { // double-click: open the property dialog
-			highlightNode(null);
-			window.content.focus();
-			goDoCommand("cmd_objectProperties");
-			// refresh DOM trees (XXX the DOM Explorer sidebar isn't refreshed)
-			// TODO: this should be called in every property dialog box, not here
-			ResetStructToolbar();
-		}
-	}
+    else if (event.detail == 2) { // double-click: open the property dialog
+      highlightNode(null);
+      window.content.focus();
+      goDoCommand("cmd_objectProperties");
+      // refresh DOM trees (XXX the DOM Explorer sidebar isn't refreshed)
+      // TODO: this should be called in every property dialog box, not here
+      ResetStructToolbar();
+    }
+  }
 }
 
 function newMouseScrollListener(button, element) {

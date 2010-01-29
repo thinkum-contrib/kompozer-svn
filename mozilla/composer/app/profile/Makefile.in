@@ -30,7 +30,8 @@ DIRS = extensions
 
 include $(topsrcdir)/config/rules.mk
 
-FILES := editor.js \
+FILES := \
+	editor.js \
 	all.js \
 	localstore.rdf \
 	panels.rdf \
