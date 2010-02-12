@@ -121,6 +121,8 @@ var gDefaultBackgroundColor = "";
 var gCSSPrefListener;
 var gEditorToolbarPrefListener;     // Kaze
 var gReturnInParagraphPrefListener; // Kaze
+var gInlineSpellCheckPrefListener;  // Kaze
+var gInlineSpellCheck;              // Kaze
 var gPrefs;
 var gLocalFonts = null;
 var gFontMenuOk = {};
@@ -147,9 +149,10 @@ var gFontSizeNames = ["xx-small","x-small","small","medium","large","x-large","x
 
 const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
-const kEditorToolbarPrefs = "editor.toolbars.showbutton.";
-const kUseCssPref         = "editor.use_css";              // Kaze (taken from SM-1.1)
-const kCRInParagraphsPref = "editor.CR_creates_new_p";     // Kaze (taken from SM-1.1)
+const kEditorToolbarPrefs   = "editor.toolbars.showbutton.";
+const kUseCssPref           = "editor.use_css";                   // Kaze (taken from SM-1.1)
+const kCRInParagraphsPref   = "editor.CR_creates_new_p";          // Kaze (taken from SM-1.1)
+const kInlineSpellCheckPref = "spellchecker.enablerealtimespell"; // Kaze (taken from TB-3.0)
 
 
 function ShowHideToolbarSeparators(toolbar) {
@@ -246,23 +249,31 @@ nsPrefListener.prototype =
         if (editor)
           editor.isCSSEnabled = useCSS;
       }
-     }
-     else if (prefName.substr(0, kEditorToolbarPrefs.length) == kEditorToolbarPrefs)
-     {
-       var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
-       var button = document.getElementById(id);
-       if (button) {
-         button.hidden = !gPrefs.getBoolPref(prefName);
-         ShowHideToolbarSeparators(button.parentNode);
-       }
-     }
+    }
+    else if (prefName.substr(0, kEditorToolbarPrefs.length) == kEditorToolbarPrefs)
+    {
+      var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
+      var button = document.getElementById(id);
+      if (button) {
+        button.hidden = !gPrefs.getBoolPref(prefName);
+        ShowHideToolbarSeparators(button.parentNode);
+      }
+    }
     else if (prefName.substr(0, kCRInParagraphsPref.length) == kCRInParagraphsPref)
     {
       var crInParagraphCreatesParagraph = gPrefs.getBoolPref(prefName);
       var editor = GetCurrentEditor();
       if (editor)
         editor.returnInParagraphCreatesNewParagraph = crInParagraphCreatesParagraph;
-    }   
+    }
+    else if (prefName.substr(0, kInlineSpellCheckPref.length) == kInlineSpellCheckPref)
+    {
+      dump("kInlineSpellCheckPref \n");
+      var inlineSpellCheck = gPrefs.getBoolPref(prefName);
+      InlineSpellCheckerUI.enabled = inlineSpellCheck;
+      //gInlineSpellCheck.checked = inlineSpellCheck;
+      gInlineSpellCheck.setAttribute("checked", inlineSpellCheck ? "true" : "false");
+    }
   }
 }
 
@@ -559,7 +570,14 @@ var gEditorDocumentObserver =
         } */
         // Gecko 1.8
         InlineSpellCheckerUI.init(editor);
-        InlineSpellCheckerUI.enabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+        var canSpellCheck = InlineSpellCheckerUI.canSpellCheck;
+        gInlineSpellCheck.setAttribute("disabled", !canSpellCheck);
+        //InlineSpellCheckerUI.enabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
+        if (canSpellCheck)
+          enableInlineSpellCheck(gPrefs.getBoolPref(kInlineSpellCheckPref));
+        else
+          enableInlineSpellCheck(false);
+
 
         try {
           commandManager.getCommandState(aTopic, gContentWindow, params);
@@ -771,6 +789,7 @@ function EditorStartup()
     gFormatToolbar2     = document.getElementById("FormatToolbar2");
     gViewFormatToolbar1 = document.getElementById("viewFormatToolbar1");
     gViewFormatToolbar2 = document.getElementById("viewFormatToolbar2");
+    gInlineSpellCheck   = document.getElementById("menu_inlineSpellCheck");
   }
 
   // set up our global prefs object
@@ -797,6 +816,7 @@ function EditorStartup()
   gEditorToolbarPrefListener     = new nsPrefListener(kEditorToolbarPrefs);
   gCSSPrefListener               = new nsPrefListener(kUseCssPref);
   gReturnInParagraphPrefListener = new nsPrefListener(kCRInParagraphsPref);
+  gInlineSpellCheckPrefListener  = new nsPrefListener(kInlineSpellCheckPref);
 
   // Customizable toolbars
   document.getElementById("EditorToolbox").customizeDone = ToolboxCustomizeDone;
@@ -992,6 +1012,7 @@ function EditorShutdown()
   gEditorToolbarPrefListener.shutdown();
   gCSSPrefListener.shutdown();
   gReturnInParagraphPrefListener.shutdown(); // kaze
+  gInlineSpellCheckPrefListener.shutdown();  // kaze
 
 
   try {
@@ -2374,19 +2395,19 @@ function SetEditUI(mode)
   // enable|disable inline spell checking and format toolbars
   if (mode >= kEditModeSource) {
     // we need to disable inline spell checking
-    gWasInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
-    gPrefs.setBoolPref("spellchecker.enablerealtimespell", false);  
+    gWasInlineSpellCheckerEnabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
+    gPrefs.setBoolPref(kInlineSpellCheckPref, false);  
   }
   else {
     if (previousMode >= kEditModeSource) {
       // re-enable inline spell checking
       var showDisableSpellCheckWarning = gPrefs.getBoolPref("editor.showDisableSpellCheckWarning");
       if (showDisableSpellCheckWarning) {
-        var isSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
+        var isSpellCheckerEnabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
         if (gWasInlineSpellCheckerEnabled || isSpellCheckerEnabled)
           window.openDialog("chrome://editor/content/confirmInlineSpellChecking.xul", "_blank", "chrome,close=no,titlebar,modal", "");
       } else
-        gPrefs.setBoolPref("spellchecker.enablerealtimespell", gWasInlineSpellCheckerEnabled)
+        gPrefs.setBoolPref(kInlineSpellCheckPref, gWasInlineSpellCheckerEnabled)
     }
 
     // Save the last non-source mode so we can cancel source editing easily
@@ -4576,5 +4597,14 @@ function OpenExtensions(aOpenMode)
   const EMURL      = "chrome://mozapps/content/extensions/extensions.xul";
   const EMFEATURES = "chrome,menubar,extra-chrome,toolbar,dialog=no,resizable";
   window.openDialog(EMURL, "", EMFEATURES);
+}
+
+/* Inline Spell Checker */
+function enableInlineSpellCheck(aEnableInlineSpellCheck)
+{
+  InlineSpellCheckerUI.enabled = aEnableInlineSpellCheck;
+  //gInlineSpellCheck.checked    = aEnableInlineSpellCheck;
+  gInlineSpellCheck.setAttribute("checked", aEnableInlineSpellCheck ? "true" : "false");
+  gPrefs.setBoolPref(kInlineSpellCheckPref, aEnableInlineSpellCheck);
 }
 

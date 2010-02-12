@@ -62,12 +62,16 @@
         <menuseparator id="edEditMenuSep2" />
         <menuitem id="menu_selectAll"/>
         <menuseparator id="sep_find"/>
-        <menuitem id="menu_find"          accesskey="&editfind.accesskey;"          key="findkb"          observes="cmd_find" label="&findCmd.label;"/>
-        <menuitem id="menu_findnext"      accesskey="&editfindnext.accesskey;"      key="findnextkb"      observes="cmd_findNext"/>
-        <menuitem id="menu_findprev"      accesskey="&editfindprev.accesskey;"      key="findprevkb"      observes="cmd_findPrev"/>
+        <menuitem id="menu_find"             accesskey="&editfind.accesskey;"          key="findkb"          observes="cmd_find"
+                  label="&findCmd.label;"/>
+        <menuitem id="menu_findnext"         accesskey="&editfindnext.accesskey;"      key="findnextkb"      observes="cmd_findNext"/>
+        <menuitem id="menu_findprev"         accesskey="&editfindprev.accesskey;"      key="findprevkb"      observes="cmd_findPrev"/>
         <menuseparator id="sep_checkspelling"/>
-        <menuitem id="menu_checkspelling" accesskey="&editcheckspelling.accesskey;" key="checkspellingkb" observes="cmd_spelling" disabled="true"
-                  label="&checkSpellingCmd.label;"/>
+        <menuitem id="menu_checkspelling"    accesskey="&editcheckspelling.accesskey;" key="checkspellingkb" observes="cmd_spelling"
+                  label="&checkSpellingCmd.label;" disabled="true"/>
+        <menuitem id="menu_inlineSpellCheck" accesskey="&enableInlineSpellChecker.accesskey;"
+                  label="&enableInlineSpellChecker.label;" checked="false" type="checkbox"
+                  oncommand="enableInlineSpellCheck(!InlineSpellCheckerUI.enabled);"/>
         <menuseparator id="menu_prefsSep"/>
         <menuitem id="menu_detachTemplate"
                   label="&detachFromTemplate.label;" oncommand="DetachFromTemplate()"/>
