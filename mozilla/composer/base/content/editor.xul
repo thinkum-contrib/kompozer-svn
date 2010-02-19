@@ -49,7 +49,7 @@
 <?xml-stylesheet type="text/css" href="chrome://communicator/skin/communicator.css"?> 
 <?xml-stylesheet type="text/css" href="chrome://communicator/skin/sidebar/"?>
 
-<!-- Kaze: this one is required for the JavaScript console -->
+<!-- Kaze: this one is required by the JavaScript console -->
 <?xml-stylesheet type="text/css" href="chrome://global/skin/findBar.css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
@@ -113,7 +113,7 @@
   <toolbox class="toolbox-top" id="EditorToolbox" mode="full">
 #include composer-menubar.inc
 #include composer-mainToolbar.inc
-    <toolbarset id="customToolbars" context="toolbar-context-menu"/>
+    <!--toolbarset id="customToolbars" context="toolbar-context-menu"/-->
   </toolbox>
 
   <toolbox id="FormatToolbox" mode="full" canchangemode="false">
@@ -132,6 +132,22 @@
           <label id="doctype-text" crop="right"/>
           <editor type="content" id="content-source" context="editorSourceContext" flex="1"/>
         </vbox>
+      </deck>
+      <!-- HTML source browser/editor -->
+      <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="true"
+                resizebefore="farthest"
+                resizeafter="closest"
+                state="collapsed"
+                collapse="after"/>
+      <deck id="SourceBrowserDeck" selectedIndex="0" flex="1"
+            style="min-height: 7em;"
+            collapsed="true">
+        <editor id="SourceBrowser" flex="1" src="about:blank"
+                 type="content"
+                 editortype="html"
+                 onclick="onClickSourceDock(event);"
+                 context="editorSourceContext"/>
+        <!-- a textbox will be dynamically created here when necessary -->
       </deck>
       <!-- View/Edit mode toolbar -->
       <hbox id="EditModeToolbar" align="center" hidden="false" persist="collapsed">

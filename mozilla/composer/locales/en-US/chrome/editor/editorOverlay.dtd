@@ -744,7 +744,7 @@
 <!ENTITY spellCheckAddToDictionary.label     "Add to Dictionary">
 <!ENTITY spellCheckAddToDictionary.accesskey "n">
 <!ENTITY enableInlineSpellChecker.label      "Spell Check As You Type">
-<!ENTITY enableInlineSpellChecker.accesskey  "S">
+<!ENTITY enableInlineSpellChecker.accesskey  "T">
 
 <!-- KompoZer 0.8: viewSource -->
 <!ENTITY editNode.label                      "Edit HTML">

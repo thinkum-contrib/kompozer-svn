@@ -79,7 +79,7 @@ const kXHTMLMimeType = "application/xhtml+xml"; // XXX not used yet, see comm-1.
 const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 
 // Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
-const kColoredSourceView = true;
+const kColoredSourceView = false;
 
 // Kaze: stealing some code from Thunderbird for the inline spellchecker
 //const mozISpellCheckingEngine = Components.interfaces.mozISpellCheckingEngine;
@@ -277,106 +277,6 @@ nsPrefListener.prototype =
   }
 }
 
-/*
-function AddToolbarPrefListener()
-{
-  try {
-    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-    pbi.addObserver(kEditorToolbarPrefs, gEditorToolbarPrefListener, false);
-  } catch(ex) {
-    dump("Failed to observe prefs: " + ex + "\n");
-  }
-}
-
-function RemoveToolbarPrefListener()
-{
-  try {
-    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-    pbi.removeObserver(kEditorToolbarPrefs, gEditorToolbarPrefListener);
-  } catch(ex) {
-    dump("Failed to remove pref observer: " + ex + "\n");
-  }
-}
-
-// Pref listener constants
-const gEditorToolbarPrefListener =
-{
-  observe: function(subject, topic, prefName)
-  {
-    // verify that we're changing a button pref
-    if (topic != "nsPref:changed")
-      return;
-
-    var id = prefName.substr(kEditorToolbarPrefs.length) + "Button";
-    var button = document.getElementById(id);
-    if (button) {
-      button.hidden = !gPrefs.getBoolPref(prefName);
-      ShowHideToolbarSeparators(button.parentNode);
-    }
-  }
-};
-
-function nsButtonPrefListener()
-{
-  this.startup();
-}
-
-// implements nsIObserver
-nsButtonPrefListener.prototype =
-{
-  domain: "editor.use_css",
-  startup: function()
-  {
-    try {
-      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-      pbi.addObserver(this.domain, this, false);
-    } catch(ex) {
-      dump("Failed to observe prefs: " + ex + "\n");
-    }
-  },
-  shutdown: function()
-  {
-    try {
-      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-      pbi.removeObserver(this.domain, this);
-    } catch(ex) {
-      dump("Failed to remove pref observers: " + ex + "\n");
-    }
-  },
-  observe: function(subject, topic, prefName)
-  {
-    if (!IsHTMLEditor())
-      return;
-    // verify that we're changing a button pref
-    if (topic != "nsPref:changed") return;
-    if (prefName.substr(0, this.domain.length) != this.domain) return;
-
-    var cmd = document.getElementById("cmd_highlight");
-    if (cmd) {
-      var prefs = GetPrefs();
-      var useCSS = prefs.getBoolPref(prefName);
-      var editor = GetCurrentEditor();
-      if (useCSS && editor) {
-        var mixedObj = {};
-        var state = editor.getHighlightColorState(mixedObj);
-        cmd.setAttribute("state", state);
-        cmd.collapsed = false;
-      }      
-      else {
-        cmd.setAttribute("state", "transparent");
-        cmd.collapsed = true;
-      }
-
-      if (editor)
-        editor.isCSSEnabled = useCSS;
-
-      goUpdateCommand("cmd_dtdStrictness");
-      goUpdateCommand("cmd_dtdStrictness2");
-    }
-  }
-}
-*/
-
 function AfterHighlightColorChange()
 {
   if (!IsHTMLEditor())
@@ -429,22 +329,26 @@ function EditorOnLoad()
   // Initialize our source text <editor>
   // Kaze: useless with KompoZer 0.8?
   try {
-    //gSourceContentWindow = document.getElementById("content-source");
-    gSourceContentWindow = document.getElementById("tabeditor").mSourceEditor;
-    gSourceContentWindow.makeEditable("text", false);
-    gSourceTextEditor = newSourceTextEditor();
-    /*
-     *gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-     *gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-     *gSourceTextEditor.enableUndo(false);
-     *gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
-     *gSourceTextEditor.rootElement.style.whiteSpace = "pre";
-     *gSourceTextEditor.rootElement.style.margin = 0;
-     *if (kColoredSourceView) {
-     *  gSourceTextEditor.rootElement.style.backgroundColor = "#f0f0f0";
-     *  gSourceTextEditor.rootElement.setAttribute("_moz_sourceview", "true");
-     *}
+    /* rev.193, disabled
+      gSourceContentWindow = document.getElementById("tabeditor").mSourceEditor;
+      gSourceContentWindow.makeEditable("text", false);
+      gSourceTextEditor = newSourceTextEditor();
      */
+    // rev != 193
+    gSourceContentWindow = document.getElementById("content-source");
+    gSourceContentWindow.makeEditable("text", false);
+    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
+
+    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+    gSourceTextEditor.enableUndo(false);
+    gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
+    gSourceTextEditor.rootElement.style.whiteSpace = "pre";
+    gSourceTextEditor.rootElement.style.margin = 0;
+    if (kColoredSourceView) {
+      gSourceTextEditor.rootElement.style.backgroundColor = "#f0f0f0";
+      gSourceTextEditor.rootElement.setAttribute("_moz_sourceview", "true");
+    }
+
     var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
                                .createInstance(Components.interfaces.nsIControllerContext);
     controller.init(null);
@@ -783,8 +687,10 @@ function EditorStartup()
   if (is_HTMLEditor)
   {
     // XUL elements we use when switching from normal editor to edit source
-    //gContentWindowDeck  = document.getElementById("ContentWindowDeck");
-    gSourceBrowserDeck  = document.getElementById("tabeditor").mSourceDeck; // used in viewSource.js
+    gContentWindowDeck  = document.getElementById("ContentWindowDeck");
+    gSourceBrowserDeck  = document.getElementById("SourceBrowserDeck");
+    // rev.193, disabled
+    //gSourceBrowserDeck  = document.getElementById("tabeditor").mSourceDeck; // used in viewSource.js
     gFormatToolbar1     = document.getElementById("FormatToolbar1");
     gFormatToolbar2     = document.getElementById("FormatToolbar2");
     gViewFormatToolbar1 = document.getElementById("viewFormatToolbar1");
@@ -811,8 +717,6 @@ function EditorStartup()
   SetupComposerWindowCommands();
 
   // ShowHideToolbarButtons();
-  //AddToolbarPrefListener();
-  //gCSSPrefListener = new nsButtonPrefListener();
   gEditorToolbarPrefListener     = new nsPrefListener(kEditorToolbarPrefs);
   gCSSPrefListener               = new nsPrefListener(kUseCssPref);
   gReturnInParagraphPrefListener = new nsPrefListener(kCRInParagraphsPref);
@@ -1008,7 +912,6 @@ function EditorShutdown()
 {
   SetUnicharPref("editor.zoom_factor", getMarkupDocumentViewer().textZoom);
 
-  //RemoveToolbarPrefListener();
   gEditorToolbarPrefListener.shutdown();
   gCSSPrefListener.shutdown();
   gReturnInParagraphPrefListener.shutdown(); // kaze
@@ -2177,9 +2080,6 @@ function SetEditMode(mode)
     return;
   }
 
-  // must have editor if here!
-  //var editor = GetCurrentEditor();
-
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = gEditorEditMode;
@@ -2189,158 +2089,6 @@ function SetEditMode(mode)
   SetEditUI(mode);
   window.setCursor("auto");
   return;
-
-  /* older versions (dead code)
-  if (!SetEditUI(mode))
-    return;
-
-  window.setCursor("wait");
-
-  if (mode == kEditModeSource)
-  {
-    // Display the DOCTYPE as a non-editable string above edit area
-    var domdoc;
-    try { domdoc = editor.document; } catch (e) { dump( e + "\n");}
-    if (domdoc)
-    {
-      var doctypeNode = document.getElementById("doctype-text");
-      var dt = domdoc.doctype;
-      if (doctypeNode)
-      {
-        if (dt)
-        {
-          doctypeNode.collapsed = false;
-          var doctypeText = "<!DOCTYPE " + domdoc.doctype.name;
-          if (dt.publicId)
-            doctypeText += " PUBLIC \"" + domdoc.doctype.publicId;
-          if (dt.systemId)
-            doctypeText += " "+"\"" + dt.systemId;
-          doctypeText += "\">"
-          doctypeNode.setAttribute("value", doctypeText);
-        }
-        // XXX HACK ALERT Glazou
-        else if (!kColoredSourceView)
-          doctypeNode.collapsed = true;
-      }
-    }
-
-    // Get the entire document's source string
-    var flags = (editor.documentCharacterSet == "ISO-8859-1")
-      ? 32768  // OutputEncodeLatin1Entities
-      : 16384; // OutputEncodeBasicEntities
-    try { 
-      var encodeEntity = gPrefs.getCharPref("editor.encode_entity");
-      var dontEncodeGT = gPrefs.getBoolPref("editor.encode.noGT");
-      switch (encodeEntity) { //OutputEncodeCharacterEntities =
-        case "basic"   : flags = 16384;  break; // OutputEncodeBasicEntities
-        case "latin1"  : flags = 32768;  break; // OutputEncodeLatin1Entities
-        case "html"    : flags = 65536;  break; // OutputEncodeHTMLEntities
-        case "unicode" : flags = 262144; break;
-        case "none"    : flags = 0;      break;
-      }
-      if (dontEncodeGT)
-        flags |= (1 << 21); // DontEncodeGreatherThan
-    } catch (e) { }
-
-    // Kaze: always reformat the HTML code for the "source" view
-    //~ try { 
-      //~ var prettyPrint = gPrefs.getBoolPref("editor.prettyprint");
-      //~ if (prettyPrint)
-      //~ {
-        flags |= 2;      // OutputFormatted
-      //~ }
-    //~ } catch (e) {}
-
-    flags |= 1 << 5; // OutputRaw
-    flags |= 1024;   // OutputLFLineBreak
-
-    if (kColoredSourceView) { // Nvu
-      //flags |= 131072; // colored source view
-
-      NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
-
-      var mimeType = kHTMLMimeType;
-      //if (IsXHTMLDocument())
-        //mimeType = kXMLMimeType;
-      var source = editor.outputToString(mimeType, flags);
-      var start = source.search(/\<span class='/i);
-      if (start == -1) start = 0;
-      gSourceTextEditor.selectAll();
-      // gSourceTextEditor.insertText(source.slice(start));
-
-      if (false) // IsXHTMLDocument()
-      {
-        source = source.replace( /\n$/gi , String(""));
-        source = source.slice(start).replace( /\n/gi , String("</li><li>"));
-      }
-      else
-      {
-        source = source.replace( /<br>$/gi , String("")).replace( /\n$/gi , String(""));
-        source = source.slice(start).replace( /<br>/gi , String("</li><li>")).replace( /\n/gi , String("</li><li>"));
-      }
-
-      source = "<ol><li>" + source + "</li></ol>";
-      InsertColoredSourceView(gSourceTextEditor, source);
-
-      //InsertColoredSourceView(gSourceTextEditor, source.slice(start));
-    }
-    else { // Composer
-      var source = editor.outputToString(kHTMLMimeType, flags);
-      var start = source.search(/<html/i);
-      if (start == -1) start = 0;
-      gSourceTextEditor.selectAll();
-      gSourceTextEditor.insertText(source.slice(start));
-    }
-
-    gSourceTextEditor.resetModificationCount();
-    gSourceTextEditor.addDocumentStateListener(gSourceTextListener);
-    gSourceTextEditor.enableUndo(true);
-    gSourceContentWindow.commandManager.addCommandObserver(gSourceTextObserver, "cmd_undo");
-    gSourceContentWindow.contentWindow.focus();
-    goDoCommand("cmd_moveTop");
-
-    if (kColoredSourceView) { // Nvu
-      // let's show the preserved selection :-)
-      var sourceDoc = gSourceTextEditor.document;
-      var startSel  = sourceDoc.getElementById("start-selection");
-      var endSel    = sourceDoc.getElementById("end-selection");
-      if (startSel)
-      {
-        var sourceSel = gSourceTextEditor.selection;
-        sourceSel.removeAllRanges();
-        var range = gSourceTextEditor.document.createRange();
-        if (endSel && (endSel != startSel))
-        {
-          range.setStartBefore(startSel);
-          // <Kaze>
-          //range.setEndAfter(endSel);
-          try { // sometimes 'endSel' is out of bounds
-            range.setEndAfter(endSel);
-          } catch(e) {
-            range.setEndAfter(startSel);
-          }
-          // </Kaze>
-        }
-        else
-        {
-          range.setStartAfter(startSel);
-          range.setEndAfter(startSel);
-        }
-        sourceSel.addRange(range);
-
-        setTimeout("gSourceTextEditor.scrollSelectionIntoView(true)", 100)
-      }
-      else
-        gSourceTextEditor.beginningOfDocument()
-    }
-  }
-  else if (previousMode == kEditModeSource)
-  {
-    rebuildDocumentFromSource();
-  }
-
-  window.setCursor("auto");
-  */ 
 }
 
 function SetEditUI(mode)
@@ -2356,8 +2104,7 @@ function SetEditUI(mode)
 
   GetCurrentEditorElement().setAttribute("editmode", mode);
 
-  /* XXX this notifiers probably doesn't trigger anything
-  */
+  // XXX this notifier probably doesn't trigger anything
   //NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
   if (mode == kEditModeText)
     NotifyProcessors(kProcessorsWhenDisplayModeChanges, kEditModeSource);
@@ -2383,17 +2130,34 @@ function SetEditUI(mode)
    */
 
   // show|hide source deck and splitter
+  /* rev.193, disabled
   var tabeditor = document.getElementById("tabeditor");
   tabeditor.setEditMode(mode);
   if (mode == kEditModeSplit)
     viewNodeSource(gLastFocusNode);
   else if (mode == kEditModeSource)
     viewDocumentSource();
-
+  */
+  var splitter = document.getElementById("browser-splitter");
+  if (mode == kEditModeSplit) {
+    gSourceBrowserDeck.removeAttribute("collapsed");
+    splitter.setAttribute("state", "expand");
+    splitter.setAttribute("hidden", "false");
+    // display the current node's source
+    if (mode == kEditModeSplit)
+      viewNodeSource(gLastFocusNode);
+  }
+  else {
+    gSourceBrowserDeck.setAttribute("collapsed", "true");
+    splitter.setAttribute("state", "collapsed");
+    splitter.setAttribute("hidden", "true");
+  }
+ 
   ResetStructToolbar();
 
   // enable|disable inline spell checking and format toolbars
   if (mode >= kEditModeSource) {
+    viewDocumentSource();
     // we need to disable inline spell checking
     gWasInlineSpellCheckerEnabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
     gPrefs.setBoolPref(kInlineSpellCheckPref, false);  
@@ -2409,24 +2173,21 @@ function SetEditUI(mode)
       } else
         gPrefs.setBoolPref(kInlineSpellCheckPref, gWasInlineSpellCheckerEnabled)
     }
-
     // Save the last non-source mode so we can cancel source editing easily
     gPreviousNonSourceEditMode = mode;
   }
 
-  /* toggle from/to sourceWindow
-    if (mode == kEditModeSource) {      // Switch to the sourceWindow (second in the deck)
-      gContentWindowDeck.selectedIndex = 1;
-      gSourceContentWindow.contentWindow.focus();
-    } else {                            // Switch to the normal editor (first in the deck)
-      gContentWindowDeck.selectedIndex = 0;
-      gContentWindow.focus();
-    }
-  */
+  // toggle from/to sourceWindow (to be disabled with rev.193)
+  if (mode == kEditModeSource) {      // Switch to the sourceWindow (second in the deck)
+    gContentWindowDeck.selectedIndex = 1;
+    gSourceContentWindow.contentWindow.focus();
+  } else {                            // Switch to the normal editor (first in the deck)
+    gContentWindowDeck.selectedIndex = 0;
+    gContentWindow.focus();
+  }
 
   // update commands to disable or re-enable stuff
-  // XXX this disables a lot of commands when clicking in the source editor. WTF?
-  //window.updateCommands("mode_switch");
+  window.updateCommands("mode_switch");
 
   // update mode selector widgets
   if (mode != kEditModeText) {

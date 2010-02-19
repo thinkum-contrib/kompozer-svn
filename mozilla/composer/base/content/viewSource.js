@@ -39,8 +39,8 @@
 // reference to the currently viewed/edited node
 var gViewedElement = null;
 var gEditedElement = null;
-//var gSourceEditor  = null;
-//var gSourceEditorModified = false;
+var gSourceEditor  = null;
+var gSourceEditorModified = false;
     
 // source dock: modal editor (browser+textbox) or classic editor (htmlEditor)?
 //const kModalSourceDock = false;
@@ -468,6 +468,10 @@ function highlightNode(element) {
  *                                                                           *
 \*****************************************************************************/
 
+function getBrowser() {
+  return document.getElementById("SourceBrowser");
+}
+
 function InsertColoredSourceView(editor, source)
 {
   var sourceDoc = editor.document;
@@ -502,23 +506,8 @@ function InsertColoredSourceView(editor, source)
 }
 
 function viewDocumentSource() {
-  if (true) {
-    // lazy way
-    var htmlRoot = GetCurrentEditor().document.getElementsByTagName("html").item(0);
-    viewNodeSource(htmlRoot);
-    editNodeStart();
-    return;
-
-    // TODO: show line numbers + preserve selection + disable DOM Explorer
-    var tabeditor = document.getElementById("tabeditor");
-    //tabeditor.mSourceEditor.focus();
-    tabeditor.mSourceEditor.contentWindow.focus();
-    return;
-  }
-
-  // proper way
-  gSourceTextEditor = kColoredSourceView ? tabeditor.mSourceEditor
-                    : gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);;
+  // must have editor if here!
+  var editor = GetCurrentEditor();
 
   // Display the DOCTYPE as a non-editable string above edit area
   var domdoc;
@@ -658,13 +647,8 @@ function viewDocumentSource() {
 }
 
 function viewNodeSource(node) {
-  //var tabeditor = document.getElementById("tabeditor");
-
   // cancel if the source dock is collapsed
-  //if (!node || gSourceBrowserDeck.collapsed)
-  //if (!node || tabeditor.mSourceDeck.hidden)
-  //if (!node || tabeditor.mSourceEditor.hidden)
-  if (!node || (gEditorEditMode == kEditModeDesign))
+  if (!node || gSourceBrowserDeck.collapsed)
     return;
 
   highlightNode(null);
@@ -684,11 +668,10 @@ function viewNodeSource(node) {
   MakePhpAndCommentsInvisible(doc, tmpNode);
 
   // all our content is held by the data:URI and URIs are internally stored as utf-8 (see nsIURI.idl)
-  //getBrowser().webNavigation
-  //tabeditor.mSourceEditor.webNavigation
-  gSourceContentWindow.webNavigation
-                      .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(tmpNode.innerHTML),
-                               Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE, null, null, null);
+  //gSourceContentWindow.webNavigation
+  getBrowser().webNavigation
+              .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(tmpNode.innerHTML),
+                       Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE, null, null, null);
 
   delete(tmpNode);
 }
@@ -866,8 +849,8 @@ function CancelHTMLSource() { // overrides that in 'comm.jar/editor/content/edit
 
 function FinishHTMLSource() { // overrides that in 'comm.jar/editor/content/editor.js'
   // XXX why the fuck do we need to re-generate gSourceTextEditor?
-  delete(gSourceTextEditor);
-  gSourceTextEditor = newSourceTextEditor();
+  //delete(gSourceTextEditor);
+  //gSourceTextEditor = newSourceTextEditor();
 
   // Here we need to check whether the HTML source contains <head> and <body> tags
   // or RebuildDocumentFromSource() will fail.
@@ -994,24 +977,6 @@ function RebuildDocumentFromSource() {
  *                                                                           *
 \*****************************************************************************/
 
-function newSourceTextEditor() {
-  //delete(gSourceTextEditor);
-  var srcEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-  srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
-  return srcEditor; // XXX
-
-  //srcEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
-  srcEditor.enableUndo(false);
-  srcEditor.rootElement.style.fontFamily = "-moz-fixed";
-  srcEditor.rootElement.style.whiteSpace = "pre";
-  srcEditor.rootElement.style.margin = 0;
-  if (kColoredSourceView) {
-    srcEditor.rootElement.style.backgroundColor = "#fff0f0";
-    srcEditor.rootElement.setAttribute("_moz_sourceview", "true");
-  }
-  return srcEditor;
-}
-
 function onClickSourceDock(e) {
   // cancel if already in edition mode
   if (gEditedElement)
@@ -1023,7 +988,6 @@ function onClickSourceDock(e) {
 
 function onKeypressSourceDock(e) {
   if (e.keyCode == KeyEvent.DOM_VK_ESCAPE) {
-    dump("[ESC]\n");
     // cancel default [Esc] behavior because it would cause the editor to blur...
     // which would raise a 'blur' event, thus validating the changes.
     e.preventDefault();  // required in Gecko 1.8
@@ -1034,8 +998,6 @@ function onKeypressSourceDock(e) {
 }
 
 function editNodeStart() {
-  gSourceTextEditor = newSourceTextEditor();
-
   // cancel if no editor (should never happen)
   var editor = GetCurrentEditor();
   if (!editor) {
@@ -1049,23 +1011,22 @@ function editNodeStart() {
 
   // we can't edit the whole HTML tree with that source dock
   // so if <html> is selected, edit the <head> node
-  /*
-   *if (gViewedElement.tagName.toLowerCase() == "html")
-   *  gViewedElement = gViewedElement.firstChild;
-   */
+  if (gViewedElement.tagName.toLowerCase() == "html")
+    gViewedElement = gViewedElement.firstChild;
 
   // focus the editor
-  gSourceContentWindow.contentWindow.focus();
+  gSourceEditor = getBrowser();
+  gSourceEditor.contentWindow.focus();
 
   // auto-confirm changes when the user clicks outside the source editor
-  gSourceContentWindow.addEventListener("blur",     editNodeApply,        true);
+  gSourceEditor.addEventListener("blur",     editNodeApply,        true);
 
   // cancel default [Esc] behavior because it would cause the editor to blur
-  gSourceContentWindow.addEventListener("keypress", onKeypressSourceDock, true);
+  gSourceEditor.addEventListener("keypress", onKeypressSourceDock, true);
 
   // init globals
   gEditedElement = gViewedElement;
-  //gSourceEditorModified = false;
+  gSourceEditorModified = false;
   dump("source dock focused\n");
 }
 
@@ -1077,16 +1038,18 @@ function editNodeApply() {
     return;
   }
 
-  // get an nsIEditor instance on <editor> 
-  var srcEditor = newSourceTextEditor();
-  /*
-   *var srcEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
-   *srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
-   */
+  // detect modifications
+  try {
+    // XXX
+    var srcEditor = gSourceEditor.getEditor(gSourceEditor.contentWindow);
+    //var srcEditor = gSourceEditor.getHTMLEditor(gSourceEditor.contentWindow);
+    srcEditor instanceof Components.interfaces.nsIPlaintextEditor;
+    srcEditor instanceof Components.interfaces.nsIHTMLEditor;
+  } catch (e) { dump (e + "\n"); }
+  gSourceEditorModified = srcEditor.documentModified;
 
   // cancel if no modifications found
-  //if (!IsHTMLSourceChanged()) {
-  if (!srcEditor.documentModified) {
+  if (!gSourceEditorModified) {
     editNodeCancel();
     return;
   }
@@ -1181,8 +1144,8 @@ function editNodeLeave() {
   gEditedElement = null;
 
   // remove OK/Cancel event handlers
-  gSourceContentWindow.removeEventListener("blur",     editNodeApply,        true);
-  gSourceContentWindow.removeEventListener("keypress", onKeypressSourceDock, true);
+  gSourceEditor.removeEventListener("blur",     editNodeApply,        true);
+  gSourceEditor.removeEventListener("keypress", onKeypressSourceDock, true);
 
   // set the focus to the main window
   gContentWindow.focus();
