@@ -144,8 +144,11 @@ function onAccept()
   window.opener.AdvancedEditOK = true;
   SaveWindowLocation();
 
-	// KompoZer 0.8
-	window.opener.ResetStructToolbar();
+  // KompoZer 0.8
+  var winOpener = window.opener;
+  if (winOpener.opener) // XXX not working yet
+    winOpener = winOpener.opener;
+  winOpener.ResetStructToolbar();
 
   return true; // do close the window
 }
@@ -359,7 +362,7 @@ function AddTreeItem ( name, value, treeChildrenId, attArray )
 
 function doHelpButton()
 {
-	// KompoZer 0.8
+  // KompoZer 0.8
   //openHelp("advanced_property_editor");
   openHelp('comp-format-advanced-props', 'chrome://help/locale/nvu.rdf');
   return true;

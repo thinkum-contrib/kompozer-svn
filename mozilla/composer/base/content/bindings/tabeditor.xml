@@ -781,12 +781,17 @@
         <parameter name="strictness" />
         <body>
           <![CDATA[
+            /* Kaze: using chrome-registered templates instead of about:whatever
             if (type == "xhtml")
               return this.editURL(strictness ? "about:xstrictblank" : "about:xblank",
                                   true, false, false);
 
             return this.editURL(strictness ? "about:strictblank" : "about:blank",
                                 true, false, false);
+            */
+            var url = "chrome://editor/content/blanks/" 
+                    + (strictness ? "strict." : "transitional.") + type;
+            return this.editURL(url, true, false, false);
           ]]>
         </body>
       </method>

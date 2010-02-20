@@ -482,6 +482,8 @@ var gEditorDocumentObserver =
         else
           enableInlineSpellCheck(false);
 
+        // XXX for some reason, kCRInParagraphsPref isn't applied properly.
+        editor.returnInParagraphCreatesNewParagraph = gPrefs.getBoolPref(kCRInParagraphsPref);
 
         try {
           commandManager.getCommandState(aTopic, gContentWindow, params);
@@ -730,7 +732,7 @@ function EditorStartup()
   var cmd = document.getElementById("cmd_highlight");
   if (cmd) {
     var prefs = GetPrefs();
-    var useCSS = prefs.getBoolPref("editor.use_css");
+    var useCSS = prefs.getBoolPref(kUseCssPref);
     if (!useCSS && is_HTMLEditor) {
       cmd.collapsed = true;
     }
@@ -1614,7 +1616,7 @@ function GetBackgroundElementWithColor()
   else
   {
     var prefs = GetPrefs();
-    var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
+    var IsCSSPrefChecked = prefs.getBoolPref(kUseCssPref);
     if (IsCSSPrefChecked && IsHTMLEditor())
     {
       var selection = editor.selection;
