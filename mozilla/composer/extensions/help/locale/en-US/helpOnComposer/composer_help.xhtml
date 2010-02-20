@@ -11,7 +11,25 @@
 
 <body>
 
-#include topnav.inc
+<script type="text/javascript">
+var isDisplayed = true;
+
+function togglePanel() {
+  isDisplayed = !isDisplayed;
+  var displayValue = isDisplayed ? "display: block" : "display: none";
+  var bodyValue = isDisplayed ? "margin-left: 175px" : "margin-left:5px";
+
+  document.getElementById("contentsBox").setAttribute("style", displayValue);
+  document.getElementsByTagName("body").item(0).setAttribute("style", bodyValue);
+}
+</script>
+
+<table width="100%" id="navTable">
+<tr>
+<td valign="bottom" width="20"><small><a href="#" onclick="togglePanel();" style="margin-top:10px;">Show/Hide</a></small></td>
+<td width="72"><img src="chrome://editor/skin/icons/throbber.png" width="32" height="32" alt="&brandShortName;" align="center"/></td><td align="left"><span id="topText">Help Center</span></td>
+</tr>
+</table>
 
 <div id="contentsBox">In this section:
   <a href="#starting_a_new_page">Starting a New Page</a>
@@ -219,15 +237,14 @@ links:</p>
   Navigator window.</li>
 </ul>
 
-<p>[ <a href="#starting_a_new_page">Return to beginning of
-section</a> ]</p>
+<p>[ <a href="#starting_a_new_page">Return to beginning of
+section</a> ]</p>
 
 <p>[<a href="formatting_webpages.xhtml">Next</a>]</p>
 
-  <div class="copyrightBox"><em>20 June 2005</em></div>
+  <div class="copyrightBox"><em>05 December 2009</em></div>
 
-<p>Copyright &copy; 2004-2005 Contributors to the Nvu
-Help Documentation Project.</p>
+<p>&helpCopyrightNotice;</p>
 
 </body>
 </html>

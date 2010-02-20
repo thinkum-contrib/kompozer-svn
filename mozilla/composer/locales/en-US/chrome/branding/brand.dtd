@@ -41,3 +41,4 @@
 <!ENTITY  brandShortName        "KompoZer">
 <!ENTITY  vendorShortName       "KompoZer">
 <!ENTITY  sidebarName           "Sidebar">
+<!ENTITY  helpCopyrightNotice   "Copyright &copy; 2004-2010 Contributors to the &brandShortName; Help Documentation Project.">

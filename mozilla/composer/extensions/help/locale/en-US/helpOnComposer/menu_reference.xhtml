@@ -16,7 +16,25 @@ Contributor(s):
 
 <body>
 
-#include topnav.inc
+<script type="text/javascript">
+var isDisplayed = true;
+
+function togglePanel() {
+  isDisplayed = !isDisplayed;
+  var displayValue = isDisplayed ? "display: block" : "display: none";
+  var bodyValue = isDisplayed ? "margin-left: 175px" : "margin-left:5px";
+
+  document.getElementById("contentsBox").setAttribute("style", displayValue);
+  document.getElementsByTagName("body").item(0).setAttribute("style", bodyValue);
+}
+</script>
+
+<table width="100%" id="navTable">
+<tr>
+<td valign="bottom" width="20"><small><a href="#" onclick="togglePanel();" style="margin-top:10px;">Show/Hide</a></small></td>
+<td width="72"><img src="chrome://editor/skin/icons/throbber.png" width="32" height="32" alt="&brandShortName;" align="center"/></td><td align="left"><span id="topText">Help Center</span></td>
+</tr>
+</table>
 
   <div id="contentsBox">In this section:
   <a href="#file">File</a>
@@ -38,13 +56,13 @@ Contributor(s):
   <h3 id="new_window">New</h3>
   <p>Opens a new &brandShortName; window.</p>
 
-  <h3 id="open_file">Open File...</h3>
+  <h3 id="open_file">Open File…</h3>
   <p>Displays an Open File dialog where you can select a file from
   your
   local disks or network. With &brandShortName; you can view HTML,
   HTML templates, and text file types.</p>
 
-  <h3 id="open_web_location">Open Web Location...</h3>
+  <h3 id="open_web_location">Open Web Location…</h3>
   <p>Displays an Open Web Location dialog for writing the URL of the
   document or choose a local file to open.</p>
 
@@ -60,19 +78,19 @@ Contributor(s):
   <h3 id="save">Save</h3>
   <p>Save the file opened in the current active tab.</p>
   
-  <h3 id="save_as">Save As...</h3>
+  <h3 id="save_as">Save As…</h3>
   <p>Saves the page you are currently editing giving the option of
   saving it with a different filename. </p>
 
   <h3 id="save_character_encoding">Save And Change Character Encoding</h3>
   <p>Gives an option of changing the "Charset" of the web page
-  before displaying the "Save As..." dialog.</p>
+  before displaying the "Save As…" dialog.</p>
 
   <h3 id="publish">Publish</h3>
   <p>Opens a Publish dialog for publishing the current page being
   edited</p>
 
-  <h3 id="publish_as">Publish As...</h3>
+  <h3 id="publish_as">Publish As…</h3>
   <p>Opens a Publish dialog for publishing the current page being
   edited. Behaves the same as Publish\!!</p>
 
@@ -80,13 +98,13 @@ Contributor(s):
   <p>Undo all changes done to the current document after last
   save. Reverts to last saved copy of current document.</p>
 
-  <h3 id="export_to_text">Export To Text...</h3>
+  <h3 id="export_to_text">Export To Text…</h3>
   <p>Export the contents of the current document to plain text.</p>
 
   <h3 id="browse_page">Browse Page</h3>
   <p>View the current page in your default web browser</p>
 
-  <h3 id="page_setup">Page Setup...</h3>
+  <h3 id="page_setup">Page Setup…</h3>
   <p>Opens the Page Setup options
   dialog for configuring printing options.</p>
   
@@ -94,7 +112,7 @@ Contributor(s):
   <p>Opens a window showing how the document will look when printed on
   paper.</p>
 
-  <h3 id="print">Print...</h3> 
+  <h3 id="print">Print…</h3> 
   <p>Displays the Print dialog, where you
   can select the printer, specify the number of printed copies,
   etc. Click <em>OK</em> to print the page.</p>
@@ -142,19 +160,19 @@ Contributor(s):
   <h3 id="select_all">Select All</h3>
   <p>Selects all text in the current document.</p>
 
-  <h3 id="find_and_replace">Find and Replace...</h3>
+  <h3 id="find_and_replace">Find and Replace…</h3>
   <p> Displays a dialog where you can enter a text string to be
   searched and replaced with another text string. Search is performed on
   the current page.</p>
 
   <h3 id="find_again">Find Again</h3>
   <p>Performs the operation of finding the text string searched with
-  the <em>Find and Replace...</em> command for next occurence of the
+  the <em>Find and Replace…</em> command for next occurence of the
   text. Search is performed on the current page.</p>
 
   <h3 id="find_previous">Find Previous</h3>
   <p>Searches for the previous occurrence of the text specified when
-  using the <em>Find and Replace...</em> command.</p>
+  using the <em>Find and Replace…</em> command.</p>
 
   <h3 id="check_spelling">Check Spelling</h3>
   <p>Opens the Spell Checker to start the spell check for the text on
@@ -253,38 +271,38 @@ Contributor(s):
   <p>The Insert menu allows you to insert various HTML elements in the
   current document being edited.</p>
 
-  <h3 id="insert_image">Image...</h3>
+  <h3 id="insert_image">Image…</h3>
   <p>Opens a dialog box to insert an image in the current
   document.</p>
 
-  <h3 id="insert_table">Table...</h3>
+  <h3 id="insert_table">Table…</h3>
   <p>Opens a dialog box to insert a table in the current document.</p>
 
-  <h3 id="insert_form">Form...</h3>
+  <h3 id="insert_form">Form…</h3>
   <p></p>
 
-  <h3 id="insert_link">Link...</h3>
+  <h3 id="insert_link">Link…</h3>
   <p>Opens a dialog box to create a link. If clicked after selecting
   text in current document, the selected text will be made the link. You
   can also define Friendship(XFN) properties by clicking "More
   Properties" in the dialog box.</p>
 
-  <h3 id="named_anchor">Named Anchor...</h3>
+  <h3 id="named_anchor">Named Anchor…</h3>
   <p>Opens a dialog for typing-in the name to insert a Named Anchor at
   the current position of the cursor.</p>
 
   <h3 id="horizontal_line">Horizontal Line</h3>
   <p>Inserts a horizontal line in the current document.</p>
 
-  <h3 id="html">HTML...</h3>
+  <h3 id="html">HTML…</h3>
   <p>Opens a dialog to insert HTML code manually. This can also be
   used to insert comments, script code, etc.</p>
 
-  <h3 id="character_and_symbols">Characters and Symbols...</h3>
+  <h3 id="character_and_symbols">Characters and Symbols…</h3>
   <p>Opens a dialog box to select special characters or symbols to
   insert in the current document.</p>
 
-  <h3 id="table_of_contents">Table of Contents...</h3>
+  <h3 id="table_of_contents">Table of Contents…</h3>
   <p>Opens a window to insert a Table of Contents at the current
   position of the cursor. The TOC can be selected to be formed of either
   Heading Level-1 to Level-6, a &lt;div&gt; or a &lt;p&gt; tag.</p>
@@ -292,8 +310,8 @@ Contributor(s):
   <h3 id="smart_widgets">Smart Widgets</h3>
   <p>Inserts Smart Widgets in your document.</p>
 
-  <h4 id="made_with_nvu">Made With Nvu button</h4>
-  <p>Inserts a "Made with Nvu" button in the document.</p>
+  <h4 id="made_with_nvu">Made With &brandShortName; button</h4>
+  <p>Inserts a "Made with &brandShortName;" button in the document.</p>
 
   <h4 id="calendar">Calendar</h4>
   <p>Inserts a calendar type object in the document.</p>
@@ -325,7 +343,7 @@ Contributor(s):
 
   <h3 id="size">Size</h3>
   <p>By selecting Smaller or Larger you can change the size of text
-  being viewed in Nvu.</p>
+  being viewed in &brandShortName;.</p>
   <p>Selecting x-small, small, medium, large, x-large, or xx-large
   changes the font size of selected text in the current document.</p>
 
@@ -411,7 +429,7 @@ Contributor(s):
   <p>Defines the selcted text as a
   variable. E.g. <var>variable</var></p>
 
-  <h3 id="text_color">Text Color...</h3>
+  <h3 id="text_color">Text Color…</h3>
 
   <p>Opens the color picker popup window to choose the color for
   selected text.</p>
@@ -474,14 +492,14 @@ Contributor(s):
   events.</p>
 
   <h3 id="page_colors_and_background">Page Colors and
-  Background...</h3>
+  Background…</h3>
 
   <p>Opens a window to select Page Colors and Background. Users can
   select the color of Normal text, Link text, and Active and Visited
   link text. You can also choose the background color for your web page
   and optionally attach a background image to the page too.</p>
 
-  <h3 id="page_title_and_properties">Page Title and Properties...</h3>
+  <h3 id="page_title_and_properties">Page Title and Properties…</h3>
 
   <p>Opens up the "Page Properties" window where you can add the
   Title, Author, and Description information for your web page. You can
@@ -607,11 +625,11 @@ Contributor(s):
   either of comma (,), space ( ), or a user defined character.</p>
 
   <h3 id="table_or_cell_background_color">Table or Cell Background
-  Color...</h3>
+  Color…</h3>
 
   <p>Opens a dialog box to edit table or cell background color.</p>
 
-  <h3 id="table_properties">Table Properties...</h3>
+  <h3 id="table_properties">Table Properties…</h3>
 
   <p>Opens the table and cell properties editing window. You can
   change all table and cell properties using the simple GUI. </p>
@@ -700,9 +718,9 @@ Contributor(s):
   <p>Opens &brandShortName;'s Developer's website in your default
   browser.</p>
 
-  <h3 id="localizing_nvu">Localizing Nvu</h3>
+  <h3 id="localizing_nvu">Localizing &brandShortName;</h3>
 
-  <p>Opens the web page with instructions on how to start the Nvu
+  <p>Opens the web page with instructions on how to start the &brandShortName;
   localization process.</p>
 
   <h3 id="forums">Forums</h3>
@@ -721,10 +739,9 @@ Contributor(s):
   <p class="returnToSection">[ <a href="#menu_reference">Return to
   beginning of section</a> ]</p>
 
-  <div class="copyrightBox"><em>21 March 2005</em></div>
+  <div class="copyrightBox"><em>05 December 2009</em></div>
 
-  <p>Copyright &copy; 2004-2005 Contributors to the Nvu
-  Help Documentation Project.</p>
+  <p>&helpCopyrightNotice;</p>
 
 </body>
 

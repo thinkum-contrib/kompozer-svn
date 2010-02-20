@@ -146,19 +146,19 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments", ""
-            VALUE "LegalCopyright", "License: MPL 1.1/GPL 2.0/LGPL 2.1"
-            VALUE "CompanyName", "Mozilla Foundation"
-            VALUE "FileDescription", "Composer"
-            VALUE "FileVersion", "Personal"
-            VALUE "ProductVersion", "Personal"
-            VALUE "InternalName", ""
-            VALUE "LegalTrademarks", "Mozilla"
+            VALUE "Comments",         ""
+            VALUE "LegalCopyright",   "License: MPL 1.1/GPL 2.0/LGPL 2.1"
+            VALUE "CompanyName",      "Mozilla Foundation"
+            VALUE "FileDescription",  "KompoZer"
+            VALUE "FileVersion",      "Personal"
+            VALUE "ProductVersion",   "Personal"
+            VALUE "InternalName",     ""
+            VALUE "LegalTrademarks",  "Mozilla"
             VALUE "OriginalFilename", "kompozer.exe"
 
-            VALUE "PrivateBuild", ""
+            VALUE "PrivateBuild",     ""
 
-            VALUE "ProductName", "Composer"
+            VALUE "ProductName",      "KompoZer"
         END
     END
     BLOCK "VarFileInfo"

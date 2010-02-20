@@ -139,12 +139,11 @@ pref("editor.zoom_factor",                   "1.0");
 
 /***********************************************\
  *                                             *
- *     Nvu/KompoZer specific preferences       *
+ *     KompoZer specific preferences           *
  *                                             *
 \***********************************************/
 
 pref("tipoftheday.openAtStartup",                true);
-//pref("pinger.pinged",                             " "); // Kaze: pinger has been removed
 
 // Help Menu                                  
 pref("editor.site.url",                          "chrome://editor-region/locale/region.properties");
@@ -198,9 +197,9 @@ pref("extensions.getMoreThemesURL",              "http://kompozer.net/jar/");
 // CSS Editor                              
 pref("extensions.cascades.expertMode",           true);
 pref("extensions.cascades.dropdownLists",        true);
+pref("layout.css.report_errors",                 false);
 
 // Site Manager                            
-//pref("editor.nvu.sitemanager.treeView",          true); // TODO: rename/delete this pref
 pref("extensions.sitemanager.openInNewTab",      true);
 pref("extensions.sitemanager.useSystemIcons",    false);
 pref("extensions.sitemanager.filter.html",       "htm, html, xhtml, php*");

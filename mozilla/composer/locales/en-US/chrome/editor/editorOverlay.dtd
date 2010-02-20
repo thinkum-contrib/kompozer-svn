@@ -757,5 +757,5 @@
 <!ENTITY extEditor.label                     "HTML">
 <!ENTITY extEditor.tooltip                   "Open the current document in an external text editor">
 <!ENTITY extEditorCmd.label                  "External Text Editor">
-<!ENTITY extEditorCmd.accesskey              "E">
+<!ENTITY extEditorCmd.accesskey              "T">
 

@@ -13,7 +13,25 @@
 
 <body>
 
-#include ../helpOnComposer/topnav.inc
+<script type="text/javascript">
+var isDisplayed = true;
+
+function togglePanel() {
+  isDisplayed = !isDisplayed;
+  var displayValue = isDisplayed ? "display: block" : "display: none";
+  var bodyValue = isDisplayed ? "margin-left: 175px" : "margin-left:5px";
+
+  document.getElementById("contentsBox").setAttribute("style", displayValue);
+  document.getElementsByTagName("body").item(0).setAttribute("style", bodyValue);
+}
+</script>
+
+<table width="100%" id="navTable">
+<tr>
+<td valign="bottom" width="20"><small><a href="#" onclick="togglePanel();" style="margin-top:10px;">Show/Hide</a></small></td>
+<td width="72"><img src="chrome://editor/skin/icons/throbber.png" width="32" height="32" alt="&brandShortName;" align="center"/></td><td align="left"><span id="topText">Help Center</span></td>
+</tr>
+</table>
 <div id="contentsBox">In this section:
   <a href="#finding_the_topic_you_want">Finding the Topic You Want</a>
   <a href="#retracing_your_steps">Retracing Your Steps</a>
@@ -89,8 +107,8 @@
 		  and &quot;&vendorShortName;&quot; could possibly return all of the pages in the help file.</li>
 	</ul>
 
-<div class="copyrightBox"><em>29 March 2005</em></div>
-<p>Copyright &copy; 2003-2004 Contributors to the Nvu Help Documentation Project.</p>
+<div class="copyrightBox"><em>05 December 2009</em></div>
+<p>&helpCopyrightNotice;</p>
 
 </body>
 </html>

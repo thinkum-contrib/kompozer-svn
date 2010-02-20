@@ -180,9 +180,12 @@ comm.jar:
     content/navigator/sessionHistoryUI.js                     (/xpfe/browser/resources/content/sessionHistoryUI.js)
 
 toolkit.jar:
-*+  content/global/customizeToolbar.xul                       (content/customizeToolbar.xul)
-*+  content/global/customizeToolbar.js                        (content/customizeToolbar.js)
 +   content/global/bindings/editor.xml                        (content/bindings/editor.xml)
+*   content/global/customizeToolbar.xul                       (content/customizeToolbar.xul)
+*   content/global/customizeToolbar.js                        (content/customizeToolbar.js)
+*   content/global/findBar.js                                 (/toolkit/components/typeaheadfind/content/findBar.js)
+    content/global/notfound.wav                               (/toolkit/components/typeaheadfind/content/notfound.wav)
+
 
 classic.jar:
 +   preview.png                                               (skin/preview.png)

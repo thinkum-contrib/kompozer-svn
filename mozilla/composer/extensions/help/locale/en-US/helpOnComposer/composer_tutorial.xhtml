@@ -11,7 +11,25 @@
   </head>
 
   <body>
-#include topnav.inc
+<script type="text/javascript">
+var isDisplayed = true;
+
+function togglePanel() {
+  isDisplayed = !isDisplayed;
+  var displayValue = isDisplayed ? "display: block" : "display: none";
+  var bodyValue = isDisplayed ? "margin-left: 175px" : "margin-left:5px";
+
+  document.getElementById("contentsBox").setAttribute("style", displayValue);
+  document.getElementsByTagName("body").item(0).setAttribute("style", bodyValue);
+}
+</script>
+
+<table width="100%" id="navTable">
+<tr>
+<td valign="bottom" width="20"><small><a href="#" onclick="togglePanel();" style="margin-top:10px;">Show/Hide</a></small></td>
+<td width="72"><img src="chrome://editor/skin/icons/throbber.png" width="32" height="32" alt="&brandShortName;" align="center"/></td><td align="left"><span id="topText">Help Center</span></td>
+</tr>
+</table>
 
     <div id="contentsBox">In this section:
     <a href="#scope_of_this_tutorial">Scope of This Tutorial</a>
@@ -56,7 +74,7 @@
     the many books available on learning HTML.</p>
 
     <!-- The approach of this tutorial is to give the most basic
-         instructions on getting major things done with Nvu. This will
+         instructions on getting major things done with &brandShortName;. This will
          give the user an idea as to how to achieve the objective of
          the secion. In the end of each section a link should be
          provided targetting corresponding section in the main Help
@@ -398,7 +416,7 @@
 
     <h2 id="advanced_styles">Advanced Styles</h2>
 
-    <p>Nvu allows the users to create or edit cascading style sheets
+    <p>&brandShortName; allows the users to create or edit cascading style sheets
     with the help of its inbuilt style sheet editor named
     "CaScadeS". CaScadeS has the ability of using either internal or
     external style sheets for documents being edited. Details on how
@@ -413,7 +431,7 @@
     <h2 id="publishing_your_documents_basics">Publishing Your
     Document(s)-Basics</h2>
 
-    <p>You can publish your documents using Nvu's built-in the Site
+    <p>You can publish your documents using &brandShortName;'s built-in the Site
     Manager. The visibility of the site manager can be toggled by
     clicking the F9 button.</p>
 
@@ -423,10 +441,9 @@
     <p>[ <a href="#publishing_your_documents_basics">Return to
     beginning of section</a> ]</p>
 
-    <div class="copyrightBox"><em>19 November 2004</em></div>
+    <div class="copyrightBox"><em>05 December 2009</em></div>
 
-    <p>Copyright &copy; 2003-2004 Contributors to the Nvu
-    Help Documentation Project.</p>
+    <p>&helpCopyrightNotice;</p>
 
   </body>
 </html>

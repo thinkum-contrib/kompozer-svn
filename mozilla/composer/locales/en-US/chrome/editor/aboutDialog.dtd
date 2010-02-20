@@ -35,11 +35,10 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-
 <!ENTITY aboutDialog.title      "About &brandShortName;">
 <!ENTITY copyright              "Copyright and contributor information">
 <!ENTITY copyrightLink          "http://kompozer.net/about/">
 <!ENTITY credits                "Credits">
 <!ENTITY aboutVersion           "version">
-<!ENTITY copyrightText          "&#169;1998-2009 Contributors. All Rights Reserved.">
+<!ENTITY copyrightText          "&#169;1998-2010 Contributors. All Rights Reserved.">
 <!ENTITY aboutLink              "&lt; About &brandShortName;">

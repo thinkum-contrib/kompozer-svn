@@ -218,7 +218,7 @@
        <rdf:Seq>
          <rdf:li><rdf:Description ID="shortcuts-using" nc:name="Using Shortcuts" nc:link="shortcuts.xhtml#using_shortcuts"/> </rdf:li>
          <rdf:li><rdf:Description ID="shortcuts-general" nc:name="General &brandShortName; Shortcuts" nc:link="shortcuts.xhtml#general_shortcuts"/> </rdf:li>
-         <rdf:li><rdf:Description ID="shortcuts-composer" nc:name="Composer Shortcuts" nc:link="shortcuts.xhtml#nvu_composition_shortcuts"/> </rdf:li>
+         <rdf:li><rdf:Description ID="shortcuts-composer" nc:name="KompoZer Shortcuts" nc:link="shortcuts.xhtml#nvu_composition_shortcuts"/> </rdf:li>
          <rdf:li><rdf:Description ID="shortcuts-help" nc:name="Help Window Shortcuts" nc:link="shortcuts.xhtml#help_window_shortcuts"/> </rdf:li>
        </rdf:Seq>
      </nc:subheadings>
@@ -243,20 +243,20 @@
      <nc:subheadings>
        <rdf:Seq>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-new-window" nc:name="New" nc:link="menu_reference.xhtml#new_window"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-open-file" nc:name="Open File..." nc:link="menu_reference.xhtml#open_file"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-open-web-location" nc:name="Open Web Location..." nc:link="menu_reference.xhtml#open_web_location"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-open-file" nc:name="Open File…" nc:link="menu_reference.xhtml#open_file"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-open-web-location" nc:name="Open Web Location…" nc:link="menu_reference.xhtml#open_web_location"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-recent-pages" nc:name="Recent Pages" nc:link="menu_reference.xhtml#recent_pages"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-close" nc:name="Close" nc:link="menu_reference.xhtml#close"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-close-all" nc:name="Close All" nc:link="menu_reference.xhtml#close_all"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-save" nc:name="Save" nc:link="menu_reference.xhtml#save"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-save-as" nc:name="Save As..." nc:link="menu_reference.xhtml#save_as"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-save-as-charset" nc:name="Save As Charset..." nc:link="menu_reference.xhtml#save_as_charset"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-save-as" nc:name="Save As…" nc:link="menu_reference.xhtml#save_as"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-save-as-charset" nc:name="Save As Charset…" nc:link="menu_reference.xhtml#save_as_charset"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-publish" nc:name="Publish" nc:link="menu_reference.xhtml#publish"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-publish-as" nc:name="Publish As..." nc:link="menu_reference.xhtml#publish_as"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-publish-as" nc:name="Publish As…" nc:link="menu_reference.xhtml#publish_as"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-revert" nc:name="Revert" nc:link="menu_reference.xhtml#revert"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-export-to-text" nc:name="Export to Text..." nc:link="menu_reference.xhtml#export_to_text"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-export-to-text" nc:name="Export to Text…" nc:link="menu_reference.xhtml#export_to_text"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-browse-page" nc:name="Browse Page" nc:link="menu_reference.xhtml#browse_page"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-file-page-setup" nc:name="Page Setup..." nc:link="menu_reference.xhtml#page_setup"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-file-page-setup" nc:name="Page Setup…" nc:link="menu_reference.xhtml#page_setup"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-print-preview" nc:name="Print Preview" nc:link="menu_reference.xhtml#print_preview"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-print" nc:name="Print" nc:link="menu_reference.xhtml#print"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-file-quit" nc:name="Quit" nc:link="menu_reference.xhtml#exit"/> </rdf:li>
@@ -275,7 +275,7 @@
          <rdf:li> <rdf:Description ID="comp-doc-menu-edit-paste-without-formatting" nc:name="Paste Without Formatting" nc:link="menu_reference.xhtml#paste_without_formatting"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-edit-delete" nc:name="Delete" nc:link="menu_reference.xhtml#delete"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-edit-select-all" nc:name="Select All" nc:link="menu_reference.xhtml#select_all"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-edit-find-replace" nc:name="Find and Replace..." nc:link="menu_reference.xhtml#find_and_replace"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-edit-find-replace" nc:name="Find and Replace…" nc:link="menu_reference.xhtml#find_and_replace"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-edit-find-again" nc:name="Find Again" nc:link="menu_reference.xhtml#find_again"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-edit-find-previous" nc:name="Find Previous" nc:link="menu_reference.xhtml#find_previous"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-edit-check-spelling" nc:name="Check Spelling" nc:link="menu_reference.xhtml#check_spelling"/> </rdf:li>
@@ -304,15 +304,15 @@
   <rdf:Description about="#comp-doc-menu-insert">
      <nc:subheadings>
        <rdf:Seq>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-image" nc:name="Image..." nc:link="menu_reference.xhtml#insert_image"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-table" nc:name="Table..." nc:link="menu_reference.xhtml#inserttable"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-image" nc:name="Image…" nc:link="menu_reference.xhtml#insert_image"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-table" nc:name="Table…" nc:link="menu_reference.xhtml#inserttable"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-insert-form" nc:name="Form" nc:link="menu_reference.xhtml#insert_form"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-link" nc:name="Link..." nc:link="menu_reference.xhtml#insert_link"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-anchor" nc:name="Named Anchor..." nc:link="menu_reference.xhtml#named_anchor"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-link" nc:name="Link…" nc:link="menu_reference.xhtml#insert_link"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-anchor" nc:name="Named Anchor…" nc:link="menu_reference.xhtml#named_anchor"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-insert-horizontal-line" nc:name="Horizontal Line" nc:link="menu_reference.xhtml#horizontal_line"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-html" nc:name="HTML..." nc:link="menu_reference.xhtml#html"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-character-symbols" nc:name="Character and Symbols..." nc:link="menu_reference.xhtml#character_and_symbols"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-toc" nc:name="Table of Contents..." nc:link="menu_reference.xhtml#table_of_contents"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-html" nc:name="HTML…" nc:link="menu_reference.xhtml#html"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-character-symbols" nc:name="Character and Symbols…" nc:link="menu_reference.xhtml#character_and_symbols"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-insert-toc" nc:name="Table of Contents…" nc:link="menu_reference.xhtml#table_of_contents"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-insert-smart-widgets" nc:name="Smart Widgets" nc:link="menu_reference.xhtml#smart_widgets"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-insert-templates" nc:name="Templates" nc:link="menu_reference.xhtml#templates"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-insert-php-code" nc:name="PHP Code" nc:link="menu_reference.xhtml#php_code"/> </rdf:li>
@@ -328,7 +328,7 @@
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-font" nc:name="Font" nc:link="menu_reference.xhtml#font"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-size" nc:name="Size" nc:link="menu_reference.xhtml#size"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-text-style" nc:name="Text Style" nc:link="menu_reference.xhtml#text_style"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-format-text-color" nc:name="Text Color..." nc:link="menu_reference.xhtml#text_color"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-format-text-color" nc:name="Text Color…" nc:link="menu_reference.xhtml#text_color"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-direction" nc:name="Writng Direction" nc:link="menu_reference.xhtml#writing_direction"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-discontinue-text-styles" nc:name="Discontinue Text Styles" nc:link="menu_reference.xhtml#discontinue_text_styles"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-discontinue-link" nc:name="Discontinue Link" nc:link="menu_reference.xhtml#discontinue_link"/> </rdf:li>
@@ -339,9 +339,9 @@
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-decrease-indent" nc:name="Decrease Indent" nc:link="menu_reference.xhtml#decrease_indent"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-align" nc:name="Align" nc:link="menu_reference.xhtml#align"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-format-positioning-grid" nc:name="Positioning Grid" nc:link="menu_reference.xhtml#positioning_grid"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-format-advanced-properties" nc:name="Advanced Properties..." nc:link="menu_reference.xhtml#advanced_properties"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-format-page-color-background" nc:name="Page Colors and Background..." nc:link="menu_reference.xhtml#page_colors_and_background"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-format-title-properties" nc:name="Page Title and Properties..." nc:link="menu_reference.xhtml#page_title_and_properties"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-format-advanced-properties" nc:name="Advanced Properties…" nc:link="menu_reference.xhtml#advanced_properties"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-format-page-color-background" nc:name="Page Colors and Background…" nc:link="menu_reference.xhtml#page_colors_and_background"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-format-title-properties" nc:name="Page Title and Properties…" nc:link="menu_reference.xhtml#page_title_and_properties"/> </rdf:li>
        </rdf:Seq>
      </nc:subheadings>
    </rdf:Description>
@@ -355,8 +355,8 @@
          <rdf:li> <rdf:Description ID="comp-doc-menu-table-join-cell" nc:name="Join With Cell to the Right" nc:link="menu_reference.xhtml#join_with_cell_to_the_right"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-table-split-cell" nc:name="Split Cell" nc:link="menu_reference.xhtml#split_cell"/> </rdf:li>
          <rdf:li> <rdf:Description ID="comp-doc-menu-table-create-table" nc:name="Create Table from Selection" nc:link="menu_reference.xhtml#create_table_from_selection"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-table-background-color" nc:name="Table or Cell Background Color..." nc:link="menu_reference.xhtml#table_or_cell_background_color"/> </rdf:li>
-         <rdf:li> <rdf:Description ID="comp-doc-menu-table-table-properties" nc:name="Table Properties..." nc:link="menu_reference.xhtml#table_properties"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-table-background-color" nc:name="Table or Cell Background Color…" nc:link="menu_reference.xhtml#table_or_cell_background_color"/> </rdf:li>
+         <rdf:li> <rdf:Description ID="comp-doc-menu-table-table-properties" nc:name="Table Properties…" nc:link="menu_reference.xhtml#table_properties"/> </rdf:li>
        </rdf:Seq>
      </nc:subheadings>
    </rdf:Description>
