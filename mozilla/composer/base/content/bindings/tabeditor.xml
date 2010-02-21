@@ -749,7 +749,11 @@
               {
                 var e = editors[i];
                 var elt = e.getEditor(e.contentWindow);
-                if (elt && elt.documentIsEmpty && !elt.documentModified && !window.IsHTMLSourceChanged())
+                // Kaze: documentIsEmpty doesn't work with blank files in chrome://editor/content/blanks
+                // if (elt && elt.documentIsEmpty && !elt.documentModified && !window.IsHTMLSourceChanged())
+                var aDOMHTMLDoc = elt.document.QueryInterface(Components.interfaces.nsIDOMHTMLDocument);
+                var isBlank = window.IsUrlAboutBlank(aDOMHTMLDoc.URL);
+                if (elt && isBlank && !elt.documentModified && !window.IsHTMLSourceChanged())
                 {
                   reusableEditor      = e;
                   reusableEditorIndex = i;
