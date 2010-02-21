@@ -59,7 +59,7 @@ pref("xpinstall.dialog.progress.type.chrome",   "Extension:Manager-extensions");
 // This is this application's unique identifier used by the Extension System to identify
 // this application as an extension target, and by the SmartUpdate system to identify
 // this application to the Update server.
-pref("app.id",                                  "{136c295a-4a5a-41cf-bf24-5cee526720d5}");
+pref("app.id",                                  "{20aa4150-b5f4-11de-8a39-0800200c9a66}");
 pref("app.version",                             "@APP_VERSION@");
 pref("app.extensions.version",                  "1.0");
 pref("app.build_id",                            @BUILD_ID@);

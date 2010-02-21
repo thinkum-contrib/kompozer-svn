@@ -777,14 +777,16 @@ function EditorStartup()
   if (url && url.substring(0,1) == "-")
     url = null;
 
-  // Kaze: if no URL is passed, use the default blank page (not in the core any more)
-  /* if (!url || !url.length) try {
+  /* Kaze: if no URL is passed, use the default blank page (not in the core any more)
+  if (!url || !url.length) try {
     url  = gPrefs.getCharPref("editor.default.doctype") == "xhtml" ? "about:x" : "about:";
     url += gPrefs.getBoolPref("editor.default.strictness") ? "strictblank" : "blank";
   } catch(e) {
     // default is HTML 4.01 Strict if case the prefs aren't available for any reason
     url = "about:strictblank";
   */
+
+  // Kaze: new method with chrome URLs
   if (!url || !url.length) try {
     url = "chrome://editor/content/blanks/"
         + (gPrefs.getBoolPref("editor.default.strictness") ? "strict." : "transitional.")

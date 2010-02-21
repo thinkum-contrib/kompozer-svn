@@ -905,8 +905,10 @@ var nsClassCommand =
         return;
       }
     }
-
-    aParams.setCStringValue("state_attribute", GetString("NoClassAvailable"));
+    // XXX setCStringValue doesn't work with UTF-8 characters
+    //     => using setStringValue instead
+    //aParams.setCStringValue("state_attribute", GetString("NoClassAvailable"));
+    aParams.setStringValue("state_attribute", GetString("NoClassAvailable"));
   },
 
   doCommandParams: function(aCommandName, aParams, aRefCon)
