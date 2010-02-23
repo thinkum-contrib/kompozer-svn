@@ -104,7 +104,6 @@ pref("editor.publish.",                      "");
 pref("editor.lastFileLocation.image",        "");
 pref("editor.lastFileLocation.html",         "");
 pref("editor.use_css",                       true);
-pref("editor.CR_creates_new_p",              true);  // Kaze
 pref("editor.css.default_length_unit",       "px");
 pref("editor.save_associated_files",         false); // Kaze
 pref("editor.always_show_publish_dialog",    false);
