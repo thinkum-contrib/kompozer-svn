@@ -77,7 +77,8 @@ var gTabEditor = {
 
   // private methods
   getURL: function() {
-    return unescape(GetDocumentUrl());
+    //return unescape(GetDocumentUrl());
+    return GetDocumentUrl();
   },
 
   getIndex: function(url) {
@@ -95,8 +96,13 @@ var gTabEditor = {
   store: function(url) {
     url = url ? url : this.getURL();
     // get "last modified" time for the current url
-    var file = gHelpers.newLocalFile(url);
-    var lastMod = file.lastModifiedTime;
+    try {
+      var file = gHelpers.newLocalFile(url);
+      var lastMod = file.lastModifiedTime;
+    } catch(e) {
+      gHelpers.trace(e, file.path);
+      return 0;
+    }
     // look for the current url in the 'urls' array
     var found = false;
     for (var i = 0; i < this.urls.length; i++)
@@ -154,7 +160,8 @@ var gTabEditor = {
       UpdateWindowTitle();
     }
     // store modification date
-    this.store(unescape(url));
+    //this.store(unescape(url));
+    this.store(url);
     this.focus = true;
 
     return result;
@@ -207,18 +214,27 @@ var gTabEditor = {
       this.time.splice(nTabs, n - nTabs);
     }
     if (n == 0)
-      this.store(unescape(url));
+      this.store(url);
+      //this.store(unescape(url));
     return;
   },
 
   IsTextDocument: function() {
-    if (GetCurrentEditor().document.getElementById("_moz_text_document"))
-      return true;
+    try {
+      if (GetCurrentEditor().document.getElementById("_moz_text_document"))
+        return true;
+    } catch(e) { // no editor found
+      return false;
+    }
   },
 
   IsHtmlFragment: function() {
-    if (GetCurrentEditor().document.getElementById("_moz_html_fragment"))
-      return true;
+    try {
+      if (GetCurrentEditor().document.getElementById("_moz_html_fragment"))
+        return true;
+    } catch(e) { // no editor found
+      return false;
+    }
   }
 }
 

@@ -42,25 +42,22 @@ var gHelpers = {
   },
   
   url2path : function(url) {
-    // taken from Launchy (io.js)
-    const hasUnescape = (typeof(unescape)=="function");
     var path = url;
-    
+
     if (/^file/i.test(url)) try {
       var uri = Components.classes['@mozilla.org/network/standard-url;1']
                           .createInstance(Components.interfaces.nsIURL);
       var file = Components.classes['@mozilla.org/file/local;1']
-                          .createInstance(Components.interfaces.nsILocalFile);
+                           .createInstance(Components.interfaces.nsILocalFile);
       uri.spec = url;
         
       try { // decent OS
         file.initWithPath(uri.path);
-        path = hasUnescape ? unescape(file.path) : file.path;
       } catch (e) {}
       try { // Widows sucks
         file.initWithPath(uri.path.replace(/^\//,"").replace(/\//g,"\\"));
-        path = hasUnescape ? unescape(file.path) : file.path;
       } catch (e) {}
+      path = decodeURI(file.path);
     } catch(e) {
       this.trace("could not get path from " + this.hidePassword(url));
     }
@@ -69,7 +66,6 @@ var gHelpers = {
   },
 
   path2url : function(path) {
-    const hasUnescape = (typeof(unescape)=="function");
     var url = path;
     
     if (!(/^file/i).test(path)) try {
@@ -106,7 +102,7 @@ var gHelpers = {
      */
     try {
       var nsFile = Components.classes['@mozilla.org/file/local;1']
-        .createInstance(Components.interfaces.nsILocalFile);
+                             .createInstance(Components.interfaces.nsILocalFile);
       nsFile.initWithPath(filePath);
     } catch(e) {
       this.trace("could not create LocalFile interface on " + FilePath);
