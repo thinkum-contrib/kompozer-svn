@@ -901,11 +901,11 @@ function RebuildNodeFromSource(node, source) {
 }
 
 function RebuildDocumentFromSource() {
-  dump("rebuilding document from source\n");
-  // Only rebuild document if a change was made in source window
-  //if (IsHTMLSourceChanged())
   var editor = GetCurrentEditor();
-  if (true)
+  dump("rebuilding document from source\n");
+
+  // Only rebuild document if a change was made in source window
+  if (IsHTMLSourceChanged())
   {
     // Reduce the undo count so we don't use too much memory
     //   during multiple uses of source window 

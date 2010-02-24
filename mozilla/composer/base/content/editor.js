@@ -2168,6 +2168,7 @@ function SetEditUI(mode)
   }
   else {
     if (previousMode >= kEditModeSource) {
+      RebuildDocumentFromSource();
       // re-enable inline spell checking
       var showDisableSpellCheckWarning = gPrefs.getBoolPref("editor.showDisableSpellCheckWarning");
       if (showDisableSpellCheckWarning) {
