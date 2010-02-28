@@ -485,6 +485,9 @@ var gEditorDocumentObserver =
         // XXX for some reason, kCRInParagraphsPref isn't applied properly.
         editor.returnInParagraphCreatesNewParagraph = gPrefs.getBoolPref(kCRInParagraphsPref);
 
+        // XXX there has to be a better moment to read the htmlWrapColumn pref
+        editor.wrapWidth = gPrefs.getIntPref('editor.htmlWrapColumn');
+
         try {
           commandManager.getCommandState(aTopic, gContentWindow, params);
           var errorStringId = 0;
