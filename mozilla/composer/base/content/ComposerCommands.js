@@ -908,7 +908,7 @@ var nsClassCommand =
     // XXX setCStringValue doesn't work with UTF-8 characters
     // https://sourceforge.net/tracker/index.php?func=detail&aid=2949127&group_id=170132&atid=853122
     //aParams.setCStringValue("state_attribute", GetString("NoClassAvailable"));
-    aParams.setCStringValue("state_attribute", "-- --")
+    aParams.setCStringValue("state_attribute", "--")
   },
 
   doCommandParams: function(aCommandName, aParams, aRefCon)
