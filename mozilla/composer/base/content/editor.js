@@ -2084,10 +2084,6 @@ function SetEditMode(mode)
     return;
   }
 
-  // Switch the UI mode before inserting contents
-  //   so user can't type in source window while new window is being filled
-  var previousMode = gEditorEditMode;
-
   // KompoZer 0.8 rev>192
   window.setCursor("wait");
   SetEditUI(mode);
@@ -2115,6 +2111,8 @@ function SetEditUI(mode)
   else
     NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
 
+  // Switch the UI mode before inserting contents
+  //   so user can't type in source window while new window is being filled
   var previousMode = gEditorEditMode;
   gEditorEditMode = mode;
 

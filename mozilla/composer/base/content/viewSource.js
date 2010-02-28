@@ -57,11 +57,16 @@ const NODE_PREVSIBLING = 2;
 const NODE_NEXTSIBLING = 3;
 const NODE_FIRSTCHILD  = 4;
 
+// these elements are considered as blocks
+const BLOCK_NODENAMES = [
+  "body", "div", "table", "ol", "ul", "dl", "object",
+  "p", "h1", "h2", "h3", "h4", "h5", "h6", "pre", "address"
+];
+
 function putCaretWithBR(dir) {
   // get the first block container of the current node
   var block = gLastFocusNode;
-  var blockArr = [ "body", "div", "table", "ol", "ul", "dl", "object" ];
-  while (blockArr.indexOf(block.nodeName.toLowerCase()) < 0)
+  while (BLOCK_NODENAMES.indexOf(block.nodeName.toLowerCase()) < 0)
     block = block.parentNode;
   if (block.nodeName.toLowerCase() == "body")
     return;
@@ -94,8 +99,7 @@ function putCaretWithBR(dir) {
 function putCaretWithoutBR(dir) {
   // get the first block container of the current node
   var block = gLastFocusNode;
-  var blockArr = [ "body", "div", "table", "ol", "ul", "dl", "object" ];
-  while (blockArr.indexOf(block.nodeName.toLowerCase()) < 0)
+  while (BLOCK_NODENAMES.indexOf(block.nodeName.toLowerCase()) < 0)
     block = block.parentNode;
   if (block.nodeName.toLowerCase() == "body")
     return;
@@ -897,7 +901,6 @@ function RebuildNodeFromSource(node, source) {
   node.innerHTML = innerHTML;
   var allAttrs = source.replace(/^<[^\s]/, '').replace(/>.*/, '');
   dump(allAttrs + "\n");
-
 }
 
 function RebuildDocumentFromSource() {

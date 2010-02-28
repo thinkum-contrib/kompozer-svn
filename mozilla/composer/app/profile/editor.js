@@ -176,7 +176,13 @@ pref("spellchecker.realtimespell.warning_color", "orange");
 pref("editor.showDisableSpellCheckWarning",      true);
 
 // Helper Applications
+#ifdef XP_UNIX
+pref("editor.helpers.browser.useSystem",         false);
+pref("editor.helpers.browser.path",              "/usr/bin/firefox");
+pref("editor.helpers.browser.args",              "");
+#else
 pref("editor.helpers.browser.useSystem",         true);
+#endif
 pref("editor.helpers.text.useSystem",            true);
 pref("editor.helpers.image.useSystem",           true);
 pref("editor.helpers.media.useSystem",           true);
@@ -190,8 +196,8 @@ pref("network.protocol-handler.app.ftp",         "/usr/bin/x-www-browser");
 pref("network.protocol-handler.app.file",        "/usr/bin/x-www-browser");
 
 // Extensions, Gecko 1.8.1
-pref("extensions.getMoreExtensionsURL",          "http://kompozer.net/xpi/");
-pref("extensions.getMoreThemesURL",              "http://kompozer.net/jar/");
+pref("extensions.getMoreExtensionsURL",          "http://addons.kompozer.net/xpi/");
+pref("extensions.getMoreThemesURL",              "http://addons.kompozer.net/jar/");
 
 // CSS Editor                              
 pref("extensions.cascades.expertMode",           true);
