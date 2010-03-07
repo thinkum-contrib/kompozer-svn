@@ -1,9 +1,0 @@
-[Desktop Entry]
-Name=KompoZer
-Comment=Create Web Pages
-Categories=Network;WebDevelopment;
-Encoding=UTF-8
-Exec=kompozer
-Icon=kompozer.png
-Terminal=false
-Type=Application

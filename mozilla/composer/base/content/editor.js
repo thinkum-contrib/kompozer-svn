@@ -2107,13 +2107,6 @@ function SetEditUI(mode)
 
   GetCurrentEditorElement().setAttribute("editmode", mode);
 
-  // XXX this notifier probably doesn't trigger anything
-  //NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
-  if (mode == kEditModeText)
-    NotifyProcessors(kProcessorsWhenDisplayModeChanges, kEditModeSource);
-  else
-    NotifyProcessors(kProcessorsWhenDisplayModeChanges, mode);
-
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = gEditorEditMode;
@@ -2175,7 +2168,8 @@ function SetEditUI(mode)
       if (showDisableSpellCheckWarning) {
         var isSpellCheckerEnabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
         if (gWasInlineSpellCheckerEnabled || isSpellCheckerEnabled)
-          window.openDialog("chrome://editor/content/confirmInlineSpellChecking.xul", "_blank", "chrome,close=no,titlebar,modal", "");
+          window.openDialog("chrome://editor/content/confirmInlineSpellChecking.xul",
+                            "_blank", "chrome,close=no,titlebar,modal", "");
       } else
         gPrefs.setBoolPref(kInlineSpellCheckPref, gWasInlineSpellCheckerEnabled)
     }
@@ -2189,7 +2183,8 @@ function SetEditUI(mode)
     gSourceContentWindow.contentWindow.focus();
   } else {                            // Switch to the normal editor (first in the deck)
     gContentWindowDeck.selectedIndex = 0;
-    gContentWindow.focus();
+    //gContentWindow.focus();
+    GetCurrentEditorElement().contentWindow.focus();
   }
 
   // update commands to disable or re-enable stuff

@@ -22,3 +22,24 @@
        debug("Sidebar panels file does not exist");
        throw("Panels file does not exist");
      }
+--- mozilla/themes/classic/communicator/sidebar/sidebar.css.orig	2010-02-18 20:02:06.000000000 +0100
++++ mozilla/themes/classic/communicator/sidebar/sidebar.css	2010-02-18 20:04:47.000000000 +0100
+@@ -48,17 +48,13 @@
+   background-color: AppWorkspace;
+ }
+ 
+ /* ::::: sidebar header ::::: */
+ 
+ .sidebarheader-main {
+-  -moz-appearance: toolbar;
+-  border: 1px outset InactiveCaption;
+-  background-color: InactiveCaption;
+-  color: CaptionText;
+-  padding: 1px 2px 1px 6px;
++  display: none;
+ }
+ 
+ #sidebar-panel-picker {
+   color: inherit;
+   /** bugzilla 89144 - must be able to access tabs dropdown **/
+   -moz-user-focus:normal !important;

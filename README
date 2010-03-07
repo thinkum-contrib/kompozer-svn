@@ -1,18 +1,15 @@
-http://www.nvu.com/Building_From_Source.php
+http://kompozer.sf.net/dev/
 
    1. Check the build requirements: Linux, MacOS X, Windows.
-      Warning: Nvu and KompoZer are built against Gecko 1.7 (aviary branch)...
+      Warning: KompoZer 0.8.x is built against Gecko 1.8.1
 
    2. Get the code tarball here:
         http://prdownloads.sourceforge.net/kompozer/kompozer-*-src.*?download
 
    3. Unzip the source:
         tar -xjf kompozer-*-src.tar.bz2
-        tar -xzf kompozer-*-src.tar.gz
-      according to the tarball you've downloaded.
 
    4. Edit the mozilla/.mozconfig file according to your wishes and system configuration.
-      This default .mozconfig file is the one I've used to build KompoZer on Slackware (ZenWalk 4.6.1).
       There are mozconfig files for Fedora, Linspire, Debian/Ubuntu, MacOS X and Windows in the mozilla/composer/config directory.
 
    5. Build the code:

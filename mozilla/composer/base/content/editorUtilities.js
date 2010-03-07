@@ -639,7 +639,7 @@ function SetElementEnabled(element, doEnable)
   }
   else
   {
-    dump("Element  not found in SetElementEnabled\n");
+    dump("Element not found in SetElementEnabled\n");
   }
 }
 
@@ -654,7 +654,7 @@ function SetElementVisible(element, isVisible)
   }
   else
   {
-    dump("Element  not found in SetElementEnabled\n");
+    dump("Element not found in SetElementVisible\n");
   }
 }
 

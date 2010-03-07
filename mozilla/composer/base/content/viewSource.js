@@ -252,8 +252,6 @@ function UpdateStructToolbar(node) {         // overrides that in 'comm.jar/edit
     return;
   }
 
-  // XXX XXX
-  // if (true) {
   // Kaze: don't mess with the rulers if they aren't displayed
   if (!document.getElementById("hRuler").parentNode.collapsed) {
     UpdateRulers(element);
@@ -566,13 +564,14 @@ function viewDocumentSource() {
     //~ }
   //~ } catch (e) {}
 
+  // XXX useless at the moment
+  NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
+
   flags |= 1 << 5; // OutputRaw
   flags |= 1024;   // OutputLFLineBreak
 
   if (kColoredSourceView) { // Nvu
     //flags |= 131072; // colored source view
-
-    NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
 
     var mimeType = kHTMLMimeType;
     /*if (IsXHTMLDocument())
@@ -956,6 +955,7 @@ function RebuildDocumentFromSource() {
     } catch (e) {}
   }
 
+  // XXX useless at the moment
   NotifyProcessors(kProcessorsBeforeBackToNormal, editor.document);
 
   // Clear out the string buffers
@@ -1110,6 +1110,7 @@ function editNodeApply() {
   }
   editNodeLeave();
   GetCurrentEditor().selection.collapseToStart();
+  GetCurrentEditorElement().contentWindow.focus();
 }
 
 function editNodeCancel() {
@@ -1151,7 +1152,8 @@ function editNodeLeave() {
   gSourceEditor.removeEventListener("keypress", onKeypressSourceDock, true);
 
   // set the focus to the main window
-  gContentWindow.focus();
+  //gContentWindow.focus();
+  GetCurrentEditorElement().contentWindow.focus();
 }
 
 /*****************************************************************************\

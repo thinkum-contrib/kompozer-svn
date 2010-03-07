@@ -20,6 +20,7 @@ branding.diff
 xhtml.diff
     implements the 4 common doctypes: html/xhtml, strict/loose
     -
+    mozilla/content/base/src/nsHTMLContentSerializer.cpp               # to be dropped
     mozilla/editor/composer/src/nsEditingSession.cpp
     mozilla/editor/composer/src/nsEditorService.cpp                    # dropped
     mozilla/netwerk/protocol/about/src/Makefile.in
@@ -33,13 +34,15 @@ xhtml.diff
     mozilla/netwerk/build/nsNetModule.cpp
 
 sidebar.diff
-    UPnls is not defined for some reason, here's a quick workaround
+    UPnls is not defined for some reason, here's a quick workaround.
+    Corollary: we don't need the XPFE sidebar header, let's hide it.
     -
     mozilla/xpfe/components/sidebar/resources/sidebarOverlay.js
+    mozilla/themes/classic/communicator/sidebar/sidebar.css
 
 spinbuttons.diff
     This patch is probably not necessary, but it's used by CaScadeS
-    The CSS editor will have to be adapted in order to work on Firefox
+    The CSS editor will have to be adapted in order to work with Firefox
     -
     mozilla/toolkit/content/xul.css
     mozilla/toolkit/content/widgets/spinbuttons.xml
@@ -60,4 +63,31 @@ php.diff
     mozilla/content/html/document/src/nsHTMLContentSink.cpp
     mozilla/content/html/document/src/nsHTMLFragmentContentSink.cpp
     mozilla/content/base/src/nsDocumentEncoder.cpp
+
+serializer.diff
+    backport of the XHTML serializer used in Gecko 1.9.3:
+    optional but recommended (auto-indentation of the HTML output)
+    -
+    mozilla/content/base/public/nsContentCID.h
+    mozilla/content/base/public/nsIContentSerializer.h
+    mozilla/content/base/public/nsIDocumentEncoder.h
+    mozilla/content/base/src/Makefile.in
+    mozilla/content/base/src/mozSanitizingSerializer.cpp
+    mozilla/content/base/src/mozSanitizingSerializer.h
+    mozilla/content/base/src/nsContentAreaDragDrop.cpp
+    mozilla/content/base/src/nsDOMSerializer.cpp
+    mozilla/content/base/src/nsDocumentEncoder.cpp
+    mozilla/content/base/src/nsHTMLContentSerializer.cpp
+    mozilla/content/base/src/nsHTMLContentSerializer.h
+    mozilla/content/base/src/nsPlainTextSerializer.cpp
+    mozilla/content/base/src/nsPlainTextSerializer.h
+    mozilla/content/base/src/nsXHTMLContentSerializer.cpp              # new file
+    mozilla/content/base/src/nsXHTMLContentSerializer.h                # new file
+    mozilla/content/base/src/nsXMLContentSerializer.cpp
+    mozilla/content/base/src/nsXMLContentSerializer.h
+    mozilla/embedding/components/webbrowserpersist/src/nsWebBrowserPersist.cpp
+    mozilla/embedding/components/webbrowserpersist/src/nsWebBrowserPersist.h
+    mozilla/layout/base/nsLayoutAtomList.h
+    mozilla/layout/build/nsLayoutCID.h
+    mozilla/layout/build/nsLayoutModule.cpp
 
