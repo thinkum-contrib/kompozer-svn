@@ -45,6 +45,10 @@ var gSourceEditorModified = false;
 // source dock: modal editor (browser+textbox) or classic editor (htmlEditor)?
 //const kModalSourceDock = false;
 
+// source dock: always edit innerHTML, or edit the full node when possible?
+const kAlwaysEditInnerHTML = false;
+
+
 /*****************************************************************************\
  *                                                                           *
  *   DOM navigation                                                          *
@@ -657,15 +661,20 @@ function viewNodeSource(node) {
   highlightNode(null);
   gViewedElement = node;
 
-  // clone the fragment of interest and reset everything to be relative to it
-  // note: it is with the clone that we operate/munge from now on
-  node = node.cloneNode(true);
-
   // extract and display the syntax highlighted source
+  var nodeName = node.nodeName.toLowerCase();
   var doc = node.ownerDocument;
-  tmpNode = doc.createElementNS(NS_XHTML, 'div'); // not working well on xhtml documents?
-  //tmpNode = doc.createElement('div');
-  tmpNode.appendChild(node);
+  if (kAlwaysEditInnerHTML || nodeName == "head" || nodeName == "body") {
+    // display the node's content
+    var tmpNode = node.cloneNode(true);
+  }
+  else {
+    // display the whole node's markup
+    node = node.cloneNode(true);
+    tmpNode = doc.createElementNS(NS_XHTML, 'div'); // not working well on xhtml documents?
+    //tmpNode = doc.createElement('div');
+    tmpNode.appendChild(node);
+  }
 
   // hide NVU_NS nodes
   MakePhpAndCommentsInvisible(doc, tmpNode);
@@ -894,12 +903,57 @@ function FinishHTMLSource() { // overrides that in 'comm.jar/editor/content/edit
 }
 
 function RebuildNodeFromSource(node, source) {
-  // extract innerHTML and attributes from 'source'
-  var innerHTML = source.replace(/^[^>]*>/, '').replace(/<[^<]+$/, '');
-  dump(innerHTML + "\n");
-  node.innerHTML = innerHTML;
-  var allAttrs = source.replace(/^<[^\s]/, '').replace(/>.*/, '');
-  dump(allAttrs + "\n");
+  // cancel if no editor (should never happen)
+  var editor = GetCurrentEditor();
+  if (!editor || !node) return;
+
+  // flush changes
+  if (source) try {
+    var tagName = node.tagName.toLowerCase();
+    editor.beginTransaction();
+    dump("updating <" + tagName + ">\n");
+
+    if (tagName == "head") {
+      editor.replaceHeadContentsWithHTML(source);
+      // Update document title (must do this for proper conversion of "escaped" characters)
+      var title = "";
+      var titlenodelist = editor.document.getElementsByTagName("title");
+      if (titlenodelist) {
+        var titleNode = titlenodelist.item(0);
+        if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
+          title = titleNode.firstChild.data;
+        if (title == "\n") // XXX HACK glazou
+          title = "";
+      }
+      if (editor.document.title != title)
+        SetDocumentTitle(title);
+    }
+    else {
+      if (tagName == "body") {
+        editor.selectAll();
+      }
+      else if (kAlwaysEditInnerHTML) {
+        var sel = GetCurrentEditor().selection;
+        sel.removeAllRanges;
+        sel.selectAllChildren(node);
+        if (tagName == "ol" || tagName == "ul")
+          source = source.replace(/[\s\r\n]*</gi, "<");
+        dump(source);
+      }
+      else {
+        //SelectFocusNodeAncestor(node);
+        editor.selectElement(node);
+      }
+      editor.insertHTML(source);
+      //MakePhpAndCommentsVisible(node.ownerDocument, node); // show NVU_NS nodes
+      MakePhpAndCommentsVisible(editor.document, node); // show NVU_NS nodes
+    }
+
+    //editor.incrementModificationCount(1);
+    editor.endTransaction();
+  } catch (e) {
+    dump(e + "\n");
+  }
 }
 
 function RebuildDocumentFromSource() {
@@ -1017,6 +1071,26 @@ function editNodeStart() {
   if (gViewedElement.tagName.toLowerCase() == "html")
     gViewedElement = gViewedElement.firstChild;
 
+  // for some tags, rather edit a block-level parent node
+  if (!kAlwaysEditInnerHTML) {
+    var tmpNode = gViewedElement;
+    var tagName = gViewedElement.tagName.toLowerCase();
+    if (tagName == "thead" || tagName == "tbody" || tagName == "td" || tagName == "th" || tagName == "tr") {
+      while(tmpNode && (tmpNode.nodeName.toLowerCase() != "table"))
+        tmpNode = tmpNode.parentNode;
+    }
+    else if (tagName == "li") {
+      var list = ["ol", "ul"];
+      tmpNode = gViewedElement;
+      while(tmpNode && list.indexOf(tmpNode.nodeName.toLowerCase()) < 0)
+        tmpNode = tmpNode.parentNode;
+    }
+    if (gViewedElement != tmpNode) {
+      gViewedElement = tmpNode;
+      SelectFocusNodeAncestor(gViewedElement);
+    }
+  }
+
   // focus the editor
   gSourceEditor = getBrowser();
   gSourceEditor.contentWindow.focus();
@@ -1057,60 +1131,18 @@ function editNodeApply() {
     return;
   }
 
-  // cancel if no editor (should never happen)
-  var editor = GetCurrentEditor();
-  if (!editor || !gEditedElement) return;
-
-  // get the current element's tag name and HTML markup
-  var tagName = gViewedElement.tagName.toLowerCase();
-  // strip <head|body> nodes
+  // get the current element's HTML markup
+  // (= innerHTML for <head|body>, full markup for other elements)
   var html = srcEditor.outputToString(kTextMimeType, 1024).replace(/\s*$/, '');
-  if (tagName == "head")
-    html = html.replace(/\s*<head>\s*/, '').replace(/\s*<\/head>\s*/, '');
-  else if (tagName == "body") // XXX ugly *temporary* hack
-    html = html.replace(/\s*<body>\s*/, '').replace(/\s*<\/body>\s*/, '');
 
   // flush changes
-  dump("updating <" + tagName + ">\n");
-  if (html) try {
-    if (tagName == "head") {
-      // <head> element
-      editor.beginTransaction();
-      editor.incrementModificationCount(1);
-      gEditedElement.innerHTML = html;
-
-      // Update document title
-      // (must do this for proper conversion of "escaped" characters)
-      var title = "";
-      var titlenodelist = editor.document.getElementsByTagName("title");
-      if (titlenodelist) {
-        var titleNode = titlenodelist.item(0);
-        if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
-          title = titleNode.firstChild.data;
-        // XXX HACK glazou
-        if (title == "\n")
-          title = "";
-      }
-      if (editor.document.title != title)
-        SetDocumentTitle(title);
-      editor.endTransaction();
-    }
-    else if (tagName == "thead" || tagName == "tbody" || tagName == "td" || tagName == "th" || tagName == "tr") {
-      RebuildNodeFromSource(gEditedElement, html);
-    }
-    else {
-      SelectFocusNodeAncestor(gEditedElement);
-      // XXX doesn't work with <tr|th|td>
-      editor.insertHTML(html);
-      // show NVU_NS nodes
-      MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
-    }
-  } catch (e) {
-    dump(e + "\n");
-  }
+  RebuildNodeFromSource(gEditedElement, html);
   editNodeLeave();
   GetCurrentEditor().selection.collapseToStart();
-  GetCurrentEditorElement().contentWindow.focus();
+  //GetCurrentEditorElement().contentWindow.focus();
+
+  // get back to Design mode
+  SetEditMode(kEditModeDesign);
 }
 
 function editNodeCancel() {
@@ -1153,7 +1185,9 @@ function editNodeLeave() {
 
   // set the focus to the main window
   //gContentWindow.focus();
-  GetCurrentEditorElement().contentWindow.focus();
+  //GetCurrentEditorElement().contentWindow.focus();
+  // get back to Design mode
+  SetEditMode(kEditModeDesign);
 }
 
 /*****************************************************************************\

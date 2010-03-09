@@ -440,7 +440,9 @@ function doStyleUICommand(cmdStr)
       pokeStyleUI(cmdStr, cmdParams.getBooleanValue("state_all"));
 
     ResetStructToolbar();
-  } catch(e) {}
+  } catch(e) {
+    dump("error thrown in doStyleUICommand(" + cmdStr + "): " + e + "\n");
+  }
 }
 
 function pokeMultiStateUI(uiID, cmdParams)
@@ -463,7 +465,9 @@ function pokeMultiStateUI(uiID, cmdParams)
     {
       commandNode.setAttribute("state", desiredAttrib);
     }
-  } catch(e) {}
+  } catch(e) {
+    dump("error thrown in pokeMultiStateUI(" + uiID + "): " + e + "\n");
+  }
 }
 
 function doStatefulCommand(commandID, newState)
@@ -484,7 +488,9 @@ function doStatefulCommand(commandID, newState)
     pokeMultiStateUI(commandID, cmdParams);
 
     ResetStructToolbar();
-  } catch(e) { dump("error thrown in doStatefulCommand: "+e+"\n"); }
+  } catch(e) {
+    dump("error thrown in doStatefulCommand(" + commandID + "): "+e+"\n");
+  }
 }
 
 //-----------------------------------------------------------------------------------
