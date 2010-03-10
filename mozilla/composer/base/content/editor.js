@@ -78,12 +78,6 @@ const kXHTMLMimeType = "application/xhtml+xml"; // XXX not used yet, see comm-1.
 
 const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 
-// Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
-const kColoredSourceView = true;
-
-// Kaze: stealing some code from Thunderbird for the inline spellchecker
-//const mozISpellCheckingEngine = Components.interfaces.mozISpellCheckingEngine;
-
 var gPreviousNonSourceEditMode    = kEditModeDesign;
 //var gPreviousNonSourceDisplayMode = kDisplayModeNormal;
 var gEditorDisplayMode    = -1;
@@ -344,10 +338,6 @@ function EditorOnLoad()
     gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
     gSourceTextEditor.rootElement.style.whiteSpace = "pre";
     gSourceTextEditor.rootElement.style.margin = 0;
-    if (kColoredSourceView) {
-      gSourceTextEditor.rootElement.style.backgroundColor = "#f0f0f0";
-      gSourceTextEditor.rootElement.setAttribute("_moz_sourceview", "true");
-    }
 
     var controller = Components.classes["@mozilla.org/embedcomp/base-command-controller;1"]
                                .createInstance(Components.interfaces.nsIControllerContext);
@@ -2128,27 +2118,27 @@ function SetEditUI(mode)
    */
 
   // show|hide source deck and splitter
-  /* rev.193, disabled
-  var tabeditor = document.getElementById("tabeditor");
-  tabeditor.setEditMode(mode);
-  if (mode == kEditModeSplit)
-    viewNodeSource(gLastFocusNode);
-  else if (mode == kEditModeSource)
-    viewDocumentSource();
-  */
   var splitter = document.getElementById("browser-splitter");
-  if (mode == kEditModeSplit) {
-    gSourceBrowserDeck.removeAttribute("collapsed");
-    splitter.setAttribute("state", "expand");
-    splitter.setAttribute("hidden", "false");
-    // display the current node's source
-    if (mode == kEditModeSplit)
-      viewNodeSource(gLastFocusNode);
-  }
-  else {
-    gSourceBrowserDeck.setAttribute("collapsed", "true");
-    splitter.setAttribute("state", "collapsed");
-    splitter.setAttribute("hidden", "true");
+  switch(mode) {
+    case kEditModeDesign:
+    case kEditModeText:
+      gContentWindowDeck.collapsed = false;
+      gSourceBrowserDeck.collapsed = true;
+      splitter.setAttribute("state", "collapsed");
+      splitter.setAttribute("hidden", "true");
+      break;
+    case kEditModeSplit:
+      gContentWindowDeck.collapsed = false;
+      gSourceBrowserDeck.collapsed = false;
+      splitter.setAttribute("state", "expand");
+      splitter.setAttribute("hidden", "false");
+      break;
+    case kEditModeSource:
+      gContentWindowDeck.collapsed = true;
+      gSourceBrowserDeck.collapsed = false;
+      splitter.setAttribute("state", "expand");
+      splitter.setAttribute("hidden", "true");
+      break;
   }
  
   ResetStructToolbar();
@@ -2179,10 +2169,10 @@ function SetEditUI(mode)
 
   // toggle from/to sourceWindow (to be disabled with rev.193)
   if (mode == kEditModeSource) {      // Switch to the sourceWindow (second in the deck)
-    gContentWindowDeck.selectedIndex = 1;
+    //gContentWindowDeck.selectedIndex = 1;
     gSourceContentWindow.contentWindow.focus();
   } else {                            // Switch to the normal editor (first in the deck)
-    gContentWindowDeck.selectedIndex = 0;
+    //gContentWindowDeck.selectedIndex = 0;
     //gContentWindow.focus();
     GetCurrentEditorElement().contentWindow.focus();
   }

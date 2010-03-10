@@ -128,10 +128,6 @@
     <vbox id="appcontent" flex="1">
       <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
         <tabeditor id="tabeditor" collapserulers="false"/>
-        <vbox id="SourceEditor">
-          <label id="doctype-text" crop="right"/>
-          <editor type="content" id="content-source" context="editorSourceContext" flex="1"/>
-        </vbox>
       </deck>
       <!-- HTML source browser/editor -->
       <splitter id="browser-splitter" class="chromeclass-extrachrome" hidden="true"
@@ -139,16 +135,12 @@
                 resizeafter="closest"
                 state="collapsed"
                 collapse="after"/>
-      <deck id="SourceBrowserDeck" selectedIndex="0" flex="1"
+      <vbox id="SourceBrowserDeck" selectedIndex="0" flex="1"
             style="min-height: 7em;"
             collapsed="true">
-        <editor id="SourceBrowser" flex="1" src="about:blank"
-                 type="content"
-                 editortype="html"
-                 onclick="onClickSourceDock(event);"
-                 context="editorSourceContext"/>
-        <!-- a textbox will be dynamically created here when necessary -->
-      </deck>
+        <label id="doctype-text" crop="right"/>
+        <editor type="content" id="content-source" context="editorSourceContext" flex="1"/>
+      </vbox>
       <!-- View/Edit mode toolbar -->
       <hbox id="EditModeToolbar" align="center" hidden="false" persist="collapsed">
         <tabs id="EditModeTabs" flex="0">
