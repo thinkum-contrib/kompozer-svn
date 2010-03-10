@@ -79,7 +79,7 @@ const kXHTMLMimeType = "application/xhtml+xml"; // XXX not used yet, see comm-1.
 const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
 
 // Kaze: added kColoredSourceView to enable Nvu's pseudo-syntax highlighting later
-const kColoredSourceView = false;
+const kColoredSourceView = true;
 
 // Kaze: stealing some code from Thunderbird for the inline spellchecker
 //const mozISpellCheckingEngine = Components.interfaces.mozISpellCheckingEngine;
@@ -337,8 +337,8 @@ function EditorOnLoad()
     // rev != 193
     gSourceContentWindow = document.getElementById("content-source");
     gSourceContentWindow.makeEditable("text", false);
-    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
 
+    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
     gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
     gSourceTextEditor.enableUndo(false);
     gSourceTextEditor.rootElement.style.fontFamily = "-moz-fixed";
@@ -356,9 +356,9 @@ function EditorOnLoad()
     gSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
     var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                                  .getInterface(Components.interfaces.nsIControllerCommandTable);
-    commandTable.registerCommand("cmd_find",        nsFindCommand);
-    commandTable.registerCommand("cmd_findNext",    nsFindAgainCommand);
-    commandTable.registerCommand("cmd_findPrev",    nsFindAgainCommand);
+    commandTable.registerCommand("cmd_find",     nsFindCommand);
+    commandTable.registerCommand("cmd_findNext", nsFindAgainCommand);
+    commandTable.registerCommand("cmd_findPrev", nsFindAgainCommand);
     // gSourceContentWindow.addEventListener("keypress", KeyPressedInSourceView, false);
   } catch (e) { dump("makeEditable failed: "+e+"\n"); }
 
@@ -369,9 +369,9 @@ function EditorOnLoad()
 
 const gSourceTextListener =
 {
-  NotifyDocumentCreated: function NotifyDocumentCreated() {},
+  NotifyDocumentCreated:         function NotifyDocumentCreated() {},
   NotifyDocumentWillBeDestroyed: function NotifyDocumentWillBeDestroyed() {},
-  NotifyDocumentStateChanged: function NotifyDocumentStateChanged(isChanged)
+  NotifyDocumentStateChanged:    function NotifyDocumentStateChanged(isChanged)
   {
     window.updateCommands("save");
   }

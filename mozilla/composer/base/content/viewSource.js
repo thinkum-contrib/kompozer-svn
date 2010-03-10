@@ -476,6 +476,12 @@ function highlightNode(element) {
 
 function getBrowser() {
   return document.getElementById("SourceBrowser");
+  /*
+   *if (gEditorEditMode == kEditModeSplit)
+   *  return document.getElementById("SourceBrowser");
+   *else if (gEditorEditMode == kEditModeSource)
+   *  return gSourceContentWindow;
+   */
 }
 
 function InsertColoredSourceView(editor, source)
@@ -511,7 +517,7 @@ function InsertColoredSourceView(editor, source)
   bodySourceDoc.innerHTML = source;
 }
 
-function viewDocumentSource() {
+function viewDocumentSourceOld() {
   // must have editor if here!
   var editor = GetCurrentEditor();
 
@@ -650,6 +656,97 @@ function viewDocumentSource() {
     }
     else
       gSourceTextEditor.beginningOfDocument()
+  }
+}
+
+function onSourceLoad() {
+  if (kColoredSourceView) {
+    // Looks like calling webNavigation resets the source editor...
+    gSourceTextEditor = gSourceContentWindow.getEditor(gSourceContentWindow.contentWindow);
+    gSourceTextEditor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
+    gSourceContentWindow.removeEventListener("load", onSourceLoad, true);
+  }
+
+  // Initialize the source editor
+  gSourceTextEditor.resetModificationCount();
+  gSourceTextEditor.addDocumentStateListener(gSourceTextListener);
+  gSourceTextEditor.enableUndo(true);
+  gSourceContentWindow.commandManager.addCommandObserver(gSourceTextObserver, "cmd_undo");
+  gSourceContentWindow.contentWindow.focus();
+  goDoCommand("cmd_moveTop");
+}
+
+function viewDocumentSource() {
+  // must have editor if here!
+  var editor = GetCurrentEditor();
+  var domdoc;
+  try { domdoc = editor.document; } catch (e) { dump( e + "\n");}
+
+  // XXX useless at the moment
+  NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
+
+  // Set the document encoding flags
+  var flags = (editor.documentCharacterSet == "ISO-8859-1")
+            ? 32768  // OutputEncodeLatin1Entities
+            : 16384; // OutputEncodeBasicEntities
+  try { 
+    var encodeEntity = gPrefs.getCharPref("editor.encode_entity");
+    var dontEncodeGT = gPrefs.getBoolPref("editor.encode.noGT");
+    var prettyPrint  = gPrefs.getBoolPref("editor.prettyprint");
+    switch (encodeEntity) { //OutputEncodeCharacterEntities =
+      case "basic"   : flags = 16384;  break; // OutputEncodeBasicEntities
+      case "latin1"  : flags = 32768;  break; // OutputEncodeLatin1Entities
+      case "html"    : flags = 65536;  break; // OutputEncodeHTMLEntities
+      case "unicode" : flags = 262144; break;
+      case "none"    : flags = 0;      break;
+    }
+    if (prettyPrint)
+      flags |= 2;         // OutputFormatted
+    if (dontEncodeGT)
+      flags |= (1 << 21); // DontEncodeGreatherThan
+  } catch (e) { }
+  flags |= 1 << 5;        // OutputRaw
+  flags |= 1024;          // OutputLFLineBreak
+
+  // Insert the entire document's source string in the source editor
+  var source = editor.outputToString(kHTMLMimeType, flags);
+  var doctypeNode = document.getElementById("doctype-text");
+
+  // View-Source like
+  if (kColoredSourceView) {
+    doctypeNode.collapsed = true;
+    gSourceContentWindow.webNavigation
+                        .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(source),
+                                 Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE, null, null, null);
+    gSourceContentWindow.makeEditable("text", true); // required to enable caret movement
+    gSourceContentWindow.addEventListener("load", onSourceLoad, true);
+  }
+  // SeaMonkey-like
+  else {
+    // Display the DOCTYPE as a non-editable string above edit area
+    if (domdoc) {
+      var dt = domdoc.doctype;
+      if (dt) {
+        doctypeNode.collapsed = false;
+        var doctypeText = "<!DOCTYPE " + domdoc.doctype.name;
+        if (dt.publicId)
+          doctypeText += " PUBLIC \"" + domdoc.doctype.publicId;
+        if (dt.systemId)
+          doctypeText += " "+"\"" + dt.systemId;
+        doctypeText += "\">"
+        doctypeNode.setAttribute("value", doctypeText);
+      }
+      else 
+        doctypeNode.collapsed = true;
+    }
+
+    // Remove the DOCTYPE from 'source'
+    var start = source.search(/<html/i);
+    if (start == -1) start = 0;
+    source = source.slice(start);
+    gSourceTextEditor.selectAll();
+    gSourceTextEditor.insertText(source);
+    onSourceLoad(); // Initialize the source editor
   }
 }
 
@@ -914,8 +1011,9 @@ function RebuildNodeFromSource(node, source) {
     dump("updating <" + tagName + ">\n");
 
     if (tagName == "head") {
+      // insert HTML source
       editor.replaceHeadContentsWithHTML(source);
-      // Update document title (must do this for proper conversion of "escaped" characters)
+      // update document title (must do this for proper conversion of "escaped" characters)
       var title = "";
       var titlenodelist = editor.document.getElementsByTagName("title");
       if (titlenodelist) {
@@ -929,6 +1027,7 @@ function RebuildNodeFromSource(node, source) {
         SetDocumentTitle(title);
     }
     else {
+      // select the requested element or its content
       if (tagName == "body") {
         editor.selectAll();
       }
@@ -936,17 +1035,30 @@ function RebuildNodeFromSource(node, source) {
         var sel = GetCurrentEditor().selection;
         sel.removeAllRanges;
         sel.selectAllChildren(node);
+        // Composer breaks lists if there's a text node between two list items
         if (tagName == "ol" || tagName == "ul")
-          source = source.replace(/[\s\r\n]*</gi, "<");
+          source = source.replace(/[\s\r\n]*<li/gi, "<li");
+        else if (tagName == "dl") {
+          source = source.replace(/[\s\r\n]*<dt/gi, "<dt");
+          source = source.replace(/[\s\r\n]*<dd/gi, "<dd");
+        }
         dump(source);
       }
       else {
         //SelectFocusNodeAncestor(node);
         editor.selectElement(node);
+        // Composer breaks lists if there's a text node between two list items
+        if (tagName == "li")
+          source = source.replace(/[\s\r\n]*<li/gi, "<li");
+        else if (tagName == "dt" || tagName == "dd") {
+          source = source.replace(/[\s\r\n]*<dt/gi, "<dt");
+          source = source.replace(/[\s\r\n]*<dd/gi, "<dd");
+        }
+        dump(source);
       }
+      // insert HTML source
       editor.insertHTML(source);
-      //MakePhpAndCommentsVisible(node.ownerDocument, node); // show NVU_NS nodes
-      MakePhpAndCommentsVisible(editor.document, node); // show NVU_NS nodes
+      MakePhpAndCommentsVisible(node.ownerDocument, node); // show NVU_NS nodes
     }
 
     //editor.incrementModificationCount(1);
@@ -958,16 +1070,16 @@ function RebuildNodeFromSource(node, source) {
 
 function RebuildDocumentFromSource() {
   var editor = GetCurrentEditor();
-  dump("rebuilding document from source\n");
 
   // Only rebuild document if a change was made in source window
   if (IsHTMLSourceChanged())
   {
+    dump("rebuilding document from source\n");
     // Reduce the undo count so we don't use too much memory
     //   during multiple uses of source window 
     //   (reinserting entire doc caches all nodes)
     try {
-      editor.transactionManager.maxTransactionCount = 1;
+      //editor.transactionManager.maxTransactionCount = 1;
     } catch (e) {}
 
     editor.beginTransaction();
@@ -1005,8 +1117,12 @@ function RebuildDocumentFromSource() {
 
     // Restore unlimited undo count
     try {
-      editor.transactionManager.maxTransactionCount = -1;
+      //editor.transactionManager.maxTransactionCount = -1;
     } catch (e) {}
+  }
+  else
+  {
+    dump("no modification done.\n");
   }
 
   // XXX useless at the moment
@@ -1078,13 +1194,18 @@ function editNodeStart() {
     if (tagName == "thead" || tagName == "tbody" || tagName == "td" || tagName == "th" || tagName == "tr") {
       while(tmpNode && (tmpNode.nodeName.toLowerCase() != "table"))
         tmpNode = tmpNode.parentNode;
+    } /*
+    else if (tagName == "dt" || tagName == "dd") {
+      tmpNode = gViewedElement;
+      while(tmpNode && (tmpNode.nodeName.toLowerCase() != "dl"))
+        tmpNode = tmpNode.parentNode;
     }
     else if (tagName == "li") {
       var list = ["ol", "ul"];
       tmpNode = gViewedElement;
       while(tmpNode && list.indexOf(tmpNode.nodeName.toLowerCase()) < 0)
         tmpNode = tmpNode.parentNode;
-    }
+    } */
     if (gViewedElement != tmpNode) {
       gViewedElement = tmpNode;
       SelectFocusNodeAncestor(gViewedElement);
