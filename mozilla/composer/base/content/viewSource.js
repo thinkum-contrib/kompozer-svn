@@ -831,6 +831,7 @@ function RebuildNodeFromSource(node, source) {
 
     if (tagName == "head") {
       // we can't use editor.insertHTML here
+      touchExternalStylesheets();
       editor.replaceHeadContentsWithHTML(source);
       checkDocumentTitle();
     }
@@ -908,6 +909,7 @@ function RebuildDocumentFromSource(source) {
     // Convert the source back into the DOM document
     editor.beginTransaction();
     try {
+      touchExternalStylesheets();
       editor.rebuildDocumentFromSource(source);
       checkDocumentTitle();
     } catch (ex) {
@@ -949,6 +951,25 @@ function checkDocumentTitle() {
   }
   if (editor.document.title != title)
     SetDocumentTitle(title);
+}
+
+function touchExternalStylesheets() {
+  // Unfortunately, starting with Gecko 1.8, reloading the <head> node
+  // adds "*|" strings in all selectors for all external stylesheets.
+  // Workaround: touch each external stylesheet before resetting the <head> node.
+  var headNode = null;
+  try {
+    headNode = GetCurrentEditor().document.getElementsByTagName("head").item(0);
+  } catch(e) {}
+  var linkNodes = headNode.getElementsByTagName("link");
+  for (var i = 0; i < linkNodes.length; i++) {
+    var linkNode = linkNodes[i];
+    if (linkNode.getAttribute("rel").indexOf("stylesheet") != -1) try {
+      // touching the external stylesheet will force Composer to reload it
+      // when rebuilding the <head> node.
+      linkNode.sheet.deleteRule(0);
+    } catch(e) {}
+  }
 }
 
 /*****************************************************************************\
