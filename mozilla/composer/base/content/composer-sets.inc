@@ -16,8 +16,8 @@
     <command id="cmd_putBreakBefore"   oncommand="putCaretWithBR(NODE_PREVSIBLING);"/>
     <command id="cmd_putCaretAfter"    oncommand="putCaretWithoutBR(NODE_NEXTSIBLING);"/>
     <command id="cmd_putCaretBefore"   oncommand="putCaretWithoutBR(NODE_PREVSIBLING);"/>
-    <command id="cmd_editNodeToggle"   oncommand="editNodeToggle();"/>
-    <command id="cmd_editNodeCancel"   oncommand="editNodeCancel();"/>
+    <command id="cmd_editNodeToggle"   oncommand="onSourceDockToggle();"/>
+    <command id="cmd_editNodeCancel"   oncommand="CancelHTMLSource();"/>
     <command id="cmd_editCurrentNode"  oncommand="selectNeighborElement(NODE_SELF);"/> 
     <command id="cmd_editParentNode"   oncommand="selectNeighborElement(NODE_PARENT);"/>
     <command id="cmd_editPrevSibling"  oncommand="selectNeighborElement(NODE_PREVSIBLING);"/>
@@ -30,22 +30,22 @@
     <commandset id="selectEditMenuItems"/>
     <commandset id="undoEditMenuItems"/>
     <commandset id="clipboardEditMenuItems"/>
-    
+
     <commandset id="commonEditorMenuItems" 
                 commandupdater="true"
                 events="create"
                 oncommandupdate="goUpdateComposerMenuItems(this)">
-      <command id="cmd_open"                                          oncommand="goDoCommand('cmd_open')"/>
-      <command id="cmd_openInTab"                                     oncommand="goDoCommand('cmd_openInTab')"/>
-      <command id="cmd_newEdited"                                     oncommand="goDoCommand('cmd_newEdited')"/>
-      <command id="cmd_openRemote"                                    oncommand="goDoCommand('cmd_openRemote')"/>
-      <command id="cmd_close"        label="&closeCmd.label;"         oncommand="goDoCommand('cmd_close')"/>
-      <command id="cmd_closeAll"     label="&closeAllCmd.label;"      oncommand="goDoCommand('cmd_closeAll')"/>
-      <command id="cmd_printSetup"                                    oncommand="goDoCommand('cmd_printSetup')"/>
+      <command id="cmd_open"         oncommand="goDoCommand('cmd_open')"/>
+      <command id="cmd_openInTab"    oncommand="goDoCommand('cmd_openInTab')"/>
+      <command id="cmd_newEdited"    oncommand="goDoCommand('cmd_newEdited')"/>
+      <command id="cmd_openRemote"   oncommand="goDoCommand('cmd_openRemote')"/>
+      <command id="cmd_close"        oncommand="goDoCommand('cmd_close')"        label="&closeCmd.label;"/>
+      <command id="cmd_closeAll"     oncommand="goDoCommand('cmd_closeAll')"     label="&closeAllCmd.label;"/>
+      <command id="cmd_printSetup"   oncommand="goDoCommand('cmd_printSetup')"/>
       <!--
-      <command id="cmd_printPreview" label="&printPreviewCmd.label;"  oncommand="goDoCommand('cmd_printPreview')"/>
+      <command id="cmd_printPreview" oncommand="goDoCommand('cmd_printPreview')" label="&printPreviewCmd.label;"/>
       -->
-      <command id="cmd_print"                                         oncommand="goDoCommand('cmd_print')"/>
+      <command id="cmd_print"        oncommand="goDoCommand('cmd_print')"/>
       <command id="cmd_quit"         oncommand="goDoCommand('cmd_quit')"/>
     </commandset>
 
@@ -54,9 +54,9 @@
                 events="create, mode_switch"
                 oncommandupdate="goUpdateComposerMenuItems(this)">
       <!-- format menu -->
-      <command id="cmd_listProperties"  oncommand="goDoCommand('cmd_listProperties')"/>
-      <command id="cmd_pageProperties"  oncommand="goDoCommand('cmd_pageProperties')"/>
-      <command id="cmd_colorProperties" oncommand="goDoCommand('cmd_colorProperties')"/>
+      <command id="cmd_listProperties"   oncommand="goDoCommand('cmd_listProperties')"/>
+      <command id="cmd_pageProperties"   oncommand="goDoCommand('cmd_pageProperties')"/>
+      <command id="cmd_colorProperties"  oncommand="goDoCommand('cmd_colorProperties')"/>
 
       <command id="cmd_link"             oncommand="goDoCommand('cmd_link')"/>
       <command id="cmd_anchor"           oncommand="goDoCommand('cmd_anchor')"/>
@@ -75,14 +75,14 @@
       <command id="cmd_objectProperties" oncommand="goDoCommand('cmd_objectProperties')"/>
       <command id="cmd_insertChars"      oncommand="goDoCommand('cmd_insertChars')"    label="&insertCharsCmd.label;"/>
       <!--
-        <command id="cmd_insertNbsp"       oncommand="goDoCommand('cmd_insertNbsp')"     label="&insertNbspCmd.label;"/>
+      <command id="cmd_insertNbsp"       oncommand="goDoCommand('cmd_insertNbsp')"     label="&insertNbspCmd.label;"/>
       -->
       <command id="cmd_insertHTMLWithDialog" oncommand="goDoCommand('cmd_insertHTMLWithDialog')"  label="&insertHTMLCmd.label;"/>
       <command id="cmd_insertBreak"      oncommand="goDoCommand('cmd_insertBreak')"/>
       <command id="cmd_insertBreakAll"   oncommand="goDoCommand('cmd_insertBreakAll')"/>
 
-      <command id="cmd_insertPHPCode" oncommand="goDoCommand('cmd_insertPHPCode')"  label="&insertPHPCode.label;"/>
-      <command id="cmd_insertComment" oncommand="goDoCommand('cmd_insertComment')"  label="&insertComment.label;"/>
+      <command id="cmd_insertPHPCode"    oncommand="goDoCommand('cmd_insertPHPCode')"  label="&insertPHPCode.label;"/>
+      <command id="cmd_insertComment"    oncommand="goDoCommand('cmd_insertComment')"  label="&insertComment.label;"/>
 
 
       <command id="cmd_NormalMode"       oncommand="goDoCommand('cmd_NormalMode')"     label="&NormalMode.label;"/>
@@ -107,6 +107,7 @@
       <!-- dummy command used just to disable things in non-HTML modes -->
       <command id="cmd_renderedHTMLEnabler"/>
     </commandset>
+
     <commandset id="composerEditMenuItems"
                 commandupdater="true"
                 events="create, mode_switch"
@@ -128,7 +129,7 @@
       <command id="cmd_validate"        oncommand="goDoCommand('cmd_validate')"     label="&validateCmd.label;"      accesskey="&validate.accesskey;" />
       <command id="cmd_cleanup"         oncommand="goDoCommand('cmd_cleanup')"      label="&markupCleanerCmd.label;" accesskey="&markupcleaner.accesskey;"/>
       <command id="cmd_checkLinks"      oncommand="goDoCommand('cmd_checkLinks')"/>
-      <command id="cmd_pasteQuote"      oncommand="goDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
+      <command id="cmd_pasteQuote"      oncommand="goDoCommand('cmd_pasteQuote')"   label="&pasteAsQuotationCmd.label;"/>
       <command id="cmd_publishSettings" oncommand="goDoCommand('cmd_publishSettings')" label="&publishSettings.label;" accesskey="&publishSettings.accesskey;"/>
     </commandset>
 
@@ -182,16 +183,16 @@
       <command id="cmd_outdent"                         oncommand="goDoCommand('cmd_outdent')"/>
 
       <!-- the state attribute gets filled with the paragraph format before the command is exectued -->
-      <command id="cmd_paragraphState"  state=""         oncommand="doStatefulCommand('cmd_paragraphState', event.target.value)"/>
-      <command id="cmd_fontFace"        state=""         oncommand="doStatefulCommand('cmd_fontFace', event.target.value)"/>
-      <command id="cmd_class"           state=""         oncommand="doStatefulCommand('cmd_class', event.target.value)"/>
+      <command id="cmd_paragraphState"  state=""        oncommand="doStatefulCommand('cmd_paragraphState', event.target.value)"/>
+      <command id="cmd_fontFace"        state=""        oncommand="doStatefulCommand('cmd_fontFace', event.target.value)"/>
+      <command id="cmd_class"           state=""        oncommand="doStatefulCommand('cmd_class', event.target.value)"/>
 
       <!-- No "oncommand", use EditorSelectColor() to bring up color dialog -->
       <command id="cmd_fontColor"       state=""/>
       <command id="cmd_backgroundColor" state=""/>
       <command id="cmd_highlight"       state="transparent"  oncommand="EditorSelectColor('Highlight', event);"/>
 
-      <command id="cmd_fontSize"                         oncommand="goDoCommand('cmd_fontSize')"/>
+      <command id="cmd_fontSize"                        oncommand="goDoCommand('cmd_fontSize')"/>
       <command id="cmd_align"           state="left"/>
       <command id="cmd_direction"       state="none"/>
 
@@ -293,9 +294,9 @@
     <key id="showHideSidebar"/>
     <!-- eat these tab events here to stop focus from moving -->
     <key keycode="VK_TAB" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
-    <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/>
+    <key keycode="VK_TAB" oncommand="return true;" modifiers="shift"/>
+    <key keycode="VK_TAB" oncommand="return true;" modifiers="control"/>
+    <key keycode="VK_TAB" oncommand="return true;" modifiers="control,shift"/>
     <!-- defined in globalOverlay -->
     <key id="key_newNavigator" observes="cmd_newEdited" key="&fileopen.keybinding;" />
     <key id="key_newBlankPage"/>
@@ -309,7 +310,6 @@
     <!-- Kaze -->
     <key id="revertkb"            key="&filerevert.keybinding;"     observes="cmd_revert"     modifiers="accel"/>
     <key id="previewkb"       keycode="&filepreview.keybinding;"    observes="cmd_preview" />
-    <key id="key_SourceDockToggle"    keycode="VK_F8"               observes="cmd_SourceDockToggle"/>
     <key id="key_openHelp"            keycode="VK_F1" oncommand="openHelp('comp-doc', 'chrome://help/locale/nvu.rdf');"/>
     <!-- /Kaze -->
     <key id="key_quit"/>
@@ -331,22 +331,23 @@
     <key keycode="&editfind.keybinding2;" observes="cmd_find"/>
 #endif
     -->
-    <key id="findnextkb"          keycode="&editfindnext.keybinding;"    observes="cmd_findNext"/>
-    <key id="findprevkb"          keycode="&editfindprev.keybinding;"    observes="cmd_findPrev"  modifiers="shift"/>
-    <key id="checkspellingkb"     key="&editcheckspelling.keybinding;"   observes="cmd_spelling"  modifiers="accel" disabled="true"/>
+    <key id="findnextkb"        keycode="&editfindnext.keybinding;"  observes="cmd_findNext"/>
+    <key id="findprevkb"        keycode="&editfindprev.keybinding;"  observes="cmd_findPrev"     modifiers="shift"/>
+    <key id="checkspellingkb"   key="&editcheckspelling.keybinding;" observes="cmd_spelling"     modifiers="accel"
+         disabled="true"/>
 
-    <key id="boldkb"         key="&stylebold.keybinding;"       observes="cmd_bold" modifiers="accel"/>
-    <key id="italickb"       key="&styleitalic.keybinding;"     observes="cmd_italic" modifiers="accel"/>
-    <key id="underlinekb"    key="&styleunderline.keybinding;"  observes="cmd_underline" modifiers="accel"/>
-    <key id="fixedwidthkb"   key="&formatfontfixed.keybinding;" observes="cmd_newEditorTab" modifiers="accel"/>
+    <key id="boldkb"            key="&stylebold.keybinding;"         observes="cmd_bold"         modifiers="accel"/>
+    <key id="italickb"          key="&styleitalic.keybinding;"       observes="cmd_italic"       modifiers="accel"/>
+    <key id="underlinekb"       key="&styleunderline.keybinding;"    observes="cmd_underline"    modifiers="accel"/>
+    <key id="fixedwidthkb"      key="&formatfontfixed.keybinding;"   observes="cmd_newEditorTab" modifiers="accel"/>
 
-    <key id="increaseindentkb"  key="&formatindent.keybinding;"  observes="cmd_indent"  modifiers="accel"/>
-    <key id="decreaseindentkb"  key="&formatoutdent.keybinding;"  observes="cmd_outdent"  modifiers="accel"/>
+    <key id="increaseindentkb"  key="&formatindent.keybinding;"      observes="cmd_indent"       modifiers="accel"/>
+    <key id="decreaseindentkb"  key="&formatoutdent.keybinding;"     observes="cmd_outdent"      modifiers="accel"/>
 
     <key id="removestyleskb"       key="&formatremovestyles.keybinding;"   observes="cmd_removeStyles"  modifiers="accel, shift"/>
-    <key id="removestyleskb2"       key=" "   observes="cmd_removeStyles"  modifiers="accel"/>
-    <key id="removelinkskb"        key="&formatremovelinks.keybinding;"    observes="cmd_removeLinks"  modifiers="accel, shift"/>
-    <key id="removenamedanchorskb" key="&formatremovenamedanchors.keybinding;"    observes="cmd_removeNamedAnchors"  modifiers="accel, shift"/>
+    <key id="removestyleskb2"      key=" "                                 observes="cmd_removeStyles"  modifiers="accel"/>
+    <key id="removelinkskb"        key="&formatremovelinks.keybinding;"    observes="cmd_removeLinks"   modifiers="accel, shift"/>
+    <key id="removenamedanchorskb" key="&formatremovenamedanchors.keybinding;" observes="cmd_removeNamedAnchors" modifiers="accel, shift"/>
     <key id="decreasefontsizekb"   key="&decreaseFontSize.keybinding;"     observes="cmd_decreaseFont"  modifiers="accel"/>
     <key id="increasefontsizekb"   key="&increaseFontSize.keybinding;"     observes="cmd_increaseFont"  modifiers="accel"/>
     <key                           key="&increaseFontSize.keybinding;"     observes="cmd_increaseFont"  modifiers="accel,shift"/>
@@ -376,7 +377,6 @@
     <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="alt"/>
     <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="alt"/>
     <key id="key_extEditorCmd"     keycode="VK_F6"    command="cmd_extEditor"/>
-    <!--<key id="key_sourceDockToggle" keycode="VK_F8"/>-->
 #else
     <!-- alt+arrow is used for word selection on MacOS X, using ctrl+arrow instead -->
     <key id="key_editCurrentNode"  keycode="VK_BACK"  command="cmd_editCurrentNode" modifiers="control"/>
@@ -384,7 +384,6 @@
     <key id="key_editPrevSibling"  keycode="VK_UP"    command="cmd_editPrevSibling" modifiers="control"/>
     <key id="key_editNextSibling"  keycode="VK_DOWN"  command="cmd_editNextSibling" modifiers="control"/>
     <key id="key_editFirstChild"   keycode="VK_RIGHT" command="cmd_editFirstChild"  modifiers="control"/>
-    <!-- key_sourceDockToggle is missing, we have to find another shortcut key -->
 #endif
   </keyset>
 

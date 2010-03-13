@@ -323,12 +323,6 @@ function EditorOnLoad()
   // Initialize our source text <editor>
   // Kaze: useless with KompoZer 0.8?
   try {
-    /* rev.193, disabled
-      gSourceContentWindow = document.getElementById("tabeditor").mSourceEditor;
-      gSourceContentWindow.makeEditable("text", false);
-      gSourceTextEditor = newSourceTextEditor();
-     */
-    // rev != 193
     gSourceContentWindow = document.getElementById("content-source");
     gSourceContentWindow.makeEditable("text", false);
 
@@ -684,8 +678,6 @@ function EditorStartup()
     // XUL elements we use when switching from normal editor to edit source
     gContentWindowDeck  = document.getElementById("ContentWindowDeck");
     gSourceBrowserDeck  = document.getElementById("SourceBrowserDeck");
-    // rev.193, disabled
-    //gSourceBrowserDeck  = document.getElementById("tabeditor").mSourceDeck; // used in viewSource.js
     gFormatToolbar1     = document.getElementById("FormatToolbar1");
     gFormatToolbar2     = document.getElementById("FormatToolbar2");
     gViewFormatToolbar1 = document.getElementById("viewFormatToolbar1");
@@ -2093,29 +2085,34 @@ function SetEditUI(mode)
   //  return false to indicate we didn't switch
   if (mode == gEditorEditMode)
     return false;
-  dump("switching to Edit mode #" + mode + "\n");
 
-  GetCurrentEditorElement().setAttribute("editmode", mode);
+  var editorElt = GetCurrentEditorElement();
+  editorElt.setAttribute("editmode", mode);
 
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = gEditorEditMode;
   gEditorEditMode = mode;
 
-  // show|hide display|edit mode selectors
-  /*
-   *document.getElementById("EditModeToolbar").hidden = (mode == kEditModeText);
-   *var hiddenElementIDs = [
-   *  "DisplayModeTabs",
-   *  "viewNormalMode", "viewAllTagsMode", "viewPreviewMode",
-   *  "editDesignMode", "editSplitMode", "editSourceMode",
-   *  "viewSep1", "viewSep2", "viewSep3",
-   *  "blockOutlines",
-   *  "structSpacer"
-   *];
-   *for (var i = 0; i < hiddenElementIDs.length; i++)
-   *  document.getElementById(hiddenElementIDs[i]).hidden = (mode >= kEditModeSource);
-   */
+  // Flush changes if needed
+  if (gEditedElement || (previousMode == kEditModeSource)) {
+    //RebuildDocumentFromSource();
+    FinishHTMLSource();
+  }
+
+  // show|hide mode selectors
+  var hiddenElementIDs = [
+    "DisplayModeTabs", "viewNormalMode", "viewAllTagsMode", "viewPreviewMode",
+    "viewSep1", "viewSep3", "blockOutlines", "structSpacer"
+  ];
+  for (var i = 0; i < hiddenElementIDs.length; i++)
+    document.getElementById(hiddenElementIDs[i]).hidden = (mode >= kEditModeSource);
+  // specific to Text mode, still experimental
+  hiddenElementIDs = [
+    "EditModeToolbar", "editDesignMode", "editSplitMode", "editSourceMode", "viewSep2"
+  ];
+  for (i = 0; i < hiddenElementIDs.length; i++)
+    document.getElementById(hiddenElementIDs[i]).hidden = (mode == kEditModeText);
 
   // show|hide source deck and splitter
   var splitter = document.getElementById("browser-splitter");
@@ -2128,12 +2125,14 @@ function SetEditUI(mode)
       splitter.setAttribute("hidden", "true");
       break;
     case kEditModeSplit:
+      //viewNodeSource(gLastFocusNode); // XXX
       gContentWindowDeck.collapsed = false;
       gSourceBrowserDeck.collapsed = false;
       splitter.setAttribute("state", "expand");
       splitter.setAttribute("hidden", "false");
       break;
     case kEditModeSource:
+      viewDocumentSource(); // XXX
       gContentWindowDeck.collapsed = true;
       gSourceBrowserDeck.collapsed = false;
       splitter.setAttribute("state", "expand");
@@ -2141,21 +2140,17 @@ function SetEditUI(mode)
       break;
   }
  
+  // reset the status bar and the DOM Explorer
   ResetStructToolbar();
 
   // enable|disable inline spell checking and format toolbars
-  if (mode >= kEditModeSource) {
-    viewDocumentSource();
-    // we need to disable inline spell checking
+  if (mode >= kEditModeSource) { //  we need to disable inline spell checking
     gWasInlineSpellCheckerEnabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
     gPrefs.setBoolPref(kInlineSpellCheckPref, false);  
   }
   else {
-    if (previousMode >= kEditModeSource) {
-      RebuildDocumentFromSource();
-      // re-enable inline spell checking
-      var showDisableSpellCheckWarning = gPrefs.getBoolPref("editor.showDisableSpellCheckWarning");
-      if (showDisableSpellCheckWarning) {
+    if (previousMode >= kEditModeSource) { // re-enable inline spell checking
+      if (gPrefs.getBoolPref("editor.showDisableSpellCheckWarning")) {
         var isSpellCheckerEnabled = gPrefs.getBoolPref(kInlineSpellCheckPref);
         if (gWasInlineSpellCheckerEnabled || isSpellCheckerEnabled)
           window.openDialog("chrome://editor/content/confirmInlineSpellChecking.xul",
@@ -2167,16 +2162,17 @@ function SetEditUI(mode)
     gPreviousNonSourceEditMode = mode;
   }
 
-  // toggle from/to sourceWindow (to be disabled with rev.193)
-  if (mode == kEditModeSource) {      // Switch to the sourceWindow (second in the deck)
-    //gContentWindowDeck.selectedIndex = 1;
+  // focus the proper editor and update commands to disable or re-enable stuff
+  if (mode == kEditModeSource) {
+    //gContentWindowDeck.selectedIndex = 1; // sooooo glad to get rid of that :-)
     gSourceContentWindow.contentWindow.focus();
-  } else {                            // Switch to the normal editor (first in the deck)
+  } else {
+    if (mode == kEditModeDesign) // XXX required because of the locked Split mode
+      gEditedElement = null;     //     adapt IsEditingRenderedHTML() accordingly
     //gContentWindowDeck.selectedIndex = 0;
     //gContentWindow.focus();
-    GetCurrentEditorElement().contentWindow.focus();
+    editorElt.contentWindow.focus();
   }
-
   // update commands to disable or re-enable stuff
   window.updateCommands("mode_switch");
 
