@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<overlay id="page-editor-overlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://pageeditor/content/edit_page.js" />
+
+  <window id="main-window">
+      <commandset id="edit-page-commandset">
+          <command id="edit-page-command"
+              oncommand="edit_page();" />
+      </commandset>
+      <keyset id="edit-page-keyset">
+          <key id="edit-page-key"
+              modifiers="accel"
+              key="E"
+              command="edit-page-command" />
+      </keyset>
+  </window>
+
+  <menupopup id="menu_FilePopup">
+    <menuitem id="page-editor-menuitem" label="Edit Page In KompoZer" insertafter="menu_close"
+              accesskey="E" command="edit-page-command"
+            key="edit-page-key" />
+    <menuseparator/>
+  </menupopup>
+</overlay>

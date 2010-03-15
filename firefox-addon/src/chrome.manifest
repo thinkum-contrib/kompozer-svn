@@ -1,0 +1,3 @@
+overlay chrome://browser/content/browser.xul chrome://pageeditor/content/edit_page.xul
+
+content pageeditor chrome/content/
