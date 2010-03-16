@@ -539,6 +539,10 @@ function InitSourceEditor() {
   gSourceContentWindow.contentWindow.focus();
   goDoCommand("cmd_moveTop");
 
+  // show the preserved selection
+  if (!gEditedElement)
+    removeSelectionMarkers(true);
+
   // focus the editor
   gSourceContentWindow.contentWindow.focus();
 
@@ -551,21 +555,25 @@ function InitSourceEditor() {
  
 // Remove event handlers and string buffers when leaving the Source editor
 function ExitSourceEditor() {
+  if ((gEditorEditMode == kEditModeSource) && !IsHTMLSourceChanged())
+    removeSelectionMarkers();
+
   //gEditedElement = null;
+  try {
+    // remove OK/Cancel event handlers
+    gSourceContentWindow.removeEventListener("blur",     FinishHTMLSource,     true);
+    gSourceContentWindow.removeEventListener("keypress", onSourceDockKeypress, true);
 
-  // remove OK/Cancel event handlers
-  gSourceContentWindow.removeEventListener("blur",     FinishHTMLSource,     true);
-  gSourceContentWindow.removeEventListener("keypress", onSourceDockKeypress, true);
-
-  // clear out the string buffers
-  gSourceContentWindow.commandManager.removeCommandObserver(gSourceTextObserver, "cmd_undo");
-  gSourceTextEditor.removeDocumentStateListener(gSourceTextListener);
-  gSourceTextEditor.enableUndo(false);
-  if (!kColoredSourceView) { // Composer
-    gSourceTextEditor.selectAll();
-    gSourceTextEditor.deleteSelection(gSourceTextEditor.eNone);
-  }
-  gSourceTextEditor.resetModificationCount();
+    // clear out the string buffers
+    gSourceContentWindow.commandManager.removeCommandObserver(gSourceTextObserver, "cmd_undo");
+    gSourceTextEditor.removeDocumentStateListener(gSourceTextListener);
+    gSourceTextEditor.enableUndo(false);
+    if (!kColoredSourceView) { // Composer
+      gSourceTextEditor.selectAll();
+      gSourceTextEditor.deleteSelection(gSourceTextEditor.eNone);
+    }
+    gSourceTextEditor.resetModificationCount();
+  } catch(e) {}
 }
 
 /*****************************************************************************\
@@ -612,6 +620,10 @@ function viewDocumentSource() {
 
   // XXX useless at the moment
   NotifyProcessors(kProcessorsBeforeGettingSource, editor.document);
+
+  // Get the current selection
+  var sel = editor.selection;
+  addSelectionMarkers(sel);
 
   // Send the entire document's source string to the source editor
   var flags = getDocumentEncodingFlags();
@@ -738,38 +750,6 @@ function viewSourceInEditor(source, doctype) {
   }
 }
 
-// toggle long-line wrapping
-// and set the view_source.wrap_long_lines pref to persist the last state
-function wrapLongLines() {     // taken from /toolkit/components/viewsource/
-  //var myWrap = window._content.document.body;
-  var myWrap = gSourceContentWindow.contentDocument.body;
-
-  if (myWrap.className == '')
-    myWrap.className = 'wrap';
-  else
-    myWrap.className = '';
-
-  // since multiple viewsource windows are possible, another window could have affected the pref,
-  // so instead of determining the new pref value via the current pref value, we use myWrap.className  
-  if (gPrefs) try {
-    gPrefs.setBoolPref("view_source.wrap_long_lines", (myWrap.className.length > 0));
-  } catch (ex) {}
-}
-
-// toggle syntax highlighting
-// and set the view_source.syntax_highlight pref to persist the last state
-function highlightSyntax() {   // taken from /toolkit/components/viewsource/
-  const pageLoaderIface = Components.interfaces.nsIWebPageDescriptor;
-  var highlightSyntaxMenu = document.getElementById("cMenu_highlightSyntax");
-  var highlightSyntax = (highlightSyntaxMenu.getAttribute("checked") == "true");
-  if (gPrefs) try {
-    gPrefs.setBoolPref("view_source.syntax_highlight", highlightSyntax);
-  } catch (ex) {}
-
-  var PageLoader = gSourceContentWindow.webNavigation.QueryInterface(pageLoaderIface);
-  PageLoader.loadPage(PageLoader.currentDescriptor, pageLoaderIface.DISPLAY_NORMAL);
-}
-
 /*****************************************************************************\
  *                                                                           *
  *   HTML Source parsing (text2dom)                                          *
@@ -784,34 +764,32 @@ function CancelHTMLSource() { // overrides that in 'comm.jar/editor/content/edit
     MakePhpAndCommentsVisible(gEditedElement.ownerDocument, gEditedElement);
     if (gPreviousNonSourceEditMode == kEditModeSplit) {
       // locked Split mode: refresh the Source in the editor
+      dump("reset Split view\n");
       viewNodeSource(gEditedElement);
       return;
     }
   }
   ExitSourceEditor();
   SetEditMode(gPreviousNonSourceEditMode);
+  //removeSelectionMarkers();
 }
 
 function FinishHTMLSource() { // overrides that in 'comm.jar/editor/content/editor.js'
-  // cancel if no modifications found
-  if (!IsHTMLSourceChanged()) {
-    //CancelHTMLSource();
-    return;
-  }
-
-  // Convert the source back into the DOM document
-  var htmlSource = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
-  htmlSource = htmlSource.replace(/[\r\n\s]*$/, "");
-  if (gEditorEditMode == kEditModeSource) {
-    if (htmlSource.length > 0)
-      RebuildDocumentFromSource(htmlSource);
-  }
-  else if (gEditedElement) {
-    if (htmlSource.length > 0)
-      RebuildNodeFromSource(gEditedElement, htmlSource);
-    if (gPreviousNonSourceEditMode == kEditModeSplit)
-      return; // locked Split mode
-    //GetCurrentEditor().selection.collapseToStart();
+  if (IsHTMLSourceChanged()) {
+    // Convert the source back into the DOM document
+    var htmlSource = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
+    htmlSource = htmlSource.replace(/[\r\n\s]*$/, "");
+    if (gEditorEditMode == kEditModeSource) {
+      if (htmlSource.length > 0)
+        RebuildDocumentFromSource(htmlSource);
+    }
+    else if (gEditedElement) {
+      if (htmlSource.length > 0)
+        RebuildNodeFromSource(gEditedElement, htmlSource);
+      //if (gPreviousNonSourceEditMode == kEditModeSplit)
+        //return; // locked Split mode
+      //GetCurrentEditor().selection.collapseToStart();
+    }
   }
   gEditedElement = null;
   ExitSourceEditor();
@@ -863,7 +841,7 @@ function RebuildNodeFromSource(node, source) {
           source = source.replace(/[\s\r\n]*<dt/gi, "<dt");
           source = source.replace(/[\s\r\n]*<dd/gi, "<dd");
         }
-        dump(source);
+        dump(source + "\n");
       }
       // insert HTML source
       editor.insertHTML(source);
@@ -970,6 +948,267 @@ function touchExternalStylesheets() {
       linkNode.sheet.deleteRule(0);
     } catch(e) {}
   }
+}
+
+/*****************************************************************************\
+ *                                                                           *
+ *   HTML Source utilities (taken from the viewsource component)             *
+ *                                                                           *
+\*****************************************************************************/
+
+// Copied from wrapLongLines() in
+//   /toolkit/components/viewsource/content/viewSource.js
+// toggle long-line wrapping
+// and set the view_source.wrap_long_lines pref to persist the last state
+function wrapLongLines() {     // taken from /toolkit/components/viewsource/
+  //var myWrap = window._content.document.body;
+  var myWrap = gSourceContentWindow.contentDocument.body;
+
+  if (myWrap.className == '')
+    myWrap.className = 'wrap';
+  else
+    myWrap.className = '';
+
+  // since multiple viewsource windows are possible, another window could have affected the pref,
+  // so instead of determining the new pref value via the current pref value, we use myWrap.className  
+  if (gPrefs) try {
+    gPrefs.setBoolPref("view_source.wrap_long_lines", (myWrap.className.length > 0));
+  } catch (ex) {}
+}
+
+// Copied from highlightSyntax() in
+//   /toolkit/components/viewsource/content/viewSource.js
+// toggle syntax highlighting
+// and set the view_source.syntax_highlight pref to persist the last state
+function highlightSyntax() {   // taken from /toolkit/components/viewsource/
+  const pageLoaderIface = Components.interfaces.nsIWebPageDescriptor;
+  var highlightSyntaxMenu = document.getElementById("cMenu_highlightSyntax");
+  var highlightSyntax = (highlightSyntaxMenu.getAttribute("checked") == "true");
+  if (gPrefs) try {
+    gPrefs.setBoolPref("view_source.syntax_highlight", highlightSyntax);
+  } catch (ex) {}
+
+  var PageLoader = gSourceContentWindow.webNavigation.QueryInterface(pageLoaderIface);
+  PageLoader.loadPage(PageLoader.currentDescriptor, pageLoaderIface.DISPLAY_NORMAL);
+}
+
+// Copied from viewPartialSourceForSelection() in
+//   /toolkit/components/viewsource/content/viewPartialSource.js
+// view-source of a selection with the special effect of remapping the selection
+// to the underlying view-source output
+function addSelectionMarkers(selection)
+{
+  var range = selection.getRangeAt(0);
+  //var ancestorContainer = range.commonAncestorContainer;
+  //var doc = ancestorContainer.ownerDocument;
+  var doc = range.commonAncestorContainer.ownerDocument;
+  var ancestorContainer = doc.documentElement;
+
+  var startContainer = range.startContainer;
+  var endContainer   = range.endContainer;
+  var startOffset    = range.startOffset;
+  var endOffset      = range.endOffset;
+
+  /* let the ancestor be an element
+  if (ancestorContainer.nodeType == Node.TEXT_NODE ||
+      ancestorContainer.nodeType == Node.CDATA_SECTION_NODE)
+    ancestorContainer = ancestorContainer.parentNode;
+
+  // for selectAll, let's use the entire document, including <html>...</html>
+  // @see DocumentViewerImpl::SelectAll() for how selectAll is implemented
+  try {
+    if (ancestorContainer == doc.body)
+      ancestorContainer = doc.documentElement;
+  } catch (e) { }
+  */
+
+  // each path is a "child sequence" (a.k.a. "tumbler") that
+  // descends from the ancestor down to the boundary point
+  var startPath = getPath(ancestorContainer, startContainer);
+  var endPath   = getPath(ancestorContainer, endContainer);
+
+  // clone the fragment of interest and reset everything to be relative to it
+  // note: it is with the clone that we operate/munge from now on
+  //ancestorContainer = ancestorContainer.cloneNode(true);
+  startContainer = ancestorContainer;
+  endContainer   = ancestorContainer;
+
+  // Only bother with the selection if it can be remapped. Don't mess with
+  // leaf elements (such as <isindex>) that secretly use anynomous content
+  // for their display appearance.
+  var canDrawSelection = ancestorContainer.hasChildNodes();
+  if (canDrawSelection) {
+    var i;
+    for (i = startPath ? startPath.length-1 : -1; i >= 0; i--) {
+      startContainer = startContainer.childNodes.item(startPath[i]);
+    }
+    for (i = endPath ? endPath.length-1 : -1; i >= 0; i--) {
+      endContainer = endContainer.childNodes.item(endPath[i]);
+    }
+
+    // add special markers to record the extent of the selection
+    // note: |startOffset| and |endOffset| are interpreted either as
+    // offsets in the text data or as child indices (see the Range spec)
+    // (here, munging the end point first to keep the start point safe...)
+    var tmpNode;
+    if (endContainer.nodeType == Node.TEXT_NODE ||
+        endContainer.nodeType == Node.CDATA_SECTION_NODE) {
+      // do some extra tweaks to try to avoid the view-source output to look like
+      // ...<tag>]... or ...]</tag>... (where ']' marks the end of the selection).
+      // To get a neat output, the idea here is to remap the end point from:
+      // 1. ...<tag>]...   to   ...]<tag>...
+      // 2. ...]</tag>...  to   ...</tag>]...
+      if ((endOffset > 0 && endOffset < endContainer.data.length) ||
+          !endContainer.parentNode || !endContainer.parentNode.parentNode)
+        endContainer.insertData(endOffset, MARK_SELECTION_END);
+      else {
+        tmpNode = doc.createTextNode(MARK_SELECTION_END);
+        endContainer = endContainer.parentNode;
+        if (endOffset == 0)
+          endContainer.parentNode.insertBefore(tmpNode, endContainer);
+        else
+          endContainer.parentNode.insertBefore(tmpNode, endContainer.nextSibling);
+      }
+    }
+    else {
+      tmpNode = doc.createTextNode(MARK_SELECTION_END);
+      endContainer.insertBefore(tmpNode, endContainer.childNodes.item(endOffset));
+    }
+
+    if (startContainer.nodeType == Node.TEXT_NODE ||
+        startContainer.nodeType == Node.CDATA_SECTION_NODE) {
+      // do some extra tweaks to try to avoid the view-source output to look like
+      // ...<tag>[... or ...[</tag>... (where '[' marks the start of the selection).
+      // To get a neat output, the idea here is to remap the start point from:
+      // 1. ...<tag>[...   to   ...[<tag>...
+      // 2. ...[</tag>...  to   ...</tag>[...
+      if ((startOffset > 0 && startOffset < startContainer.data.length) ||
+          !startContainer.parentNode || !startContainer.parentNode.parentNode ||
+          startContainer != startContainer.parentNode.lastChild)
+        startContainer.insertData(startOffset, MARK_SELECTION_START);
+      else {
+        tmpNode = doc.createTextNode(MARK_SELECTION_START);
+        startContainer = startContainer.parentNode;
+        if (startOffset == 0)
+          startContainer.parentNode.insertBefore(tmpNode, startContainer);
+        else
+          startContainer.parentNode.insertBefore(tmpNode, startContainer.nextSibling);
+      }
+    }
+    else {
+      tmpNode = doc.createTextNode(MARK_SELECTION_START);
+      startContainer.insertBefore(tmpNode, startContainer.childNodes.item(startOffset));
+    }
+  }
+  dump("addSelectionMarkers\n");
+  dump("  start: " + startContainer.nodeName + ", " + startOffset + "\n");
+  dump("  end: "   +   endContainer.nodeName + ", " +   endOffset + "\n");
+}
+
+// Copied from drawSelection() in
+//   /toolkit/components/viewsource/content/viewPartialSource.js
+// using special markers left in the serialized source, this helper makes the
+// underlying markup of the selected fragment to automatically appear as selected
+// on the inflated view-source DOM
+function removeSelectionMarkers(sourceMode) {
+  // find the special selection markers that we added earlier,
+  // and draw the selection between the two...
+  var findService = null;
+  try {
+    // get the find service which stores the global find state
+    findService = Components.classes["@mozilla.org/find/find_service;1"]
+                            .getService(Components.interfaces.nsIFindService);
+  } catch(e) { }
+  if (!findService)
+    return;
+
+  // Kaze: get the proper target window and reset the selection
+  var target = sourceMode ? gSourceContentWindow : GetCurrentEditorElement();
+  var selection = target.contentDocument.defaultView.getSelection();
+  selection.removeAllRanges(); // useless in the ViewSource window but required in Composer
+
+  // cache the current global find state
+  var matchCase     = findService.matchCase;
+  var entireWord    = findService.entireWord;
+  var wrapFind      = findService.wrapFind;
+  var findBackwards = findService.findBackwards;
+  var searchString  = findService.searchString;
+  var replaceString = findService.replaceString;
+
+  // setup our find instance
+  //var findInst = getBrowser().webBrowserFind;
+  var findInst = target.webBrowserFind;
+  findInst.matchCase     = true;
+  findInst.entireWord    = false;
+  findInst.wrapFind      = true;
+  findInst.findBackwards = false;
+
+  // ...lookup the start mark
+  findInst.searchString = MARK_SELECTION_START;
+  var startLength = MARK_SELECTION_START.length;
+  findInst.findNext();
+
+  //var contentWindow = getBrowser().contentDocument.defaultView;
+  //var selection = contentWindow.getSelection();
+  var range = selection.getRangeAt(0);
+  var startContainer = range.startContainer;
+  var startOffset    = range.startOffset;
+
+  // ...lookup the end mark
+  findInst.searchString = MARK_SELECTION_END;
+  var endLength = MARK_SELECTION_END.length;
+  findInst.findNext();
+
+  var endContainer = selection.anchorNode;
+  var endOffset    = selection.anchorOffset;
+
+  // reset the selection that find has left
+  selection.removeAllRanges();
+
+  // delete the special markers now...
+  endContainer.deleteData(endOffset, endLength);
+  startContainer.deleteData(startOffset, startLength);
+  dump("removeSelectionMarkers\n");
+  dump("  start: " + startContainer.nodeName + ", " + startOffset + ":" + startLength + "\n");
+  dump("  end: "   +   endContainer.nodeName + ", " +   endOffset + ":" +   endLength + "\n");
+
+  // show the selection
+  try {
+    if (startContainer == endContainer)
+      endOffset -= startLength; // has shrunk if on same text node...
+    range.setEnd(endContainer, endOffset);
+    selection.addRange(range);
+  } catch(e) { return; }
+
+  // scroll the selection into view:
+  // the default behavior of the selection is to scroll at the end of
+  // the selection, whereas in this situation, it is more user-friendly
+  // to scroll at the beginning. So we override the default behavior here
+  try {
+    //getBrowser().docShell
+    target.docShell
+          .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+          .getInterface(Components.interfaces.nsISelectionDisplay)
+          .QueryInterface(Components.interfaces.nsISelectionController)
+          .scrollSelectionIntoView(Components.interfaces.nsISelectionController.SELECTION_NORMAL,
+                                   Components.interfaces.nsISelectionController.SELECTION_ANCHOR_REGION,
+                                   true);
+  }
+  catch(e) { }
+
+  // restore the current find state
+  findService.matchCase     = matchCase;
+  findService.entireWord    = entireWord;
+  findService.wrapFind      = wrapFind;
+  findService.findBackwards = findBackwards;
+  findService.searchString  = searchString;
+  findService.replaceString = replaceString;
+
+  findInst.matchCase     = matchCase;
+  findInst.entireWord    = entireWord;
+  findInst.wrapFind      = wrapFind;
+  findInst.findBackwards = findBackwards;
+  findInst.searchString  = searchString;
 }
 
 /*****************************************************************************\

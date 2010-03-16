@@ -389,22 +389,19 @@
           window.goUpdateCommand("cmd_dtdStrictness");
           window.goUpdateCommand("cmd_dtdStrictness2");
 
-          /* <Kaze>
-          if (current.hasAttribute("displaymode"))
-            window.SetEditMode(current.getAttribute("displaymode"));
-          else
-            window.SetEditMode(0);
-          */
-
+          // <Kaze>
+					/* always start in Design mode for now
           if (current.hasAttribute("editmode"))
             window.SetEditMode(current.getAttribute("editmode"));
           else
             window.SetEditMode(0);
+					*/
+					window.SetEditMode(0);
 
           if (current.hasAttribute("displaymode"))
             window.SetDisplayMode(current.getAttribute("displaymode"));
           else
-            window.SetDisplayMode(0);
+            window.SetDisplayMode(0); // kDisplayModeNormal
           // </Kaze>
 
           if (current.getAttribute("blockoutlines"))

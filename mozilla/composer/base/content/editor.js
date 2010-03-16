@@ -2083,22 +2083,22 @@ function SetEditUI(mode)
 
   // Already in requested mode:
   //  return false to indicate we didn't switch
+  //if (mode == gEditorEditMode && mode != kEditModeSource)
   if (mode == gEditorEditMode)
     return false;
 
   var editorElt = GetCurrentEditorElement();
   editorElt.setAttribute("editmode", mode);
 
+  // Flush changes if needed
+  if (gEditedElement || (previousMode == kEditModeSource)) {
+    FinishHTMLSource();
+  }
+
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = gEditorEditMode;
   gEditorEditMode = mode;
-
-  // Flush changes if needed
-  if (gEditedElement || (previousMode == kEditModeSource)) {
-    //RebuildDocumentFromSource();
-    FinishHTMLSource();
-  }
 
   // show|hide mode selectors
   var hiddenElementIDs = [
