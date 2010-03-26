@@ -176,13 +176,7 @@ pref("spellchecker.realtimespell.warning_color", "orange");
 pref("editor.showDisableSpellCheckWarning",      true);
 
 // Helper Applications
-#ifdef XP_UNIX
-pref("editor.helpers.browser.useSystem",         false);
-pref("editor.helpers.browser.path",              "/usr/bin/firefox");
-pref("editor.helpers.browser.args",              "");
-#else
 pref("editor.helpers.browser.useSystem",         true);
-#endif
 pref("editor.helpers.text.useSystem",            true);
 pref("editor.helpers.image.useSystem",           true);
 pref("editor.helpers.media.useSystem",           true);

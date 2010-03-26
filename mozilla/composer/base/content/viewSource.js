@@ -992,120 +992,120 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
   PageLoader.loadPage(PageLoader.currentDescriptor, pageLoaderIface.DISPLAY_NORMAL);
 }
 
-// Copied from viewPartialSourceForSelection() in
+// Adapted from viewPartialSourceForSelection() in
 //   /toolkit/components/viewsource/content/viewPartialSource.js
 // view-source of a selection with the special effect of remapping the selection
 // to the underlying view-source output
 function addSelectionMarkers(selection)
 {
   var range = selection.getRangeAt(0);
-  //var ancestorContainer = range.commonAncestorContainer;
-  //var doc = ancestorContainer.ownerDocument;
-  var doc = range.commonAncestorContainer.ownerDocument;
-  var ancestorContainer = doc.documentElement;
+  var ancestorContainer = range.commonAncestorContainer;
+  dump("ancestorContainer = " + ancestorContainer.nodeName + "\n");
 
-  var startContainer = range.startContainer;
-  var endContainer   = range.endContainer;
-  var startOffset    = range.startOffset;
-  var endOffset      = range.endOffset;
-
-  /* let the ancestor be an element
-  if (ancestorContainer.nodeType == Node.TEXT_NODE ||
-      ancestorContainer.nodeType == Node.CDATA_SECTION_NODE)
-    ancestorContainer = ancestorContainer.parentNode;
-
-  // for selectAll, let's use the entire document, including <html>...</html>
-  // @see DocumentViewerImpl::SelectAll() for how selectAll is implemented
-  try {
-    if (ancestorContainer == doc.body)
-      ancestorContainer = doc.documentElement;
-  } catch (e) { }
-  */
-
-  // each path is a "child sequence" (a.k.a. "tumbler") that
-  // descends from the ancestor down to the boundary point
-  var startPath = getPath(ancestorContainer, startContainer);
-  var endPath   = getPath(ancestorContainer, endContainer);
-
-  // clone the fragment of interest and reset everything to be relative to it
-  // note: it is with the clone that we operate/munge from now on
-  //ancestorContainer = ancestorContainer.cloneNode(true);
-  startContainer = ancestorContainer;
-  endContainer   = ancestorContainer;
+  var doc = ancestorContainer.ownerDocument;
+  var docElement = doc.documentElement;
 
   // Only bother with the selection if it can be remapped. Don't mess with
   // leaf elements (such as <isindex>) that secretly use anynomous content
   // for their display appearance.
-  var canDrawSelection = ancestorContainer.hasChildNodes();
-  if (canDrawSelection) {
-    var i;
-    for (i = startPath ? startPath.length-1 : -1; i >= 0; i--) {
-      startContainer = startContainer.childNodes.item(startPath[i]);
-    }
-    for (i = endPath ? endPath.length-1 : -1; i >= 0; i--) {
-      endContainer = endContainer.childNodes.item(endPath[i]);
-    }
+  /*
+   *if (!ancestorContainer.hasChildNodes()) {
+   *  dump(ancestorContainer.nodeName + " has no child nodes, can't draw selection\n");
+   *  return;
+   *}
+   */
 
-    // add special markers to record the extent of the selection
-    // note: |startOffset| and |endOffset| are interpreted either as
-    // offsets in the text data or as child indices (see the Range spec)
-    // (here, munging the end point first to keep the start point safe...)
-    var tmpNode;
-    if (endContainer.nodeType == Node.TEXT_NODE ||
-        endContainer.nodeType == Node.CDATA_SECTION_NODE) {
-      // do some extra tweaks to try to avoid the view-source output to look like
-      // ...<tag>]... or ...]</tag>... (where ']' marks the end of the selection).
-      // To get a neat output, the idea here is to remap the end point from:
-      // 1. ...<tag>]...   to   ...]<tag>...
-      // 2. ...]</tag>...  to   ...</tag>]...
-      if ((endOffset > 0 && endOffset < endContainer.data.length) ||
-          !endContainer.parentNode || !endContainer.parentNode.parentNode)
-        endContainer.insertData(endOffset, MARK_SELECTION_END);
-      else {
-        tmpNode = doc.createTextNode(MARK_SELECTION_END);
-        endContainer = endContainer.parentNode;
-        if (endOffset == 0)
-          endContainer.parentNode.insertBefore(tmpNode, endContainer);
-        else
-          endContainer.parentNode.insertBefore(tmpNode, endContainer.nextSibling);
-      }
+  // Early way out if the selection is not in <body>
+  // (the markers wouldn't be easy to remove afterwards)
+  var tmpNode = ancestorContainer;
+  var isInBody = false;
+  while(tmpNode) {
+    if (tmpNode.nodeName.toLowerCase() == "body") {
+      isInBody = true;
+      break;
     }
+    tmpNode = tmpNode.parentNode;
+  }
+  if (!isInBody) return;
+
+  // add special markers to record the extent of the selection
+  // note: |startOffset| and |endOffset| are interpreted either as
+  // offsets in the text data or as child indices (see the Range spec)
+  // (here, munging the end point first to keep the start point safe...)
+  var startOffset = range.startOffset;
+  var endOffset   = range.endOffset;
+
+  // each path is a "child sequence" (a.k.a. "tumbler") that
+  // descends from the ancestor down to the boundary point
+  // note: getPath() is defined in viewPartialSource.js
+  var startPath = getPath(docElement, range.startContainer);
+  var endPath   = getPath(docElement, range.endContainer);
+
+  // MARK_SELECTION_END
+  var endContainer = docElement;
+  for (i = endPath ? endPath.length-1 : -1; i >= 0; i--)
+    endContainer = endContainer.childNodes.item(endPath[i]);
+  if (endContainer.nodeType == Node.TEXT_NODE ||
+      endContainer.nodeType == Node.CDATA_SECTION_NODE) {
+    // do some extra tweaks to try to avoid the view-source output to look like
+    // ...<tag>]... or ...]</tag>... (where ']' marks the end of the selection).
+    // To get a neat output, the idea here is to remap the end point from:
+    // 1. ...<tag>]...   to   ...]<tag>...
+    // 2. ...]</tag>...  to   ...</tag>]...
+    if ((endOffset > 0 && endOffset < endContainer.data.length) ||
+        !endContainer.parentNode || !endContainer.parentNode.parentNode ||
+        (endContainer.parentNode.nodeName.toLowerCase() == "body"))
+      endContainer.insertData(endOffset, MARK_SELECTION_END);
     else {
       tmpNode = doc.createTextNode(MARK_SELECTION_END);
-      endContainer.insertBefore(tmpNode, endContainer.childNodes.item(endOffset));
-    }
-
-    if (startContainer.nodeType == Node.TEXT_NODE ||
-        startContainer.nodeType == Node.CDATA_SECTION_NODE) {
-      // do some extra tweaks to try to avoid the view-source output to look like
-      // ...<tag>[... or ...[</tag>... (where '[' marks the start of the selection).
-      // To get a neat output, the idea here is to remap the start point from:
-      // 1. ...<tag>[...   to   ...[<tag>...
-      // 2. ...[</tag>...  to   ...</tag>[...
-      if ((startOffset > 0 && startOffset < startContainer.data.length) ||
-          !startContainer.parentNode || !startContainer.parentNode.parentNode ||
-          startContainer != startContainer.parentNode.lastChild)
-        startContainer.insertData(startOffset, MARK_SELECTION_START);
-      else {
-        tmpNode = doc.createTextNode(MARK_SELECTION_START);
-        startContainer = startContainer.parentNode;
-        if (startOffset == 0)
-          startContainer.parentNode.insertBefore(tmpNode, startContainer);
-        else
-          startContainer.parentNode.insertBefore(tmpNode, startContainer.nextSibling);
-      }
-    }
-    else {
-      tmpNode = doc.createTextNode(MARK_SELECTION_START);
-      startContainer.insertBefore(tmpNode, startContainer.childNodes.item(startOffset));
+      endContainer = endContainer.parentNode;
+      if (endOffset == 0)
+        endContainer.parentNode.insertBefore(tmpNode, endContainer);
+      else
+        endContainer.parentNode.insertBefore(tmpNode, endContainer.nextSibling);
     }
   }
+  else {
+    tmpNode = doc.createTextNode(MARK_SELECTION_END);
+    endContainer.insertBefore(tmpNode, endContainer.childNodes.item(endOffset));
+  }
+
+  // MARK_SELECTION_START
+  var startContainer = docElement;
+  for (var i = startPath ? startPath.length-1 : -1; i >= 0; i--)
+    startContainer = startContainer.childNodes.item(startPath[i]);
+  if (startContainer.nodeType == Node.TEXT_NODE ||
+      startContainer.nodeType == Node.CDATA_SECTION_NODE) {
+    // do some extra tweaks to try to avoid the view-source output to look like
+    // ...<tag>[... or ...[</tag>... (where '[' marks the start of the selection).
+    // To get a neat output, the idea here is to remap the start point from:
+    // 1. ...<tag>[...   to   ...[<tag>...
+    // 2. ...[</tag>...  to   ...</tag>[...
+    if ((startOffset > 0 && startOffset < startContainer.data.length) ||
+        !startContainer.parentNode || !startContainer.parentNode.parentNode ||
+        (startContainer != startContainer.parentNode.lastChild) ||
+        (startContainer.parentNode.nodeName.toLowerCase() == "body"))
+      startContainer.insertData(startOffset, MARK_SELECTION_START);
+    else {
+      tmpNode = doc.createTextNode(MARK_SELECTION_START);
+      startContainer = startContainer.parentNode;
+      if (startOffset == 0)
+        startContainer.parentNode.insertBefore(tmpNode, startContainer);
+      else
+        startContainer.parentNode.insertBefore(tmpNode, startContainer.nextSibling);
+    }
+  }
+  else {
+    tmpNode = doc.createTextNode(MARK_SELECTION_START);
+    startContainer.insertBefore(tmpNode, startContainer.childNodes.item(startOffset));
+  }
+
   dump("addSelectionMarkers\n");
   dump("  start: " + startContainer.nodeName + ", " + startOffset + "\n");
   dump("  end: "   +   endContainer.nodeName + ", " +   endOffset + "\n");
 }
 
-// Copied from drawSelection() in
+// Adapted from drawSelection() in
 //   /toolkit/components/viewsource/content/viewPartialSource.js
 // using special markers left in the serialized source, this helper makes the
 // underlying markup of the selected fragment to automatically appear as selected
@@ -1209,6 +1209,19 @@ function removeSelectionMarkers(sourceMode) {
   findInst.wrapFind      = wrapFind;
   findInst.findBackwards = findBackwards;
   findInst.searchString  = searchString;
+}
+
+// helper
+function IsInBody(node) {
+  var isInBody = false;
+  while(node) {
+    if (node.nodeName.toLowerCase() != "body") {
+      isInBody = true;
+      break;
+    }
+    node = node.parentNode;
+  }
+  return isInBody;
 }
 
 /*****************************************************************************\

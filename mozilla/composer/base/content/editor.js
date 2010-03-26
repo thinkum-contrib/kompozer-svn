@@ -2010,9 +2010,6 @@ function SetDisplayMode(mode)
   var previousMode = gEditorDisplayMode;
   gEditorDisplayMode = mode;
 
-  // Save the last non-source mode so we can cancel source editing easily
-  gPreviousNonSourceDisplayMode = mode;
-
   // Load/unload appropriate override style sheet
   try {
     var editor = GetCurrentEditor();
