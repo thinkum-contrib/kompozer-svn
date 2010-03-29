@@ -628,6 +628,7 @@ function viewDocumentSource() {
   // Send the entire document's source string to the source editor
   var flags = getDocumentEncodingFlags();
   var source = editor.outputToString(kHTMLMimeType, flags);
+  //var source = editor.outputToString(editor.contentsMIMEType, flags);
   viewSourceInEditor(source, doctype);
 }
 
@@ -707,6 +708,7 @@ function viewNodeSourceWithFormatting(node) {
   // Send the selected element's source string to the source editor
   var flags = getDocumentEncodingFlags() | 1; // OutputSelectionOnly
   var source = editor.outputToString(kHTMLMimeType, flags);
+  //var source = editor.outputToString(editor.contentsMIMEType, flags);
   //editor.selection.collapseToStart();
   viewSourceInEditor(source);
 }
@@ -714,19 +716,6 @@ function viewNodeSourceWithFormatting(node) {
 function viewSourceInEditor(source, doctype) {
   var doctypeNode = document.getElementById("doctype-text");
 
-  // View-Source like (pseudo syntax highlighting)
-  if (kColoredSourceView) {
-    doctypeNode.collapsed = true;
-    // all our content is held by the data:URI and URIs are internally stored as utf-8 (see nsIURI.idl)
-    gSourceContentWindow.webNavigation
-                        .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(source),
-                                 Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE, null, null, null);
-    gSourceContentWindow.makeEditable("text", true); // required to enable caret movement
-    gSourceContentWindow.addEventListener("load", InitSourceEditor, true);
-  }
-
-  // SeaMonkey-like (plaintext editor)
-  else {
     if (doctype) {
       // Display the DOCTYPE as a non-editable string above edit area
       doctypeNode.collapsed = false;
@@ -744,6 +733,20 @@ function viewSourceInEditor(source, doctype) {
     }
     else 
       doctypeNode.collapsed = true;
+
+  // View-Source like (pseudo syntax highlighting)
+  if (kColoredSourceView) {
+    //doctypeNode.collapsed = true;
+    // all our content is held by the data:URI and URIs are internally stored as utf-8 (see nsIURI.idl)
+    gSourceContentWindow.webNavigation
+                        .loadURI("view-source:data:text/html;charset=utf-8," + encodeURIComponent(source),
+                                 Components.interfaces.nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE, null, null, null);
+    gSourceContentWindow.makeEditable("text", true); // required to enable caret movement
+    gSourceContentWindow.addEventListener("load", InitSourceEditor, true);
+  }
+
+  // SeaMonkey-like (plaintext editor)
+  else {
     gSourceTextEditor.selectAll();
     gSourceTextEditor.insertText(source);
     InitSourceEditor();
@@ -779,16 +782,11 @@ function FinishHTMLSource() { // overrides that in 'comm.jar/editor/content/edit
     // Convert the source back into the DOM document
     var htmlSource = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
     htmlSource = htmlSource.replace(/[\r\n\s]*$/, "");
-    if (gEditorEditMode == kEditModeSource) {
-      if (htmlSource.length > 0)
+    if (htmlSource.length > 0) {
+      if (gEditorEditMode == kEditModeSource)
         RebuildDocumentFromSource(htmlSource);
-    }
-    else if (gEditedElement) {
-      if (htmlSource.length > 0)
+      else if (gEditedElement)
         RebuildNodeFromSource(gEditedElement, htmlSource);
-      //if (gPreviousNonSourceEditMode == kEditModeSplit)
-        //return; // locked Split mode
-      //GetCurrentEditor().selection.collapseToStart();
     }
   }
   gEditedElement = null;
@@ -829,7 +827,6 @@ function RebuildNodeFromSource(node, source) {
           source = source.replace(/[\s\r\n]*<dt/gi, "<dt");
           source = source.replace(/[\s\r\n]*<dd/gi, "<dd");
         }
-        dump(source);
       }
       else {
         //SelectFocusNodeAncestor(node);
@@ -841,7 +838,6 @@ function RebuildNodeFromSource(node, source) {
           source = source.replace(/[\s\r\n]*<dt/gi, "<dt");
           source = source.replace(/[\s\r\n]*<dd/gi, "<dd");
         }
-        dump(source + "\n");
       }
       // insert HTML source
       editor.insertHTML(source);
@@ -857,57 +853,71 @@ function RebuildNodeFromSource(node, source) {
 
 function RebuildDocumentFromSource(source) {
   var editor = GetCurrentEditor();
+  var oldSource = TrimString(editor.document.documentElement.innerHTML);
+  dump("rebuilding document from source\n");
 
-  // Only rebuild document if a change was made in source window
-  if (IsHTMLSourceChanged()) {
-    dump("rebuilding document from source\n");
-    // Here we need to check whether the HTML source contains <head> and <body> tags
-    // or editor.rebuildDocumentFromSource() will fail.
-    if (source.length > 0) {
-      var alertStrID = null;
-      if (source.indexOf("<head") < 0)
-        alertStrID = "NoHeadTag";
-      else if (source.indexOf("<body") < 0)
-        alertStrID = "NoBodyTag";
-      if (alertStrID) {
-        AlertWithTitle(GetString("Alert"), GetString(alertStrID));
-        // cheat to force back to Source Mode
-        gEditorEditMode = kEditModeDesign;
-        SetEditMode(kEditModeSource);
-        throw Components.results.NS_ERROR_FAILURE;
-      }
+  /* Here we need to check whether the HTML source contains <head> and <body> tags
+  // or editor.rebuildDocumentFromSource() will fail.
+  if (source.length > 0) {
+    var alertStrID = null;
+    if (source.indexOf("<head") < 0)
+      alertStrID = "NoHeadTag";
+    else if (source.indexOf("<body") < 0)
+      alertStrID = "NoBodyTag";
+    if (alertStrID) {
+      AlertWithTitle(GetString("Alert"), GetString(alertStrID));
+      // cheat to force back to Source Mode
+      gEditorEditMode = kEditModeDesign;
+      SetEditMode(kEditModeSource);
+      throw Components.results.NS_ERROR_FAILURE;
     }
+  } */
 
-    // Reduce the undo count so we don't use too much memory during multiple
-    // uses of source window (reinserting entire doc caches all nodes)
-    try {
-      editor.transactionManager.maxTransactionCount = 1;
-    } catch (e) {}
+  // Reduce the undo count so we don't use too much memory during multiple
+  // uses of source window (reinserting entire doc caches all nodes)
+  try {
+    editor.transactionManager.maxTransactionCount = 1;
+  } catch (e) {}
 
-    // Convert the source back into the DOM document
-    editor.beginTransaction();
-    try {
-      touchExternalStylesheets();
+  // Convert the source back into the DOM document
+  editor.beginTransaction();
+  try {
+    touchExternalStylesheets();
+    if (editor.contentsMIMEType != kXHTMLMimeType) {
       editor.rebuildDocumentFromSource(source);
-      checkDocumentTitle();
-    } catch (ex) {
-      dump(ex);
     }
-    editor.endTransaction();
+    else {
+      // editor.rebuildDocumentFromSource() doesn't work on XHTML :-(
+      // replace the whole <html> element (not cancellable)
+      source = TrimString(source);
+      var headIndex = source.lastIndexOf("<head");
+      var bodyIndex = source.lastIndexOf("</body>") + 7;
+      source = source.substring(headIndex, bodyIndex);
+      editor.document.documentElement.innerHTML = source;
+      /* this kinda works with Gecko 1.9.3 but not here (KompoZer 0.8)
+        var fragment = editor.document.createRange().createContextualFragment(source);
+        editor.enableUndo(false);
+        editor.document.documentElement.removeChild(GetBodyElement());
+        editor.document.replaceChild(fragment.firstChild, editor.document.documentElement);
+        editor.enableUndo(true);
+      */
+    }
+    checkDocumentTitle();
+  } catch (ex) {
+    // rebuild has failed, revert to the previous code (TODO: warning dialog)
+    dump("Could not rebuild document from source:\n" + source + "\n" + ex + "\n");
+    editor.document.documentElement.innerHTML = oldSource;
+    // cheat to force back to Source Mode?
+  }
+  editor.endTransaction();
 
-    // Restore unlimited undo count
-    try {
-      editor.transactionManager.maxTransactionCount = -1;
-    } catch (e) {}
-  }
-  else {
-    dump("no modification done.\n");
-  }
+  // Restore unlimited undo count
+  try {
+    editor.transactionManager.maxTransactionCount = -1;
+  } catch (e) {}
 
   // XXX useless at the moment
   NotifyProcessors(kProcessorsBeforeBackToNormal, editor.document);
-  // Clear source editor
-  //ExitSourceEditor();
 }
 
 function checkDocumentTitle() {
@@ -996,11 +1006,9 @@ function highlightSyntax() {   // taken from /toolkit/components/viewsource/
 //   /toolkit/components/viewsource/content/viewPartialSource.js
 // view-source of a selection with the special effect of remapping the selection
 // to the underlying view-source output
-function addSelectionMarkers(selection)
-{
+function addSelectionMarkers(selection) {
   var range = selection.getRangeAt(0);
   var ancestorContainer = range.commonAncestorContainer;
-  dump("ancestorContainer = " + ancestorContainer.nodeName + "\n");
 
   var doc = ancestorContainer.ownerDocument;
   var docElement = doc.documentElement;
@@ -1099,10 +1107,6 @@ function addSelectionMarkers(selection)
     tmpNode = doc.createTextNode(MARK_SELECTION_START);
     startContainer.insertBefore(tmpNode, startContainer.childNodes.item(startOffset));
   }
-
-  dump("addSelectionMarkers\n");
-  dump("  start: " + startContainer.nodeName + ", " + startOffset + "\n");
-  dump("  end: "   +   endContainer.nodeName + ", " +   endOffset + "\n");
 }
 
 // Adapted from drawSelection() in
@@ -1122,7 +1126,7 @@ function removeSelectionMarkers(sourceMode) {
   if (!findService)
     return;
 
-  // Kaze: get the proper target window and reset the selection
+  // get the proper target window and reset the selection
   var target = sourceMode ? gSourceContentWindow : GetCurrentEditorElement();
   var selection = target.contentDocument.defaultView.getSelection();
   selection.removeAllRanges(); // useless in the ViewSource window but required in Composer
@@ -1148,53 +1152,53 @@ function removeSelectionMarkers(sourceMode) {
   var startLength = MARK_SELECTION_START.length;
   findInst.findNext();
 
-  //var contentWindow = getBrowser().contentDocument.defaultView;
-  //var selection = contentWindow.getSelection();
-  var range = selection.getRangeAt(0);
-  var startContainer = range.startContainer;
-  var startOffset    = range.startOffset;
-
-  // ...lookup the end mark
-  findInst.searchString = MARK_SELECTION_END;
-  var endLength = MARK_SELECTION_END.length;
-  findInst.findNext();
-
-  var endContainer = selection.anchorNode;
-  var endOffset    = selection.anchorOffset;
-
-  // reset the selection that find has left
-  selection.removeAllRanges();
-
-  // delete the special markers now...
-  endContainer.deleteData(endOffset, endLength);
-  startContainer.deleteData(startOffset, startLength);
-  dump("removeSelectionMarkers\n");
-  dump("  start: " + startContainer.nodeName + ", " + startOffset + ":" + startLength + "\n");
-  dump("  end: "   +   endContainer.nodeName + ", " +   endOffset + ":" +   endLength + "\n");
-
-  // show the selection
+  var range = null;
   try {
-    if (startContainer == endContainer)
-      endOffset -= startLength; // has shrunk if on same text node...
-    range.setEnd(endContainer, endOffset);
-    selection.addRange(range);
-  } catch(e) { return; }
+    range = selection.getRangeAt(0);
+    var startContainer = range.startContainer;
+    var startOffset    = range.startOffset;
+  } catch(e) {}
 
-  // scroll the selection into view:
-  // the default behavior of the selection is to scroll at the end of
-  // the selection, whereas in this situation, it is more user-friendly
-  // to scroll at the beginning. So we override the default behavior here
-  try {
-    //getBrowser().docShell
-    target.docShell
-          .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-          .getInterface(Components.interfaces.nsISelectionDisplay)
-          .QueryInterface(Components.interfaces.nsISelectionController)
-          .scrollSelectionIntoView(Components.interfaces.nsISelectionController.SELECTION_NORMAL,
-                                   Components.interfaces.nsISelectionController.SELECTION_ANCHOR_REGION,
-                                   true);
+  if (range) { // start mark found, we can draw the selection
+    // ...lookup the end mark
+    findInst.searchString = MARK_SELECTION_END;
+    var endLength = MARK_SELECTION_END.length;
+    findInst.findNext();
+
+    var endContainer = selection.anchorNode;
+    var endOffset    = selection.anchorOffset;
+
+    // reset the selection that find has left
+    selection.removeAllRanges();
+
+    // delete the special markers now...
+    endContainer.deleteData(endOffset, endLength);
+    startContainer.deleteData(startOffset, startLength);
+
+    // show the selection
+    try {
+      if (startContainer == endContainer)
+        endOffset -= startLength; // has shrunk if on same text node...
+      range.setEnd(endContainer, endOffset);
+      selection.addRange(range);
+    } catch(e) { return; }
+
+    // scroll the selection into view:
+    // the default behavior of the selection is to scroll at the end of
+    // the selection, whereas in this situation, it is more user-friendly
+    // to scroll at the beginning. So we override the default behavior here
+    try {
+      //getBrowser().docShell
+      target.docShell
+            .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+            .getInterface(Components.interfaces.nsISelectionDisplay)
+            .QueryInterface(Components.interfaces.nsISelectionController)
+            .scrollSelectionIntoView(Components.interfaces.nsISelectionController.SELECTION_NORMAL,
+                                     Components.interfaces.nsISelectionController.SELECTION_ANCHOR_REGION,
+                                     true);
+    }
+    catch(e) {}
   }
-  catch(e) { }
 
   // restore the current find state
   findService.matchCase     = matchCase;
@@ -1209,19 +1213,6 @@ function removeSelectionMarkers(sourceMode) {
   findInst.wrapFind      = wrapFind;
   findInst.findBackwards = findBackwards;
   findInst.searchString  = searchString;
-}
-
-// helper
-function IsInBody(node) {
-  var isInBody = false;
-  while(node) {
-    if (node.nodeName.toLowerCase() != "body") {
-      isInBody = true;
-      break;
-    }
-    node = node.parentNode;
-  }
-  return isInBody;
 }
 
 /*****************************************************************************\

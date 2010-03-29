@@ -192,6 +192,7 @@ classic.jar:
 +   icon.png                                                  (skin/icon.png)
 #
 +   skin/classic/communicator/communicator.css                (skin/communicator.css)
++   skin/classic/communicator/icons/loading.gif               (/themes/classic/communicator/icons/loading.gif)
 #
 +   skin/classic/global/icons/Warning.png                     (skin/icons/alert-exclam.png)
 +   skin/classic/global/icons/Error.png                       (skin/icons/alert-error.png)

@@ -114,12 +114,6 @@
             </xul:row>
           </xul:rows>
         </xul:grid>
-        <!--
-           -<xul:splitter anonid="EditorSplitter"
-           -              resizebefore="closest"
-           -              state="open"
-           -              collapse="before"/>
-           -->
       </xul:tabbox>
     </content>
 
@@ -316,37 +310,6 @@
         </body>
       </method>
 
-      <!-- Kaze: trying to collapse/expand the main <editor> -->
-      <method name="ShowEditor">
-        <parameter name="show" />
-        <body>
-        <![CDATA[
-          if (show)
-          {
-            // this.mEditorSplitter.setAttribute("state", "open");
-            // this.mEditorSplitter.setAttribute("hidden", "false");
-            // this.mEditorSplitter.previousSibling.setAttribute("collapsed", "false");
-            this.mEditorSplitter.previousSibling.collapsed = false;
-            this.mEditorSplitter.previousSibling.flex = 1;
-          }
-          else
-          {
-            // this.mEditorSplitter.setAttribute("state", "collapsed");
-            // this.mEditorSplitter.setAttribute("hidden", "true");
-            // this.mEditorSplitter.previousSibling.setAttribute("collapsed", "true");
-            this.mEditorSplitter.previousSibling.collapsed = true;
-            this.mEditorSplitter.previousSibling.flex = 0;
-          }
-        ]]>
-        </body>
-      </method>
-
-      <!--
-         -<property name="collapsed"
-         -          onget="return this.getAttribute('editortype');"
-         -          onset="this.setAttribute('editortype', val); return val;"/>
-         -->
- 
       <method name="showCurrentTabAsModified">
         <parameter name="val" />
         <body>
@@ -371,6 +334,10 @@
       <method name="SelectTabEditor">
         <body>
         <![CDATA[
+          // <Kaze> always start in Design mode for now
+          // window.CancelHTMLSource();
+					window.SetEditMode(0);
+
           //~ GetCurrentEditingSession().setEditorOnControllers(window.content, GetCurrentEditor());
           // <Kaze> this line above creates a bug when the last tab is closed
           try {
@@ -388,15 +355,6 @@
           window.updateCommands("style");
           window.goUpdateCommand("cmd_dtdStrictness");
           window.goUpdateCommand("cmd_dtdStrictness2");
-
-          // <Kaze>
-					/* always start in Design mode for now
-          if (current.hasAttribute("editmode"))
-            window.SetEditMode(current.getAttribute("editmode"));
-          else
-            window.SetEditMode(0);
-					*/
-					window.SetEditMode(0);
 
           if (current.hasAttribute("displaymode"))
             window.SetDisplayMode(current.getAttribute("displaymode"));
@@ -619,7 +577,7 @@
               tabAlreadyDisplayed = false;
             }
             newTab = this.selectedTab;
-            newTab.setAttribute("busy",     "true");
+            newTab.setAttribute("busy", "true");
           }
 
           editorElement.addEventListener("DOMTitleChanged", this.changeTabTitle, false);
@@ -732,7 +690,7 @@
         <![CDATA[
           //~ var edited = this._checkIfUrlIsAlreadyEdited(url);
           var edited = this.checkIfUrlIsAlreadyEdited(url);
-          // SetEditMode(kDisplayModeNormal); // Kaze: bugfix
+          // SetEditMode(0); // Kaze: bugfix
           if (!edited)
           {
             if (!newTab)
@@ -810,7 +768,6 @@
           ]]>
         </body>
       </method>
-
     </implementation>
       
     <handlers>
@@ -828,9 +785,7 @@
         }
         ]]>
       </handler>
-
     </handlers>
-
   </binding>
   
 </bindings>

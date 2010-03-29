@@ -2179,11 +2179,13 @@ function SetEditUI(mode)
     // (Note: Setting "selectedItem = mode" won't redraw tabs when menu is used)
     document.getElementById("EditModeTabs").selectedItem = document.getElementById(kEditModeTabIDS[mode]);
     // Uncheck previous menuitem and set new check since toolbar may have been used
-    if ((previousMode >= 0) && (previousMode != kEditModeText))
-      document.getElementById(kEditModeMenuIDs[previousMode]).setAttribute("checked","false");
-    document.getElementById(kEditModeMenuIDs[mode]).setAttribute("checked","true");
+    //if ((previousMode >= 0) && (previousMode != kEditModeText))
+      //document.getElementById(kEditModeMenuIDs[previousMode]).setAttribute("checked","false");
+    //document.getElementById(kEditModeMenuIDs[mode]).setAttribute("checked","true");
+    for (var i = 0; i < kEditModeMenuIDs.length; i++)
+      document.getElementById(kEditModeMenuIDs[i])
+              .setAttribute("checked", (mode == i) ? "true" : "false");
   }
-
   return true;
 }
 
@@ -3846,6 +3848,7 @@ function GetSelectionContainer()
   }
 
   // make sure we have an element here
+  //if (!result.node) return null; // XXX hack, kaze
   while (result.node.nodeType != Node.ELEMENT_NODE)
     result.node = result.node.parentNode;
 
